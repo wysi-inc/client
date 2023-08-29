@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
+
+@font-face {
+    font-family: TorusBold;
+    src: url('./assets/fonts/Torus-Bold.otf');
+}
+
+@font-face {
+    font-family: TorusRegular;
+    src: url('./assets/fonts/Torus-Regular.otf');
+}
+
+@font-face {
+    font-family: Emojis;
+    src: url('./assets/fonts/TwitterColorEmoji.otf');
+}
+
+* {
+    font-family: TorusRegular, Noto Color Emoji, serif;
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    color: #ffffff;
+}
+
+.h1, .h2, .h3, .h4, .h5 {
+    color: #ffffff !important;
+}
+
+.darkenOnHover:hover {
+    filter: brightness(80%);
+}
+
+#tooltip {
+    z-index: 1000;
+}
+
+.darkestColor {
+    background-color: #151012 !important;
+}
+
+.backgroundColor {
+    background-color: #1c1618 !important;
+}
+
+.darkColor {
+    background-color: #2a2226 !important;
+}
+
+.midColor {
+    background-color: #382e32 !important;
+}
+
+.accentColor {
+    background-color: #ac396d !important;
+}
+
+.secondaryColor {
+    background-color: #3d2932 !important;
+}
+
+.titleColor {
+    background-color: #46393f !important;
+}
+
+.profileTitle {
+    background: #F8B500;
+    background: linear-gradient(to right, #F8B500 0%, #FCCD4D 0%, #FBDF93 100%, #FCEABB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.player {
+    position: sticky;
+    width: min-content;
+    height: 88px;
+    top: calc(100vh - 88px);
+    z-index: 1000;
+}
+
+.bg {
+    background-color: #2a2226;
+}
+
+.rhap_container {
+    background-color: #00000000 !important;
+    padding: 5px !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.rhap_controls-section {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.rhap_time {
+    color: #ffffff !important;
+}
+
+.rhap_volume-bar {
+    width: 50px !important;
+}
+
+.rhap_progress-section {
+    width: 300px !important;
+    margin-left: 8px;
+}
+
+.rhap_total-time, .rhap_progress-indicator, .rhap_additional-controls, .rhap_volume-indicator {
+    display: none !important;
+}
+
+.title-container {
+    overflow: hidden; /* Hide overflowing content */
+}
+
+.titleBox {
+    height: 38px;
+}
+
+.scrolling {
+    overflow: hidden; /* Hide overflowing text */
+}
+
+.scrolling-text {
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Display ellipsis (...) when text overflows */
+    animation: scroll 10s linear infinite; /* Apply scrolling animation */
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(100%); /* Start from the right side of the container */
+    }
+    100% {
+        transform: translateX(-100%); /* Scroll to the left side of the container */
+    }
+}
+
+.form-control:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
