@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import UserPage from "./UserPage";
+import UserPage from "./views/UserPage";
 import {Tooltip} from 'react-tooltip'
 import Navbar from "./components/Navbar";
 
