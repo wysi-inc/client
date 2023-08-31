@@ -10,72 +10,73 @@ interface ScoreProps {
     score: BeatmapScore;
 }
 
-const Score = (props: ScoreProps) => {
+const ScoreCard = (props: ScoreProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
     return (
         <div style={{backgroundImage: `url(${props.score.beatmapset.covers.cover})`, backgroundSize: "cover"}}
-             className="d-flex">
+             className="d-flex flex-grow-1">
             <div style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}
                  className="d-flex flex-column flex-grow-1 p-3">
-                <div className="d-flex flex-row gap-2 justify-content-between">
-                    <div>
-                        <div className="d-flex flex-row gap-3 mb-2">
-                            <img src={props.score.beatmapset.covers.list}
-                                 onError={addDefaultSrc}
-                                 alt="cover" className="rounded" loading="lazy"
-                                 style={{height: 60, width: 60}}/>
-                            <div className="flex-grow-1">
-                                <div>
-                                    <a href={props.score.beatmap.url} target={"_blank"}
-                                       rel="noreferrer"
-                                       className="text-light h5 text-decoration-none">{props.score.beatmapset.title}</a> by <a
-                                    href={`https://osu.ppy.sh/beatmapsets?q=${props.score.beatmapset.artist}`}
-                                    target={"_blank"}
-                                    rel="noreferrer"
-                                    className="text-light h5 text-decoration-none">{props.score.beatmapset.artist}</a>
-                                </div>
-                                <div>
-                                    <h6 className="d-inline-block">
-                                        [{props.score.beatmap.version}] - {props.score.beatmapset.creator}
-                                    </h6>
-                                </div>
-                            </div>
+                <div className="d-flex flex-row gap-3 mb-2 align-items-center">
+                    <img src={props.score.beatmapset.covers.list}
+                         onError={addDefaultSrc}
+                         alt="cover" className="rounded" loading="lazy"
+                         style={{height: 60, width: 60}}/>
+                    <div className="flex-grow-1">
+                        <div className="text-truncate" style={{width: 260}}>
+                            <a href={props.score.beatmap.url} target={"_blank"}
+                               rel="noreferrer"
+                               className="text-light h5 text-decoration-none text-truncate">
+                                {props.score.beatmapset.title}
+                            </a>
                         </div>
-                        <div className="d-flex flex-row gap-2 mb-2" style={{fontSize: 12}}>
-                            <div>CS: {props.score.beatmap.cs}</div>
-                            <div>|</div>
-                            <div>AR: {props.score.beatmap.ar}</div>
-                            <div>|</div>
-                            <div>OD: {props.score.beatmap.accuracy}</div>
-                            <div>|</div>
-                            <div>HP: {props.score.beatmap.drain}</div>
+                        <div className="text-truncate" style={{width: 260}}>
+                            <a href={`https://osu.ppy.sh/beatmapsets?q=${props.score.beatmapset.artist}`}
+                               target={"_blank"}
+                               rel="noreferrer"
+                               className="text-light h6 text-decoration-none text-truncate">
+                                by {props.score.beatmapset.artist}
+                            </a>
                         </div>
-                        <div className="d-flex flex-row gap-2 mb-2" style={{fontSize: 14}}>
-                            <div className="d-flex flex-row gap-1">
-                                <i className="bi bi-star-fill"></i>
-                                {props.score.beatmap.difficulty_rating}
-                            </div>
-                            <div>|</div>
-                            <div className="d-flex flex-row gap-1">
-                                <i className="bi bi-stopwatch-fill"></i>
-                                {secondsToTime(props.score.beatmap.total_length)}
-                            </div>
-                            <div>|</div>
-                            <div className="d-flex flex-row gap-1">
-                                <i className="bi bi-music-note-beamed"></i>
-                                {props.score.beatmap.bpm}
-                            </div>
+                        <div className="text-truncate" style={{width: 260}}>
+                            <h6 className="d-inline-block">
+                                [{props.score.beatmap.version}] - {props.score.beatmapset.creator}
+                            </h6>
                         </div>
                     </div>
-                    <div>
-                        <div style={{
-                            fontSize: 60,
-                            fontWeight: "bold",
-                            textAlign: "center",
-                            color: (colors.ranks as any)[props.score.rank.toLowerCase()]
-                        }}>
-                            {props.score.rank}
-                        </div>
+                    <div style={{
+                        fontSize: 60,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        textAnchor: "middle",
+                        color: (colors.ranks as any)[props.score.rank.toLowerCase()]
+                    }}>
+                        {props.score.rank}
+                    </div>
+                </div>
+                <div className="d-flex flex-row gap-2 mb-2" style={{fontSize: 12}}>
+                    <div>CS: {props.score.beatmap.cs}</div>
+                    <div>|</div>
+                    <div>AR: {props.score.beatmap.ar}</div>
+                    <div>|</div>
+                    <div>OD: {props.score.beatmap.accuracy}</div>
+                    <div>|</div>
+                    <div>HP: {props.score.beatmap.drain}</div>
+                </div>
+                <div className="d-flex flex-row gap-2 mb-2" style={{fontSize: 14}}>
+                    <div className="d-flex flex-row gap-1">
+                        <i className="bi bi-star-fill"></i>
+                        {props.score.beatmap.difficulty_rating}
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1">
+                        <i className="bi bi-stopwatch-fill"></i>
+                        {secondsToTime(props.score.beatmap.total_length)}
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1">
+                        <i className="bi bi-music-note-beamed"></i>
+                        {props.score.beatmap.bpm}
                     </div>
                 </div>
                 <div className="d-flex flex-row justify-content-between mb-2"
@@ -111,13 +112,12 @@ const Score = (props: ScoreProps) => {
                     </div>
                 </div>
                 <div className="d-flex flex-row justify-content-between">
-                    <div className="fw-bold">
-                        <div style={{
-                            backgroundColor: (colors.beatmap as any)[props.score.beatmapset.status.toLowerCase()],
-                            color: "#000000"
-                        }} className="rounded-pill px-2">
-                            {props.score.beatmapset.status}
-                        </div>
+                    <div style={{
+                        backgroundColor: (colors.beatmap as any)[props.score.beatmapset.status.toLowerCase()],
+                        color: "#000000"
+                    }}
+                         className="rounded-pill px-2 fw-bold">
+                        {props.score.beatmapset.status}
                     </div>
                     <div className="d-flex flex-row gap-1 flex-grow-1 fw-bold justify-content-end align-items-center">
                         <div className="d-flex flex-row gap-2 me-2">
@@ -154,4 +154,4 @@ const Score = (props: ScoreProps) => {
     );
 }
 
-export default Score;
+export default ScoreCard;

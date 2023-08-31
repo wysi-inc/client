@@ -20,17 +20,43 @@
     box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6 {
+main {
+    min-height: 100vh;
+}
+
+body, html {
     margin: 0;
-    color: #ffffff;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #ffffff !important;
+}
+
+.row {
+    margin: 0 !important;
 }
 
 .h1, .h2, .h3, .h4, .h5 {
     color: #ffffff !important;
 }
 
+.darkenOnHover {
+    transition: .1s ease-in-out;
+}
+
 .darkenOnHover:hover {
     filter: brightness(80%);
+    cursor: pointer;
+    transform: scale(.95);
+    transition: .1s ease-in-out;
+}
+
+.simpleDarkenOnHover:hover {
+    filter: brightness(80%);
+    cursor: pointer;
 }
 
 #tooltip {
@@ -150,4 +176,9 @@ h1, h2, h3, h4, h5, h6 {
 .form-control:focus {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
+}
+
+.modal-content {
+    border: none !important;
+    background-color: #1c1618 !important;
 }

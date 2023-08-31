@@ -4,18 +4,22 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import UserPage from "./views/UserPage";
 import {Tooltip} from 'react-tooltip'
 import Navbar from "./components/Navbar";
+import SongPlayer from "./components/SongPlayer";
+import BeatmapsPage from "./views/BeatmapsPage";
 
 function App() {
     return (
-        <div className="darkestColor">
+        <main className="darkestColor d-flex flex-column">
             <Tooltip id="tooltip"/>
             <BrowserRouter>
                 <Navbar/>
                 <Routes>
-                    <Route path="/user/:userId/:urlMode?" element={<UserPage/>}/>
+                    <Route path="/users/:urlUser?/:urlMode?" element={<UserPage/>}/>
+                    <Route path="/beatmaps" element={<BeatmapsPage/>}/>
                 </Routes>
+                <SongPlayer/>
             </BrowserRouter>
-        </div>
+        </main>
     );
 }
 

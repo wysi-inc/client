@@ -1,3 +1,5 @@
+import {GameModeType} from "./types";
+
 export interface ColorsInterface {
     ui: {
         font: string,
@@ -13,6 +15,7 @@ export interface ColorsInterface {
         xMiss: string,
     },
     beatmap: {
+        all: string,
         graveyard: string,
         wip: string,
         pending: string,
@@ -39,6 +42,14 @@ export interface ColorsInterface {
         country: string,
         plays: string,
         topPp: string
+    }, difficulty: {
+        easy: string,
+        normal: string,
+        hard: string,
+        insane: string,
+        expert: string,
+        expert_plus: string,
+        god: string,
     }
 }
 
@@ -66,7 +77,7 @@ export interface userData {
     max_blocks: number;
     max_friends: number;
     occupation: string;
-    playmode: string;
+    playmode: GameModeType;
     playstyle: string;
     post_count: number;
     profile_order: string[];
@@ -84,7 +95,7 @@ export interface userData {
     favourite_beatmapset_count: number;
     follower_count: number;
     graveyard_beatmapset_count: number;
-    groups: UserGroups;
+    groups: UserGroup[];
     guest_beatmapset_count: number;
     loved_beatmapset_count: number;
     mapping_follower_count: number;
@@ -127,7 +138,7 @@ export interface UserBadge {
     url: string;
 }
 
-export interface UserGroups {
+export interface UserGroup {
     colour: string;
     has_listing: boolean;
     has_playmodes: boolean;
@@ -136,7 +147,7 @@ export interface UserGroups {
     is_probationary: boolean;
     name: string;
     short_name: string;
-    playmodes: string[];
+    playmodes: GameModeType[];
 }
 
 export interface UserPage {
@@ -199,7 +210,7 @@ export interface UserAchievement {
 }
 
 export interface RankHistory {
-    mode: string;
+    mode: GameModeType;
     data: number[];
 }
 
@@ -259,7 +270,7 @@ export interface Beatmap {
     beatmapset_id: number;
     difficulty_rating: number;
     id: number;
-    mode: string;
+    mode: GameModeType;
     status: string;
     total_length: number;
     user_id: number;
@@ -272,19 +283,19 @@ export interface Beatmap {
     count_sliders: number;
     count_spinners: number;
     cs: number;
-    deleted_at?: Date;
+    deleted_at?: string;
     drain: number;
     hit_length: number;
     is_scoreable: boolean;
-    last_updated: Date;
+    last_updated: string;
     mode_int: number;
     passcount: number;
     playcount: number;
     ranked: number;
     url: string;
     checksum: string;
+    max_combo: number;
 }
-
 export interface Beatmapset {
     artist: string;
     artist_unicode: string;
@@ -309,9 +320,13 @@ export interface Beatmapset {
 
 export interface Covers {
     cover: string;
+    'cover@2x': string;
     card: string;
+    'card@2x': string;
     list: string;
+    'list@2x': string;
     slimcover: string;
+    'slimcover@2x': string;
 }
 
 export interface User {
@@ -362,4 +377,68 @@ export interface MedalCategories {
 
 export interface SortedMedals {
     [key: string]: MedalInterface[]
+}
+
+export interface UserCompact {
+    avatar_url: string;
+    country_code: string;
+    id: number;
+    is_active: boolean;
+    is_bot: boolean;
+    is_deleted: boolean;
+    is_online: boolean;
+    is_supporter: boolean;
+    last_visit: string;
+    pm_friends_only: boolean;
+    username: string;
+}
+
+export interface BeatmapSet {
+    artist: string;
+    artist_unicode: string;
+    covers: Covers;
+    creator: string;
+    favourite_count: number;
+    hype?: string;
+    id: number;
+    nsfw: boolean;
+    offset: number;
+    play_count: number;
+    preview_url: string;
+    source: string;
+    spotlight: boolean;
+    status: string;
+    title: string;
+    title_unicode: string;
+    track_id: number;
+    user_id: number;
+    video: boolean;
+    bpm: number;
+    can_be_hyped: boolean;
+    deleted_at?: string;
+    discussion_enabled: boolean;
+    discussion_locked: boolean;
+    is_scoreable: boolean;
+    last_updated: string;
+    legacy_thread_url: string;
+    nominations_summary: NominationsSumary;
+    ranked: number;
+    ranked_date: string;
+    storyboard: boolean;
+    submitted_date: string;
+    tags: string;
+    availability: Availability;
+    has_favourited: boolean;
+    beatmaps: Beatmap[];
+    pack_tags: string[];
+}
+
+export interface NominationsSumary {
+    current: number;
+    required: number;
+}
+
+export interface Availability {
+    download_disabled: boolean;
+    more_information: string;
 }

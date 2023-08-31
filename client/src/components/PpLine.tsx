@@ -21,7 +21,7 @@ const PpLine = (props: PpLineProps) => {
                         <div key={index + 1} data-tooltip-id={"ppLineTooltip"}
                              data-tooltip-content={`${props.data[index].beatmapset.title} [${props.data[index].beatmap.version}]: ${num}pp`}
 
-                             className="darkenOnHover"
+                             className="simpleDarkenOnHover"
                              style={{width: 4, height: "100%", backgroundColor: (colors.ranks as any)[props.data[index].rank.toLowerCase()]}}></div>
                     )}
                 </div>

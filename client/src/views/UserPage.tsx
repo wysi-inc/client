@@ -7,7 +7,7 @@ import {
     MonthlyData, SortedMedals,
     UserAchievement,
     UserBadge,
-    userData
+    userData, UserGroup
 } from "../resources/interfaces";
 import {useParams} from "react-router-dom";
 import Spinner from 'react-bootstrap/Spinner';
@@ -15,26 +15,28 @@ import ReactCountryFlag from "react-country-flag"
 import moment from "moment";
 import {colors} from "../resources/store";
 import {addDefaultSrc, secondsToTime} from "../resources/functions";
-import Score from "../components/Score";
+import ScoreCard from "../components/ScoreCard";
 import {Chart, registerables} from 'chart.js';
 import {Line} from "react-chartjs-2";
 import TopScoresPanel from "../components/TopScoresPanel";
 import Medal from "../components/Medal";
 import Badge from "../components/Badge";
-import SongPlayer from "../components/SongPlayer";
 import CountryShape from "../components/CountryShape";
+import ModeSelector from "../components/ModeSelector";
+import SupporterIcon from "../components/SupporterIcon";
+import GroupBadge from "../components/GroupBadge";
+import {BeatmapType, GameModeType} from "../resources/types";
 
 Chart.register(...registerables);
 Chart.defaults.font.family = "TorusRegular";
 Chart.defaults.plugins.legend.display = false;
 Chart.defaults.color = colors.ui.font;
 Chart.defaults.animation = false;
+
 type ModeSnap = "x" | "y" | "nearest" | "index" | "dataset" | "point" | undefined;
-type GameModeType = 'osu' | 'mania' | 'fruits' | 'taiko';
-type BeatmapType = 'pinned' | 'firsts' | 'recent' | 'best';
 
 const UserPage = () => {
-    const {userId} = useParams();
+    const {urlUser} = useParams();
     const {urlMode} = useParams();
 
     const [userData, setUserData] = useState<userData | null>(null);
@@ -45,27 +47,40 @@ const UserPage = () => {
     const [bestBeatmaps, setBestBeatmaps] = useState<BeatmapScore[]>([])
     const [recentBeatmaps, setRecentBeatmaps] = useState<BeatmapScore[]>([])
     const [pinnedBeatmaps, setPinnedBeatmaps] = useState<BeatmapScore[]>([])
-    const [firstBeatmaps, setFirstBeatmaps] = useState<BeatmapScore[]>([])
+    const [firstsBeatmaps, setFirstsBeatmaps] = useState<BeatmapScore[]>([])
     const [medals, setMedals] = useState<MedalInterface[]>([]);
     const [medalsSorted, setMedalsSorted] = useState<SortedMedals>({});
 
-    const [historyTabIndex, setHistoryTabIndex] = useState<number>(1);
+    const [historyTabIndex, setHistoryTabIndex] = useState<number>(0);
     const [scoresTabIndex, setScoresTabIndex] = useState<number>(0);
 
-    useEffect(() => {
+    useEffect((): void => {
+        clearData();
         const checkedMode: GameModeType = urlMode?.toLowerCase() as GameModeType;
-        if (checkedMode !== undefined) {
-            setGameMode(checkedMode);
+        if (urlUser !== undefined) {
+            getUser(checkedMode ? checkedMode : 'default');
+            getMedals();
         }
-        getUser(checkedMode ? checkedMode : 'osu');
-        getMedals();
-    }, [userId, urlMode]);
+    }, [urlUser, urlMode]);
+
+    useEffect((): void => {
+        setHistoryTab()
+    }, [userData]);
+
+    if (urlUser === undefined) {
+        return (
+            <div>Search a user on the top bar</div>
+        );
+    }
 
     if (!userData) {
         return (
-            <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>
+            <div style={{maxWidth: 1600}}
+                 className="shadow backgroundColor flex-grow-1 w-100 d-flex flex-column align-items-centerx">
+                <Spinner animation="border" role="status" className="mx-auto my-3">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </div>
         );
     }
     if (userData.is_bot) {
@@ -80,6 +95,53 @@ const UserPage = () => {
     }
 
     const rarestMedal: MedalInterface | null = getRarestMedal();
+
+    const replaysHistoryData: any = {
+        labels: getReplaysPlaysLabels(),
+        datasets: [{
+            label: 'Replays Watched',
+            data: getReplaysData(),
+            fill: false,
+            borderColor: colors.charts.plays,
+            tension: 0.1
+        }]
+    };
+    const replaysHistoryOptions: any = {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+            y: {
+                reverse: false,
+                ticks: {
+                    precision: 0
+                }
+            },
+        },
+        elements: {
+            point: {
+                radius: 2
+            }
+        },
+        interaction: {
+            mode: 'index' as ModeSnap
+        },
+        plugins: {
+            tooltip: {
+                displayColors: false
+            },
+        },
+    };
+
+    const playsHistoryData: any = {
+        labels: getPlaysLabels(),
+        datasets: [{
+            label: 'Play Count',
+            data: getPlaysData(),
+            fill: false,
+            borderColor: colors.charts.plays,
+            tension: 0.1
+        }]
+    };
     const playsHistoryOptions: any = {
         maintainAspectRatio: false,
         responsive: true,
@@ -104,6 +166,53 @@ const UserPage = () => {
                 displayColors: false
             },
         },
+    };
+
+    const countryHistoryData: any = {
+        labels: getCountryLabels(),
+        datasets: [{
+            label: 'Rank',
+            data: getCountryData(),
+            fill: false,
+            borderColor: colors.charts.global,
+            tension: 0.1,
+        }],
+    };
+    const countryHistoryOptions: any = {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+            y: {
+                reverse: true,
+                ticks: {
+                    precision: 0
+                }
+            },
+        },
+        elements: {
+            point: {
+                radius: 2
+            }
+        },
+        interaction: {
+            mode: 'index' as ModeSnap
+        },
+        plugins: {
+            tooltip: {
+                displayColors: false
+            },
+        },
+    };
+
+    const globalHistoryData: any = {
+        labels: getGlobalLabels(),
+        datasets: [{
+            label: 'Rank',
+            data: getGlobalData(),
+            fill: false,
+            borderColor: colors.charts.global,
+            tension: 0.1,
+        }],
     };
     const globalHistoryOptions: any = {
         maintainAspectRatio: false,
@@ -130,49 +239,47 @@ const UserPage = () => {
             },
         },
     };
-    const globalHistoryData: any = {
-        labels: getGlobalHistoryDates(userData.rank_history?.data?.length ? userData.rank_history?.data?.length : 0),
-        datasets: [{
-            label: 'Rank',
-            data: userData.rank_history?.data?.reverse(), // Assuming rank_history is an array of data points
-            fill: false,
-            borderColor: colors.charts.global,
-            tension: 0.1,
-        }],
-    };
-    const playsHistoryData: any = {
-        labels: getPlaysLabels(),
-        datasets: [{
-            label: 'Play Count',
-            data: getPlaysData(),
-            fill: false,
-            borderColor: colors.charts.plays,
-            tension: 0.1
-        }]
-    };
+
+    function clearData(): void {
+        setUserData(null);
+        setBestBeatmaps([]);
+        setRecentBeatmaps([]);
+        setPinnedBeatmaps([]);
+        setFirstsBeatmaps([]);
+    }
 
     function getUser(mode: GameModeType): void {
-        axios.get(`/user/${userId}/${mode}`)
+        axios.post('/user', {
+            id: urlUser,
+            mode: mode
+        })
             .then(async response => {
                 setUserData(response.data);
-                console.log(response.data)
-                window.history.pushState({}, '', `/user/${response.data.id}/${mode}`);
+                console.log(response.data);
                 if (response.data.id) {
+                    let searchMode: GameModeType;
+                    if (mode === "default") {
+                        searchMode = response.data.playmode;
+                    } else {
+                        searchMode = mode;
+                    }
+                    window.history.pushState({}, '', `/users/${response.data.id}/${searchMode}`);
+                    setGameMode(searchMode);
                     let scoresTab: number = 0;
                     if (response.data.scores_recent_count > 0) {
-                        setRecentBeatmaps([...bestBeatmaps, ...await getBeatmapScores(response.data.id, mode, 'recent', beatmapReqLimit)]);
+                        setRecentBeatmaps(await getBeatmapScores(response.data.id, searchMode, 'recent', 0, beatmapReqLimit));
                         scoresTab = 4;
                     }
                     if (response.data.scores_first_count > 0) {
-                        setFirstBeatmaps([...bestBeatmaps, ...await getBeatmapScores(response.data.id, mode, 'firsts', beatmapReqLimit)]);
+                        setFirstsBeatmaps(await getBeatmapScores(response.data.id, searchMode, 'firsts', 0, beatmapReqLimit));
                         scoresTab = 3
                     }
                     if (response.data.scores_best_count > 0) {
-                        setBestBeatmaps([...bestBeatmaps, ...await getBeatmapScores(response.data.id, mode, 'best', 100)]);
+                        setBestBeatmaps(await getBeatmapScores(response.data.id, searchMode, 'best', 0, 100));
                         scoresTab = 2
                     }
                     if (response.data.scores_pinned_count > 0) {
-                        setPinnedBeatmaps([...bestBeatmaps, ...await getBeatmapScores(response.data.id, mode, 'pinned', 100)]);
+                        setPinnedBeatmaps(await getBeatmapScores(response.data.id, searchMode, 'pinned', 0, 100));
                         scoresTab = 1
                     }
                     setScoresTabIndex(scoresTab);
@@ -183,10 +290,10 @@ const UserPage = () => {
             });
     }
 
-    async function getBeatmapScores(id: number, mode: GameModeType, type: BeatmapType, limit: number): Promise<any> {
-        const url: string = `https://osu.ppy.sh/users/${id}/scores/${type}?mode=${mode}&limit=${limit}&offset=${bestBeatmaps.length}`
+    async function getBeatmapScores(id: number, mode: GameModeType, type: BeatmapType, offset: number, limit: number): Promise<any> {
+        const url: string = `https://osu.ppy.sh/users/${id}/scores/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
         try {
-            const response = await axios.get(`/proxy/${encodeURIComponent(url)}`);
+            const response = await axios.post('/proxy', {url: url});
             return response.data;
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -195,7 +302,7 @@ const UserPage = () => {
     }
 
     function getMedals(): void {
-        axios.get('/getMedals')
+        axios.post('/getMedals')
             .then((res) => {
                 const data = res.data;
                 data.sort((a: any, b: any) => {
@@ -208,7 +315,7 @@ const UserPage = () => {
                     }
                     return a.Grouping.localeCompare(b.Grouping);
                 });
-                const categoryArrays: { [key: string]: MedalInterface[] } = {};
+                const categoryArrays: SortedMedals = {};
                 for (const obj of data) {
                     if (categoryArrays[obj.Grouping]) {
                         categoryArrays[obj.Grouping].push(obj);
@@ -241,19 +348,6 @@ const UserPage = () => {
         }
     }
 
-    function getGlobalHistoryDates(num: number): string[] {
-        const today = new Date();
-        const past90Days = [];
-
-        for (let i = 0; i < num; i++) {
-            const date = new Date(today);
-            date.setDate(date.getDate() - i);
-            past90Days.push(moment(date).format('DD MMM YYYY'));
-        }
-
-        return past90Days.reverse();
-    }
-
     function getAchievedMedalsCount(): MedalCategories {
         const achievedMedalsCount: MedalCategories = {};
         Object.entries(medalsSorted)
@@ -282,6 +376,34 @@ const UserPage = () => {
             }, null)
     }
 
+    function getGlobalLabels(): string[] {
+        const num = userData?.rank_history?.data?.length ? userData.rank_history?.data?.length : 0;
+        const today = new Date();
+        let past90Days: string[] = [];
+        for (let i = 0; i < num; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            past90Days.push(moment(date).format('DD MMM YYYY'));
+        }
+        return past90Days.reverse();
+    }
+
+    function getGlobalData(): number[] {
+        if (!userData?.rank_history?.data) {
+            return [];
+        } else {
+            return userData.rank_history.data;
+        }
+    }
+
+    function getCountryLabels(): string[] {
+        return [];
+    }
+
+    function getCountryData(): number[] {
+        return [];
+    }
+
     function getPlaysData(): number[] {
         if (!userData) {
             return [];
@@ -298,9 +420,39 @@ const UserPage = () => {
         });
     }
 
+    function getReplaysData(): number[] {
+        if (!userData) {
+            return [];
+        }
+        return userData.replays_watched_counts.map((obj: MonthlyData) => obj.count);
+    }
+
+    function getReplaysPlaysLabels(): string[] {
+        if (!userData) {
+            return [];
+        }
+        return userData.replays_watched_counts.map((obj: MonthlyData) => {
+            return moment(new Date(obj.start_date)).format('MMM YYYY');
+        });
+    }
+
+    function setHistoryTab(): void {
+        if (getReplaysData().length > 0) {
+            setHistoryTabIndex(4);
+        }
+        if (getPlaysData().length > 0) {
+            setHistoryTabIndex(3);
+        }
+        if (getCountryData().length > 0) {
+            setHistoryTabIndex(2);
+        }
+        if (getGlobalData().length > 0) {
+            setHistoryTabIndex(1);
+        }
+    }
+
     return (
-        <div style={{maxWidth: 1600}} className="mx-auto shadow">
-            <SongPlayer/>
+        <div style={{maxWidth: 1600}} className="shadow backgroundColor align-self-center">
             <div className="d-flex" style={{backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover"}}>
                 <div className="flex-grow-1" style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}>
                     <div className="d-flex flex-row flex-wrap gap-5 px-5 pt-5">
@@ -326,11 +478,18 @@ const UserPage = () => {
                         <div className="d-flex flex-row justify-content-between flex-grow-1">
                             <div className="d-flex flex-column">
                                 <div className="mb-3">
-                                    <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
-                                       target={"_blank"}
-                                       href={`https://osu.ppy.sh/users/${userData.id}`}>
-                                        {userData.username}
-                                    </a>
+                                    <div className="d-flex flex-row gap-3 align-items-center">
+                                        <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
+                                           target={"_blank"}
+                                           href={`https://osu.ppy.sh/users/${userData.id}`}>
+                                            {userData.username}
+                                        </a>
+                                        {userData.groups.map((group: UserGroup, index: number) =>
+                                            <GroupBadge group={group}
+                                                        key={index + 1}/>
+                                        )}
+                                        {userData.is_supporter && <SupporterIcon size={32}/>}
+                                    </div>
                                     <div className="profileTitle">{userData.title}</div>
                                 </div>
                                 <div>
@@ -364,6 +523,7 @@ const UserPage = () => {
                                 </div>
                             </div>
                             <div className="d-flex flex-column">
+                                <ModeSelector mode={gameMode} userId={userData.id}/>
                                 <div className="d-flex flex-row align-items-center gap-3">
                                     <div className="h5 d-flex flex-column align-items-center">
                                         <div style={{color: colors.ranks.xh}}>XH</div>
@@ -431,7 +591,7 @@ const UserPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="p-4 m-0 d-flex flex-row flex-wrap align-items-center gap-3 h6 darkColor shadow">
+            <div className="p-4 m-0 d-flex flex-row flex-wrap align-items-center gap-3 h6 shadow darkColor">
                 <div className="d-flex flex-row align-items-center gap-2">
                     <i className="bi bi-people-fill"></i>
                     <div>Followers: {userData.follower_count.toLocaleString()}</div>
@@ -462,7 +622,7 @@ const UserPage = () => {
                     <div>{userData.occupation}</div>
                 </div>}
             </div>
-            <div className="p-4 pb-0 backgroundColor">
+            <div className="p-4 pb-0">
                 <div className="row">
                     <div className="col-12 col-xl-8">
                         <div className="d-flex flex-column">
@@ -473,23 +633,32 @@ const UserPage = () => {
                                 </div>
                                 <nav className="row">
                                     <button
+                                        disabled={getGlobalData().length === 0}
                                         className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 1 ? 'accentColor' : 'midColor'}`}
                                         onClick={() => setHistoryTabIndex(1)}>
                                         <i className="bi bi-globe2"></i>
                                         <div>Global Rank</div>
                                     </button>
                                     <button
-                                        disabled={true}
+                                        disabled={getCountryData().length === 0}
                                         className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 2 ? 'accentColor' : 'midColor'}`}
                                         onClick={() => setHistoryTabIndex(2)}>
                                         <CountryShape code={userData.country.code} width={24} height={24}/>
                                         <div>Country Rank</div>
                                     </button>
                                     <button
+                                        disabled={getPlaysData().length === 0}
                                         className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 3 ? 'accentColor' : 'midColor'}`}
                                         onClick={() => setHistoryTabIndex(3)}>
                                         <i className="bi bi-arrow-counterclockwise"></i>
                                         <div>Play Count</div>
+                                    </button>
+                                    <button
+                                        disabled={getReplaysData().length === 0}
+                                        className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 4 ? 'accentColor' : 'midColor'}`}
+                                        onClick={() => setHistoryTabIndex(4)}>
+                                        <i className="bi bi-arrow-counterclockwise"></i>
+                                        <div>Replays Watched</div>
                                     </button>
                                 </nav>
                                 <div style={{height: 250}} className="d-flex justify-content-center align-items-center">
@@ -499,11 +668,15 @@ const UserPage = () => {
                                     </div>
                                     <div className="flex-grow-1 p-3 text-center h1" hidden={historyTabIndex !== 2}
                                          style={{height: 250}}>
-                                        {'(> w <)'}
+                                        <Line data={countryHistoryData} options={countryHistoryOptions}/>
                                     </div>
                                     <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 3}
                                          style={{height: 250}}>
                                         <Line data={playsHistoryData} options={playsHistoryOptions}/>
+                                    </div>
+                                    <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 4}
+                                         style={{height: 250}}>
+                                        <Line data={replaysHistoryData} options={replaysHistoryOptions}/>
                                     </div>
                                 </div>
                             </div>
@@ -627,19 +800,19 @@ const UserPage = () => {
                                     <div className="badge darkColor rounded-pill">{userData.scores_recent_count}</div>
                                 </button>
                             </nav>
-                            <div style={{height: 2167}} className="flex-grow-1 overflow-y-scroll">
+                            <div style={{height: 2167}} className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
                                 <div hidden={scoresTabIndex !== 1}>
                                     {pinnedBeatmaps.length === 0 && userData.scores_pinned_count !== 0 &&
                                         <Spinner animation="border" role="status" className="mx-auto mt-4">
                                             <div className="visually-hidden">Loading...</div>
                                         </Spinner>}
                                     {pinnedBeatmaps.map((score: BeatmapScore, index: number) =>
-                                        <Score index={index + 1} score={score} key={index + 1}/>)}
+                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
                                     {pinnedBeatmaps.length < userData.scores_pinned_count &&
                                         <button
                                             className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-pill"
                                             onClick={async () => {
-                                                setPinnedBeatmaps([...pinnedBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'pinned', beatmapReqLimit)]);
+                                                setPinnedBeatmaps([...pinnedBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'pinned', pinnedBeatmaps.length, beatmapReqLimit)]);
                                             }}>
                                             <i className="bi bi-caret-down-fill"></i>
                                             <div>Expand</div>
@@ -651,29 +824,29 @@ const UserPage = () => {
                                             <div className="visually-hidden">Loading...</div>
                                         </Spinner>}
                                     {bestBeatmaps.map((score: BeatmapScore, index: number) =>
-                                        <Score index={index + 1} score={score} key={index + 1}/>)}
+                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
                                     {bestBeatmaps.length < userData.scores_best_count &&
                                         <button
                                             className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-pill"
                                             onClick={async () => {
-                                                setBestBeatmaps([...bestBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'best', beatmapReqLimit)]);
+                                                setBestBeatmaps([...bestBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'best', bestBeatmaps.length, beatmapReqLimit)]);
                                             }}>
                                             <i className="bi bi-caret-down-fill"></i>
                                             <div>Expand</div>
                                         </button>}
                                 </div>
                                 <div hidden={scoresTabIndex !== 3}>
-                                    {firstBeatmaps.length === 0 && userData.scores_first_count !== 0 &&
+                                    {firstsBeatmaps.length === 0 && userData.scores_first_count !== 0 &&
                                         <Spinner animation="border" role="status" className="mx-auto mt-4">
                                             <div className="visually-hidden">Loading...</div>
                                         </Spinner>}
-                                    {firstBeatmaps.map((score: BeatmapScore, index: number) =>
-                                        <Score index={index + 1} score={score} key={index + 1}/>)}
-                                    {firstBeatmaps.length < userData.scores_first_count &&
+                                    {firstsBeatmaps.map((score: BeatmapScore, index: number) =>
+                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
+                                    {firstsBeatmaps.length < userData.scores_first_count &&
                                         <button
                                             className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-pill"
                                             onClick={async () => {
-                                                setFirstBeatmaps([...firstBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'firsts', beatmapReqLimit)]);
+                                                setFirstsBeatmaps([...firstsBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'firsts', firstsBeatmaps.length, beatmapReqLimit)]);
                                             }}>
                                             <i className="bi bi-caret-down-fill"></i>
                                             <div>Expand</div>
@@ -685,12 +858,12 @@ const UserPage = () => {
                                             <span className="visually-hidden">Loading...</span>
                                         </Spinner>}
                                     {recentBeatmaps.map((score: BeatmapScore, index: number) =>
-                                        <Score index={index + 1} score={score} key={index + 1}/>)}
+                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
                                     {recentBeatmaps.length < userData.scores_recent_count &&
                                         <button
                                             className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100"
                                             onClick={async () => {
-                                                setRecentBeatmaps([...recentBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'recent', beatmapReqLimit)]);
+                                                setRecentBeatmaps([...recentBeatmaps, ...await getBeatmapScores(userData.id, gameMode, 'recent', recentBeatmaps.length, beatmapReqLimit)]);
                                             }}>
                                             <i className="bi bi-caret-down-fill"></i>
                                             <div>Expand</div>

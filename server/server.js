@@ -17,55 +17,36 @@ const client_secret = '1hpA9sk7wzAewt62ePe592FWnFbGoRqAolRBi2RE';
 //const callback_url = 'http://localhost:3000'
 app.get('/', (req, res) => {
     res.send('Hello World!')
-})
+});
 
-app.get('/proxy/:url', async (req, res) => {
-    const url = decodeURIComponent(req.params.url);
+app.post('/proxy/', async (req, res) => {
+    const url = req.body.url;
     axios.get(url)
         .then(response =>
             res.send(response.data))
         .catch(error =>
             res.status(500).send({error: error.toString()})
         );
-})
+});
 
 const main = async () => {
-    // Auth via client
     await auth.login(client_id, client_secret, ['public'])
 }
-main().then();
+main().then(() => console.log('connected'));
 
-// app.post('/ppTools', async (req, res) => {
-//     const id = req.body.id;
-//     const mods = req.body.mods;
-//     const max_combo = req.body.combo;
-//     const acc = req.body.acc;
-//     const data = await tools.pp.calculate(id, mods, max_combo, 0, acc);
-//     const response = {
-//         new_stats: {
-//             difficulty: data?.stats?.star?.pure,
-//             ar: data?.stats?.ar,
-//             od: data?.stats?.od,
-//             cs: data?.stats?.cs,
-//             hp: data?.stats?.hp,
-//             bpm: data?.stats?.bpm?.api,
-//             time: data?.stats?.time?.drain,
-//         },
-//         pp_current: data?.pp?.current,
-//         pp_fc: data?.pp?.fc,
-//         name: data?.data?.title,
-//     }
-//     res.send(response)
-// })
+app.post('/user', async (req, res) => {
+    const user_id = req.body.id;
+    const mode = req.body.mode;
+    if (mode === 'default') {
+        const data = await v2.user.details(user_id);
+        res.send(data);
+    } else {
+        const data = await v2.user.details(user_id, mode);
+        res.send(data);
+    }
+});
 
-app.get('/user/:id/:mode', async (req, res) => {
-    const user_id = req.params.id;
-    const mode = req.params.mode;
-    const data = await v2.user.details(user_id, mode);
-    res.send(data);
-})
-
-app.get('/getMedals', async function (req, res) {
+app.post('/getMedals', async (req, res) => {
     try {
         try {
             const url = new URL(
@@ -84,12 +65,42 @@ app.get('/getMedals', async function (req, res) {
         } catch (error) {
             res.status(500).send({error: error.toString()});
         }
-    } catch (error) {
-        res.status(500).send({error: error.toString()})
+    } catch (e) {
+        res.status(500).send({error: e.toString()})
     }
 });
+
+app.post('/userQuery', async (req, res) => {
+    try {
+        const username = req.body.username;
+        const queryObject = {
+            mode: 'user',
+            query: username,
+            page: 0
+        }
+        const data = await v2.site.search(queryObject)
+        res.send(data);
+    } catch (e) {
+        console.error(e);
+        req.status(500).send({error: e.toString()})
+    }
+});
+
+app.post('/beatmaps', async (req, res) => {
+    const queryData = {
+        query: req.body.query,
+        mode: req.body.mode,
+        section: req.body.section,
+        genre: req.body.genre,
+        language: req.body.language,
+        nsfw: true,
+    }
+    console.log(queryData)
+    const data = await v2.beatmaps.search(queryData);
+    res.send(data);
+})
 
 
 app.listen(port, () => {
     console.log(`App running in port ${port}`)
-})
+});

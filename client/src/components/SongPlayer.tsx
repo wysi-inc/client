@@ -13,11 +13,11 @@ const SongPlayer = () => {
     const [show, setShow] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(startVolume)
     return (
-        <div style={{height: 0}} className="player mx-auto" hidden={!show}>
+        <div className="player mx-auto sticky-bottom" hidden={!show}>
             <div className="bg shadow-lg rounded-top overflow-hidden">
                 <div className="py-2 titleBox d-flex flex-row align-items-center justify-content-between">
                     <div className="d-flex flex-row px-3 align-items-center gap-3">
-                        <i className="bi bi-music-note-beamed"></i>
+                        <i className="bi bi-headphones"></i>
                         <div className="d-inline-block text-truncate" style={{width: 400}}>
                             {artist} - {title}
                         </div>

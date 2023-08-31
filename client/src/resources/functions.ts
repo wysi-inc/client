@@ -7,7 +7,7 @@ export function secondsToTime(seconds: number) {
     let dDisplay = d > 0 ? d + "d " : "";
     let hDisplay = h > 0 ? h + "h " : "";
     let mDisplay = m > 0 ? m + "m " : "";
-    let sDisplay = s > 0 ? s + "s" : "";
+    let sDisplay = s > 0 ? s + "s" : "0s";
     return dDisplay + hDisplay + mDisplay + sDisplay;
 }
 export function addDefaultSrc(ev: any) {

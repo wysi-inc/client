@@ -27,12 +27,13 @@ export const colors: ColorsInterface = {
         f: '#aaaaaa'
     },
     beatmap: {
+        all: '#ffffff',
         graveyard: '#cccccc',
         wip: '#fe9967',
         pending: '#ffd966',
         ranked: '#66ccff',
         approved: '#b3ff66',
-        qualified: '#66ccff',
+        qualified: '#b3ff66',
         loved: '#fe67ab',
     },
     charts: {
@@ -42,6 +43,14 @@ export const colors: ColorsInterface = {
         country: '#ffdc4c',
         plays: '#ffdc4c',
         topPp: '#78dcec'
+    }, difficulty: {
+        easy: '#4cc1ff',
+        normal: '#67fe92',
+        hard: '#f7e95d',
+        insane: '#ff7f68',
+        expert: '#ff7f68',
+        expert_plus: '#6663df',
+        god: '#000000',
     }
 }
 

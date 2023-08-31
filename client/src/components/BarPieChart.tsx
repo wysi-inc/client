@@ -14,7 +14,7 @@ const BarPieChart = (props: BarPieChartProps) => {
             <div>{props.title}:</div>
             <div className="progress-stacked">
                 {props.data.map((obj: BarPieChartData, index: number) =>
-                    <div className="progress darkenOnHover" role="progressbar"
+                    <div className="progress simpleDarkenOnHover" role="progressbar"
                          data-tooltip-id={"tooltip"}
                          data-tooltip-content={`${obj.label}: ${Math.round((obj.value / total) * 100)}%`}
                          key={index + 1}
