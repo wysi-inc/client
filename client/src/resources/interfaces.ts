@@ -1,4 +1,4 @@
-import {GameModeType} from "./types";
+import {BeatmapsetStatusType, GameModeType} from "./types";
 
 export interface ColorsInterface {
     ui: {
@@ -15,7 +15,7 @@ export interface ColorsInterface {
         xMiss: string,
     },
     beatmap: {
-        all: string,
+        any: string,
         graveyard: string,
         wip: string,
         pending: string,
@@ -271,7 +271,7 @@ export interface Beatmap {
     difficulty_rating: number;
     id: number;
     mode: GameModeType;
-    status: string;
+    status: BeatmapsetStatusType;
     total_length: number;
     user_id: number;
     version: string;
@@ -310,7 +310,7 @@ export interface Beatmapset {
     preview_url: string;
     source: string;
     spotlight: boolean;
-    status: string;
+    status: BeatmapsetStatusType;
     title: string;
     title_unicode: string;
     track_id?: number | null;
@@ -407,7 +407,7 @@ export interface BeatmapSet {
     preview_url: string;
     source: string;
     spotlight: boolean;
-    status: string;
+    status: BeatmapsetStatusType;
     title: string;
     title_unicode: string;
     track_id: number;

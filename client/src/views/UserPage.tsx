@@ -471,7 +471,7 @@ const UserPage = () => {
                             </div>
                             <div className="text-center h6"
                                  data-tooltip-id="tooltip"
-                                 data-tooltip-content={moment(userData.join_date, "YYYYMMDD").fromNow()}>
+                                 data-tooltip-content={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>

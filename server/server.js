@@ -87,13 +87,19 @@ app.post('/userQuery', async (req, res) => {
 });
 
 app.post('/beatmaps', async (req, res) => {
-    const queryData = {
+    let queryData = {
         query: req.body.query,
-        mode: req.body.mode,
         section: req.body.section,
-        genre: req.body.genre,
-        language: req.body.language,
         nsfw: true,
+    }
+    if (req.body.mode !== 'any') {
+        queryData.mode = req.body.mode;
+    }
+    if (req.body.genre !== 'any') {
+        queryData.genre = req.body.genre;
+    }
+    if (req.body.language !== 'any') {
+        queryData.language = req.body.language;
     }
     console.log(queryData)
     const data = await v2.beatmaps.search(queryData);

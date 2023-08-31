@@ -1,40 +1,40 @@
-export type GameModeType = 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
+export type GameModeType = 'any' | 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
 export type BeatmapType = 'pinned' | 'firsts' | 'recent' | 'best';
 export type SongLanguageType =
-    | ""
-    | "English"
-    | "Chinese"
-    | "French"
-    | "German"
-    | "Italian"
-    | "Japanese"
-    | "Korean"
-    | "Spanish"
-    | "Swedish"
-    | "Russian"
-    | "Polish"
-    | "Instrumental"
-    | "Unspecified"
-    | "Other";
+    | "any"
+    | "english"
+    | "chinese"
+    | "french"
+    | "german"
+    | "italian"
+    | "japanese"
+    | "korean"
+    | "spanish"
+    | "swedish"
+    | "russian"
+    | "polish"
+    | "instrumental"
+    | "unspecified"
+    | "other";
 
 export type SongGenreType =
-    | ""
-    | "Video Game"
-    | "Anime"
-    | "Rock"
-    | "Pop"
-    | "Other"
-    | "Novelty"
-    | "Hip Hop"
-    | "Electronic"
-    | "Metal"
-    | "Classical"
-    | "Folk"
-    | "Jazz"
-    | "Unspecified";
+    | "any"
+    | "video game"
+    | "anime"
+    | "rock"
+    | "pop"
+    | "novelty"
+    | "hip hop"
+    | "electronic"
+    | "metal"
+    | "classical"
+    | "folk"
+    | "jazz"
+    | "unspecified"
+    | "other";
 
-export type SongSectionType =
-    | ""
+export type BeatmapsetStatusType =
+    | "any"
     | "ranked"
     | "qualified"
     | "loved"

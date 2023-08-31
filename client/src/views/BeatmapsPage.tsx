@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from '../resources/axios-config';
 import {BeatmapSet} from "../resources/interfaces";
 import BeatmapsetCard from "../components/BeatmapsetCard";
-import {GameModeType, SongGenreType, SongLanguageType, SongSectionType, SongSortType} from "../resources/types";
+import {GameModeType, SongGenreType, SongLanguageType, BeatmapsetStatusType, SongSortType} from "../resources/types";
 import {Slider} from "@mui/material";
 import {secondsToTime} from "../resources/functions";
 import {colors} from "../resources/store";
@@ -36,10 +36,10 @@ const BeatmapsPage = () => {
     const [od, setOD] = useState<number[]>([0, statLimit]);
 
     const [sort, setSort] = useState<SongSortType>('title_asc');
-    const [mode, setMode] = useState<GameModeType>('osu');
-    const [section, setSection] = useState<SongSectionType>('ranked');
-    const [genre, setGenre] = useState<SongGenreType>('');
-    const [language, setLanguage] = useState<SongLanguageType>('');
+    const [mode, setMode] = useState<GameModeType>('any');
+    const [section, setSection] = useState<BeatmapsetStatusType>('ranked');
+    const [genre, setGenre] = useState<SongGenreType>('any');
+    const [language, setLanguage] = useState<SongLanguageType>('any');
 
     function getDebounceValue(): string {
         return getQuery() + sort + mode + section + genre + language;
@@ -71,10 +71,10 @@ const BeatmapsPage = () => {
         return query.trim();
     }
 
-    const songModes: GameModeType[] = ["osu", "taiko", "fruits", "mania"];
-    const songGenres: SongGenreType[] = ["", "Video Game", "Anime", "Rock", "Pop", "Other", "Novelty", "Hip Hop", "Electronic", "Metal", "Classical", "Folk", "Jazz", "Unspecified"];
-    const songSections: SongSectionType[] = ["", 'ranked', 'qualified', 'loved', 'pending', 'wip', 'graveyard'];
-    const songLanguages: SongLanguageType[] = ["", "English", "Chinese", "French", "German", "Italian", "Japanese", "Korean", "Spanish", "Swedish", "Russian", "Polish", "Instrumental", "Unspecified", "Other"];
+    const songModes: GameModeType[] = ["any", "osu", "taiko", "fruits", "mania"];
+    const songGenres: SongGenreType[] = ["any", "video game", "anime", "rock", "pop", "novelty", "hip hop", "electronic", "metal", "classical", "folk", "jazz", "unspecified", "other"];
+    const songSections: BeatmapsetStatusType[] = ["any", 'ranked', 'qualified', 'loved', 'pending', 'wip', 'graveyard'];
+    const songLanguages: SongLanguageType[] = ["any", "english", "chinese", "french", "german", "italian", "japanese", "korean", "spanish", "swedish", "russian", "polish", "instrumental", "unspecified", "other"];
 
     const debouncedValue: string = useDebounce<string>(getDebounceValue(), 500)
 
@@ -250,12 +250,12 @@ const BeatmapsPage = () => {
                         <div className="darkestColor rounded p-3 d-flex flex-column gap-2 flex-grow-1">
                             <div>Status:</div>
                             <div className="d-flex flex-row flex-wrap gap-2" role="group">
-                                {songSections.map((thing: SongSectionType, index: number) =>
+                                {songSections.map((thing: BeatmapsetStatusType, index: number) =>
                                     <button type="button" className="btn text-black fw-bold border-0 darkenOnHover"
                                             disabled={section === thing} key={index + 1}
                                             onClick={() => setSection(thing)}
-                                            style={{backgroundColor: (colors.beatmap as any)[(thing === '' ? 'all' : thing).toLowerCase()]}}>
-                                        {thing !== '' ? thing : 'all'}
+                                            style={{backgroundColor: (colors.beatmap as any)[thing]}}>
+                                        {thing}
                                     </button>
                                 )}
                             </div>
@@ -280,7 +280,7 @@ const BeatmapsPage = () => {
                                 <button type="button" className="btn accentColor border-0 darkenOnHover"
                                         disabled={genre === thing} key={index + 1}
                                         onClick={() => setGenre(thing)}>
-                                    {thing !== '' ? thing : 'All'}
+                                    {thing}
                                 </button>
                             )}
                         </div>
@@ -292,7 +292,7 @@ const BeatmapsPage = () => {
                                 <button type="button" className="btn accentColor border-0 darkenOnHover"
                                         disabled={language === thing} key={index + 1}
                                         onClick={() => setLanguage(thing)}>
-                                    {thing !== '' ? thing : 'All'}
+                                    {thing}
                                 </button>
                             )}
                         </div>

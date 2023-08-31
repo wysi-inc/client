@@ -6,10 +6,57 @@ interface DiffIconProps {
     diff: number,
     mode: GameModeType,
     size: number
+    name: string;
 }
 
 const DiffIcon = (props: DiffIconProps) => {
-    const color: string = props.diff === -1 ? '#ffffff' : props.diff < 2 ? colors.difficulty.easy : props.diff < 2.69 ? colors.difficulty.normal : props.diff < 3.99 ? colors.difficulty.hard : props.diff < 5.29 ? colors.difficulty.insane : props.diff < 6.49 ? colors.difficulty.expert : props.diff < 8 ? colors.difficulty.expert_plus : colors.difficulty.god;
+    function getGradientColor(value: number): string {
+        let startColor: string;
+        let endColor: string;
+        let ratio: number;
+        if (value < 2) {
+            startColor = colors.difficulty.easy;
+            endColor = colors.difficulty.normal;
+            ratio = value / 2;
+        } else if (value < 3) {
+            startColor = colors.difficulty.normal;
+            endColor = colors.difficulty.hard;
+            ratio = value - 2;
+        } else if (value < 4) {
+            startColor = colors.difficulty.hard;
+            endColor = colors.difficulty.insane;
+            ratio = value - 3;
+        } else if (value < 5) {
+            startColor = colors.difficulty.insane;
+            endColor = colors.difficulty.expert;
+            ratio = value - 4;
+        } else if (value < 6) {
+            startColor = colors.difficulty.expert;
+            endColor = colors.difficulty.expert_plus;
+            ratio = value - 5;
+        } else if (value < 10) {
+            startColor = colors.difficulty.expert_plus;
+            endColor = colors.difficulty.god;
+            ratio = (value - 6) / 4;
+        } else {
+            startColor = colors.difficulty.god;
+            endColor = colors.difficulty.god;
+            ratio = 1;
+        }
+        const startR = parseInt(startColor.slice(1, 3), 16);
+        const startG = parseInt(startColor.slice(3, 5), 16);
+        const startB = parseInt(startColor.slice(5, 7), 16);
+        const endR = parseInt(endColor.slice(1, 3), 16);
+        const endG = parseInt(endColor.slice(3, 5), 16);
+        const endB = parseInt(endColor.slice(5, 7), 16);
+        const r = Math.round(startR + (endR - startR) * ratio).toString(16).padStart(2, "0");
+        const g = Math.round(startG + (endG - startG) * ratio).toString(16).padStart(2, "0");
+        const b = Math.round(startB + (endB - startB) * ratio).toString(16).padStart(2, "0");
+        return `#${r}${g}${b}`;
+    }
+
+    //const color: string = props.diff < 2 ? colors.difficulty.easy : props.diff < 3 ? colors.difficulty.normal : props.diff < 4 ? colors.difficulty.hard : props.diff < 5 ? colors.difficulty.insane : props.diff < 6 ? colors.difficulty.expert : props.diff < 10 ? colors.difficulty.expert_plus : colors.difficulty.god;
+    const color = getGradientColor(props.diff);
 
     function getIcon() {
         switch (props.mode) {
@@ -60,8 +107,8 @@ const DiffIcon = (props: DiffIconProps) => {
 
     return (
         <div data-tooltip-id={props.diff === -1 ? '' : 'tooltip'}
-             data-tooltip-html={props.diff === -1 ? '' : `<div class="d-flex flex-row gap-1"><i class="bi bi-star-fill"></i><div>${props.diff}</div></div>`}
-             style={{backgroundColor: '#ffffff22'}} className="rounded-pill d-flex">
+             data-tooltip-html={props.diff === -1 ? '' : `<div class="d-flex flex-column g-2 align-items-center"><div class="d-flex flex-row gap-1"><i class="bi bi-star-fill"></i><div>${props.diff}</div></div><div>[${props.name}]</div></div>`}
+             className="rounded-pill d-flex">
             {getIcon()}
         </div>
     )

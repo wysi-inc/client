@@ -27,7 +27,7 @@ export const colors: ColorsInterface = {
         f: '#aaaaaa'
     },
     beatmap: {
-        all: '#ffffff',
+        any: '#ffffff',
         graveyard: '#cccccc',
         wip: '#fe9967',
         pending: '#ffd966',

@@ -4,6 +4,7 @@ import {addDefaultSrc, secondsToTime} from "../resources/functions";
 import {colors, playerStore, PlayerStoreInterface} from "../resources/store";
 import ModIcon from "./ModIcon";
 import moment from "moment/moment";
+import StatusBadge from "./StatusBadge";
 
 interface ScoreProps {
     index: number;
@@ -112,13 +113,7 @@ const ScoreCard = (props: ScoreProps) => {
                     </div>
                 </div>
                 <div className="d-flex flex-row justify-content-between">
-                    <div style={{
-                        backgroundColor: (colors.beatmap as any)[props.score.beatmapset.status.toLowerCase()],
-                        color: "#000000"
-                    }}
-                         className="rounded-pill px-2 fw-bold">
-                        {props.score.beatmapset.status}
-                    </div>
+                    <StatusBadge status={props.score.beatmapset.status}/>
                     <div className="d-flex flex-row gap-1 flex-grow-1 fw-bold justify-content-end align-items-center">
                         <div className="d-flex flex-row gap-2 me-2">
                             {props.score.mods?.map((mod: ModsEntity, index: number) =>
@@ -144,7 +139,7 @@ const ScoreCard = (props: ScoreProps) => {
                         }}><i className="bi bi-headphones"></i></button>
                     </div>
                     <div data-tooltip-id="tooltip"
-                         data-tooltip-content={moment(props.score.ended_at, "YYYYMMDD").fromNow()}
+                         data-tooltip-content={moment(props.score.ended_at).fromNow()}
                          className="h6 m-0">
                         {moment(props.score.ended_at).calendar()}
                     </div>
