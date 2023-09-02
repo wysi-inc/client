@@ -5,13 +5,21 @@ export interface ColorsInterface {
         font: string,
         bg: string,
         main: string,
-    }
+    },
+    modes: {
+        any: string,
+        osu: string,
+        taiko: string,
+        fruits: string,
+        mania: string,
+    },
     judgements: {
         x320: string,
         x300: string,
         x200: string,
         x100: string,
         x50: string,
+        x20: string,
         xMiss: string,
     },
     beatmap: {
@@ -42,15 +50,8 @@ export interface ColorsInterface {
         country: string,
         plays: string,
         topPp: string
-    }, difficulty: {
-        easy: string,
-        normal: string,
-        hard: string,
-        insane: string,
-        expert: string,
-        expert_plus: string,
-        god: string,
-    }
+    },
+    difficulty: string[];
 }
 
 export interface userData {
@@ -256,6 +257,9 @@ export interface ModsEntity {
 export interface Statistics {
     perfect?: number | null;
     great?: number | null;
+    large_tick_hit?: number | null;
+    small_tick_hit?: number | null;
+    small_tick_miss?: number | null;
     good?: number | null;
     ok?: number | null;
     meh?: number | null;
@@ -296,6 +300,7 @@ export interface Beatmap {
     checksum: string;
     max_combo: number;
 }
+
 export interface Beatmapset {
     artist: string;
     artist_unicode: string;

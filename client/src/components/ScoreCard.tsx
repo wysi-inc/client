@@ -101,12 +101,26 @@ const ScoreCard = (props: ScoreProps) => {
                             <div style={{color: colors.judgements.x200}}>
                                 {props.score.statistics.good}
                             </div>}
-                        <div style={{color: colors.judgements.x100}}>
-                            {props.score.statistics.ok ? props.score.statistics.ok : 0}
-                        </div>
-                        <div style={{color: colors.judgements.x50}}>
-                            {props.score.statistics.meh ? props.score.statistics.meh : 0}
-                        </div>
+                        {props.score.statistics.ok &&
+                            <div style={{color: colors.judgements.x100}}>
+                                {props.score.statistics.ok}
+                            </div>}
+                        {props.score.statistics.meh &&
+                            <div style={{color: colors.judgements.x50}}>
+                                {props.score.statistics.meh}
+                            </div>}
+                        {props.score.statistics.large_tick_hit &&
+                            <div style={{color: colors.judgements.x200}}>
+                                {props.score.statistics.large_tick_hit}
+                            </div>}
+                        {props.score.statistics.small_tick_hit &&
+                            <div style={{color: colors.judgements.x100}}>
+                                {props.score.statistics.small_tick_hit}
+                            </div>}
+                        {props.score.statistics.small_tick_miss &&
+                            <div style={{color: colors.judgements.x20}}>
+                                {props.score.statistics.small_tick_miss}
+                            </div>}
                         <div style={{color: colors.judgements.xMiss}}>
                             {props.score.statistics.miss ? props.score.statistics.miss : 0}
                         </div>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Beatmap, BeatmapSet} from "../resources/interfaces";
-import {addDefaultSrc} from "../resources/functions";
+import {addDefaultSrc, secondsToTime} from "../resources/functions";
 import {playerStore, PlayerStoreInterface} from "../resources/store";
 import DiffIcon from "./DiffIcon";
 import moment from "moment";
@@ -14,7 +14,7 @@ interface BeatmapsetCardProps {
 const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
     const [showArrow, setShowArrow] = useState<boolean>(false)
-    const [diffIconsHTML, setDiffIconsHTML] = useState<any>(<></>);
+    const [diffIconsHTML, setDiffIconsHTML] = useState<any>();
     const [expanded, setExpanded] = useState<boolean>(false);
     const shortLimit = 12;
 
@@ -34,7 +34,6 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                                      mode={beatmap.mode} name={beatmap.version}/>
                 } else {
                     setShowArrow(true)
-                    return <></>
                 }
             }
         )
@@ -45,11 +44,11 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     }, [expanded])
 
     return (
-        <div style={{backgroundImage: `url(${props.data.covers.cover})`, backgroundSize: "cover"}}
-             className="col-4 d-flex m-0 p-0 rounded-3 overflow-hidden">
+        <div style={{backgroundImage: `url(${props.data.covers.cover})`, backgroundSize: "cover", backgroundPosition: "center"}}
+             className="col-12 col-md-8 col-xl-5 col-xxl-4 d-flex m-0 p-0 rounded-3 overflow-hidden">
             <div style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}
                  className="flex-grow-1 p-3 d-flex flex-row gap-3">
-                <div className="d-flex flex-column gap-2">
+                <div className="d-flex flex-column gap-2 flex-grow-1">
                     <div className="d-flex flex-row justify-content-between gap-3">
                         <div className="d-flex flex-column">
                             <div className="d-flex flex-row gap-3 align-items-center">
@@ -57,14 +56,14 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                                      onError={addDefaultSrc}
                                      alt="cover" className="rounded" loading="lazy"
                                      style={{height: 60, width: 60}}/>
-                                <div className="d-flex flex-column flex-grow-1">
-                                    <a className="h5 text-truncate text-decoration-none" style={{width: 365}}
+                                <div className="d-flex flex-column flex-grow-1" style={{width: 300}}>
+                                    <a className="h5 text-truncate text-decoration-none"
                                        href={`https://osu.ppy.sh/beatmapsets/${props.data.id}`} target={"_blank"}>
                                         {props.data.title}
                                     </a>
                                     <div className="d-flex flex-row gap-1 align-items-center text-light">
                                         <i className="bi bi-music-note-beamed"></i>
-                                        <div className="text-truncate" style={{width: 340}}>{props.data.artist}</div>
+                                        <div className="text-truncate">{props.data.artist}</div>
                                     </div>
                                     <div className="d-flex flex-row gap-1 align-items-center text-light">
                                         <i className="bi bi-tools"></i>
@@ -72,35 +71,37 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="d-flex flex-row justify-content-between align-items-center">
-                                <div className="d-flex flex-row gap-1 align-items-center">
-                                    <div data-tooltip-id="tooltip"
-                                         data-tooltip-content={moment(props.data.last_updated).fromNow()}>
-                                        {moment(props.data.last_updated).format('DD/MM/YYYY')}
-                                    </div>
-                                </div>
-                                <div className="d-flex flex-row gap-3 align-items-center">
-                                    <div className="d-flex flex-row gap-1 align-items-center">
-                                        <i className="bi bi-arrow-counterclockwise"></i>
-                                        <div>{props.data.play_count.toLocaleString()}</div>
-                                    </div>
-                                    <div className="d-flex flex-row gap-1 align-items-center">
-                                        <i className="bi bi-suit-heart-fill"></i>
-                                        <div>{props.data.favourite_count.toLocaleString()}</div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div className="d-flex flex-column gap-1 align-items-center justify-content-start">
+                            <div>{secondsToTime(props.data.beatmaps.sort((a, b) => b.total_length - a.total_length )[0].total_length)}</div>
+                            <div className="d-flex flex-row gap-1"><i className="bi bi-music-note-beamed"></i><div>{Math.round(props.data.bpm)}</div></div>
+                        </div>
+                    </div>
+                    <div className="d-flex flex-row justify-content-between align-items-center">
+                        <div className="d-flex flex-row gap-1 align-items-center">
+                            <div data-tooltip-id="tooltip"
+                                 data-tooltip-content={moment(props.data.last_updated).fromNow()}>
+                                {moment(props.data.last_updated).format('DD/MM/YYYY')}
                             </div>
                         </div>
-                        <div className="d-flex flex-column gap-2 align-items-center justify-content-around">
+                        <div className="d-flex flex-row gap-3 align-items-center">
+                            <div className="d-flex flex-row gap-1 align-items-center">
+                                <i className="bi bi-arrow-counterclockwise"></i>
+                                <div>{props.data.play_count.toLocaleString()}</div>
+                            </div>
+                            <div className="d-flex flex-row gap-1 align-items-center">
+                                <i className="bi bi-suit-heart-fill"></i>
+                                <div>{props.data.favourite_count.toLocaleString()}</div>
+                            </div>
+                            <a className="border-0 darkenOnHover text-light" href={`osu://b/${props.data.beatmaps[0].id}`}
+                               style={{background: "none"}}>
+                                <i className="bi bi-download"></i>
+                            </a>
                             <button className="border-0 darkenOnHover" onClick={() => {
                                 play(`https:${props.data.preview_url}`, props.data.title, props.data.artist)
                             }} style={{background: "none"}}>
                                 <i className="bi bi-headphones"></i>
                             </button>
-                            <a className="border-0 darkenOnHover text-light" href={`osu://b/${props.data.beatmaps[0].id}`}
-                               style={{background: "none"}}>
-                                <i className="bi bi-download"></i>
-                            </a>
                         </div>
                     </div>
                     <div className="d-flex flex-row flex-wrap gap-1 justify-content-sc rounded p-2" style={{backgroundColor: '#ffffff22'}}>

@@ -14,33 +14,13 @@ const DiffIcon = (props: DiffIconProps) => {
         let startColor: string;
         let endColor: string;
         let ratio: number;
-        if (value < 2) {
-            startColor = colors.difficulty.easy;
-            endColor = colors.difficulty.normal;
-            ratio = value / 2;
-        } else if (value < 3) {
-            startColor = colors.difficulty.normal;
-            endColor = colors.difficulty.hard;
-            ratio = value - 2;
-        } else if (value < 4) {
-            startColor = colors.difficulty.hard;
-            endColor = colors.difficulty.insane;
-            ratio = value - 3;
-        } else if (value < 5) {
-            startColor = colors.difficulty.insane;
-            endColor = colors.difficulty.expert;
-            ratio = value - 4;
-        } else if (value < 6) {
-            startColor = colors.difficulty.expert;
-            endColor = colors.difficulty.expert_plus;
-            ratio = value - 5;
-        } else if (value < 10) {
-            startColor = colors.difficulty.expert_plus;
-            endColor = colors.difficulty.god;
-            ratio = (value - 6) / 4;
+        if (value < 10) {
+            startColor = colors.difficulty[Math.floor(value)];
+            endColor = colors.difficulty[Math.ceil(value)];
+            ratio = value - Math.floor(value);
         } else {
-            startColor = colors.difficulty.god;
-            endColor = colors.difficulty.god;
+            startColor = colors.difficulty[10]
+            endColor = colors.difficulty[10]
             ratio = 1;
         }
         const startR = parseInt(startColor.slice(1, 3), 16);

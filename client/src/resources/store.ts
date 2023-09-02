@@ -7,16 +7,24 @@ export const colors: ColorsInterface = {
         bg: '#212529',
         main: '#b74757',
     },
+    modes: {
+        any: "#f0f0f0",
+        osu: "#e1567d",
+        taiko: "#7de17d",
+        fruits: "#7db8e1",
+        mania: "#9b7de1"
+    },
     judgements: {
         x320: '#bbbbbb',
         x300: '#78dcec',
         x200: '#2266ff',
         x100: '#88e55d',
         x50: '#fdfd97',
+        x20: '#bbbbbb',
         xMiss: '#f87454',
     },
     ranks: {
-        xh: '#ffffff',
+        xh: '#f0f0f0',
         x: '#faf56a',
         sh: '#f8f4f4',
         s: '#ffdc4c',
@@ -27,7 +35,7 @@ export const colors: ColorsInterface = {
         f: '#aaaaaa'
     },
     beatmap: {
-        any: '#ffffff',
+        any: '#f0f0f0',
         graveyard: '#cccccc',
         wip: '#fe9967',
         pending: '#ffd966',
@@ -43,15 +51,20 @@ export const colors: ColorsInterface = {
         country: '#ffdc4c',
         plays: '#ffdc4c',
         topPp: '#78dcec'
-    }, difficulty: {
-        easy: '#4cc1ff',
-        normal: '#67fe92',
-        hard: '#f7e95d',
-        insane: '#ff7f68',
-        expert: '#ff7f68',
-        expert_plus: '#6663df',
-        god: '#000000',
-    }
+    },
+    difficulty: [
+        '#4290fe',
+        '#4cb6ff',
+        '#4fffd4',
+        '#cdf458',
+        '#fc9964',
+        '#f64d7a',
+        '#ad4dc2',
+        '#4d4bc4',
+        '#12106a',
+        '#000000',
+        '#000000'
+    ]
 }
 
 export interface PlayerStoreInterface {

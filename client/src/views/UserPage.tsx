@@ -379,20 +379,29 @@ const UserPage = () => {
     function getGlobalLabels(): string[] {
         const num = userData?.rank_history?.data?.length ? userData.rank_history?.data?.length : 0;
         const today = new Date();
-        let past90Days: string[] = [];
+        let dates: string[] = [];
         for (let i = 0; i < num; i++) {
-            const date = new Date(today);
-            date.setDate(date.getDate() - i);
-            past90Days.push(moment(date).format('DD MMM YYYY'));
+            if (userData?.rank_history?.data[i] !== 0) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(moment(date).format('DD MMM YYYY'));
+            }
         }
-        return past90Days.reverse();
+        return dates.reverse();
     }
 
     function getGlobalData(): number[] {
         if (!userData?.rank_history?.data) {
             return [];
         } else {
-            return userData.rank_history.data;
+            const num = userData?.rank_history?.data?.length ? userData.rank_history?.data?.length : 0;
+            let ranks: number[] = [];
+            for (let i = 0; i < num; i++) {
+                if (userData?.rank_history?.data[i] !== 0) {
+                    ranks.push(userData.rank_history.data[i]);
+                }
+            }
+            return ranks;
         }
     }
 
@@ -452,7 +461,7 @@ const UserPage = () => {
     }
 
     return (
-        <div style={{maxWidth: 1600}} className="shadow backgroundColor align-self-center">
+        <div>
             <div className="d-flex" style={{backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover"}}>
                 <div className="flex-grow-1" style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}>
                     <div className="d-flex flex-row flex-wrap gap-5 px-5 pt-5">

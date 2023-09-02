@@ -11,7 +11,7 @@ const SongPlayer = () => {
     const title: string = playerStore((state: PlayerStoreInterface) => state.title);
     const artist: string = playerStore((state: PlayerStoreInterface) => state.artist);
     const [show, setShow] = useState<boolean>(false);
-    const [volume, setVolume] = useState<number>(startVolume)
+    const [volume, setVolume] = useState<number>(startVolume);
     return (
         <div className="player mx-auto sticky-bottom" hidden={!show}>
             <div className="bg shadow-lg rounded-top overflow-hidden">
