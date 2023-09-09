@@ -16,7 +16,7 @@
 }
 
 * {
-    font-family: TorusRegular, Noto Color Emoji, serif;
+    font-family: 'IBM Plex Sans', Noto Color Emoji, serif;
     box-sizing: border-box;
     color: #ffffff;
 }
@@ -49,7 +49,7 @@ input[type=number] {
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin: 0 !important;
     padding: 0 !important;
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 .row {
@@ -140,10 +140,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     display: flex;
     flex-direction: row;
     gap: 8px;
-}
-
-.row {
-    margin: 0 !important;
 }
 
 .rhap_time {
@@ -245,6 +241,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     ) !important;
 }
 
+.yearSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+    #C0C0C0,
+    #98ddfc
+    ) !important;
+}
+
 .MuiSlider-track {
     height: 10px !important;
 }
@@ -279,3 +282,35 @@ input::after, input::before {
 .MuiSlider-thumb::before, .MuiSlider-thumb::after, .Mui-active::before, .Mui-active::after {
     display: none !important;
 }
+
+.fakeDisabled {
+    filter: brightness(50%);
+
+}
+
+.divsRow {
+    display: table;
+}
+
+.divsRow > div {
+    display: table-cell
+}
+
+-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(0,0,0,0.1);
+  }
+-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    background: rgba(0,0,0,0.2);
+  }
+-webkit-scrollbar-thumb:hover{
+  	background: rgba(0,0,0,0.4);
+  }
+-webkit-scrollbar-thumb:active{
+  	background: rgba(0,0,0,.9);
+  }

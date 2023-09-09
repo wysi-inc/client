@@ -23,7 +23,7 @@ const SongPlayer = () => {
                         </div>
                     </div>
                     <button className="btn" onClick={() => {
-                        play('', '', '')
+                        play(0, '', '')
                     }}>
                         <i className="bi bi-x-lg"></i>
                     </button>
@@ -44,7 +44,7 @@ const SongPlayer = () => {
                     }}
                     onPlayError={() => setShow(false)}
                     onEnded={() => {
-                        play('', '', '')
+                        play(0, '', '')
                     }}
                 />
             </div>

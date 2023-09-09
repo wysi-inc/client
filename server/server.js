@@ -3,6 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const bodyParser = require('body-parser'); // Require body-parser
 const app = express();
+const mino = require('beatsify');
 app.use(bodyParser.json());
 app.use(cors());
 app.use((req, res, next) => {
@@ -11,7 +12,7 @@ app.use((req, res, next) => {
 });
 
 const port = 5000;
-const {v2, auth, tools} = require('osu-api-extended');
+const { v2, auth, tools } = require('osu-api-extended');
 const client_id = 22795;
 const client_secret = '1hpA9sk7wzAewt62ePe592FWnFbGoRqAolRBi2RE';
 //const callback_url = 'http://localhost:3000'
@@ -21,12 +22,16 @@ app.get('/', (req, res) => {
 
 app.post('/proxy/', async (req, res) => {
     const url = req.body.url;
-    axios.get(url)
+    axios.get(url, {
+        "Accept": "application/json, text/plain, */*",
+        "Content-Type": "aplication/json"
+    })
         .then(response =>
             res.send(response.data))
-        .catch(error =>
-            res.status(500).send({error: error.toString()})
-        );
+        .catch(error => {
+            console.error(error)
+            res.status(500).send({ error: error.toString() })
+        });
 });
 
 const main = async () => {
@@ -63,10 +68,10 @@ app.post('/getMedals', async (req, res) => {
             const data = await response.json();
             res.send(data);
         } catch (error) {
-            res.status(500).send({error: error.toString()});
+            res.status(500).send({ error: error.toString() });
         }
     } catch (e) {
-        res.status(500).send({error: e.toString()})
+        res.status(500).send({ error: e.toString() })
     }
 });
 
@@ -82,27 +87,21 @@ app.post('/userQuery', async (req, res) => {
         res.send(data);
     } catch (e) {
         console.error(e);
-        req.status(500).send({error: e.toString()})
+        req.status(500).send({ error: e.toString() })
     }
 });
 
 app.post('/beatmaps', async (req, res) => {
     let queryData = {
         query: req.body.query,
-        section: req.body.section,
-        nsfw: true,
+        filter: req.body.filter,
+        mode: req.body.mode,
+        ranked: req.body.status,
+        limit: req.body.limit,
+        offset: req.body.offset,
+        sort: req.body.sort,
     }
-    if (req.body.mode !== 'any') {
-        queryData.mode = req.body.mode;
-    }
-    if (req.body.genre !== 'any') {
-        queryData.genre = req.body.genre;
-    }
-    if (req.body.language !== 'any') {
-        queryData.language = req.body.language;
-    }
-    console.log(queryData)
-    const data = await v2.beatmaps.search(queryData);
+    const data = await mino.v2.search(queryData);
     res.send(data);
 })
 

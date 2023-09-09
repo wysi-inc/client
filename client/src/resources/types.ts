@@ -1,4 +1,4 @@
-export type GameModeType = 'any' | 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
+export type GameModeType = 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
 export type BeatmapType = 'pinned' | 'firsts' | 'recent' | 'best';
 export type SongLanguageType =
     | "any"
@@ -34,8 +34,8 @@ export type SongGenreType =
     | "Other";
 
 export type BeatmapsetStatusType =
-    | "any"
     | "ranked"
+    | "approved"
     | "qualified"
     | "loved"
     | "pending"

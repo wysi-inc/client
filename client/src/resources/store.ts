@@ -41,7 +41,7 @@ export const colors: ColorsInterface = {
         pending: '#ffd966',
         ranked: '#66ccff',
         approved: '#b3ff66',
-        qualified: '#b3ff66',
+        qualified: '#4cb6ff',
         loved: '#fe67ab',
     },
     charts: {
@@ -74,7 +74,7 @@ export interface PlayerStoreInterface {
     artist: string;
     volume: number;
     muted: boolean;
-    play: (mp3: string, title: string, artist: string) => void;
+    play: (id: number, title: string, artist: string) => void;
     pause: () => void;
 }
 
@@ -86,12 +86,45 @@ export const playerStore = create<PlayerStoreInterface>(
         artist: '',
         volume: 10,
         muted: false,
-        play: (mp3: string, title: string, artist: string) => {
-            set({playing: true, mp3: mp3, title: title, artist: artist})
-            console.log(mp3)
+        play: (id: number, title: string, artist: string) => {
+            set({playing: true, mp3: `https://catboy.best/preview/audio/${id}?set=1`, title: title, artist: artist})
         },
         pause: () => {
             set({playing: false, mp3: ''})
         }
     })
 )
+
+export const modsInt = {
+    "NM" : 0,
+    "NF" : 1,
+    "EZ" : 2,
+    "TD" : 4,
+    "HD" : 8,
+    "HR" : 16,
+    "SD" : 32,
+    "DT" : 64,
+    "RX" : 128,
+    "HT" : 256,
+    "NC" : 512,
+    "FL" : 1024,
+    "Autoplay" : 2048,
+    "SO" : 4096,
+    "AP" : 8192,
+    "PF" : 16384,
+    "4K" : 32768, 
+    "5K" : 65536,
+    "6K" : 131072, 
+    "7K" : 262144, 
+    "8K" : 524288, 
+    "FI" : 1048576, 
+    "RD" : 2097152, 
+    "LastMod" : 4194304,
+    "9K" : 16777216, 
+    "10K" : 33554432, 
+    "1K" : 67108864, 
+    "3K" : 134217728, 
+    "2K" : 268435456, 
+    "ScoreV2" : 536870912, 
+    "MR" : 1073741824
+}

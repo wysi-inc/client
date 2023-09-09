@@ -190,6 +190,7 @@ export interface UserStatistics {
     rank: {
         country: number;
     };
+    variants?: Variants[];
 }
 
 export interface UserLevel {
@@ -360,19 +361,9 @@ export interface MedalInterface {
     Name: string;
     Link: string;
     Description: string;
-    Restriction: string;
     Grouping: string;
-    Instructions?: string | null;
-    Solution: string;
-    Mods?: string | null;
-    Locked?: string | null;
-    Video?: string | null;
     Date: string;
     PackID?: string | null;
-    FirstAchievedDate?: string | null;
-    FirstAchievedBy?: string | null;
-    ModeOrder: string;
-    Ordering: string;
     Rarity: string;
 }
 
@@ -399,51 +390,158 @@ export interface UserCompact {
 }
 
 export interface BeatmapSet {
+    id: number;
     artist: string;
     artist_unicode: string;
-    covers: Covers;
     creator: string;
+    source: string;
+    tags: string;
+    title: string;
+    title_unicode: string;
     favourite_count: number;
-    hype?: string;
-    id: number;
+    hype?: null;
     nsfw: boolean;
     offset: number;
     play_count: number;
-    preview_url: string;
-    source: string;
     spotlight: boolean;
     status: BeatmapsetStatusType;
-    title: string;
-    title_unicode: string;
-    track_id: number;
+    track_id?: null;
     user_id: number;
     video: boolean;
     bpm: number;
     can_be_hyped: boolean;
-    deleted_at?: string;
+    deleted_at?: null;
     discussion_enabled: boolean;
     discussion_locked: boolean;
     is_scoreable: boolean;
-    last_updated: string;
+    last_updated: number;
     legacy_thread_url: string;
-    nominations_summary: NominationsSumary;
+    nominations_summary: NominationsSummary;
     ranked: number;
-    ranked_date: string;
+    ranked_date: number;
     storyboard: boolean;
-    submitted_date: string;
-    tags: string;
+    submitted_date: number | string;
     availability: Availability;
     has_favourited: boolean;
-    beatmaps: Beatmap[];
-    pack_tags: string[];
+    beatmaps: BeatmapsEntity[];
+    converts?: ConvertsEntity[] | null;
+    description: Description;
+    genre: GenreOrLanguage;
+    language: GenreOrLanguage;
+    ratings?: number[] | null;
+    related_users?: RelatedUsersEntity[] | null;
+    last_checked: number;
+    rating: number;
 }
 
-export interface NominationsSumary {
-    current: number;
-    required: number;
+export interface NominationsSummary {
 }
 
 export interface Availability {
     download_disabled: boolean;
-    more_information: string;
+    more_information?: null;
 }
+
+export interface BeatmapsEntity {
+    id: number;
+    failed: number;
+    exited: number;
+    beatmapset_id: number;
+    difficulty_rating: number;
+    mode: GameModeType;
+    status: BeatmapsetStatusType;
+    total_length: number;
+    user_id: number;
+    version: string;
+    accuracy: number;
+    ar: number;
+    bpm: number;
+    convert: boolean;
+    count_circles: number;
+    count_sliders: number;
+    count_spinners: number;
+    cs: number;
+    deleted_at?: null;
+    drain: number;
+    hit_length: number;
+    is_scoreable: boolean;
+    last_updated: number;
+    mode_int: number;
+    passcount: number;
+    playcount: number;
+    ranked: number;
+    url: string;
+    checksum: string;
+    max_combo: number;
+    last_checked: number;
+}
+
+export interface ConvertsEntity {
+    beatmapset_id: number;
+    difficulty_rating: number;
+    id: number;
+    mode: string;
+    status: string;
+    total_length: number;
+    user_id: number;
+    version: string;
+    accuracy: number;
+    ar: number;
+    bpm: number;
+    convert: boolean;
+    count_circles: number;
+    count_sliders: number;
+    count_spinners: number;
+    cs: number;
+    deleted_at?: null;
+    drain: number;
+    hit_length: number;
+    is_scoreable: boolean;
+    last_updated: string;
+    mode_int: number;
+    passcount: number;
+    playcount: number;
+    ranked: number;
+    url: string;
+    checksum: string;
+    failed: number;
+    exited: number;
+}
+
+export interface Description {
+    description: string;
+}
+
+export interface GenreOrLanguage {
+    id: number;
+    name: string;
+}
+
+export interface RelatedUsersEntity {
+    id: number;
+    username: string;
+    country_code: string;
+}
+
+export interface Variants {
+    mode: string;
+    variant: string;
+    country_rank: number;
+    global_rank: number;
+    pp: number;
+}
+
+export interface UserBeatmaps {
+    favourite: BeatThings;
+    graveyard: BeatThings;
+    guest: BeatThings;
+    loved: BeatThings;
+    nominated: BeatThings;
+    ranked: BeatThings;
+    pending: BeatThings;
+  }
+  export interface BeatThings {
+    items?: Beatmapset[];
+    count: number;
+  }
+  

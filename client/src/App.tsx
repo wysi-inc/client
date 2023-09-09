@@ -1,4 +1,5 @@
 import React from 'react';
+import './assets/ibm-plex.css';
 import './App.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import UserPage from "./views/UserPage";
@@ -14,13 +15,11 @@ function App() {
             <BrowserRouter>
                 <Navbar/>
                 <main className="d-flex justify-content-center darkestColor w-100">
-                    <div style={{maxWidth: 1600}} className="w-100">
-                        <div className="shadow backgroundColor w-100">
+                    <div style={{maxWidth: 1600}} className="w-100 shadow backgroundColor d-flex flex-column">
                             <Routes>
                                 <Route path="/users/:urlUser?/:urlMode?" element={<UserPage/>}/>
                                 <Route path="/beatmaps" element={<BeatmapsPage/>}/>
                             </Routes>
-                        </div>
                     </div>
                 </main>
                 <SongPlayer/>
