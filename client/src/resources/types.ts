@@ -1,5 +1,6 @@
 export type GameModeType = 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
-export type BeatmapType = 'pinned' | 'firsts' | 'recent' | 'best';
+export type ScoreType = 'pinned' | 'firsts' | 'recent' | 'best';
+export type BeatmapType = 'favourite' | 'ranked' | 'guest' | 'loved' | 'pending' | 'graveyard' | 'nominated' | 'pending';
 export type SongLanguageType =
     | "any"
     | "English"

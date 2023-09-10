@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BeatmapScore, ModsEntity } from "../resources/interfaces";
+import { Score, ModsEntity } from "../resources/interfaces";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { colors, modsInt, playerStore, PlayerStoreInterface } from "../resources/store";
 import ModIcon from "./ModIcon";
@@ -10,7 +10,7 @@ import DiffIcon from "./DiffIcon";
 
 interface ScoreProps {
     index: number;
-    score: BeatmapScore;
+    score: Score;
 }
 
 const ScoreCard = (props: ScoreProps) => {
@@ -29,7 +29,7 @@ const ScoreCard = (props: ScoreProps) => {
     function getPPChoke() {
         if (props.score.legacy_perfect) return;
         const acc = props.score.accuracy * 100;
-        const mods = props.score.mods?.map(m => m.acronym)?.map((m) => (modsInt as any)[m]);
+        const mods = props.score.mods?.map(m => m.acronym)?.map((m) => m === 'NC' ? 64 : (modsInt as any)[m]);
         const modComv = mods !== undefined ? mods.length > 0 ? mods.reduce((a, b) => a + b) : mods[0] : '';
 
         const url = `https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${modComv}`;
@@ -37,13 +37,16 @@ const ScoreCard = (props: ScoreProps) => {
             .then((r) => {
                 if (props.score.mods) {
                     if (props.score.mods?.length > 0) {
-                        setNewAR(parseFloat(r.data.map?.ar.toFixed(1)));
-                        setNewCS(parseFloat(r.data.map?.cs.toFixed(1)));
-                        setNewOD(parseFloat(r.data.map?.od.toFixed(1)));
-                        setNewHP(parseFloat(r.data.map?.hp.toFixed(1)));
-                        setNewSR(r.data.difficulty?.stars.toFixed(2));
-                        setNewBPM(Math.round(r.data.map?.bpm));
-                        setNewLen(props.score.beatmap.total_length * r.data.map?.clockRate);
+                        setNewAR(parseFloat(r.data.map.ar.toFixed(1)));
+                        setNewCS(parseFloat(r.data.map.cs.toFixed(1)));
+                        setNewOD(parseFloat(r.data.map.od.toFixed(1)));
+                        setNewHP(parseFloat(r.data.map.hp.toFixed(1)));
+                        setNewSR(r.data.difficulty.stars.toFixed(2));
+                        setNewBPM(Math.round(r.data.map.bpm));
+                        const m = props.score.mods.map(obj => obj.acronym);
+                        const length = props.score.beatmap.total_length;
+                        if (m.includes('DT')) setNewLen(length * 0.75);
+                        if (m.includes('HT')) setNewLen(length * 1.5);
                     }
                 }
                 const pp = r.data.pp[parseFloat(acc.toString())];
@@ -209,7 +212,7 @@ const ScoreCard = (props: ScoreProps) => {
                         </div>
                         <div className="d-flex flex-row gap-2 align-items-end">
                             <div className="h5">{Math.round(props.score.pp)}pp</div>
-                            <div className="h6" style={{color: '#cccccc'}}>{chokePP ? `(${chokePP}pp if FC)` : `FC`}</div>
+                            <div className="h6" style={{ color: '#cccccc' }}>{chokePP ? `(${chokePP}pp if FC)` : `FC`}</div>
                         </div>
                     </div>
                 </div>

@@ -221,13 +221,13 @@ export interface Kudosu {
     available: number;
 }
 
-export interface BeatmapScore {
+export interface Score {
     accuracy: number;
     beatmap_id: number;
     ended_at: Date;
     max_combo: number;
     maximum_statistics: MaximumStatistics;
-    mods?: ModsEntity[] | null;
+    mods: ModsEntity[];
     passed: boolean;
     rank: string;
     ruleset_id: number;

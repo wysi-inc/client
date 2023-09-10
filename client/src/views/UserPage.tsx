@@ -1,26 +1,28 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, Dispatch, SetStateAction } from "react";
+import { useParams } from "react-router-dom";
 import axios from '../resources/axios-config';
+import { Chart, registerables } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
+import { Line } from "react-chartjs-2";
+import Spinner from 'react-bootstrap/Spinner';
+import ReactCountryFlag from "react-country-flag";
+import moment from "moment";
+
 import {
-    BeatmapScore,
+    Score,
     BeatmapSet,
     MedalCategories,
     MedalInterface,
     MonthlyData, SortedMedals,
-    User,
     UserAchievement,
     UserBadge,
     userData, UserGroup
 } from "../resources/interfaces";
-import { useParams } from "react-router-dom";
-import Spinner from 'react-bootstrap/Spinner';
-import ReactCountryFlag from "react-country-flag"
-import moment from "moment";
+
 import { colors } from "../resources/store";
-import { GameModeType } from "../resources/types";
+import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import ScoreCard from "../components/ScoreCard";
-import { Chart, registerables } from 'chart.js';
-import { Line } from "react-chartjs-2";
 import TopScoresPanel from "../components/TopScoresPanel";
 import Medal from "../components/Medal";
 import Badge from "../components/Badge";
@@ -29,15 +31,19 @@ import ModeSelector from "../components/ModeSelector";
 import SupporterIcon from "../components/SupporterIcon";
 import GroupBadge from "../components/GroupBadge";
 import BeatmapsetCard from "../components/BeatmapsetCard";
-import { error } from "console";
 
-Chart.register(...registerables);
-Chart.defaults.font.family = "TorusRegular";
+Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
+Chart.defaults.font.family = "IBM Plex Mono";
 Chart.defaults.color = colors.ui.font;
 Chart.defaults.animation = false;
-
-type ModeSnap = "x" | "y" | "nearest" | "index" | "dataset" | "point" | undefined;
+Chart.defaults.elements.point.radius = 0;
+Chart.defaults.interaction.intersect = false;
+Chart.defaults.interaction.mode = 'index';
+Chart.defaults.indexAxis = 'x';
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.plugins.tooltip.displayColors = false;
 
 const UserPage = () => {
     const { urlUser } = useParams();
@@ -51,13 +57,10 @@ const UserPage = () => {
     const [lastMedals, setLastMedals] = useState<MedalInterface[]>([]);
     const [rarestMedal, setRarestMedal] = useState<MedalInterface | null>(null);
 
-    const beatmapReqLimit: number = 20;
-
-    const [bestBeatmaps, setBestBeatmaps] = useState<BeatmapScore[]>([])
-    const [recentBeatmaps, setRecentBeatmaps] = useState<BeatmapScore[]>([])
-    const [pinnedBeatmaps, setPinnedBeatmaps] = useState<BeatmapScore[]>([])
-    const [firstsBeatmaps, setFirstsBeatmaps] = useState<BeatmapScore[]>([])
-
+    const [bestScores, setBestScores] = useState<Score[]>([])
+    const [recentScores, setRecentScores] = useState<Score[]>([])
+    const [pinnedScores, setPinnedScores] = useState<Score[]>([])
+    const [firstsScores, setFirstsScores] = useState<Score[]>([])
 
     const [favouriteBeatmaps, setFavouriteBeatmaps] = useState<BeatmapSet[]>([]);
     const [graveyardBeatmaps, setGraveyardBeatmaps] = useState<BeatmapSet[]>([]);
@@ -70,23 +73,15 @@ const UserPage = () => {
     const [historyTabIndex, setHistoryTabIndex] = useState<number>(0);
     const [scoresTabIndex, setScoresTabIndex] = useState<number>(0);
     const [beatmapsTabIndex, setBeatmapsTabIndex] = useState<number>(0);
-
-    //ONLY ONCE!!!!!
-    useEffect(() => {
-        getMedals();
-    }, [])
-
-    useEffect((): void => {
-        clearData();
-        const checkedMode: GameModeType = urlMode?.toLowerCase() as GameModeType;
-        if (urlUser !== undefined) {
-            getUser(checkedMode ? checkedMode : 'default');
-        }
-    }, [urlUser, urlMode]);
+    const beatmapReqLimit: number = 20;
 
     const div1Ref = useRef<HTMLDivElement | null>(null);
     const div2Ref = useRef<HTMLDivElement | null>(null);
     const [div1Height, setDiv1Height] = useState<number>(675);
+
+    const maniaPP = useMemo(() => generateStatisticsMarkup(userData, 'PP'), [userData]);
+    const maniaG = useMemo(() => generateStatisticsMarkup(userData, 'G'), [userData]);
+    const maniaC = useMemo(() => generateStatisticsMarkup(userData, 'C'), [userData]);
 
     useEffect(() => {
         if (div1Ref.current && div2Ref.current) {
@@ -96,6 +91,14 @@ const UserPage = () => {
         }
     }, [window.innerWidth, div1Ref.current?.clientHeight]);
 
+    useEffect((): void => {
+        clearData();
+        const checkedMode: GameModeType = urlMode?.toLowerCase() as GameModeType;
+        if (urlUser !== undefined) {
+            getUser(checkedMode ? checkedMode : 'default').then();
+        }
+    }, [urlUser, urlMode]);
+
     useEffect(() => {
         if (!userData) return;
         if (medals.length < 1) return;
@@ -103,20 +106,33 @@ const UserPage = () => {
         getRarestMedal(userData.user_achievements, medals);
     }, [userData, medals]);
 
-    if (urlUser === undefined) {return(
-    <div>Search a user on the top bar</div>
-    )}
-    if (!userData) {return(
-    <Spinner animation="border" role="status" className="mx-auto my-3">
-        <span className="visually-hidden">Loading...</span>
-    </Spinner>
-    )}
-    if (userData.is_bot) {return(
-    <div>User is a bot, bots are not supported yet</div>
-    )}
-    if (userData.id === undefined) {return(
-    <div>User not found</div>
-    )}
+    //ONLY ONCE!!!!!
+    useEffect(() => {
+        getMedals();
+    }, [])
+
+    if (urlUser === undefined) {
+        return (
+            <div>Search a user on the top bar</div>
+        )
+    }
+    if (!userData) {
+        return (
+            <Spinner animation="border" role="status" className="mx-auto my-3">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner>
+        )
+    }
+    if (userData.is_bot) {
+        return (
+            <div>User is a bot, bots are not supported yet</div>
+        )
+    }
+    if (userData.id === undefined) {
+        return (
+            <div>User not found</div>
+        )
+    }
 
     const globalHistoryData: any = {
         labels: getGlobalLabels(),
@@ -170,19 +186,6 @@ const UserPage = () => {
                 }
             },
         },
-        elements: {
-            point: {
-                radius: 2
-            }
-        },
-        interaction: {
-            mode: 'index' as ModeSnap
-        },
-        plugins: {
-            tooltip: {
-                displayColors: false
-            },
-        },
     };
     const lineOptionsReverse: any = {
         maintainAspectRatio: false,
@@ -195,68 +198,67 @@ const UserPage = () => {
                 }
             },
         },
-        elements: {
-            point: {
-                radius: 2
-            }
-        },
-        interaction: {
-            mode: 'index' as ModeSnap
-        },
-        plugins: {
-            tooltip: {
-                displayColors: false
-            },
-        },
     };
 
-    const maniaPP = `<div class="d-flex flex-column g-2">${userData.statistics?.variants ? userData.statistics.variants?.map((v) =>
-        `<div>${v.variant}: ${Math.round(v.pp)}pp</div>`).join('') : ''}<div class="d-flex flex-column g-2">`;
-    const maniaG = `<div class="d-flex flex-column g-2">${userData.statistics?.variants ? userData.statistics?.variants?.map((v) =>
-        `<div>${v.variant}: #${Math.round(v.global_rank).toLocaleString()}</div>`).join('') : ''}<div>Peak Rank: #${userData?.rank_highest?.rank?.toLocaleString()}</div><div class="d-flex flex-column g-2">`
-    const maniaC = `<div class="d-flex flex-column g-2">${userData.statistics?.variants ? userData.statistics.variants?.map((v) =>
-        `<div>${v.variant}: #${Math.round(v.country_rank).toLocaleString()}</div>`).join('') : ''}<div class="d-flex flex-column g-2">`
+    interface tabInterface {
+        num: number,
+        title: string,
+        icon: string,
+        count: number,
+        setTabs: Dispatch<SetStateAction<number>>
+    }
 
-    const scoresTabs = [
-        { num: 1, title: 'Pinned', icon: 'bi-pin-angle-fill', count: userData.scores_pinned_count, setTabsFunc: setScoresTabIndex },
-        { num: 2, title: 'Best', icon: 'bi-bar-chart-fill', count: userData.scores_best_count, setTabsFunc: setScoresTabIndex },
-        { num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabsFunc: setScoresTabIndex },
-        { num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabsFunc: setScoresTabIndex },
+    interface dataInterface {
+        num: number,
+        thing: ScoreType | BeatmapType,
+        group: 'scores' | 'beatmapsets',
+        tab: number,
+        maps: Score[] | BeatmapSet[],
+        count: number,
+        setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
+    }
+
+    const scoresTabs: tabInterface[] = [
+        { num: 1, title: 'Pinned', icon: 'bi-pin-angle-fill', count: userData.scores_pinned_count, setTabs: setScoresTabIndex },
+        { num: 2, title: 'Best', icon: 'bi-bar-chart-fill', count: userData.scores_best_count, setTabs: setScoresTabIndex },
+        { num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabs: setScoresTabIndex },
+        { num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabs: setScoresTabIndex },
     ]
 
-    const scoresData = [
-        { num: 1, tab: scoresTabIndex, maps: pinnedBeatmaps, count: userData.scores_pinned_count, getMore: async () => setPinnedBeatmaps([...pinnedBeatmaps, ...await getThings(userData.id, gameMode, 'scores', 'pinned', pinnedBeatmaps.length, beatmapReqLimit)]) },
-        { num: 2, tab: scoresTabIndex, maps: bestBeatmaps, count: userData.scores_best_count, getMore: async () => setBestBeatmaps([...bestBeatmaps, ...await getThings(userData.id, gameMode, 'scores', 'best', bestBeatmaps.length, beatmapReqLimit)]) },
-        { num: 3, tab: scoresTabIndex, maps: firstsBeatmaps, count: userData.scores_first_count, getMore: async () => setFirstsBeatmaps([...firstsBeatmaps, ...await getThings(userData.id, gameMode, 'scores', 'firsts', firstsBeatmaps.length, beatmapReqLimit)]) },
-        { num: 4, tab: scoresTabIndex, maps: recentBeatmaps, count: userData.scores_recent_count, getMore: async () => setRecentBeatmaps([...recentBeatmaps, ...await getThings(userData.id, gameMode, 'scores', 'recent', recentBeatmaps.length, beatmapReqLimit)]) },
+    const scoresData: dataInterface[] = [
+        { num: 1, thing: 'pinned', group: 'scores', tab: scoresTabIndex, maps: pinnedScores, count: userData.scores_pinned_count, setMore: setPinnedScores },
+        { num: 2, thing: 'best', group: 'scores', tab: scoresTabIndex, maps: bestScores, count: userData.scores_best_count, setMore: setBestScores },
+        { num: 3, thing: 'firsts', group: 'scores', tab: scoresTabIndex, maps: firstsScores, count: userData.scores_first_count, setMore: setFirstsScores },
+        { num: 4, thing: 'recent', group: 'scores', tab: scoresTabIndex, maps: recentScores, count: userData.scores_recent_count, setMore: setRecentScores },
     ]
 
-    const beatmapsTabs = [
-        { num: 1, title: 'Favourites', icon: 'bi-star-fill', count: userData.favourite_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 2, title: 'Ranked', icon: 'bi bi-chevron-double-up', count: userData.ranked_and_approved_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 3, title: 'Loved', icon: 'bi-suit-heart-fill', count: userData.loved_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 4, title: 'Guest', icon: 'bi-person-lines-fill', count: userData.guest_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 5, title: 'Graveyard', icon: 'bi-x-circle', count: userData.graveyard_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 6, title: 'Nominated', icon: 'bi-trophy-fill', count: userData.nominated_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
-        { num: 7, title: 'Pending', icon: 'bi-hourglass-bottom', count: userData.pending_beatmapset_count, setTabsFunc: setBeatmapsTabIndex },
+    const beatmapsTabs: tabInterface[] = [
+        { num: 1, title: 'Favourites', icon: 'bi-star-fill', count: userData.favourite_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 2, title: 'Ranked', icon: 'bi bi-chevron-double-up', count: userData.ranked_and_approved_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 3, title: 'Loved', icon: 'bi-suit-heart-fill', count: userData.loved_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 4, title: 'Guest', icon: 'bi-person-lines-fill', count: userData.guest_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 5, title: 'Graveyard', icon: 'bi-x-circle', count: userData.graveyard_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 6, title: 'Nominated', icon: 'bi-trophy-fill', count: userData.nominated_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        { num: 7, title: 'Pending', icon: 'bi-hourglass-bottom', count: userData.pending_beatmapset_count, setTabs: setBeatmapsTabIndex },
     ]
 
-    const beatmapsData = [
-        { num: 1, tab: beatmapsTabIndex, maps: favouriteBeatmaps, count: userData.favourite_beatmapset_count, getMore: async () => setFavouriteBeatmaps([...favouriteBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'favourite', favouriteBeatmaps.length, beatmapReqLimit)]) },
-        { num: 2, tab: beatmapsTabIndex, maps: rankedBeatmaps, count: userData.ranked_and_approved_beatmapset_count, getMore: async () => setRankedBeatmaps([...rankedBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'ranked', rankedBeatmaps.length, beatmapReqLimit)]) },
-        { num: 3, tab: beatmapsTabIndex, maps: lovedBeatmaps, count: userData.loved_beatmapset_count, getMore: async () => setLovedBeatmaps([...lovedBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'loved', lovedBeatmaps.length, beatmapReqLimit)]) },
-        { num: 4, tab: beatmapsTabIndex, maps: guestBeatmaps, count: userData.guest_beatmapset_count, getMore: async () => setGuestBeatmaps([...guestBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'guest', guestBeatmaps.length, beatmapReqLimit)]) },
-        { num: 5, tab: beatmapsTabIndex, maps: graveyardBeatmaps, count: userData.graveyard_beatmapset_count, getMore: async () => setGraveyardBeatmaps([...graveyardBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'graveyard', graveyardBeatmaps.length, beatmapReqLimit)]) },
-        { num: 6, tab: beatmapsTabIndex, maps: nominatedBeatmaps, count: userData.nominated_beatmapset_count, getMore: async () => setNominatedBeatmaps([...nominatedBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'nominated', nominatedBeatmaps.length, beatmapReqLimit)]) },
-        { num: 7, tab: beatmapsTabIndex, maps: pendingBeatmaps, count: userData.pending_beatmapset_count, getMore: async () => setPendingBeatmaps([...pendingBeatmaps, ...await getThings(userData.id, gameMode, 'beatmapsets', 'pending', pendingBeatmaps.length, beatmapReqLimit)]) },
+    const beatmapsData: dataInterface[] = [
+        { num: 1, thing: 'favourite', group: 'beatmapsets', tab: beatmapsTabIndex, maps: favouriteBeatmaps, count: userData.favourite_beatmapset_count, setMore: setFavouriteBeatmaps },
+        { num: 2, thing: 'ranked', group: 'beatmapsets', tab: beatmapsTabIndex, maps: rankedBeatmaps, count: userData.ranked_and_approved_beatmapset_count, setMore: setRankedBeatmaps },
+        { num: 3, thing: 'loved', group: 'beatmapsets', tab: beatmapsTabIndex, maps: lovedBeatmaps, count: userData.loved_beatmapset_count, setMore: setLovedBeatmaps },
+        { num: 4, thing: 'guest', group: 'beatmapsets', tab: beatmapsTabIndex, maps: guestBeatmaps, count: userData.guest_beatmapset_count, setMore: setGuestBeatmaps },
+        { num: 5, thing: 'graveyard', group: 'beatmapsets', tab: beatmapsTabIndex, maps: graveyardBeatmaps, count: userData.graveyard_beatmapset_count, setMore: setGraveyardBeatmaps },
+        { num: 6, thing: 'nominated', group: 'beatmapsets', tab: beatmapsTabIndex, maps: nominatedBeatmaps, count: userData.nominated_beatmapset_count, setMore: setNominatedBeatmaps },
+        { num: 7, thing: 'pending', group: 'beatmapsets', tab: beatmapsTabIndex, maps: pendingBeatmaps, count: userData.pending_beatmapset_count, setMore: setPendingBeatmaps },
     ]
+
 
     return (
         <>
             <div className="d-flex" style={{ backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover" }}>
                 <div className="flex-grow-1" style={{ backgroundColor: "#00000099", backdropFilter: "blur(4px)" }}>
                     <div className="d-flex flex-row flex-wrap gap-5 p-4">
-                        <div className="d-flex flex-column justify-content-center">
+                        <div className="d-flex flex-column justify-content-center gap-2">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
                                 alt='pfp' className="rounded-5 mb-3"
@@ -277,23 +279,22 @@ const UserPage = () => {
                         </div>
                         <div className="d-flex flex-row justify-content-between flex-grow-1">
                             <div className="d-flex flex-column gap-2">
-                                <div className="mb-3">
-                                    <div className="d-flex flex-row gap-3 align-items-center">
-                                        <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
-                                            target={"_blank"}
-                                            href={`https://osu.ppy.sh/users/${userData.id}`}>
-                                            {userData.username}
-                                        </a>
-                                        {userData.groups.map((group: UserGroup, index: number) =>
-                                            <GroupBadge group={group}
-                                                key={index + 1} />
-                                        )}
-                                        {userData.is_supporter && <SupporterIcon size={32} />}
-                                    </div>
-                                    <div className="profileTitle">{userData.title}</div>
+                                <div className="d-flex flex-row gap-3 align-items-center">
+                                    <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
+                                        target={"_blank"}
+                                        href={`https://osu.ppy.sh/users/${userData.id}`}>
+                                        {userData.username}
+                                    </a>
+                                    {userData.groups.map((group: UserGroup, index: number) =>
+                                        <GroupBadge group={group}
+                                            key={index + 1} />
+                                    )}
+                                    {userData.is_supporter && <SupporterIcon size={32} />}
                                 </div>
+                                <div className="profileTitle">{userData.title}</div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaG}`}>
+                                    data-tooltip-html={`${maniaG}`}
+                                    className="d-flex flex-column gap-1">
                                     <div className="h6">Global Rank:</div>
                                     <div className="h3 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-globe2"></i>
@@ -301,7 +302,8 @@ const UserPage = () => {
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaC}`}>
+                                    data-tooltip-html={`${maniaC}`}
+                                    className="d-flex flex-column gap-1">
                                     <div className="h6">Country Rank:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <CountryShape code={userData.country.code} width={32} height={32} />
@@ -312,19 +314,20 @@ const UserPage = () => {
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaPP}`}>
+                                    data-tooltip-html={`${maniaPP}`}
+                                    className="d-flex flex-column gap-1">
                                     <div className="h6">Performance:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Accuracy:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <div>{(userData.statistics.hit_accuracy).toFixed(2)}%</div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Play Time:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-clock"></i>
@@ -359,7 +362,7 @@ const UserPage = () => {
                                         <div>{userData.statistics.grade_counts.a}</div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Ranked Score:</div>
                                     <div className="h3 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-chevron-double-up"></i>
@@ -369,21 +372,21 @@ const UserPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Max Combo:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-fire"></i>
                                         <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Play Count:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-arrow-counterclockwise"></i>
                                         <div>{userData.statistics.play_count.toLocaleString()}</div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-column gap-1">
                                     <div className="h6">Hits x Play:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-x"></i>
@@ -494,83 +497,110 @@ const UserPage = () => {
                             <div>Top Play Stats</div>
                         </div>
                         <div className="p-3">
-                            <TopScoresPanel data={userData} best={bestBeatmaps} />
+                            <TopScoresPanel data={userData} best={bestScores} />
                         </div>
                     </div>
                 </div>
-                <div className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0" ref={div2Ref} style={{ height: div1Height }}>
-                    <div className="h4 p-2 m-0 titleColor row align-items-center">
+                <div
+                    className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
+                    ref={div2Ref} style={{ height: div1Height }}>
+                    <div className="h4 p-2 m-0 row titleColor align-items-center">
                         <div className="col-2"></div>
-                        <div className="col-8 text-center">Scores</div>
+                        <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
+                            <i className="bi bi-controller"></i>
+                            <div>Scores</div>
+                        </div>
                         <div className="col-2 d-flex justify-content-end">
-                            <button className="btn darkenOnHover"
+                            <button className="btn darkenOnHover m-0 p-0"
                                 onClick={() => {
-                                    getScores(userData, gameMode, false);
+                                    getScores(userData.id, gameMode, false);
                                 }}>
                                 <i className="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
                     </div>
                     <nav className="row">
-                        {scoresTabs.map((tab, i) => tab.count > 0 &&
-                            <button className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${scoresTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
-                                onClick={() => tab.setTabsFunc(tab.num)} key={i + 1}>
-                                <i className={`bi ${tab.icon}`}></i>
-                                <div>{tab.title}</div>
-                                <div className="badge darkColor rounded-pill">{tab.count}</div>
-                            </button>
-                        )}
-                    </nav>
-                    <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
-                        {scoresData.map((dat, i) =>
-                            <div hidden={dat.tab !== dat.num} key={i + 1}>
-                                {dat.maps.length === 0 && dat.count !== 0 &&
-                                    <Spinner animation="border" role="status" className="mx-auto mt-4">
-                                        <div className="visually-hidden">Loading...</div>
-                                    </Spinner>}
-                                {dat.maps.map((score: BeatmapScore, index: number) =>
-                                    <ScoreCard index={index + 1} score={score} key={index + 1} />)}
-                                {dat.maps.length < dat.count &&
-                                    <button className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
-                                        onClick={dat.getMore}>
-                                        <i className="bi bi-caret-down-fill"></i>
-                                        <div>Expand</div>
-                                    </button>}
-                            </div>)}
-                    </div>
-                </div>
-                <div className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0" ref={div2Ref} style={{ height: div1Height }}>
-                    <div className="h4 text-center p-2 m-0 titleColor">
-                        Beatmaps
-                    </div>
-                    <nav className="row">
-                        {beatmapsTabs.map((tab, i) => tab.count > 0 &&
-                            <button className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${beatmapsTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
-                                onClick={() => tab.setTabsFunc(tab.num)} key={i + 1}>
+                        {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                            <button
+                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${scoresTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
+                                onClick={() => tab.setTabs(tab.num)} key={i + 1}>
                                 <i className={`bi ${tab.icon}`}></i>
                                 <div>{tab.title}</div>
                                 <div className="badge darkColor rounded-pill">{tab.count}</div>
                             </button>)}
                     </nav>
                     <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
-                        {beatmapsData.map((dat, i) =>
+                        {scoresData.map((dat: dataInterface, i: number) =>
                             <div hidden={dat.tab !== dat.num} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
                                     <Spinner animation="border" role="status" className="mx-auto mt-4">
                                         <div className="visually-hidden">Loading...</div>
                                     </Spinner>}
-                                {dat.maps.map((beatmapset: BeatmapSet, index: number) =>
-                                    <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1} />)}
+                                {(dat.maps as Score[])[0]?.ended_at &&
+                                    (dat.maps as Score[]).map((score: Score, index: number) =>
+                                        <ScoreCard index={index + 1} score={score} key={index + 1} />)}
                                 {dat.maps.length < dat.count &&
-                                    <button className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
-                                        onClick={dat.getMore}>
+                                    <button
+                                        className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
+                                        onClick={() => getThings(userData.id, gameMode, dat.group, dat.thing, dat.maps.length, beatmapReqLimit, dat.maps, dat.setMore)}>
                                         <i className="bi bi-caret-down-fill"></i>
                                         <div>Expand</div>
+                                        <i className="bi bi-caret-down-fill"></i>
                                     </button>}
                             </div>)}
                     </div>
                 </div>
-                <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div2Ref} style={{ height: div1Height }}>
+                <div
+                    className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
+                    ref={div2Ref} style={{ height: div1Height }}>
+                    <div className="h4 p-2 m-0 row titleColor align-items-center">
+                        <div className="col-2"></div>
+                        <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
+                            <i className="bi bi-file-earmark-music"></i>
+                            <div>Beatmaps</div>
+                        </div>
+                        <div className="col-2 d-flex justify-content-end">
+                            <button className="btn darkenOnHover m-0 p-0"
+                                onClick={() => {
+                                    getBeatmaps(userData.id, gameMode, false);
+                                }}>
+                                <i className="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <nav className="row">
+                        {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                            <button
+                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${beatmapsTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
+                                onClick={() => tab.setTabs(tab.num)} key={i + 1}>
+                                <i className={`bi ${tab.icon}`}></i>
+                                <div>{tab.title}</div>
+                                <div className="badge darkColor rounded-pill">{tab.count}</div>
+                            </button>)}
+                    </nav>
+                    <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
+                        {beatmapsData.map((dat: dataInterface, i: number) =>
+                            <div hidden={dat.tab !== dat.num} key={i + 1}>
+                                {dat.maps.length === 0 && dat.count !== 0 &&
+                                    <Spinner animation="border" role="status" className="mx-auto mt-4">
+                                        <div className="visually-hidden">Loading...</div>
+                                    </Spinner>}
+                                {(dat.maps as BeatmapSet[])[0]?.title &&
+                                    (dat.maps as BeatmapSet[]).map((beatmapset: BeatmapSet, index: number) =>
+                                        <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1} />)}
+                                {dat.maps.length < dat.count &&
+                                    <button
+                                        className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
+                                        onClick={() => getThings(userData.id, gameMode, dat.group, dat.thing, dat.maps.length, beatmapReqLimit, dat.maps, dat.setMore)}>
+                                        <i className="bi bi-caret-down-fill"></i>
+                                        <div>Expand</div>
+                                        <i className="bi bi-caret-down-fill"></i>
+                                    </button>}
+                            </div>)}
+                    </div>
+                </div>
+                <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div2Ref}
+                    style={{ height: div1Height }}>
                     <div className="rounded-3 overflow-hidden darkColor shadow p-0 d-flex flex-column">
                         <div className="h4 p-2 m-0 titleColor d-flex flex-row gap-2 justify-content-center">
                             <i className="bi bi-award"></i>
@@ -592,8 +622,7 @@ const UserPage = () => {
                                             className="d-flex flex-row gap-1 overflow-hidden backgroundColor p-3 rounded">
                                             {lastMedals.map((medal: MedalInterface, index: number) => (
                                                 <Medal thisMedal={medal} userMedals={userData.user_achievements}
-                                                    key={index} />
-                                            ))}
+                                                    key={index} />))}
                                         </div>
                                     </div>
                                 </div>
@@ -609,8 +638,7 @@ const UserPage = () => {
                                         <div className="backgroundColor p-3 rounded d-grid justify-content-center">
                                             {rarestMedal &&
                                                 <Medal thisMedal={rarestMedal}
-                                                    userMedals={userData.user_achievements} />
-                                            }
+                                                    userMedals={userData.user_achievements} />}
                                         </div>
                                     </div>
                                 </div>
@@ -638,8 +666,7 @@ const UserPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    </div>))}
                             </div>
                         </div>
                     </div>
@@ -649,10 +676,19 @@ const UserPage = () => {
     )
 
     function clearData(): void {
-        setBestBeatmaps([]);
-        setRecentBeatmaps([]);
-        setPinnedBeatmaps([]);
-        setFirstsBeatmaps([]);
+        setUserData(null);
+        setGameMode('default');
+        setPinnedScores([]);
+        setBestScores([]);
+        setFirstsScores([]);
+        setRecentScores([]);
+        setFavouriteBeatmaps([]);
+        setRankedBeatmaps([]);
+        setGuestBeatmaps([]);
+        setLovedBeatmaps([]);
+        setGraveyardBeatmaps([]);
+        setPendingBeatmaps([]);
+        setNominatedBeatmaps([]);
     }
 
     async function getUser(mode: GameModeType) {
@@ -671,80 +707,98 @@ const UserPage = () => {
         }
         window.history.pushState({}, '', `/users/${data.id}/${searchMode}`);
         setUserData(data);
-        getBeatmaps(data.id, searchMode);
         setGameMode(searchMode);
-        getScores(data, searchMode, true);
+        getScores(data.id, searchMode, true);
+        getBeatmaps(data.id, searchMode, true);
         setHistoryTab(data.replays_watched_counts.length, data.monthly_playcounts.length, 0, data.rank_history.data.length);
     }
 
-    async function getScores(data: userData, searchMode: GameModeType, changeTab: boolean) {
-        let scoresTab: number = 0;
-        if (data.scores_recent_count > 0) {
-            setRecentBeatmaps(await getThings(data.id, searchMode, 'scores', 'recent', 0, beatmapReqLimit));
-            scoresTab = 4;
-        }
-        if (data.scores_first_count > 0) {
-            setFirstsBeatmaps(await getThings(data.id, searchMode, 'scores', 'firsts', 0, beatmapReqLimit));
-            scoresTab = 3
-        }
-        if (data.scores_best_count > 0) {
-            setBestBeatmaps(await getThings(data.id, searchMode, 'scores', 'best', 0, 100));
-            scoresTab = 2
-        }
-        if (data.scores_pinned_count > 0) {
-            setPinnedBeatmaps(await getThings(data.id, searchMode, 'scores', 'pinned', 0, beatmapReqLimit));
-            scoresTab = 1
-        }
-        if (changeTab) setScoresTabIndex(scoresTab);
-    }
-
-    async function getBeatmaps(id: number, mode: GameModeType) {
-        const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/beatmaps?mode=${mode}`;
-        const res = await axios.post('/proxy', { url: url });
-        const data = res.data;
-        if (!data) return;
-        console.log(data);
-        setPendingBeatmaps(data.pending.items);
-        let tab: number = 0;
-        if (data.pending.count > 0) {
-            tab = 7;
-        }
-        setNominatedBeatmaps(data.nominated.items);
-        if (data.nominated.count > 0) {
-            tab = 6;
-        }
-        setGraveyardBeatmaps(data.graveyard.items);
-        if (data.graveyard.count > 0) {
-            tab = 5;
-        }
-        setGuestBeatmaps(data.guest.items);
-        if (data.guest.count > 0) {
-            tab = 4;
-        }
-        setLovedBeatmaps(data.loved.items);
-        if (data.loved.count > 0) {
-            tab = 3;
-        }
-        setRankedBeatmaps(data.ranked.items);
-        if (data.ranked.count > 0) {
-            tab = 2;
-        }
-        setFavouriteBeatmaps(data.favourite.items);
-        if (data.favourite.count > 0) {
-            tab = 1;
-        }
-        setBeatmapsTabIndex(tab)
-    }
-
-    async function getThings(id: number, mode: GameModeType, thing: string, type: string, offset: number, limit: number) {
-        const url: string = `https://osu.ppy.sh/users/${id}/${thing}/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
+    async function getScores(id: number, mode: GameModeType, changeTab: boolean) {
+        const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/top_ranks?mode=${mode}`
+        const urlR: string = `https://osu.ppy.sh/users/${id}/extra-pages/historical?mode=${mode}`
         try {
-            const response = await axios.post('/proxy', { url: url });
-            console.log(response.data);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            return [];
+            const res = await axios.post('/proxy', { url: url });
+            const data = res.data;
+            const resR = await axios.post('/proxy', { url: urlR });
+            const dataR = resR.data;
+            if (!data || !dataR) return;
+            let tab: number = 0;
+            if (dataR.recent.count > 0) {
+                setRecentScores(dataR.recent.items);
+                tab = 4;
+            }
+            if (data.firsts.count > 0) {
+                setFirstsScores(data.firsts.items);
+                tab = 3;
+            }
+            if (data.best.count > 0) {
+                getThings(id, mode, 'scores', 'best', 0, 100, [], setBestScores);
+                tab = 2;
+            }
+            if (data.pinned.count > 0) {
+                setPinnedScores(data.pinned.items);
+                tab = 1;
+            }
+            if (changeTab) setScoresTabIndex(tab);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function getBeatmaps(id: number, mode: GameModeType, changeTab: boolean) {
+        const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/beatmaps?mode=${mode}`;
+        try {
+            const res = await axios.post('/proxy', { url: url });
+            const data = res.data;
+            if (!data) return;
+            let tab: number = 0;
+            if (data.pending.count > 0) {
+                setPendingBeatmaps(data.pending.items);
+                tab = 7;
+            }
+            if (data.nominated.count > 0) {
+                setNominatedBeatmaps(data.nominated.items);
+                tab = 6;
+            }
+            if (data.graveyard.count > 0) {
+                setGraveyardBeatmaps(data.graveyard.items);
+                tab = 5;
+            }
+            if (data.guest.count > 0) {
+                setGuestBeatmaps(data.guest.items);
+                tab = 4;
+            }
+            if (data.loved.count > 0) {
+                setLovedBeatmaps(data.loved.items);
+                tab = 3;
+            }
+            if (data.ranked.count > 0) {
+                setRankedBeatmaps(data.ranked.items);
+                tab = 2;
+            }
+            if (data.favourite.count > 0) {
+                setFavouriteBeatmaps(data.favourite.items);
+                tab = 1;
+            }
+            setBeatmapsTabIndex(tab);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function getThings(id: number, mode: GameModeType, thing: 'scores' | 'beatmapsets', type: string, offset: number, limit: number, things: any[], setThings: Dispatch<SetStateAction<any[]>>) {
+        const url: string = `https://osu.ppy.sh/users/${id}/${thing}/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
+        if (offset === 0) console.log(`get more ${thing}`, url);
+        try {
+            const res = await axios.post('/proxy', { url: url });
+            const data: any[] = res.data;
+            if (offset === 0) {
+                setThings(data);
+            } else {
+                setThings([...things, ...data])
+            }
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -892,6 +946,22 @@ const UserPage = () => {
         if (country > 0) tab = 2;
         if (global > 0) tab = 1;
         setHistoryTabIndex(tab);
+    }
+
+    function generateStatisticsMarkup(userData: userData | null, type: string) {
+        if (userData === null) return '';
+        if (!userData.statistics?.variants) return '';
+
+        const markup = userData.statistics.variants.map((v) =>
+            `<div>${v.variant}: ${type === 'PP'
+                ? `${Math.round(v.pp)}pp`
+                : `#${Math.round(
+                    type === 'G' ? v.global_rank : v.country_rank
+                ).toLocaleString()}`
+            }</div>`
+        ).join('');
+
+        return `<div class="d-flex flex-column g-2">${markup}</div>`;
     }
 }
 export default UserPage;

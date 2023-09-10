@@ -1,10 +1,10 @@
 import React from "react";
 import {colors} from "../resources/store";
 import {Tooltip} from "react-tooltip";
-import {BeatmapScore} from "../resources/interfaces";
+import {Score} from "../resources/interfaces";
 
 interface PpLineProps {
-    data: BeatmapScore[];
+    data: Score[];
     color: string;
 }
 

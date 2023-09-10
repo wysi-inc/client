@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {BeatmapScore, userData} from "../resources/interfaces";
-import {colors} from "../resources/store";
+import React, { useEffect, useState, useMemo } from "react";
+import { ModsEntity, Score, userData } from "../resources/interfaces";
+import { colors } from "../resources/store";
 import PpLine from "./PpLine";
 import BarPieChart from "./BarPieChart";
+import ModIcon from "./ModIcon";
+import { secondsToTime } from "../resources/functions";
 
 interface topScoresProps {
     data: userData;
-    best: BeatmapScore[];
+    best: Score[];
 }
 
 export interface BarPieChartData {
@@ -34,28 +36,53 @@ const TopScoresPanel = (props: topScoresProps) => {
         c: 0,
         d: 0,
     })
+
     useEffect(() => {
         setScoresHits(getScoresHits());
         setScoresRanks(getScoresRanks());
     }, [props.best])
 
+    const commonMods : string[] = useMemo(() => {
+        const modsCounter: { [key: string]: number } = {};
+        props.best.map(score =>
+            score.mods.length > 0 ?
+                score.mods.map(mod => mod.acronym) : ['NM'])
+            .forEach((ele) => {
+                if (modsCounter[ele.join('-')]) {
+                    modsCounter[ele.join('-')] += 1;
+                } else {
+                    modsCounter[ele.join('-')] = 1;
+                }
+            });
+        let largestKey = null;
+        let largestValue = -Infinity;
+    
+        for (const key in modsCounter) {
+            if (modsCounter[key] > largestValue) {
+                largestKey = key;
+                largestValue = modsCounter[key];
+            }
+        }
+        return largestKey ? largestKey.split("-") : [];
+    }, [props.best])
+
     const scoresHitsLabels: BarPieChartData[] = [
-        {label: '320', color: colors.judgements.x320, value: scoresHits.x320},
-        {label: '300', color: colors.judgements.x300, value: scoresHits.x300},
-        {label: '200', color: colors.judgements.x200, value: scoresHits.x200},
-        {label: '100', color: colors.judgements.x100, value: scoresHits.x100},
-        {label: '50', color: colors.judgements.x50, value: scoresHits.x50},
-        {label: 'Miss', color: colors.judgements.xMiss, value: scoresHits.xMiss},
+        { label: '320', color: colors.judgements.x320, value: scoresHits.x320 },
+        { label: '300', color: colors.judgements.x300, value: scoresHits.x300 },
+        { label: '200', color: colors.judgements.x200, value: scoresHits.x200 },
+        { label: '100', color: colors.judgements.x100, value: scoresHits.x100 },
+        { label: '50', color: colors.judgements.x50, value: scoresHits.x50 },
+        { label: 'Miss', color: colors.judgements.xMiss, value: scoresHits.xMiss },
     ];
     const scoresRanksLabels: BarPieChartData[] = [
-        {label: 'XH', color: colors.ranks.xh, value: scoresRanks.xh},
-        {label: 'X', color: colors.ranks.x, value: scoresRanks.x},
-        {label: 'SH', color: colors.ranks.sh, value: scoresRanks.sh},
-        {label: 'S', color: colors.ranks.s, value: scoresRanks.s},
-        {label: 'A', color: colors.ranks.a, value: scoresRanks.a},
-        {label: 'B', color: colors.ranks.b, value: scoresRanks.b},
-        {label: 'C', color: colors.ranks.c, value: scoresRanks.c},
-        {label: 'D', color: colors.ranks.d, value: scoresRanks.d},
+        { label: 'XH', color: colors.ranks.xh, value: scoresRanks.xh },
+        { label: 'X', color: colors.ranks.x, value: scoresRanks.x },
+        { label: 'SH', color: colors.ranks.sh, value: scoresRanks.sh },
+        { label: 'S', color: colors.ranks.s, value: scoresRanks.s },
+        { label: 'A', color: colors.ranks.a, value: scoresRanks.a },
+        { label: 'B', color: colors.ranks.b, value: scoresRanks.b },
+        { label: 'C', color: colors.ranks.c, value: scoresRanks.c },
+        { label: 'D', color: colors.ranks.d, value: scoresRanks.d },
     ];
 
     function getScoresHits() {
@@ -67,7 +94,7 @@ const TopScoresPanel = (props: topScoresProps) => {
             x50: 0,
             xMiss: 0,
         }
-        props.best.map((obj: BeatmapScore) => {
+        props.best.map((obj: Score) => {
             scoresHits.x320 += obj.statistics?.perfect ? obj.statistics.perfect : 0;
             scoresHits.x300 += obj.statistics?.great ? obj.statistics.great : 0;
             scoresHits.x200 += obj.statistics?.good ? obj.statistics.good : 0;
@@ -102,17 +129,98 @@ const TopScoresPanel = (props: topScoresProps) => {
         return scoresRanks
     }
 
+    function calculateModifiedLength(length: number, mods: string[] | undefined) {
+        if (!mods) return length;
+        if (mods.includes('DT')) return length *= 0.75;
+        if (mods.includes('HT')) return length *= 1.5;
+        return length;
+    }
+
+    const lengths = props.best.map((score) => {
+        return calculateModifiedLength(score.beatmap.total_length, score.mods?.map((mod) => mod.acronym));
+    });
+    const totalLength = lengths?.reduce((acc, length) => acc + length, 0);
+    const averageLength = totalLength / props.best.length;
+
+    function calculateModifiedBpm(bpm: number, mods: string[] | undefined) {
+        if (!mods) return bpm
+        if (mods.includes('DT')) bpm *= 1.5;
+        if (mods.includes('HT')) bpm *= 0.75;
+        return bpm;
+    }
+
+    const bpms = props.best.map((score) => {
+        return calculateModifiedBpm(score.beatmap.bpm, score.mods?.map((mod) => mod.acronym));
+    });
+    const totalBpm = bpms?.reduce((acc, bpm) => acc + bpm, 0);
+
+    const averageBpm = Math.round(totalBpm / props.best.length);
+    const averageAcc = props.data.statistics.hit_accuracy;
+
+    const averageCombo =
+        Math.round(props.best
+            .map((score) => score.max_combo)?.reduce((a, b) => a + b, 0) / props.best.length);
+    const averagePP =
+        Math.round(props.best
+            .map((score) => score.pp)?.reduce((a, b) => a + b, 0) / props.best.length);
+    const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
+
     return (
-        <div className="row">
-            <div className="p-3 row">
-                <div className="col-12 col-lg-6 mt-3">
-                    <BarPieChart title={"Hit Ratios"} data={scoresHitsLabels}/>
-                </div>
-                <div className="col-12 col-lg-6 mt-3">
-                    <BarPieChart title={"Rank Ratios"} data={scoresRanksLabels}/>
-                </div>
-                <div className="col-12 mt-4">
-                    <PpLine data={props.best} color={colors.ui.font}/>
+        <div className="p-3 row">
+            <div className="col-12 col-lg-6 mt-3">
+                <BarPieChart title={"Hit Ratios"} data={scoresHitsLabels} />
+            </div>
+            <div className="col-12 col-lg-6 mt-3">
+                <BarPieChart title={"Rank Ratios"} data={scoresRanksLabels} />
+            </div>
+            <div className="col-12 mt-4">
+                <PpLine data={props.best} color={colors.ui.font} />
+            </div>
+            <div className="col-12 mt-5 mb-3 d-flex flex-column align-items-center">
+                <div>Average play:</div>
+                <div className="d-flex flex-row flex-wrap justify-content-center gap-2 mt-2">
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>Mods:</div>
+                        <div className="d-flex flex-row gap-1">
+                            {commonMods.map((mod : string, index : number) =>
+                                <ModIcon acronym={mod} size={20} key={index + 1}/>)}
+                        </div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>Length:</div>
+                        <i className="bi bi-stopwatch"></i>
+                        <div>
+                            {secondsToTime(averageLength)}
+                        </div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>BPM:</div>
+                        <div>{averageBpm}</div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>Acc:</div>
+                        <div>{averageAcc.toFixed(2)}%</div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>Combo:</div>
+                        <div>{averageCombo}x</div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>PP:</div>
+                        <div>{averagePP}pp</div>
+                    </div>
+                    <div>|</div>
+                    <div className="d-flex flex-row gap-1 align-items-center">
+                        <div>Rank:</div>
+                        <div style={{ color: (colors.ranks as any)[averageRank.toLowerCase()] }}>
+                            {averageRank}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
