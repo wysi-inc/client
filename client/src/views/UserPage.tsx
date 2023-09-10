@@ -16,7 +16,7 @@ import {
     MonthlyData, SortedMedals,
     UserAchievement,
     UserBadge,
-    userData, UserGroup
+    userData, UserGroup, UserBeatmapSets, BeatThings
 } from "../resources/interfaces";
 
 import { colors } from "../resources/store";
@@ -44,6 +44,24 @@ Chart.defaults.indexAxis = 'x';
 Chart.defaults.responsive = true;
 Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.tooltip.displayColors = false;
+
+interface tabInterface {
+    num: number,
+    title: string,
+    icon: string,
+    count: number,
+    setTabs: Dispatch<SetStateAction<number>>
+}
+
+interface dataInterface {
+    num: number,
+    thing: ScoreType | BeatmapType,
+    group: 'scores' | 'beatmapsets',
+    tab: number,
+    maps: Score[] | BeatmapSet[],
+    count: number,
+    setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
+}
 
 const UserPage = () => {
     const { urlUser } = useParams();
@@ -200,58 +218,181 @@ const UserPage = () => {
         },
     };
 
-    interface tabInterface {
-        num: number,
-        title: string,
-        icon: string,
-        count: number,
-        setTabs: Dispatch<SetStateAction<number>>
-    }
-
-    interface dataInterface {
-        num: number,
-        thing: ScoreType | BeatmapType,
-        group: 'scores' | 'beatmapsets',
-        tab: number,
-        maps: Score[] | BeatmapSet[],
-        count: number,
-        setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
-    }
-
     const scoresTabs: tabInterface[] = [
-        { num: 1, title: 'Pinned', icon: 'bi-pin-angle-fill', count: userData.scores_pinned_count, setTabs: setScoresTabIndex },
-        { num: 2, title: 'Best', icon: 'bi-bar-chart-fill', count: userData.scores_best_count, setTabs: setScoresTabIndex },
+        {
+            num: 1,
+            title: 'Pinned',
+            icon: 'bi-pin-angle-fill',
+            count: userData.scores_pinned_count,
+            setTabs: setScoresTabIndex
+        },
+        {
+            num: 2,
+            title: 'Best',
+            icon: 'bi-bar-chart-fill',
+            count: userData.scores_best_count,
+            setTabs: setScoresTabIndex
+        },
         { num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabs: setScoresTabIndex },
         { num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabs: setScoresTabIndex },
     ]
 
     const scoresData: dataInterface[] = [
-        { num: 1, thing: 'pinned', group: 'scores', tab: scoresTabIndex, maps: pinnedScores, count: userData.scores_pinned_count, setMore: setPinnedScores },
-        { num: 2, thing: 'best', group: 'scores', tab: scoresTabIndex, maps: bestScores, count: userData.scores_best_count, setMore: setBestScores },
-        { num: 3, thing: 'firsts', group: 'scores', tab: scoresTabIndex, maps: firstsScores, count: userData.scores_first_count, setMore: setFirstsScores },
-        { num: 4, thing: 'recent', group: 'scores', tab: scoresTabIndex, maps: recentScores, count: userData.scores_recent_count, setMore: setRecentScores },
+        {
+            num: 1,
+            thing: 'pinned',
+            group: 'scores',
+            tab: scoresTabIndex,
+            maps: pinnedScores,
+            count: userData.scores_pinned_count,
+            setMore: setPinnedScores
+        },
+        {
+            num: 2,
+            thing: 'best',
+            group: 'scores',
+            tab: scoresTabIndex,
+            maps: bestScores,
+            count: userData.scores_best_count,
+            setMore: setBestScores
+        },
+        {
+            num: 3,
+            thing: 'firsts',
+            group: 'scores',
+            tab: scoresTabIndex,
+            maps: firstsScores,
+            count: userData.scores_first_count,
+            setMore: setFirstsScores
+        },
+        {
+            num: 4,
+            thing: 'recent',
+            group: 'scores',
+            tab: scoresTabIndex,
+            maps: recentScores,
+            count: userData.scores_recent_count,
+            setMore: setRecentScores
+        },
     ]
 
     const beatmapsTabs: tabInterface[] = [
-        { num: 1, title: 'Favourites', icon: 'bi-star-fill', count: userData.favourite_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 2, title: 'Ranked', icon: 'bi bi-chevron-double-up', count: userData.ranked_and_approved_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 3, title: 'Loved', icon: 'bi-suit-heart-fill', count: userData.loved_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 4, title: 'Guest', icon: 'bi-person-lines-fill', count: userData.guest_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 5, title: 'Graveyard', icon: 'bi-x-circle', count: userData.graveyard_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 6, title: 'Nominated', icon: 'bi-trophy-fill', count: userData.nominated_beatmapset_count, setTabs: setBeatmapsTabIndex },
-        { num: 7, title: 'Pending', icon: 'bi-hourglass-bottom', count: userData.pending_beatmapset_count, setTabs: setBeatmapsTabIndex },
+        {
+            num: 1,
+            title: 'Favourites',
+            icon: 'bi-star-fill',
+            count: userData.favourite_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 2,
+            title: 'Ranked',
+            icon: 'bi bi-chevron-double-up',
+            count: userData.ranked_and_approved_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 3,
+            title: 'Loved',
+            icon: 'bi-suit-heart-fill',
+            count: userData.loved_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 4,
+            title: 'Guest',
+            icon: 'bi-person-lines-fill',
+            count: userData.guest_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 5,
+            title: 'Graveyard',
+            icon: 'bi-x-circle',
+            count: userData.graveyard_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 6,
+            title: 'Nominated',
+            icon: 'bi-trophy-fill',
+            count: userData.nominated_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
+        {
+            num: 7,
+            title: 'Pending',
+            icon: 'bi-hourglass-bottom',
+            count: userData.pending_beatmapset_count,
+            setTabs: setBeatmapsTabIndex
+        },
     ]
 
     const beatmapsData: dataInterface[] = [
-        { num: 1, thing: 'favourite', group: 'beatmapsets', tab: beatmapsTabIndex, maps: favouriteBeatmaps, count: userData.favourite_beatmapset_count, setMore: setFavouriteBeatmaps },
-        { num: 2, thing: 'ranked', group: 'beatmapsets', tab: beatmapsTabIndex, maps: rankedBeatmaps, count: userData.ranked_and_approved_beatmapset_count, setMore: setRankedBeatmaps },
-        { num: 3, thing: 'loved', group: 'beatmapsets', tab: beatmapsTabIndex, maps: lovedBeatmaps, count: userData.loved_beatmapset_count, setMore: setLovedBeatmaps },
-        { num: 4, thing: 'guest', group: 'beatmapsets', tab: beatmapsTabIndex, maps: guestBeatmaps, count: userData.guest_beatmapset_count, setMore: setGuestBeatmaps },
-        { num: 5, thing: 'graveyard', group: 'beatmapsets', tab: beatmapsTabIndex, maps: graveyardBeatmaps, count: userData.graveyard_beatmapset_count, setMore: setGraveyardBeatmaps },
-        { num: 6, thing: 'nominated', group: 'beatmapsets', tab: beatmapsTabIndex, maps: nominatedBeatmaps, count: userData.nominated_beatmapset_count, setMore: setNominatedBeatmaps },
-        { num: 7, thing: 'pending', group: 'beatmapsets', tab: beatmapsTabIndex, maps: pendingBeatmaps, count: userData.pending_beatmapset_count, setMore: setPendingBeatmaps },
+        {
+            num: 1,
+            thing: 'favourite',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: favouriteBeatmaps,
+            count: userData.favourite_beatmapset_count,
+            setMore: setFavouriteBeatmaps
+        },
+        {
+            num: 2,
+            thing: 'ranked',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: rankedBeatmaps,
+            count: userData.ranked_and_approved_beatmapset_count,
+            setMore: setRankedBeatmaps
+        },
+        {
+            num: 3,
+            thing: 'loved',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: lovedBeatmaps,
+            count: userData.loved_beatmapset_count,
+            setMore: setLovedBeatmaps
+        },
+        {
+            num: 4,
+            thing: 'guest',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: guestBeatmaps,
+            count: userData.guest_beatmapset_count,
+            setMore: setGuestBeatmaps
+        },
+        {
+            num: 5,
+            thing: 'graveyard',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: graveyardBeatmaps,
+            count: userData.graveyard_beatmapset_count,
+            setMore: setGraveyardBeatmaps
+        },
+        {
+            num: 6,
+            thing: 'nominated',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: nominatedBeatmaps,
+            count: userData.nominated_beatmapset_count,
+            setMore: setNominatedBeatmaps
+        },
+        {
+            num: 7,
+            thing: 'pending',
+            group: 'beatmapsets',
+            tab: beatmapsTabIndex,
+            maps: pendingBeatmaps,
+            count: userData.pending_beatmapset_count,
+            setMore: setPendingBeatmaps
+        },
     ]
-
 
     return (
         <>
@@ -443,34 +584,34 @@ const UserPage = () => {
                             <div>History</div>
                         </div>
                         <nav className="row">
-                            <button
-                                disabled={getGlobalData().length === 0}
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 1 ? 'accentColor' : 'midColor'}`}
-                                onClick={() => setHistoryTabIndex(1)}>
-                                <i className="bi bi-globe2"></i>
-                                <div>Global Rank</div>
-                            </button>
-                            <button
-                                disabled={getCountryData().length === 0}
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 2 ? 'accentColor' : 'midColor'}`}
-                                onClick={() => setHistoryTabIndex(2)}>
-                                <CountryShape code={userData.country.code} width={24} height={24} />
-                                <div>Country Rank</div>
-                            </button>
-                            <button
-                                disabled={getPlaysData().length === 0}
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 3 ? 'accentColor' : 'midColor'}`}
-                                onClick={() => setHistoryTabIndex(3)}>
-                                <i className="bi bi-arrow-counterclockwise"></i>
-                                <div>Play Count</div>
-                            </button>
-                            <button
-                                disabled={getReplaysData().length === 0}
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 4 ? 'accentColor' : 'midColor'}`}
-                                onClick={() => setHistoryTabIndex(4)}>
-                                <i className="bi bi-arrow-counterclockwise"></i>
-                                <div>Replays Watched</div>
-                            </button>
+                            {userData.db_info.global_rank?.length > 0 &&
+                                <button
+                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 1 ? 'accentColor' : 'midColor'}`}
+                                    onClick={() => setHistoryTabIndex(1)}>
+                                    <i className="bi bi-globe2"></i>
+                                    <div>Global Rank</div>
+                                </button>}
+                            {userData.db_info.country_rank?.length > 0 &&
+                                <button
+                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 2 ? 'accentColor' : 'midColor'}`}
+                                    onClick={() => setHistoryTabIndex(2)}>
+                                    <CountryShape code={userData.country.code} width={24} height={24} />
+                                    <div>Country Rank</div>
+                                </button>}
+                            {userData.monthly_playcounts?.length > 0 &&
+                                <button
+                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 3 ? 'accentColor' : 'midColor'}`}
+                                    onClick={() => setHistoryTabIndex(3)}>
+                                    <i className="bi bi-arrow-counterclockwise"></i>
+                                    <div>Play Count</div>
+                                </button>}
+                            {userData.replays_watched_counts?.length > 0 &&
+                                <button
+                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 4 ? 'accentColor' : 'midColor'}`}
+                                    onClick={() => setHistoryTabIndex(4)}>
+                                    <i className="bi bi-arrow-counterclockwise"></i>
+                                    <div>Replays Watched</div>
+                                </button>}
                         </nav>
                         <div style={{ height: 250 }} className="d-flex justify-content-center align-items-center">
                             <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 1}
@@ -699,6 +840,7 @@ const UserPage = () => {
         const data: userData = res.data;
         if (!data.id) return;
         if (data.is_bot) return;
+        console.log(data);
         let searchMode: GameModeType;
         if (mode === "default") {
             searchMode = data.playmode;
@@ -710,7 +852,7 @@ const UserPage = () => {
         setGameMode(searchMode);
         getScores(data.id, searchMode, true);
         getBeatmaps(data.id, searchMode, true);
-        setHistoryTab(data.replays_watched_counts.length, data.monthly_playcounts.length, 0, data.rank_history.data.length);
+        setHistoryTab(data.replays_watched_counts?.length, data.monthly_playcounts?.length, data.db_info.country_rank?.length, data.db_info.global_rank?.length);
     }
 
     async function getScores(id: number, mode: GameModeType, changeTab: boolean) {
@@ -753,19 +895,19 @@ const UserPage = () => {
             if (!data) return;
             let tab: number = 0;
             if (data.pending.count > 0) {
-                setPendingBeatmaps(data.pending.items);
+                setPendingBeatmaps(data.pending.items)
                 tab = 7;
             }
             if (data.nominated.count > 0) {
-                setNominatedBeatmaps(data.nominated.items);
+                setNominatedBeatmaps(data.nominated.items)
                 tab = 6;
             }
             if (data.graveyard.count > 0) {
-                setGraveyardBeatmaps(data.graveyard.items);
+                setGraveyardBeatmaps(data.graveyard.items)
                 tab = 5;
             }
             if (data.guest.count > 0) {
-                setGuestBeatmaps(data.guest.items);
+                setGuestBeatmaps(data.guest.items)
                 tab = 4;
             }
             if (data.loved.count > 0) {
@@ -874,37 +1016,23 @@ const UserPage = () => {
     }
 
     function getGlobalLabels(): string[] {
-        const num = userData?.rank_history?.data?.length ? userData.rank_history?.data?.length : 0;
-        const today = new Date();
-        let dates: string[] = [];
-        for (let i = 0; i < num; i++) {
-            if (userData?.rank_history?.data[i] !== 0) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                dates.push(moment(date).format('DD MMM YYYY'));
-            }
-        }
-        return dates.reverse();
+        if (!userData?.db_info.global_rank) return [];
+        return userData?.db_info.global_rank.map(obj => moment(obj.date).format('DD MMM YYYY'));
     }
 
     function getGlobalData(): number[] {
-        if (!userData?.rank_history?.data) return [];
-        const num = userData?.rank_history?.data?.length ? userData.rank_history?.data?.length : 0;
-        let ranks: number[] = [];
-        for (let i = 0; i < num; i++) {
-            if (userData?.rank_history?.data[i] !== 0) {
-                ranks.push(userData.rank_history.data[i]);
-            }
-        }
-        return ranks;
+        if (!userData?.db_info.global_rank) return [];
+        return userData?.db_info.global_rank.map(obj => obj.rank);
     }
 
     function getCountryLabels(): string[] {
-        return [];
+        if (!userData?.db_info.country_rank) return [];
+        return userData?.db_info.country_rank.map(obj => moment(obj.date).format('DD MMM YYYY'));
     }
 
     function getCountryData(): number[] {
-        return [];
+        if (!userData?.db_info.country_rank) return [];
+        return userData?.db_info.country_rank.map(obj => obj.rank);
     }
 
     function getPlaysData(): number[] {

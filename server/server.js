@@ -1,9 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const bodyParser = require('body-parser'); // Require body-parser
+const bodyParser = require('body-parser');
 const app = express();
 const mino = require('beatsify');
+
+const mongoose = require('mongoose');
+const User = require("./User");
+
+const dotenv = require('dotenv');
+dotenv.config();
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use((req, res, next) => {
@@ -12,10 +19,146 @@ app.use((req, res, next) => {
 });
 
 const port = 5000;
-const { v2, auth, tools } = require('osu-api-extended');
-const client_id = 22795;
-const client_secret = '1hpA9sk7wzAewt62ePe592FWnFbGoRqAolRBi2RE';
-//const callback_url = 'http://localhost:3000'
+const { v2, auth } = require('osu-api-extended');
+
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
+const uri = process.env.DB_CONNECTION;
+
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Connected to the database");
+}).catch((error) => {
+    console.error("Error connecting to the database:", error);
+})
+
+const pushOrReplaceObjects = async (existingArray, newArray) => {
+    newArray.forEach(newObj => {
+        const index = existingArray.findIndex(existingObj => existingObj.date.getTime() === newObj.date.getTime());
+
+        if (index !== -1) {
+            existingArray[index] = newObj; // Replace existing object with the new object
+        } else {
+            existingArray.push(newObj); // Add new object to the existing array
+        }
+    });
+}
+const updateUser = async (userId, username, userRanks, countryRank, mode) => {
+    if (countryRank) {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        const objectRanks = userRanks.map((number, index) => {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() - (userRanks.length - 1 - index));
+            return {rank: number, date};
+        });
+        const currentCountryRank = {
+            date: currentDate,
+            rank: countryRank
+        }
+        try {
+            let response = {};
+            if (await User.exists({userId: userId})) {
+                const user = await User.findOne({userId: userId});
+                user.username = username;
+                await pushOrReplaceObjects(user.modes[mode].rankHistory, objectRanks);
+                await pushOrReplaceObjects(user.modes[mode].countryRankHistory, [currentCountryRank]);
+                user.modes[mode].rankHistory.sort((a, b) => a.date - b.date);
+                user.modes[mode].countryRankHistory.sort((a, b) => a.date - b.date);
+                response.global_rank = user.modes[mode].rankHistory;
+                response.country_rank = user.modes[mode].countryRankHistory;
+                if (user.setup) {
+                    response.setup = user.setup;
+                }
+                await user.save();
+            } else {
+                switch (mode) {
+                    case 'osu':
+                        const userOsu = new User(
+                            {
+                                userId: userId,
+                                username: username,
+                                modes: {
+                                    osu: {
+                                        rankHistory: objectRanks,
+                                        countryRankHistory: [currentCountryRank]
+                                    }
+                                }
+                            }
+                        )
+                        await userOsu.save();
+                        response.global_rank = userOsu.modes.osu.rankHistory;
+                        response.country_rank = userOsu.modes.osu.countryRankHistory;
+                        break;
+                    case 'taiko':
+                        const userTaiko = new User(
+                            {
+                                userId: userId,
+                                username: username,
+                                modes: {
+                                    taiko: {
+                                        rankHistory: objectRanks,
+                                        countryRankHistory: [currentCountryRank]
+                                    }
+                                }
+                            }
+                        )
+                        await userTaiko.save();
+                        response.global_rank = userTaiko.modes.taiko.rankHistory;
+                        response.country_rank = userTaiko.modes.taiko.countryRankHistory;
+                        break;
+                    case 'fruits':
+                        const userFruits = new User(
+                            {
+                                userId: userId,
+                                username: username,
+                                modes: {
+                                    fruits: {
+                                        rankHistory: objectRanks,
+                                        countryRankHistory: [currentCountryRank]
+                                    }
+                                }
+                            }
+                        )
+                        await userFruits.save();
+                        response.global_rank = userFruits.modes.fruits.rankHistory;
+                        response.country_rank = userFruits.modes.fruits.countryRankHistory;
+                        break;
+                    case 'mania':
+                        const userMania = new User(
+                            {
+                                userId: userId,
+                                username: username,
+                                modes: {
+                                    mania: {
+                                        rankHistory: objectRanks,
+                                        countryRankHistory: [currentCountryRank]
+                                    }
+                                }
+                            }
+                        )
+                        await userMania.save();
+                        response.global_rank = userMania.modes.mania.rankHistory;
+                        response.country_rank = userMania.modes.mania.countryRankHistory;
+                        break;
+                }
+            }
+            return response;
+        } catch
+            (e) {
+            console.error(e);
+            return [];
+        }
+    } else {
+        return {
+            "global_rank": [],
+            "country_rank": []
+        }
+    }
+}
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 });
@@ -37,18 +180,28 @@ app.post('/proxy/', async (req, res) => {
 const main = async () => {
     await auth.login(client_id, client_secret, ['public'])
 }
-main().then(() => console.log('connected'));
+main().then(() => console.log('Application Logged in'));
 
 app.post('/user', async (req, res) => {
     const user_id = req.body.id;
     const mode = req.body.mode;
+    let data;
     if (mode === 'default') {
-        const data = await v2.user.details(user_id);
-        res.send(data);
+        data = await v2.user.details(user_id);
     } else {
-        const data = await v2.user.details(user_id, mode);
-        res.send(data);
+        data = await v2.user.details(user_id, mode);
     }
+    data.db_info = await updateUser(data.id, data.username, data.rank_history.data, data.statistics.country_rank, mode);
+        // developers
+        data.customBadges = {};
+        if ([17018032].includes(data.id)) {
+            data.customBadges.developer = true;
+        }
+        // translators
+        if ([17018032, 17524565, 12941954, 7161345, 14623152, 18674051, 17517577, 20405189, 13431764, 26688450, 9211305, 15165858, 14284545, 7424967, 8685250, 9552883, 12526902, 15525103, 16147953].includes(data.id)) {
+            data.customBadges.translator = true;
+        }
+    res.send(data);
 });
 
 app.post('/getMedals', async (req, res) => {

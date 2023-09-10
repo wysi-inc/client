@@ -119,6 +119,67 @@ export interface userData {
     rankHistory: RankHistory;
     ranked_and_approved_beatmapset_count: number;
     unranked_beatmapset_count: number;
+    db_info: DbInfo;
+}
+
+export interface DbInfo {
+    global_rank: DBRankHistory[];
+    country_rank: DBRankHistory[];
+    setup?: Setup,
+    ranks: {
+        xh: number,
+        x: number,
+        sh: number,
+        s: number,
+        a: number,
+        b: number,
+        c: number,
+        d: number,
+    },
+}
+
+export interface Setup {
+    peripherals?: Peripherals;
+    tablet?: TabletDisplayInterface;
+    keyboard?: Keyboard;
+    mouse?: Mouse
+}
+
+export interface Mouse {
+    dpi?: number;
+}
+
+export interface Peripherals {
+    monitor?: string;
+    headphones?: string;
+    microphone?: string;
+    tablet?: string;
+    mouse?: string;
+    keyboard?: string;
+    keypad?: string;
+    mousepad?: string;
+    chair?: string;
+}
+
+export interface Keyboard {
+    format: string;
+    inputs: string[];
+}
+
+export interface TabletDisplayInterface {
+    area: {
+        width: number,
+        height: number,
+    },
+    position: {
+        x: number,
+        y: number,
+        rotation: number,
+    },
+    tablet: {
+        width: number,
+        height: number,
+    },
 }
 
 export interface UserCountry {
@@ -215,6 +276,10 @@ export interface RankHistory {
     mode: GameModeType;
     data: number[];
 }
+export interface DBRankHistory {
+    date: Date,
+    rank: number
+}
 
 export interface Kudosu {
     total: number;
@@ -269,37 +334,6 @@ export interface Statistics {
 
 export interface CurrentUserAttributes {
     pin?: null;
-}
-
-export interface Beatmap {
-    beatmapset_id: number;
-    difficulty_rating: number;
-    id: number;
-    mode: GameModeType;
-    status: BeatmapsetStatusType;
-    total_length: number;
-    user_id: number;
-    version: string;
-    accuracy: number;
-    ar: number;
-    bpm: number;
-    convert: boolean;
-    count_circles: number;
-    count_sliders: number;
-    count_spinners: number;
-    cs: number;
-    deleted_at?: string;
-    drain: number;
-    hit_length: number;
-    is_scoreable: boolean;
-    last_updated: string;
-    mode_int: number;
-    passcount: number;
-    playcount: number;
-    ranked: number;
-    url: string;
-    checksum: string;
-    max_combo: number;
 }
 
 export interface Beatmapset {
@@ -424,7 +458,7 @@ export interface BeatmapSet {
     availability: Availability;
     has_favourited: boolean;
     beatmaps: BeatmapsEntity[];
-    converts?: ConvertsEntity[] | null;
+    converts?: Beatmap[] | null;
     description: Description;
     genre: GenreOrLanguage;
     language: GenreOrLanguage;
@@ -476,12 +510,12 @@ export interface BeatmapsEntity {
     last_checked: number;
 }
 
-export interface ConvertsEntity {
+export interface Beatmap {
     beatmapset_id: number;
     difficulty_rating: number;
     id: number;
-    mode: string;
-    status: string;
+    mode: GameModeType;
+    status: BeatmapsetStatusType;
     total_length: number;
     user_id: number;
     version: string;
@@ -501,7 +535,7 @@ export interface ConvertsEntity {
     mode_int: number;
     passcount: number;
     playcount: number;
-    ranked: number;
+    ranked: boolean;
     url: string;
     checksum: string;
     failed: number;
@@ -531,7 +565,7 @@ export interface Variants {
     pp: number;
 }
 
-export interface UserBeatmaps {
+export interface UserBeatmapSets {
     favourite: BeatThings;
     graveyard: BeatThings;
     guest: BeatThings;
@@ -539,9 +573,10 @@ export interface UserBeatmaps {
     nominated: BeatThings;
     ranked: BeatThings;
     pending: BeatThings;
-  }
-  export interface BeatThings {
-    items?: Beatmapset[];
+}
+
+export interface BeatThings {
+    items: Beatmapset[];
     count: number;
-  }
+}
   
