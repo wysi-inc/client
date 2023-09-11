@@ -579,4 +579,3 @@ export interface BeatThings {
     items: Beatmapset[];
     count: number;
 }
-  

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef, useMemo, Dispatch, SetStateAction } from "react";
-import { useParams } from "react-router-dom";
+import React, {useEffect, useState, useRef, useMemo, Dispatch, SetStateAction} from "react";
+import {useParams} from "react-router-dom";
 import axios from '../resources/axios-config';
-import { Chart, registerables } from 'chart.js';
+import {Chart, registerables} from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { Line } from "react-chartjs-2";
+import {Line} from "react-chartjs-2";
 import Spinner from 'react-bootstrap/Spinner';
 import ReactCountryFlag from "react-country-flag";
 import moment from "moment";
@@ -16,12 +16,13 @@ import {
     MonthlyData, SortedMedals,
     UserAchievement,
     UserBadge,
-    userData, UserGroup, UserBeatmapSets, BeatThings
+    userData,
+    UserGroup
 } from "../resources/interfaces";
 
-import { colors } from "../resources/store";
-import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
-import { addDefaultSrc, secondsToTime } from "../resources/functions";
+import {colors} from "../resources/store";
+import {BeatmapType, GameModeType, ScoreType} from "../resources/types";
+import {addDefaultSrc, secondsToTime} from "../resources/functions";
 import ScoreCard from "../components/ScoreCard";
 import TopScoresPanel from "../components/TopScoresPanel";
 import Medal from "../components/Medal";
@@ -31,6 +32,8 @@ import ModeSelector from "../components/ModeSelector";
 import SupporterIcon from "../components/SupporterIcon";
 import GroupBadge from "../components/GroupBadge";
 import BeatmapsetCard from "../components/BeatmapsetCard";
+
+import Twemoji from 'react-twemoji';
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -64,8 +67,8 @@ interface dataInterface {
 }
 
 const UserPage = () => {
-    const { urlUser } = useParams();
-    const { urlMode } = useParams();
+    const {urlUser} = useParams();
+    const {urlMode} = useParams();
 
     const [userData, setUserData] = useState<userData | null>(null);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
@@ -233,8 +236,8 @@ const UserPage = () => {
             count: userData.scores_best_count,
             setTabs: setScoresTabIndex
         },
-        { num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabs: setScoresTabIndex },
-        { num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabs: setScoresTabIndex },
+        {num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabs: setScoresTabIndex},
+        {num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabs: setScoresTabIndex},
     ]
 
     const scoresData: dataInterface[] = [
@@ -396,25 +399,25 @@ const UserPage = () => {
 
     return (
         <>
-            <div className="d-flex" style={{ backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover" }}>
-                <div className="flex-grow-1" style={{ backgroundColor: "#00000099", backdropFilter: "blur(4px)" }}>
+            <div className="d-flex" style={{backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover"}}>
+                <div className="flex-grow-1" style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}>
                     <div className="d-flex flex-row flex-wrap gap-5 p-4">
                         <div className="d-flex flex-column justify-content-center gap-2">
                             <img src={userData.avatar_url}
-                                onError={addDefaultSrc}
-                                alt='pfp' className="rounded-5 mb-3"
-                                style={{ width: 256, height: 256 }} />
+                                 onError={addDefaultSrc}
+                                 alt='pfp' className="rounded-5 mb-3"
+                                 style={{width: 256, height: 256}}/>
                             <div className="d-flex flex-row gap-2 align-items-center">
                                 <div>{userData.statistics.level.current}</div>
-                                <div className="progress flex-grow-1" style={{ height: 4 }}>
+                                <div className="progress flex-grow-1" style={{height: 4}}>
                                     <div className="progress-bar bg-warning"
-                                        style={{ width: `${userData.statistics.level.progress}%` }}></div>
+                                         style={{width: `${userData.statistics.level.progress}%`}}></div>
                                 </div>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
                             <div className="text-center h6"
-                                data-tooltip-id="tooltip"
-                                data-tooltip-content={moment(userData.join_date).fromNow()}>
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>
@@ -422,20 +425,20 @@ const UserPage = () => {
                             <div className="d-flex flex-column gap-2">
                                 <div className="d-flex flex-row gap-3 align-items-center">
                                     <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
-                                        target={"_blank"}
-                                        href={`https://osu.ppy.sh/users/${userData.id}`}>
+                                       target={"_blank"}
+                                       href={`https://osu.ppy.sh/users/${userData.id}`}>
                                         {userData.username}
                                     </a>
                                     {userData.groups.map((group: UserGroup, index: number) =>
                                         <GroupBadge group={group}
-                                            key={index + 1} />
+                                                    key={index + 1}/>
                                     )}
-                                    {userData.is_supporter && <SupporterIcon size={32} />}
+                                    {userData.is_supporter && <SupporterIcon size={32}/>}
                                 </div>
                                 <div className="profileTitle">{userData.title}</div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaG}`}
-                                    className="d-flex flex-column gap-1">
+                                     data-tooltip-html={`${maniaG}`}
+                                     className="d-flex flex-column gap-1">
                                     <div className="h6">Global Rank:</div>
                                     <div className="h3 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-globe2"></i>
@@ -443,20 +446,27 @@ const UserPage = () => {
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaC}`}
-                                    className="d-flex flex-column gap-1">
+                                     data-tooltip-html={`${maniaC}`}
+                                     className="d-flex flex-column gap-1">
                                     <div className="h6">Country Rank:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <CountryShape code={userData.country.code} width={32} height={32} />
+                                        <CountryShape code={userData.country.code} width={24} height={24}/>
                                         <div>#{userData.statistics.country_rank?.toLocaleString()}</div>
-                                        <ReactCountryFlag countryCode={userData.country.code}
-                                            data-tooltip-id="tooltip"
-                                            data-tooltip-content={userData.country.name} />
+                                        {userData.country.code === 'CAT' ?
+                                            <img alt={userData.country.code} className="emoji-flag"
+                                                 src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)}
+                                                 data-tooltip-id="tooltip"
+                                                 data-tooltip-content={userData.country.name}/> :
+                                            <Twemoji options={{className: 'emoji-flag', noWrapper: true}}>
+                                                <ReactCountryFlag countryCode={userData.country.code}
+                                                                  data-tooltip-id="tooltip"
+                                                                  data-tooltip-content={userData.country.name}/>
+                                            </Twemoji>}
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaPP}`}
-                                    className="d-flex flex-column gap-1">
+                                     data-tooltip-html={`${maniaPP}`}
+                                     className="d-flex flex-column gap-1">
                                     <div className="h6">Performance:</div>
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
@@ -473,33 +483,33 @@ const UserPage = () => {
                                     <div className="h4 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-clock"></i>
                                         <div data-tooltip-id="tooltip"
-                                            data-tooltip-content={secondsToTime(userData.statistics.play_time)}>
+                                             data-tooltip-content={secondsToTime(userData.statistics.play_time)}>
                                             {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="d-flex flex-column gap-2">
-                                <ModeSelector mode={gameMode} userId={userData.id} />
+                                <ModeSelector mode={gameMode} userId={userData.id}/>
                                 <div className="d-flex flex-row align-items-center gap-3">
                                     <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{ color: colors.ranks.xh }}>XH</div>
+                                        <div style={{color: colors.ranks.xh}}>XH</div>
                                         <div>{userData.statistics.grade_counts.ssh}</div>
                                     </div>
                                     <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{ color: colors.ranks.x }}>X</div>
+                                        <div style={{color: colors.ranks.x}}>X</div>
                                         <div>{userData.statistics.grade_counts.ss}</div>
                                     </div>
                                     <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{ color: colors.ranks.sh }}>SH</div>
+                                        <div style={{color: colors.ranks.sh}}>SH</div>
                                         <div>{userData.statistics.grade_counts.sh}</div>
                                     </div>
                                     <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{ color: colors.ranks.s }}>S</div>
+                                        <div style={{color: colors.ranks.s}}>S</div>
                                         <div>{userData.statistics.grade_counts.s}</div>
                                     </div>
                                     <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{ color: colors.ranks.a }}>A</div>
+                                        <div style={{color: colors.ranks.a}}>A</div>
                                         <div>{userData.statistics.grade_counts.a}</div>
                                     </div>
                                 </div>
@@ -508,7 +518,7 @@ const UserPage = () => {
                                     <div className="h3 d-flex flex-row align-items-center gap-2">
                                         <i className="bi bi-chevron-double-up"></i>
                                         <div data-tooltip-id="tooltip"
-                                            data-tooltip-content={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
+                                             data-tooltip-content={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
                                             {(userData.statistics.ranked_score).toLocaleString()}
                                         </div>
                                     </div>
@@ -540,7 +550,7 @@ const UserPage = () => {
                     <div
                         className="d-flex flex-row flex-wrap gap-2 px-5 py-4 align-items-center justify-content-start">
                         {userData.badges.map((badge: UserBadge, index: number) =>
-                            <Badge badge={badge} key={index + 1} />
+                            <Badge badge={badge} key={index + 1}/>
                         )}
                     </div>
                 </div>
@@ -553,28 +563,45 @@ const UserPage = () => {
                 {userData.discord !== null &&
                     <div className="d-flex flex-row align-items-center gap-2">
                         <i className="bi bi-discord"></i>
-                        <div>{userData.discord}</div>
+                        <Twemoji options={{className: 'emoji', noWrapper: true}}>
+                            {userData.discord}
+                        </Twemoji>
                     </div>}
-                {userData.twitter !== null && <div className="d-flex flex-row align-items-center gap-2">
-                    <i className="bi bi-twitter"></i>
-                    <div>{userData.twitter}</div>
-                </div>}
-                {userData.website !== null && <div className="d-flex flex-row align-items-center gap-2">
-                    <i className="bi bi-globe"></i>
-                    <div>{userData.website}</div>
-                </div>}
-                {userData.discord !== null && <div className="d-flex flex-row align-items-center gap-2">
-                    <i className="bi bi-geo-alt-fill"></i>
-                    <div>{userData.location}</div>
-                </div>}
-                {userData.interests !== null && <div className="d-flex flex-row align-items-center gap-2">
-                    <i className="bi bi-suit-heart-fill"></i>
-                    <div>{userData.interests}</div>
-                </div>}
-                {userData.occupation !== null && <div className="d-flex flex-row align-items-center gap-2">
-                    <i className="bi bi-buildings"></i>
-                    <div>{userData.occupation}</div>
-                </div>}
+                {userData.twitter !== null &&
+                    <div className="d-flex flex-row align-items-center gap-2">
+                        <i className="bi bi-twitter"></i>
+                        <Twemoji options={{className: 'emoji'}}>
+                            {userData.twitter}
+                        </Twemoji>
+                    </div>}
+                {userData.website !== null &&
+                    <div className="d-flex flex-row align-items-center gap-2">
+                        <i className="bi bi-globe"></i>
+                        <Twemoji options={{className: 'emoji'}}>
+                            {userData.website}
+                        </Twemoji>
+                    </div>}
+                {userData.discord !== null &&
+                    <div className="d-flex flex-row align-items-center gap-2">
+                        <i className="bi bi-geo-alt-fill"></i>
+                        <Twemoji options={{className: 'emoji'}}>
+                            {userData.location}
+                        </Twemoji>
+                    </div>}
+                {userData.interests !== null &&
+                    <div className="d-flex flex-row align-items-center gap-2">
+                        <i className="bi bi-suit-heart-fill"></i>
+                        <Twemoji options={{className: 'emoji'}}>
+                            {userData.interests}
+                        </Twemoji>
+                    </div>}
+                {userData.occupation !== null &&
+                    <div className="d-flex flex-row align-items-center gap-2">
+                        <i className="bi bi-buildings"></i>
+                        <Twemoji options={{className: 'emoji'}}>
+                            {userData.occupation}
+                        </Twemoji>
+                    </div>}
             </div>
             <div className="row gap-4 p-4 justify-content-center">
                 <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div1Ref}>
@@ -595,7 +622,7 @@ const UserPage = () => {
                                 <button
                                     className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 2 ? 'accentColor' : 'midColor'}`}
                                     onClick={() => setHistoryTabIndex(2)}>
-                                    <CountryShape code={userData.country.code} width={24} height={24} />
+                                    <CountryShape code={userData.country.code} width={24} height={24}/>
                                     <div>Country Rank</div>
                                 </button>}
                             {userData.monthly_playcounts?.length > 0 &&
@@ -613,22 +640,22 @@ const UserPage = () => {
                                     <div>Replays Watched</div>
                                 </button>}
                         </nav>
-                        <div style={{ height: 250 }} className="d-flex justify-content-center align-items-center">
+                        <div style={{height: 250}} className="d-flex justify-content-center align-items-center">
                             <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 1}
-                                style={{ height: 250 }}>
-                                <Line data={globalHistoryData} options={lineOptionsReverse} />
+                                 style={{height: 250}}>
+                                <Line data={globalHistoryData} options={lineOptionsReverse}/>
                             </div>
                             <div className="flex-grow-1 p-3 text-center h1" hidden={historyTabIndex !== 2}
-                                style={{ height: 250 }}>
-                                <Line data={countryHistoryData} options={lineOptionsReverse} />
+                                 style={{height: 250}}>
+                                <Line data={countryHistoryData} options={lineOptionsReverse}/>
                             </div>
                             <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 3}
-                                style={{ height: 250 }}>
-                                <Line data={playsHistoryData} options={lineOptions} />
+                                 style={{height: 250}}>
+                                <Line data={playsHistoryData} options={lineOptions}/>
                             </div>
                             <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 4}
-                                style={{ height: 250 }}>
-                                <Line data={replaysHistoryData} options={lineOptions} />
+                                 style={{height: 250}}>
+                                <Line data={replaysHistoryData} options={lineOptions}/>
                             </div>
                         </div>
                     </div>
@@ -638,13 +665,13 @@ const UserPage = () => {
                             <div>Top Play Stats</div>
                         </div>
                         <div className="p-3">
-                            <TopScoresPanel data={userData} best={bestScores} />
+                            <TopScoresPanel data={userData} best={bestScores}/>
                         </div>
                     </div>
                 </div>
                 <div
                     className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
-                    ref={div2Ref} style={{ height: div1Height }}>
+                    ref={div2Ref} style={{height: div1Height}}>
                     <div className="h4 p-2 m-0 row titleColor align-items-center">
                         <div className="col-2"></div>
                         <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
@@ -653,9 +680,9 @@ const UserPage = () => {
                         </div>
                         <div className="col-2 d-flex justify-content-end">
                             <button className="btn darkenOnHover m-0 p-0"
-                                onClick={() => {
-                                    getScores(userData.id, gameMode, false);
-                                }}>
+                                    onClick={() => {
+                                        getScores(userData.id, gameMode, false);
+                                    }}>
                                 <i className="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
@@ -679,7 +706,7 @@ const UserPage = () => {
                                     </Spinner>}
                                 {(dat.maps as Score[])[0]?.ended_at &&
                                     (dat.maps as Score[]).map((score: Score, index: number) =>
-                                        <ScoreCard index={index + 1} score={score} key={index + 1} />)}
+                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
                                 {dat.maps.length < dat.count &&
                                     <button
                                         className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
@@ -693,7 +720,7 @@ const UserPage = () => {
                 </div>
                 <div
                     className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
-                    ref={div2Ref} style={{ height: div1Height }}>
+                    ref={div2Ref} style={{height: div1Height}}>
                     <div className="h4 p-2 m-0 row titleColor align-items-center">
                         <div className="col-2"></div>
                         <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
@@ -702,9 +729,9 @@ const UserPage = () => {
                         </div>
                         <div className="col-2 d-flex justify-content-end">
                             <button className="btn darkenOnHover m-0 p-0"
-                                onClick={() => {
-                                    getBeatmaps(userData.id, gameMode, false);
-                                }}>
+                                    onClick={() => {
+                                        getBeatmaps(userData.id, gameMode, false);
+                                    }}>
                                 <i className="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
@@ -728,7 +755,7 @@ const UserPage = () => {
                                     </Spinner>}
                                 {(dat.maps as BeatmapSet[])[0]?.title &&
                                     (dat.maps as BeatmapSet[]).map((beatmapset: BeatmapSet, index: number) =>
-                                        <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1} />)}
+                                        <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1}/>)}
                                 {dat.maps.length < dat.count &&
                                     <button
                                         className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
@@ -741,7 +768,7 @@ const UserPage = () => {
                     </div>
                 </div>
                 <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div2Ref}
-                    style={{ height: div1Height }}>
+                     style={{height: div1Height}}>
                     <div className="rounded-3 overflow-hidden darkColor shadow p-0 d-flex flex-column">
                         <div className="h4 p-2 m-0 titleColor d-flex flex-row gap-2 justify-content-center">
                             <i className="bi bi-award"></i>
@@ -755,7 +782,7 @@ const UserPage = () => {
                                     </div>
                                     <div className="p-3 pt-2">
                                         <div className="d-flex flex-row justify-content-between pb-1 px-2"
-                                            style={{ fontSize: 14, top: -8 }}>
+                                             style={{fontSize: 14, top: -8}}>
                                             <div>most recent</div>
                                             <div>least recent</div>
                                         </div>
@@ -763,7 +790,7 @@ const UserPage = () => {
                                             className="d-flex flex-row gap-1 overflow-hidden backgroundColor p-3 rounded">
                                             {lastMedals.map((medal: MedalInterface, index: number) => (
                                                 <Medal thisMedal={medal} userMedals={userData.user_achievements}
-                                                    key={index} />))}
+                                                       key={index}/>))}
                                         </div>
                                     </div>
                                 </div>
@@ -773,13 +800,13 @@ const UserPage = () => {
                                     </div>
                                     <div className="p-3 pt-2">
                                         <div className="pb-1 px-2 text-center"
-                                            style={{ fontSize: 14, top: -8 }}>
+                                             style={{fontSize: 14, top: -8}}>
                                             Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
                                         </div>
                                         <div className="backgroundColor p-3 rounded d-grid justify-content-center">
                                             {rarestMedal &&
                                                 <Medal thisMedal={rarestMedal}
-                                                    userMedals={userData.user_achievements} />}
+                                                       userMedals={userData.user_achievements}/>}
                                         </div>
                                     </div>
                                 </div>
@@ -795,7 +822,7 @@ const UserPage = () => {
                                         </div>
                                         <div className="p-3 pt-2">
                                             <div className="pb-1 px-2 text-center"
-                                                style={{ fontSize: 14, top: -8 }}>
+                                                 style={{fontSize: 14, top: -8}}>
                                                 {(getAchievedMedalsCount()[category] / medals.length * 100).toFixed(2)}%
                                                 ({getAchievedMedalsCount()[category]}/{medals.length})
                                             </div>
@@ -803,7 +830,7 @@ const UserPage = () => {
                                                 className="d-flex flex-row flex-wrap gap-1 justify-content-center backgroundColor p-3 rounded">
                                                 {medals.map((medal: MedalInterface, index: number) => (
                                                     <Medal thisMedal={medal} userMedals={userData.user_achievements}
-                                                        key={index} />
+                                                           key={index}/>
                                                 ))}
                                             </div>
                                         </div>
@@ -859,9 +886,9 @@ const UserPage = () => {
         const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/top_ranks?mode=${mode}`
         const urlR: string = `https://osu.ppy.sh/users/${id}/extra-pages/historical?mode=${mode}`
         try {
-            const res = await axios.post('/proxy', { url: url });
+            const res = await axios.post('/proxy', {url: url});
             const data = res.data;
-            const resR = await axios.post('/proxy', { url: urlR });
+            const resR = await axios.post('/proxy', {url: urlR});
             const dataR = resR.data;
             if (!data || !dataR) return;
             let tab: number = 0;
@@ -890,7 +917,7 @@ const UserPage = () => {
     async function getBeatmaps(id: number, mode: GameModeType, changeTab: boolean) {
         const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/beatmaps?mode=${mode}`;
         try {
-            const res = await axios.post('/proxy', { url: url });
+            const res = await axios.post('/proxy', {url: url});
             const data = res.data;
             if (!data) return;
             let tab: number = 0;
@@ -932,7 +959,7 @@ const UserPage = () => {
         const url: string = `https://osu.ppy.sh/users/${id}/${thing}/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
         if (offset === 0) console.log(`get more ${thing}`, url);
         try {
-            const res = await axios.post('/proxy', { url: url });
+            const res = await axios.post('/proxy', {url: url});
             const data: any[] = res.data;
             if (offset === 0) {
                 setThings(data);

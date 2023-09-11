@@ -9,6 +9,7 @@ import Spinner from "react-bootstrap/Spinner";
 import OnlineDot from "./OnlineDot";
 import SupporterIcon from "./SupporterIcon";
 import {Link, useLocation, useNavigate} from "react-router-dom";
+import Twemoji from "react-twemoji";
 
 const SearchBox = () => {
 
@@ -99,9 +100,11 @@ const SearchBox = () => {
                                         <div className="d-flex flex-row gap-2 align-items-center">
                                             <img src={user.avatar_url} height={40} width={40} alt="pfp"
                                                  className="rounded"/>
+                                            <Twemoji options={{className: 'emoji-flag-sm'}}>
                                             <ReactCountryFlag countryCode={user.country_code}
                                                               data-tooltip-id="tooltip"
                                                               data-tooltip-content={user.country_code}/>
+                                            </Twemoji>
                                             <div>{user.username}</div>
                                             {user.is_supporter && <SupporterIcon size={18}/>}
                                         </div>

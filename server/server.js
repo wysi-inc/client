@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 const port = 5000;
-const { v2, auth } = require('osu-api-extended');
+const {v2, auth} = require('osu-api-extended');
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
@@ -46,7 +46,7 @@ const pushOrReplaceObjects = async (existingArray, newArray) => {
     });
 }
 const updateUser = async (userId, username, userRanks, countryRank, mode) => {
-    if (countryRank) {
+    if (countryRank && userRanks) {
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
         const objectRanks = userRanks.map((number, index) => {
@@ -173,7 +173,7 @@ app.post('/proxy/', async (req, res) => {
             res.send(response.data))
         .catch(error => {
             console.error(error)
-            res.status(500).send({ error: error.toString() })
+            res.status(500).send({error: error.toString()})
         });
 });
 
@@ -191,16 +191,18 @@ app.post('/user', async (req, res) => {
     } else {
         data = await v2.user.details(user_id, mode);
     }
-    data.db_info = await updateUser(data.id, data.username, data.rank_history.data, data.statistics.country_rank, mode);
-        // developers
-        data.customBadges = {};
-        if ([17018032].includes(data.id)) {
-            data.customBadges.developer = true;
-        }
-        // translators
-        if ([17018032, 17524565, 12941954, 7161345, 14623152, 18674051, 17517577, 20405189, 13431764, 26688450, 9211305, 15165858, 14284545, 7424967, 8685250, 9552883, 12526902, 15525103, 16147953].includes(data.id)) {
-            data.customBadges.translator = true;
-        }
+    data.db_info = await updateUser(data.id, data.username, data.rank_history?.data, data.statistics.country_rank, mode);
+    // developers
+    data.customBadges = {};
+    if ([17018032].includes(data.id)) {
+        data.customBadges.developer = true;
+        data.country.code = "CAT";
+        data.country.name = "Catalunya";
+    }
+    // translators
+    if ([17018032, 17524565, 12941954, 7161345, 14623152, 18674051, 17517577, 20405189, 13431764, 26688450, 9211305, 15165858, 14284545, 7424967, 8685250, 9552883, 12526902, 15525103, 16147953].includes(data.id)) {
+        data.customBadges.translator = true;
+    }
     res.send(data);
 });
 
@@ -221,10 +223,10 @@ app.post('/getMedals', async (req, res) => {
             const data = await response.json();
             res.send(data);
         } catch (error) {
-            res.status(500).send({ error: error.toString() });
+            res.status(500).send({error: error.toString()});
         }
     } catch (e) {
-        res.status(500).send({ error: e.toString() })
+        res.status(500).send({error: e.toString()})
     }
 });
 
@@ -240,7 +242,7 @@ app.post('/userQuery', async (req, res) => {
         res.send(data);
     } catch (e) {
         console.error(e);
-        req.status(500).send({ error: e.toString() })
+        req.status(500).send({error: e.toString()})
     }
 });
 
