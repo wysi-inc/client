@@ -87,8 +87,8 @@ const DiffIcon = (props: DiffIconProps) => {
 
     return (
         <div data-tooltip-id={props.diff === -1 ? '' : 'tooltip'}
-             data-tooltip-html={props.diff === -1 ? '' : `<div class="d-flex flex-column g-2 align-items-center"><div class="d-flex flex-row gap-1"><i class="bi bi-star-fill"></i><div>${props.diff}</div></div><div>[${props.name}]</div></div>`}
-             className="rounded-pill d-flex">
+             data-tooltip-html={props.diff === -1 ? '' : `<div class="flex flex-col g-2 items-center"><div class="flex flex flex-row gap-1"><i class="bi bi-star-fill"></i><div>${props.diff}</div></div><div>[${props.name}]</div></div>`}
+             className="rounded-pill flex">
             {getIcon()}
         </div>
     )

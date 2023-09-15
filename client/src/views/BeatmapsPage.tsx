@@ -229,10 +229,10 @@ const BeatmapsPage = () => {
 
     return (
         <div className="p-4">
-            <div className="p-4 midColor rounded mb-3 d-flex flex-column gap-3 ">
-                <div className="d-flex flex-row justify-content-between align-items-center">
+            <div className="p-4 midColor rounded-lgmb-3 flex flex-col gap-3 ">
+                <div className="flex flex-row justify-content-between items-center">
                     <div className="h2">Beatmap Search:</div>
-                    <div className="d-flex flex-row gap-2 align-items-center">
+                    <div className="flex flex flex-row gap-2 items-center">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
                         <button className="btn accentColor darkenOnHover"
                             onClick={clearSearch}
@@ -251,28 +251,28 @@ const BeatmapsPage = () => {
                         </button>
                     </div>
                 </div>
-                <div className="row darkestColor rounded p-3">
+                <div className="grid grid-cols-12 darkestColor rounded-lgp-3">
                     <div className="col-8">
                         <div className="mb-2 text-center">Title:</div>
-                        <input type="text" className="form-control flex-grow-1 me-2 darkColor border-0 text-center"
+                        <input type="text" className="form-control flex-ggrid grid-cols-12-1 me-2 darkColor border-0 text-center"
                             placeholder="..." autoFocus={true}
                             value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
                     <div className="col-4">
                         <div className="mb-2 text-center">Mapper:</div>
-                        <input type="text" className="form-control flex-grow-1 me-2 darkColor border-0 text-center"
+                        <input type="text" className="form-control flex-ggrid grid-cols-12-1 me-2 darkColor border-0 text-center"
                             placeholder="..."
                             value={mapper} onChange={(e) => setMapper(e.target.value)} />
                     </div>
                 </div>
-                <div className="darkestColor rounded d-flex flex-column p-3 gap-3">
-                    <div className="row">
+                <div className="darkestColor rounded-lgflex flex-col p-3 gap-3">
+                    <div className="grid grid-cols-12">
                         <div className="col-12">
                             <div className="text-center">Year:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div
                                     className="col-2 text-end">{year[0] < timeMax ? year[0] : 'now'}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={timeMin}
                                         max={timeMax}
                                         className="yearSlider"
@@ -290,12 +290,12 @@ const BeatmapsPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="grid grid-cols-12">
                         <div className="col-4">
                             <div className="text-center">BPM:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{bpm[0] < bpmLimit ? bpm[0] : '∞'}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={bpmLimit}
                                         step={5}
@@ -314,9 +314,9 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-4">
                             <div className="text-center">Stars:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{sr[0] < srLimit ? sr[0] : '∞'}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={srLimit}
                                         step={0.5}
@@ -335,10 +335,10 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-4">
                             <div className="text-center">Length:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div
                                     className="col-2 text-end">{length[0] < lengthLimit ? secondsToTime(length[0]) : '∞'}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={lengthLimit}
                                         step={15}
@@ -357,12 +357,12 @@ const BeatmapsPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="grid grid-cols-12">
                         <div className="col-3">
                             <div className="text-center">AR:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{ar[0]}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={statLimit}
                                         step={0.5}
@@ -381,9 +381,9 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-3">
                             <div className="text-center">CS:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{cs[0]}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={statLimit}
                                         step={0.5}
@@ -402,9 +402,9 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-3">
                             <div className="text-center">HP:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{hp[0]}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider min={0}
                                         max={statLimit}
                                         step={0.5}
@@ -423,9 +423,9 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-3">
                             <div className="text-center">OD:</div>
-                            <div className="row align-items-center">
+                            <div className="grid grid-cols-12 items-center">
                                 <div className="col-2 text-end">{od[0]}</div>
-                                <div className="col-8 d-flex align-items-center">
+                                <div className="col-8 flex items-center">
                                     <Slider
                                         min={0}
                                         max={statLimit}
@@ -445,13 +445,13 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="d-flex flex-row gap-3">
-                    <div className="darkestColor rounded p-3 d-flex flex-column gap-2 flex-grow-1">
+                <div className="flex flex-row gap-3">
+                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
                         <div>Status:</div>
-                        <div className="d-flex flex-row flex-wrap gap-2 align-items-center" role="group">
+                        <div className="flex flex flex-row flex-wrap gap-2 items-center" role="group">
                             {songStatus.map((thing: BeatmapsetStatusType, index: number) =>
                                 <button type="button"
-                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded ${!status.includes(thing) && 'fakeDisabled'}`}
+                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded-lg${!status.includes(thing) && 'fakeDisabled'}`}
                                     key={index + 1}
                                     onClick={() => status.includes(thing) ? setStatus([]) : setStatus([...status, thing])}
                                     style={{ backgroundColor: (colors.beatmap as any)[thing] }}>
@@ -460,12 +460,12 @@ const BeatmapsPage = () => {
                             )}
                         </div>
                     </div>
-                    <div className="darkestColor rounded p-3 d-flex flex-column gap-2 flex-grow-1">
+                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
                         <div>Mode:</div>
-                        <div className="d-flex flex-row flex-wrap gap-2" role="group">
+                        <div className="flex flex flex-row flex-wrap gap-2" role="group">
                             {songModes.map((thing: GameModeType, index: number) =>
                                 <button type="button"
-                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded ${!modes.includes(thing) && 'fakeDisabled'}`}
+                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded-lg${!modes.includes(thing) && 'fakeDisabled'}`}
                                     key={index + 1}
                                     onClick={() => modes.includes(thing) ? setModes(modes.filter(v => v != thing)) : setModes([...modes, thing])}
                                     style={{ backgroundColor: (colors.modes as any)[thing] }}>
@@ -475,12 +475,12 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="d-flex flex-row gap-3">
-                    <div className="darkestColor rounded p-3 d-flex flex-column gap-2 flex-grow-1">
+                <div className="flex flex-row gap-3">
+                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
                         <div>Sort:</div>
-                        <div className="d-flex flex-row flex-wrap gap-2">
+                        <div className="flex flex flex-row flex-wrap gap-2">
                             {songSort.map((sor) =>
-                                <button className={`btn d-flex flex-row gap-1 accentColor text-black fw-bold border-0 darkenOnHover rounded ${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                                <button className={`btn flex flex flex-row gap-1 accentColor text-black fw-bold border-0 darkenOnHover rounded-lg${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
                                     onClick={() => {
                                         const s: any = sort[0]?.split(':')[0];
                                         const o: any = sort[0]?.split(':')[1];
@@ -504,7 +504,7 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="row gap-2 justify-content-center">
+            <div className="grid grid-cols-12 gap-2 justify-center">
                 {results.map((set: BeatmapSet, index: number) =>
                     <div className="col-12 col-md-8 col-xl-5 col-xxl-4 rounded-3 overflow-hidden p-0">
                         <BeatmapsetCard key={index + 1} data={set} index={index} />
@@ -512,7 +512,7 @@ const BeatmapsPage = () => {
                 )}
                 {results.length < resultsNum &&
                     <button
-                        className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100"
+                        className="btn btn-success flex flex flex-row gap-2 justify-center w-full"
                         onClick={() => getBeatmaps(false)}>
                         <i className="bi bi-caret-down-fill"></i>
                         <div>Load more</div>

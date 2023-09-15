@@ -194,7 +194,7 @@ app.post('/user', async (req, res) => {
     data.db_info = await updateUser(data.id, data.username, data.rank_history?.data, data.statistics.country_rank, mode);
     // developers
     data.customBadges = {};
-    if ([17018032].includes(data.id)) {
+    if ([17018032, 20661304, 17897192].includes(data.id)) {
         data.customBadges.developer = true;
         data.country.code = "CAT";
         data.country.name = "Catalunya";

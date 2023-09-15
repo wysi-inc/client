@@ -2,8 +2,7 @@ import React from 'react';
 
 interface CountryShapeProps {
     code: string;
-    width: number;
-    height: number;
+    size: number;
 }
 
 const CountryShape = (props: CountryShapeProps) => {
@@ -14,8 +13,8 @@ const CountryShape = (props: CountryShapeProps) => {
                  alt="ico"
                  style={{
                      filter: 'brightness(0) invert(1)',
-                     height: props.height,
-                     width: props.width
+                     height: props.size,
+                     width: props.size
                  }} src={svgFile}/>
         );
     } catch (error) {

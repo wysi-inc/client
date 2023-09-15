@@ -9,7 +9,7 @@ const StatusBadge = (props: StatusBadgeProps) => {
         <div style={{
             backgroundColor: (colors.beatmap as any)[props.status],
             color: "#000000"
-        }} className="rounded-pill px-2 fw-bold">
+        }} className="rounded-full px-2 font-semibold">
             {props.status}
         </div>
     )

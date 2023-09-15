@@ -166,28 +166,28 @@ const TopScoresPanel = (props: topScoresProps) => {
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
 
     return (
-        <div className="p-3 row">
-            <div className="col-12 col-lg-6 mt-3">
+        <div className="grid grid-cols-2 p-3 gap-3">
+            <div>
                 <BarPieChart title={"Hit Ratios"} data={scoresHitsLabels} />
             </div>
-            <div className="col-12 col-lg-6 mt-3">
+            <div>
                 <BarPieChart title={"Rank Ratios"} data={scoresRanksLabels} />
             </div>
-            <div className="col-12 mt-4">
+            <div className="col-span-2">
                 <PpLine data={props.best} color={colors.ui.font} />
             </div>
-            <div className="col-12 mt-5 mb-3 d-flex flex-column align-items-center">
+            <div className="col-span-2 flex flex-col items-center">
                 <div>Average play:</div>
-                <div className="d-flex flex-row flex-wrap justify-content-center gap-2 mt-2">
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                <div className="flex flex flex-row flex-wrap justify-center gap-2 mt-2">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>Mods:</div>
-                        <div className="d-flex flex-row gap-1">
+                        <div className="flex flex flex-row gap-1">
                             {commonMods.map((mod : string, index : number) =>
                                 <ModIcon acronym={mod} size={20} key={index + 1}/>)}
                         </div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>Length:</div>
                         <i className="bi bi-stopwatch"></i>
                         <div>
@@ -195,27 +195,27 @@ const TopScoresPanel = (props: topScoresProps) => {
                         </div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>BPM:</div>
                         <div>{averageBpm}</div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>Acc:</div>
                         <div>{averageAcc.toFixed(2)}%</div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>Combo:</div>
                         <div>{averageCombo}x</div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>PP:</div>
                         <div>{averagePP}pp</div>
                     </div>
                     <div>|</div>
-                    <div className="d-flex flex-row gap-1 align-items-center">
+                    <div className="flex flex flex-row gap-1 items-center">
                         <div>Rank:</div>
                         <div style={{ color: (colors.ranks as any)[averageRank.toLowerCase()] }}>
                             {averageRank}

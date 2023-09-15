@@ -5,7 +5,7 @@ interface ModIconProps {
 }
 const ModIcon = (props: ModIconProps) => {
     return (
-        <img height={props.size}
+        <img style={{height: props.size}}
              src={require(`../assets/mod-icons/${props.acronym.toLowerCase()}.png`)}
              alt={props.acronym}
              data-tooltip-id="tooltip"

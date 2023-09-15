@@ -12,9 +12,9 @@ const ModeSelector = (props: ModeSelectorProps) => {
     }
     const modes: GameModeType[] = ['osu', 'taiko', 'fruits', 'mania']
     return (
-        <div className="d-flex flex-row p-2 justify-content-around">
+        <div className="flex flex-row gap-2 justify-content-around">
             {modes.map((mode:GameModeType, index: number) =>
-                <button className="btn border-0 darkenOnHover" disabled={props.mode === mode}
+                <button className="border-0 darkenOnHover" disabled={props.mode === mode}
                         onClick={() => sendTo(mode)} key={index + 1}>
                     <img src={require(`../assets/mode-icons/${mode}.svg`)} alt={mode} style={{height: 28, width: 28}}/>
                 </button>

@@ -1,9 +1,9 @@
-import React, {useEffect, useState, useRef, useMemo, Dispatch, SetStateAction} from "react";
-import {useParams} from "react-router-dom";
+import React, { useEffect, useState, useRef, useMemo, Dispatch, SetStateAction } from "react";
+import { useParams } from "react-router-dom";
 import axios from '../resources/axios-config';
-import {Chart, registerables} from 'chart.js';
+import { Chart, registerables, ChartOptions, ChartType } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import {Line} from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import Spinner from 'react-bootstrap/Spinner';
 import ReactCountryFlag from "react-country-flag";
 import moment from "moment";
@@ -13,16 +13,37 @@ import {
     BeatmapSet,
     MedalCategories,
     MedalInterface,
-    MonthlyData, SortedMedals,
+    MonthlyData,
+    SortedMedals,
     UserAchievement,
     UserBadge,
     userData,
-    UserGroup
+    UserGroup,
 } from "../resources/interfaces";
 
-import {colors} from "../resources/store";
-import {BeatmapType, GameModeType, ScoreType} from "../resources/types";
-import {addDefaultSrc, secondsToTime} from "../resources/functions";
+import {
+    HiChevronDoubleUp,
+    HiFire,
+    HiReply,
+    HiCalculator,
+    HiGlobeAlt,
+    HiOutlineStar
+} from "react-icons/hi";
+import {
+    BiSolidTrophy,
+    BiSolidUserDetail
+} from "react-icons/bi";
+import { FaSkull } from "react-icons/fa";
+import {
+    BsFillPinAngleFill,
+    BsSuitHeartFill,
+    BsHourglassSplit,
+    BsBarChartLine,
+    BsStopwatch
+} from "react-icons/bs";
+import { colors } from "../resources/store";
+import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
+import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import ScoreCard from "../components/ScoreCard";
 import TopScoresPanel from "../components/TopScoresPanel";
 import Medal from "../components/Medal";
@@ -34,11 +55,10 @@ import GroupBadge from "../components/GroupBadge";
 import BeatmapsetCard from "../components/BeatmapsetCard";
 
 import Twemoji from 'react-twemoji';
+import { JsxElement } from "typescript";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
-Chart.defaults.font.family = "IBM Plex Mono";
-Chart.defaults.color = colors.ui.font;
 Chart.defaults.animation = false;
 Chart.defaults.elements.point.radius = 0;
 Chart.defaults.interaction.intersect = false;
@@ -47,11 +67,12 @@ Chart.defaults.indexAxis = 'x';
 Chart.defaults.responsive = true;
 Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.tooltip.displayColors = false;
+Chart.defaults.borderColor = colors.ui.font + '22';
 
 interface tabInterface {
     num: number,
     title: string,
-    icon: string,
+    icon: JSX.Element,
     count: number,
     setTabs: Dispatch<SetStateAction<number>>
 }
@@ -67,8 +88,17 @@ interface dataInterface {
 }
 
 const UserPage = () => {
-    const {urlUser} = useParams();
-    const {urlMode} = useParams();
+    const colorDiv = useRef<HTMLDivElement | null>(null);
+    const [accentColor, setAccentColor] = useState<string>('white');
+
+    useEffect(() => {
+        if (colorDiv.current) {
+            setAccentColor(window.getComputedStyle(colorDiv.current).backgroundColor);
+        }
+    }, [colorDiv.current]);
+
+    const { urlUser } = useParams();
+    const { urlMode } = useParams();
 
     const [userData, setUserData] = useState<userData | null>(null);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
@@ -161,7 +191,7 @@ const UserPage = () => {
             label: 'Rank',
             data: getGlobalData(),
             fill: false,
-            borderColor: colors.charts.global,
+            borderColor: accentColor,
             tension: 0.1,
         }],
     };
@@ -171,7 +201,7 @@ const UserPage = () => {
             label: 'Rank',
             data: getCountryData(),
             fill: false,
-            borderColor: colors.charts.global,
+            borderColor: accentColor,
             tension: 0.1,
         }],
     };
@@ -196,7 +226,7 @@ const UserPage = () => {
         }]
     };
 
-    const lineOptions: any = {
+    const lineOptions: ChartOptions<'line'> = {
         maintainAspectRatio: false,
         responsive: true,
         scales: {
@@ -204,11 +234,14 @@ const UserPage = () => {
                 reverse: false,
                 ticks: {
                     precision: 0
-                }
+                },
             },
-        },
+            x: {
+                display: false
+            }
+        }
     };
-    const lineOptionsReverse: any = {
+    const lineOptionsReverse: ChartOptions<'line'> = {
         maintainAspectRatio: false,
         responsive: true,
         scales: {
@@ -218,6 +251,9 @@ const UserPage = () => {
                     precision: 0
                 }
             },
+            x: {
+                display: false
+            }
         },
     };
 
@@ -225,19 +261,19 @@ const UserPage = () => {
         {
             num: 1,
             title: 'Pinned',
-            icon: 'bi-pin-angle-fill',
+            icon: <BsFillPinAngleFill />,
             count: userData.scores_pinned_count,
             setTabs: setScoresTabIndex
         },
         {
             num: 2,
             title: 'Best',
-            icon: 'bi-bar-chart-fill',
+            icon: <BsBarChartLine />,
             count: userData.scores_best_count,
             setTabs: setScoresTabIndex
         },
-        {num: 3, title: 'Firsts', icon: 'bi-star-fill', count: userData.scores_first_count, setTabs: setScoresTabIndex},
-        {num: 4, title: 'Recent', icon: 'bi bi-alarm', count: userData.scores_recent_count, setTabs: setScoresTabIndex},
+        { num: 3, title: 'Firsts', icon: <HiOutlineStar />, count: userData.scores_first_count, setTabs: setScoresTabIndex },
+        { num: 4, title: 'Recent', icon: <BsStopwatch />, count: userData.scores_recent_count, setTabs: setScoresTabIndex },
     ]
 
     const scoresData: dataInterface[] = [
@@ -283,49 +319,49 @@ const UserPage = () => {
         {
             num: 1,
             title: 'Favourites',
-            icon: 'bi-star-fill',
+            icon: <HiOutlineStar />,
             count: userData.favourite_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 2,
             title: 'Ranked',
-            icon: 'bi bi-chevron-double-up',
+            icon: <HiChevronDoubleUp />,
             count: userData.ranked_and_approved_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 3,
             title: 'Loved',
-            icon: 'bi-suit-heart-fill',
+            icon: <BsSuitHeartFill />,
             count: userData.loved_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 4,
             title: 'Guest',
-            icon: 'bi-person-lines-fill',
+            icon: <BiSolidUserDetail />,
             count: userData.guest_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 5,
             title: 'Graveyard',
-            icon: 'bi-x-circle',
+            icon: <FaSkull />,
             count: userData.graveyard_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 6,
             title: 'Nominated',
-            icon: 'bi-trophy-fill',
+            icon: <BiSolidTrophy />,
             count: userData.nominated_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
         {
             num: 7,
             title: 'Pending',
-            icon: 'bi-hourglass-bottom',
+            icon: <BsHourglassSplit />,
             count: userData.pending_beatmapset_count,
             setTabs: setBeatmapsTabIndex
         },
@@ -399,317 +435,312 @@ const UserPage = () => {
 
     return (
         <>
-            <div className="d-flex" style={{backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover"}}>
-                <div className="flex-grow-1" style={{backgroundColor: "#00000099", backdropFilter: "blur(4px)"}}>
-                    <div className="d-flex flex-row flex-wrap gap-5 p-4">
-                        <div className="d-flex flex-column justify-content-center gap-2">
+            <div className="bg-accent" ref={colorDiv}></div>
+            <div className="card image-full overflow-hidden rounded-none">
+                <figure><img src={userData.cover_url} alt="Shoes" style={{ filter: 'blur(4px) brightness(40%)' }} className="object-cover rounded-none" onError={addDefaultSrc} /></figure>
+                <div className="flex flex-col p-5 gap-2 card-body">
+                    <div className="grid grid-cols-10 flex-wrap gap-5">
+                        <div className="col-span-2 flex flex-col items-center gap-2">
                             <img src={userData.avatar_url}
-                                 onError={addDefaultSrc}
-                                 alt='pfp' className="rounded-5 mb-3"
-                                 style={{width: 256, height: 256}}/>
-                            <div className="d-flex flex-row gap-2 align-items-center">
-                                <div>{userData.statistics.level.current}</div>
-                                <div className="progress flex-grow-1" style={{height: 4}}>
-                                    <div className="progress-bar bg-warning"
-                                         style={{width: `${userData.statistics.level.progress}%`}}></div>
-                                </div>
+                                onError={addDefaultSrc}
+                                alt='pfp' className="rounded-xl mb-3"
+                                style={{ width: 256, height: 256 }} />
+                            <div className="flex flex-row gap-2 items-center">
+                                <div className="text-neutral-content">{userData.statistics.level.current}</div>
+                                <progress className="progress progress-warning w-56" value={userData.statistics.level.progress} max="100"></progress>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
-                            <div className="text-center h6"
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={moment(userData.join_date).fromNow()}>
+                            <div className="text-center text-lg tooltip"
+                                data-tip={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>
-                        <div className="d-flex flex-row justify-content-between flex-grow-1">
-                            <div className="d-flex flex-column gap-2">
-                                <div className="d-flex flex-row gap-3 align-items-center">
-                                    <a className="h1 m-0 d-flex flex-row align-items-center gap-2 text-decoration-none"
-                                       target={"_blank"}
-                                       href={`https://osu.ppy.sh/users/${userData.id}`}>
+                        <div className="col-span-8 flex flex-row justify-between">
+                            <div className="flex flex-col gap-2">
+                                <div className="flex flex-row gap-3 items-center">
+                                    <a className="text-3xl font-bold underline"
+                                        target={"_blank"}
+                                        href={`https://osu.ppy.sh/users/${userData.id}`}>
                                         {userData.username}
                                     </a>
                                     {userData.groups.map((group: UserGroup, index: number) =>
                                         <GroupBadge group={group}
-                                                    key={index + 1}/>
+                                            key={index + 1} />
                                     )}
-                                    {userData.is_supporter && <SupporterIcon size={32}/>}
+                                    {userData.is_supporter && <SupporterIcon size={32} />}
                                 </div>
                                 <div className="profileTitle">{userData.title}</div>
                                 <div data-tooltip-id="tooltip"
-                                     data-tooltip-html={`${maniaG}`}
-                                     className="d-flex flex-column gap-1">
-                                    <div className="h6">Global Rank:</div>
-                                    <div className="h3 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-globe2"></i>
+                                    data-tooltip-html={`${maniaG}`}
+                                    className="flex flex-col gap-1">
+                                    <div className="text-lg">Global Rank:</div>
+                                    <div className="text-2xl flex flex-row items-center gap-2">
+                                        <HiGlobeAlt />
                                         <div>#{userData.statistics.global_rank?.toLocaleString()}</div>
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                     data-tooltip-html={`${maniaC}`}
-                                     className="d-flex flex-column gap-1">
-                                    <div className="h6">Country Rank:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <CountryShape code={userData.country.code} width={24} height={24}/>
+                                    data-tooltip-html={`${maniaC}`}
+                                    className="flex flex-col gap-1">
+                                    <div className="text-lg">Country Rank:</div>
+                                    <div className="text-2xl flex flex-row items-center gap-2">
+                                        <CountryShape code={userData.country.code} size={24} />
                                         <div>#{userData.statistics.country_rank?.toLocaleString()}</div>
                                         {userData.country.code === 'CAT' ?
-                                            <img alt={userData.country.code} className="emoji-flag"
-                                                 src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)}
-                                                 data-tooltip-id="tooltip"
-                                                 data-tooltip-content={userData.country.name}/> :
-                                            <Twemoji options={{className: 'emoji-flag', noWrapper: true}}>
+                                            <div className="tooltip" data-tip={userData.country.name}>
+                                                <img alt={userData.country.code} className="emoji-flag"
+                                                    src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
+                                            </div> :
+                                            <Twemoji options={{ className: 'emoji-flag', noWrapper: true }}>
                                                 <ReactCountryFlag countryCode={userData.country.code}
-                                                                  data-tooltip-id="tooltip"
-                                                                  data-tooltip-content={userData.country.name}/>
+                                                    className="tooltip"
+                                                    data-tip={userData.country.name} />
                                             </Twemoji>}
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
-                                     data-tooltip-html={`${maniaPP}`}
-                                     className="d-flex flex-column gap-1">
-                                    <div className="h6">Performance:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
+                                    data-tooltip-html={`${maniaPP}`}
+                                    className="flex flex-col gap-1">
+                                    <div className="text-lg">Performance:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
                                         <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Accuracy:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Accuracy:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
                                         <div>{(userData.statistics.hit_accuracy).toFixed(2)}%</div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Play Time:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-clock"></i>
-                                        <div data-tooltip-id="tooltip"
-                                             data-tooltip-content={secondsToTime(userData.statistics.play_time)}>
-                                            {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="d-flex flex-column gap-2">
-                                <ModeSelector mode={gameMode} userId={userData.id}/>
-                                <div className="d-flex flex-row align-items-center gap-3">
-                                    <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{color: colors.ranks.xh}}>XH</div>
+                                <div className="flex flex-row items-center gap-3">
+                                    <div className="h5 flex flex-col items-center">
+                                        <div style={{ color: colors.ranks.xh }}>XH</div>
                                         <div>{userData.statistics.grade_counts.ssh}</div>
                                     </div>
-                                    <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{color: colors.ranks.x}}>X</div>
+                                    <div className="h5 flex flex-col items-center">
+                                        <div style={{ color: colors.ranks.x }}>X</div>
                                         <div>{userData.statistics.grade_counts.ss}</div>
                                     </div>
-                                    <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{color: colors.ranks.sh}}>SH</div>
+                                    <div className="h5 flex flex-col items-center">
+                                        <div style={{ color: colors.ranks.sh }}>SH</div>
                                         <div>{userData.statistics.grade_counts.sh}</div>
                                     </div>
-                                    <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{color: colors.ranks.s}}>S</div>
+                                    <div className="h5 flex flex-col items-center">
+                                        <div style={{ color: colors.ranks.s }}>S</div>
                                         <div>{userData.statistics.grade_counts.s}</div>
                                     </div>
-                                    <div className="h5 d-flex flex-column align-items-center">
-                                        <div style={{color: colors.ranks.a}}>A</div>
+                                    <div className="h5 flex flex-col items-center">
+                                        <div style={{ color: colors.ranks.a }}>A</div>
                                         <div>{userData.statistics.grade_counts.a}</div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Ranked Score:</div>
-                                    <div className="h3 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-chevron-double-up"></i>
-                                        <div data-tooltip-id="tooltip"
-                                             data-tooltip-content={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <ModeSelector mode={gameMode} userId={userData.id} />
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Ranked Score:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
+                                        <HiChevronDoubleUp />
+                                        <div className="tooltip"
+                                            data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
                                             {(userData.statistics.ranked_score).toLocaleString()}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Max Combo:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-fire"></i>
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Max Combo:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
+                                        <HiFire />
                                         <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Play Count:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-arrow-counterclockwise"></i>
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Play Time:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
+                                        <i className="bi bi-clock"></i>
+                                        <div className="tooltip"
+                                            data-tip={secondsToTime(userData.statistics.play_time)}>
+                                            {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Play Count:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
+                                        <HiReply />
                                         <div>{userData.statistics.play_count.toLocaleString()}</div>
                                     </div>
                                 </div>
-                                <div className="d-flex flex-column gap-1">
-                                    <div className="h6">Hits x Play:</div>
-                                    <div className="h4 d-flex flex-row align-items-center gap-2">
-                                        <i className="bi bi-x"></i>
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-lg">Hits x Play:</div>
+                                    <div className="text-xl flex flex-row items-center gap-2">
+                                        <HiCalculator />
                                         <div>{Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count)}</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div
-                        className="d-flex flex-row flex-wrap gap-2 px-5 py-4 align-items-center justify-content-start">
-                        {userData.badges.map((badge: UserBadge, index: number) =>
-                            <Badge badge={badge} key={index + 1}/>
-                        )}
-                    </div>
+                    {userData.badges.length > 0 &&
+                        <div className="flex flex-row flex-wrap gap-2 px-5 py-4 items-center justify-content-start">
+                            {userData.badges.map((badge: UserBadge, index: number) =>
+                                <Badge badge={badge} key={index + 1} />
+                            )}
+                        </div>}
                 </div>
             </div>
-            <div className="p-4 m-0 d-flex flex-row flex-wrap align-items-center gap-3 h6 shadow darkColor">
-                <div className="d-flex flex-row align-items-center gap-2">
+            <div className="p-3 m-0 flex flex-row flex-wrap items-center gap-3 bg-base-200 shadow">
+                <div className="flex flex-row items-center gap-2">
                     <i className="bi bi-people-fill"></i>
                     <div>Followers: {userData.follower_count.toLocaleString()}</div>
                 </div>
                 {userData.discord !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-discord"></i>
-                        <Twemoji options={{className: 'emoji', noWrapper: true}}>
+                        <Twemoji options={{ className: 'emoji', noWrapper: true }}>
                             {userData.discord}
                         </Twemoji>
                     </div>}
                 {userData.twitter !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-twitter"></i>
-                        <Twemoji options={{className: 'emoji'}}>
+                        <Twemoji options={{ className: 'emoji' }}>
                             {userData.twitter}
                         </Twemoji>
                     </div>}
                 {userData.website !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-globe"></i>
-                        <Twemoji options={{className: 'emoji'}}>
+                        <Twemoji options={{ className: 'emoji' }}>
                             {userData.website}
                         </Twemoji>
                     </div>}
                 {userData.discord !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-geo-alt-fill"></i>
-                        <Twemoji options={{className: 'emoji'}}>
+                        <Twemoji options={{ className: 'emoji' }}>
                             {userData.location}
                         </Twemoji>
                     </div>}
                 {userData.interests !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-suit-heart-fill"></i>
-                        <Twemoji options={{className: 'emoji'}}>
+                        <Twemoji options={{ className: 'emoji' }}>
                             {userData.interests}
                         </Twemoji>
                     </div>}
                 {userData.occupation !== null &&
-                    <div className="d-flex flex-row align-items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
                         <i className="bi bi-buildings"></i>
-                        <Twemoji options={{className: 'emoji'}}>
+                        <Twemoji options={{ className: 'emoji' }}>
                             {userData.occupation}
                         </Twemoji>
                     </div>}
             </div>
-            <div className="row gap-4 p-4 justify-content-center">
-                <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div1Ref}>
-                    <div className="rounded-3 overflow-hidden darkColor shadow">
-                        <div className="h4 p-2 m-0 titleColor d-flex flex-row gap-2 justify-content-center">
+            <div className="grid grid-cols-5 gap-4 p-4 justify-center">
+                <div className="col-span-3 flex flex-col gap-4 p-0 m-0" ref={div1Ref}>
+                    <div className="rounded-lg overflow-hidden shadow">
+                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
                             <i className="bi bi-graph-up"></i>
                             <div>History</div>
                         </div>
-                        <nav className="row">
-                            {userData.db_info.global_rank?.length > 0 &&
+                        <div className="tabs tabs-boxed content-center rounded-none justify-center bg-base-200">
+                            {getGlobalData().length > 0 &&
                                 <button
-                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 1 ? 'accentColor' : 'midColor'}`}
+                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 1 && 'tab-active font-bold'}`}
                                     onClick={() => setHistoryTabIndex(1)}>
                                     <i className="bi bi-globe2"></i>
                                     <div>Global Rank</div>
                                 </button>}
-                            {userData.db_info.country_rank?.length > 0 &&
+                            {getCountryData().length > 0 &&
                                 <button
-                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 2 ? 'accentColor' : 'midColor'}`}
+                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 2 && 'tab-active font-bold'}`}
                                     onClick={() => setHistoryTabIndex(2)}>
-                                    <CountryShape code={userData.country.code} width={24} height={24}/>
+                                    <CountryShape code={userData.country.code} size={18} />
                                     <div>Country Rank</div>
                                 </button>}
-                            {userData.monthly_playcounts?.length > 0 &&
+                            {getPlaysData().length > 0 &&
                                 <button
-                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 3 ? 'accentColor' : 'midColor'}`}
+                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 3 && 'tab-active font-bold'}`}
                                     onClick={() => setHistoryTabIndex(3)}>
                                     <i className="bi bi-arrow-counterclockwise"></i>
                                     <div>Play Count</div>
                                 </button>}
-                            {userData.replays_watched_counts?.length > 0 &&
+                            {getReplaysData().length > 0 &&
                                 <button
-                                    className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${historyTabIndex === 4 ? 'accentColor' : 'midColor'}`}
+                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 4 && 'tab-active font-bold'}`}
                                     onClick={() => setHistoryTabIndex(4)}>
                                     <i className="bi bi-arrow-counterclockwise"></i>
                                     <div>Replays Watched</div>
                                 </button>}
-                        </nav>
-                        <div style={{height: 250}} className="d-flex justify-content-center align-items-center">
-                            <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 1}
-                                 style={{height: 250}}>
-                                <Line data={globalHistoryData} options={lineOptionsReverse}/>
+                        </div>
+                        <div style={{ height: 250 }} className="bg-base-300 flex justify-center items-center">
+                            <div className="w-full p-3" hidden={historyTabIndex !== 1}
+                                style={{ height: 250 }}>
+                                <Line data={globalHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="flex-grow-1 p-3 text-center h1" hidden={historyTabIndex !== 2}
-                                 style={{height: 250}}>
-                                <Line data={countryHistoryData} options={lineOptionsReverse}/>
+                            <div className="w-full p-3 text-center h1" hidden={historyTabIndex !== 2}
+                                style={{ height: 250 }}>
+                                <Line data={countryHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 3}
-                                 style={{height: 250}}>
-                                <Line data={playsHistoryData} options={lineOptions}/>
+                            <div className="w-full p-3" hidden={historyTabIndex !== 3}
+                                style={{ height: 250 }}>
+                                <Line data={playsHistoryData} options={lineOptions} />
                             </div>
-                            <div className="flex-grow-1 p-3" hidden={historyTabIndex !== 4}
-                                 style={{height: 250}}>
-                                <Line data={replaysHistoryData} options={lineOptions}/>
+                            <div className="w-full p-3" hidden={historyTabIndex !== 4}
+                                style={{ height: 250 }}>
+                                <Line data={replaysHistoryData} options={lineOptions} />
                             </div>
                         </div>
                     </div>
-                    <div className="rounded-3 overflow-hidden darkColor shadow">
-                        <div className="h4 p-2 m-0 titleColor d-flex flex-row gap-2 justify-content-center">
+                    <div className="rounded-lg overflow-hidden shadow">
+                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
                             <i className="bi bi-bar-chart-line"></i>
                             <div>Top Play Stats</div>
                         </div>
-                        <div className="p-3">
-                            <TopScoresPanel data={userData} best={bestScores}/>
+                        <div className="p-2 bg-base-300">
+                            <TopScoresPanel data={userData} best={bestScores} />
                         </div>
                     </div>
                 </div>
-                <div
-                    className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
-                    ref={div2Ref} style={{height: div1Height}}>
-                    <div className="h4 p-2 m-0 row titleColor align-items-center">
-                        <div className="col-2"></div>
-                        <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
+                <div className="col-span-2 flex flex-col overflow-hidden rounded-lg shadow"
+                    ref={div2Ref} style={{ height: div1Height }}>
+                    <div className="p-2 grid grid-cols-6 items-center bg-base-100">
+                        <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-controller"></i>
                             <div>Scores</div>
                         </div>
-                        <div className="col-2 d-flex justify-content-end">
-                            <button className="btn darkenOnHover m-0 p-0"
-                                    onClick={() => {
-                                        getScores(userData.id, gameMode, false);
-                                    }}>
-                                <i className="bi bi-arrow-clockwise"></i>
+                        <div className="col-span-1 flex justify-content-end">
+                            <button className="darkenOnHover m-0 p-0"
+                                onClick={() => {
+                                    getScores(userData.id, gameMode, false);
+                                }}>
+                                <i className="bi bi-argrid grid-cols-12-clockwise"></i>
                             </button>
                         </div>
                     </div>
-                    <nav className="row">
+                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-base-200">
                         {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${scoresTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
+                            <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active font-bold'}`}
                                 onClick={() => tab.setTabs(tab.num)} key={i + 1}>
-                                <i className={`bi ${tab.icon}`}></i>
+                                {tab.icon}
                                 <div>{tab.title}</div>
-                                <div className="badge darkColor rounded-pill">{tab.count}</div>
+                                <div className="badge">{tab.count}</div>
                             </button>)}
-                    </nav>
-                    <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
+                    </div>
+                    <div className="overflow-y-scroll p-3 bg-base-300">
                         {scoresData.map((dat: dataInterface, i: number) =>
-                            <div hidden={dat.tab !== dat.num} key={i + 1}>
+                            <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
                                     <Spinner animation="border" role="status" className="mx-auto mt-4">
                                         <div className="visually-hidden">Loading...</div>
                                     </Spinner>}
                                 {(dat.maps as Score[])[0]?.ended_at &&
                                     (dat.maps as Score[]).map((score: Score, index: number) =>
-                                        <ScoreCard index={index + 1} score={score} key={index + 1}/>)}
+                                        <ScoreCard index={index + 1} score={score} key={index + 1} />)}
                                 {dat.maps.length < dat.count &&
                                     <button
-                                        className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
+                                        className="btn btn-success flex flex-row gap-2 justify-center w-full rounded-0"
                                         onClick={() => getThings(userData.id, gameMode, dat.group, dat.thing, dat.maps.length, beatmapReqLimit, dat.maps, dat.setMore)}>
                                         <i className="bi bi-caret-down-fill"></i>
                                         <div>Expand</div>
@@ -718,47 +749,44 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div
-                    className="col-12 col-xl-4 overflow-hidden d-flex flex-column rounded-3 overflow-hidden darkColor shadow p-0 m-0"
-                    ref={div2Ref} style={{height: div1Height}}>
-                    <div className="h4 p-2 m-0 row titleColor align-items-center">
-                        <div className="col-2"></div>
-                        <div className="col-8 d-flex flex-row gap-2 align-items-center justify-content-center">
+                <div className="col-span-2 rounded-lg overflow-hidden shadow"
+                    ref={div2Ref} style={{ height: div1Height }}>
+                    <div className="p-2 grid grid-cols-6 items-center bg-base-100">
+                        <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-file-earmark-music"></i>
                             <div>Beatmaps</div>
                         </div>
-                        <div className="col-2 d-flex justify-content-end">
-                            <button className="btn darkenOnHover m-0 p-0"
-                                    onClick={() => {
-                                        getBeatmaps(userData.id, gameMode, false);
-                                    }}>
-                                <i className="bi bi-arrow-clockwise"></i>
+                        <div className="col-span-1 flex justify-content-end">
+                            <button className=""
+                                onClick={() => {
+                                    getBeatmaps(userData.id, gameMode, false);
+                                }}>
+                                <i className="bi bi-argrid grid-cols-12-clockwise"></i>
                             </button>
                         </div>
                     </div>
-                    <nav className="row">
+                    <div className="tabs tabs-boxed content-center rounded-none justify-center">
                         {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button
-                                className={`col border-0 rounded-0 p-2 d-flex flex-row gap-2 align-items-center justify-content-center ${beatmapsTabIndex === tab.num ? 'accentColor' : 'midColor'}`}
+                            <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active font-bold'}`}
                                 onClick={() => tab.setTabs(tab.num)} key={i + 1}>
-                                <i className={`bi ${tab.icon}`}></i>
+                                {tab.icon}
                                 <div>{tab.title}</div>
-                                <div className="badge darkColor rounded-pill">{tab.count}</div>
+                                <div className="badge">{tab.count}</div>
                             </button>)}
-                    </nav>
-                    <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
+                    </div>
+                    <div className="overflow-y-scroll p-3 bg-base-300">
                         {beatmapsData.map((dat: dataInterface, i: number) =>
-                            <div hidden={dat.tab !== dat.num} key={i + 1}>
+                            <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
                                     <Spinner animation="border" role="status" className="mx-auto mt-4">
                                         <div className="visually-hidden">Loading...</div>
                                     </Spinner>}
                                 {(dat.maps as BeatmapSet[])[0]?.title &&
                                     (dat.maps as BeatmapSet[]).map((beatmapset: BeatmapSet, index: number) =>
-                                        <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1}/>)}
+                                        <BeatmapsetCard index={index + 1} data={beatmapset} key={index + 1} />)}
                                 {dat.maps.length < dat.count &&
                                     <button
-                                        className="btn btn-success d-flex flex-row gap-2 justify-content-center w-100 rounded-0"
+                                        className="btn btn-success flex flex-row gap-2 justify-center w-full rounded-0"
                                         onClick={() => getThings(userData.id, gameMode, dat.group, dat.thing, dat.maps.length, beatmapReqLimit, dat.maps, dat.setMore)}>
                                         <i className="bi bi-caret-down-fill"></i>
                                         <div>Expand</div>
@@ -767,46 +795,46 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div className="col-12 col-xl-7 d-flex flex-column gap-4 p-0 m-0" ref={div2Ref}
-                     style={{height: div1Height}}>
-                    <div className="rounded-3 overflow-hidden darkColor shadow p-0 d-flex flex-column">
-                        <div className="h4 p-2 m-0 titleColor d-flex flex-row gap-2 justify-content-center">
+                <div className="col-span-3 flex flex-col gap-4 p-0 m-0" ref={div2Ref}
+                    style={{ height: div1Height }}>
+                    <div className="rounded-lg overflow-hidden bg-base-300 shadow p-0 flex flex-col">
+                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
                             <i className="bi bi-award"></i>
                             <div>Medals</div>
                         </div>
-                        <div className="flex-grow-1 overflow-y-scroll overflow-x-hidden">
-                            <div className="row">
-                                <div className="col-12 col-lg p-0">
-                                    <div className="text-center p-2 h5 midColor">
+                        <div className="flex flex-col overflow-y-scroll overflow-x-hidden">
+                            <div className="grid grid-cols-6">
+                                <div className="col-span-5">
+                                    <div className="text-center p-2 bg-base-200">
                                         Recent Medals
                                     </div>
                                     <div className="p-3 pt-2">
-                                        <div className="d-flex flex-row justify-content-between pb-1 px-2"
-                                             style={{fontSize: 14, top: -8}}>
+                                        <div className="flex flex-row justify-between pb-1 px-2"
+                                            style={{ fontSize: 14, top: -8 }}>
                                             <div>most recent</div>
                                             <div>least recent</div>
                                         </div>
                                         <div
-                                            className="d-flex flex-row gap-1 overflow-hidden backgroundColor p-3 rounded">
+                                            className="flex flex-row gap-1">
                                             {lastMedals.map((medal: MedalInterface, index: number) => (
                                                 <Medal thisMedal={medal} userMedals={userData.user_achievements}
-                                                       key={index}/>))}
+                                                    key={index} />))}
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-12 col-lg-2 p-0">
-                                    <div className="text-center p-2 h5 midColor">
+                                <div className="col-span-1">
+                                    <div className="text-center p-2 bg-base-200">
                                         Rarest Medal
                                     </div>
                                     <div className="p-3 pt-2">
                                         <div className="pb-1 px-2 text-center"
-                                             style={{fontSize: 14, top: -8}}>
+                                            style={{ fontSize: 14, top: -8 }}>
                                             Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
                                         </div>
-                                        <div className="backgroundColor p-3 rounded d-grid justify-content-center">
+                                        <div className="p-3 rounded-lg grid justify-center">
                                             {rarestMedal &&
                                                 <Medal thisMedal={rarestMedal}
-                                                       userMedals={userData.user_achievements}/>}
+                                                    userMedals={userData.user_achievements} />}
                                         </div>
                                     </div>
                                 </div>
@@ -815,22 +843,22 @@ const UserPage = () => {
                                 {Object.entries(medalsByCategory).map(([category, medals]: [string, MedalInterface[]], key: number) => (
                                     <div key={key}>
                                         <div
-                                            className="text-center p-2 d-flex flex-row justify-content-center align-items-center midColor">
-                                            <div className="h5 m-0 text-center">
+                                            className="text-center p-2 flex flex-row justify-center items-center bg-base-200">
+                                            <div className="text-center">
                                                 {category}:
                                             </div>
                                         </div>
                                         <div className="p-3 pt-2">
                                             <div className="pb-1 px-2 text-center"
-                                                 style={{fontSize: 14, top: -8}}>
+                                                style={{ fontSize: 14, top: -8 }}>
                                                 {(getAchievedMedalsCount()[category] / medals.length * 100).toFixed(2)}%
                                                 ({getAchievedMedalsCount()[category]}/{medals.length})
                                             </div>
                                             <div
-                                                className="d-flex flex-row flex-wrap gap-1 justify-content-center backgroundColor p-3 rounded">
+                                                className="flex flex-row flex-wrap gap-1 justify-center">
                                                 {medals.map((medal: MedalInterface, index: number) => (
                                                     <Medal thisMedal={medal} userMedals={userData.user_achievements}
-                                                           key={index}/>
+                                                        key={index} />
                                                 ))}
                                             </div>
                                         </div>
@@ -886,9 +914,9 @@ const UserPage = () => {
         const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/top_ranks?mode=${mode}`
         const urlR: string = `https://osu.ppy.sh/users/${id}/extra-pages/historical?mode=${mode}`
         try {
-            const res = await axios.post('/proxy', {url: url});
+            const res = await axios.post('/proxy', { url: url });
             const data = res.data;
-            const resR = await axios.post('/proxy', {url: urlR});
+            const resR = await axios.post('/proxy', { url: urlR });
             const dataR = resR.data;
             if (!data || !dataR) return;
             let tab: number = 0;
@@ -917,7 +945,7 @@ const UserPage = () => {
     async function getBeatmaps(id: number, mode: GameModeType, changeTab: boolean) {
         const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/beatmaps?mode=${mode}`;
         try {
-            const res = await axios.post('/proxy', {url: url});
+            const res = await axios.post('/proxy', { url: url });
             const data = res.data;
             if (!data) return;
             let tab: number = 0;
@@ -959,7 +987,7 @@ const UserPage = () => {
         const url: string = `https://osu.ppy.sh/users/${id}/${thing}/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
         if (offset === 0) console.log(`get more ${thing}`, url);
         try {
-            const res = await axios.post('/proxy', {url: url});
+            const res = await axios.post('/proxy', { url: url });
             const data: any[] = res.data;
             if (offset === 0) {
                 setThings(data);
@@ -1116,7 +1144,7 @@ const UserPage = () => {
             }</div>`
         ).join('');
 
-        return `<div class="d-flex flex-column g-2">${markup}</div>`;
+        return `<div class="flex flex-col g-2">${markup}</div>`;
     }
 }
 export default UserPage;
