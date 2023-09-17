@@ -36,7 +36,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     padding: 0 !important;
     color: #ffffff;
 }
-
+.tab-active {
+    color: #272935 !important;
+    font-weight: bold !important;
+}
 .row {
     margin: 0 !important;
 }
@@ -269,7 +272,7 @@ input::after, input::before {
 }
 
 .fakeDisabled {
-    filter: brightness(50%);
+    filter: brightness(50%) !important;
 
 }
 

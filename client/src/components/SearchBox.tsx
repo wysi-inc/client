@@ -1,15 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import { UserCompact } from "../resources/interfaces";
 import axios from "../resources/axios-config";
 import ReactCountryFlag from "react-country-flag";
-import Spinner from "react-bootstrap/Spinner";
 import OnlineDot from "./OnlineDot";
 import SupporterIcon from "./SupporterIcon";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Twemoji from "react-twemoji";
+import { FaSearch } from "react-icons/fa";
+import GroupBadge from "./GroupBadge";
 
 const SearchBox = () => {
 
@@ -38,6 +37,7 @@ const SearchBox = () => {
             axios.post('/userQuery', {
                 username: username
             }).then(r => {
+                console.log(r.data.user.data);
                 setUserList(r.data.user.data);
             }).catch(e => {
                 console.error(e)
@@ -63,11 +63,12 @@ const SearchBox = () => {
 
     return (
         <>
-            <button className="btn btn-ghost btn-circle" onClick={show}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <button className="btn btn-ghost flex flex-row gap-3" onClick={show}>
+                <FaSearch />
+                <div>Search someone</div>
             </button>
             <dialog id="searchModal" className="modal">
-                <div className="modal-box">
+                <div className="modal-box flex flex-col gap-3">
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
@@ -76,23 +77,23 @@ const SearchBox = () => {
                         e.preventDefault();
                         sendTo(username);
                     }}>
-                        <div className="join w-full">
-                            <button className="btn join-item" type="submit">
-                                <i className="bi bi-search"></i>
+                        <div className="join grow">
+                            <button className="btn join-item rounded-s-lg">
+                            <FaSearch />
                             </button>
-                            <input className="input input-bordered join-item"
+                            <input className="input input-bordered join-item grow"
                                 id="searchInput"
                                 placeholder="Username..." autoFocus={true}
                                 onChange={handleChange} />
                         </div>
                     </form>
                     {userList.length > 0 &&
-                        <div className="flex flex-col p-3 flex-grid grid-cols-12">
+                        <div className="flex flex-col gap-1">
                             {userList.map((user: UserCompact, index: number) =>
                             (index < 10 &&
                                 <Link to={`/users/${user.id}`}
                                     key={index + 1} onClick={hide}
-                                    className="border-0 text-decoration-none  text-light m-0 p-0 d-block flex-ggrid grid-cols-12-1 flex flex flex-row items-center justify-content-between darkenOnHover darkColor rounded mb-1 ">
+                                    className="text-decoration-none bg-accent-950 rounded-lg flex flex-row justify-between items-center grow darkenOnHover">
                                     <div className="flex flex-row gap-2 items-center">
                                         <img src={user.avatar_url} height={40} width={40} alt="pfp"
                                             className="rounded" />
@@ -102,7 +103,19 @@ const SearchBox = () => {
                                                 data-tooltip-content={user.country_code} />
                                         </Twemoji>
                                         <div>{user.username}</div>
-                                        {user.is_supporter && <SupporterIcon size={18} />}
+                                        {user.profile_colour &&
+                                            <GroupBadge group={{
+                                                colour: user.profile_colour,
+                                                has_listing: false,
+                                                has_playmodes: false,
+                                                id: 0,
+                                                identifier: '',
+                                                is_probationary: false,
+                                                name: '',
+                                                short_name: user.default_group,
+                                                playmodes: []
+                                            }} />}
+                                        {user.is_supporter && <SupporterIcon size={14} level={1} />}
                                     </div>
                                     <div className="me-2">
                                         <OnlineDot isOnline={user.is_online} size={18} />

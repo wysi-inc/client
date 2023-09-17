@@ -1,14 +1,16 @@
 import React from "react";
+import {ImHeart} from "react-icons/im"
 
 interface SupporterIconProps {
     size: number;
+    level: number;
 }
 
 const SupporterIcon = (props: SupporterIconProps) => {
     return (
-        <img src={require('../assets/supporter-heart.svg').default} alt="supporter" style={{height: props.size}}
-             data-tooltip-id="tooltip"
-             data-tooltip-content="supporter"/>
+        <div className="badge badge-primary">{
+            [...Array(props.level)].map((_, i) => <ImHeart/>)
+        }</div>
     )
 }
 

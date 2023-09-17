@@ -7,9 +7,7 @@ interface GroupBadgeProps {
 
 const GroupBadge = (props: GroupBadgeProps) => {
     return (
-        <div className="rounded-pill backgroundColor px-2 fw-bold" style={{color: props.group.colour}}
-             data-tooltip-id="tooltip"
-             data-tooltip-content={props.group.name}>
+        <div className="badge font-bold border-none" style={{color: props.group.colour}}>
             {props.group.short_name}
         </div>
     )

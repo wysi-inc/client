@@ -6,6 +6,7 @@ export const colors: ColorsInterface = {
         font: '#f5f5f5',
         bg: '#212529',
         main: '#b74757',
+        accent: '#ffb86b',
     },
     modes: {
         any: "#f0f0f0",

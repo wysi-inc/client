@@ -8,7 +8,8 @@ import { secondsToTime } from "../resources/functions";
 import { colors } from "../resources/store";
 import { useDebounce } from "usehooks-ts";
 import Spinner from "react-bootstrap/Spinner";
-import moment from "moment/moment";
+import { BiCopy, BiSolidEraser } from "react-icons/bi";
+import { BsCheckLg } from "react-icons/bs";
 
 const BeatmapsPage = () => {
 
@@ -40,7 +41,9 @@ const BeatmapsPage = () => {
 
     const [modes, setModes] = useState<GameModeType[]>([]);
     const [status, setStatus] = useState<BeatmapsetStatusType[]>([]);
+
     const [copied, setCopied] = useState<boolean>(false);
+    const [cleared, setCleared] = useState<boolean>(false);
 
     const [sort, setSort] = useState<string[]>([]);
 
@@ -125,6 +128,7 @@ const BeatmapsPage = () => {
         setModes([]);
         setStatus([]);
         setSort([]);
+        setTimeout(() => setCleared(false), 400)
     }
 
     function setURL(): void {
@@ -228,283 +232,262 @@ const BeatmapsPage = () => {
     }
 
     return (
-        <div className="p-4">
-            <div className="p-4 midColor rounded-lgmb-3 flex flex-col gap-3 ">
-                <div className="flex flex-row justify-content-between items-center">
-                    <div className="h2">Beatmap Search:</div>
-                    <div className="flex flex flex-row gap-2 items-center">
+        <div className="p-4 bg-accent-800">
+            <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900">
+                <div className="text-xl flex flex-row justify-between items-center">
+                    <div>Beatmap Search:</div>
+                    <div className="flex flex-row gap-2 items-center">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
-                        <button className="btn accentColor darkenOnHover"
-                            onClick={clearSearch}
-                            data-tooltip-id="tooltip"
-                            data-tooltip-content="Clear Search">
-                            <i className="bi bi-eraser"></i>
-                        </button>
-                        <button className="btn btn-success darkenOnHover"
-                            data-tooltip-id="tooltip"
-                            data-tooltip-content="Copy Search"
-                            onClick={() => {
-                                setCopied(true);
-                                setURL();
-                            }} disabled={copied}>
-                            <i className={`bi ${!copied ? 'bi-clipboard' : 'bi-check-lg'}`}></i>
-                        </button>
+                        <div className="tooltip" data-tip="Clear">
+                            <button className="btn btn-error text-lg"
+                                onClick={() => {
+                                    setCleared(true);
+                                    clearSearch();
+                                }}>
+                                {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
+
+                            </button>
+                        </div>
+                        <div className="tooltip" data-tip="Copy">
+                            <button className="btn btn-success text-lg"
+                                onClick={() => {
+                                    setCopied(true);
+                                    setURL();
+                                }}>
+                                {!copied ? <BiCopy /> : <BsCheckLg />}
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-12 darkestColor rounded-lgp-3">
-                    <div className="col-8">
+                <div className="grid grid-cols-4 gap-4 bg-accent-950 rounded-lg p-4">
+                    <div className="col-span-3">
                         <div className="mb-2 text-center">Title:</div>
-                        <input type="text" className="form-control flex-ggrid grid-cols-12-1 me-2 darkColor border-0 text-center"
+                        <input type="text" className="input input-bordered w-full text-center"
                             placeholder="..." autoFocus={true}
                             value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
-                    <div className="col-4">
+                    <div className="col-span-1">
                         <div className="mb-2 text-center">Mapper:</div>
-                        <input type="text" className="form-control flex-ggrid grid-cols-12-1 me-2 darkColor border-0 text-center"
+                        <input type="text" className="input input-bordered w-full text-center"
                             placeholder="..."
                             value={mapper} onChange={(e) => setMapper(e.target.value)} />
                     </div>
                 </div>
-                <div className="darkestColor rounded-lgflex flex-col p-3 gap-3">
+                <div className="rounded-lg flex flex-col p-4 gap-4 bg-accent-950">
                     <div className="grid grid-cols-12">
-                        <div className="col-12">
+                        <div className="col-start-4 col-span-6">
                             <div className="text-center">Year:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div
-                                    className="col-2 text-end">{year[0] < timeMax ? year[0] : 'now'}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={timeMin}
-                                        max={timeMax}
-                                        className="yearSlider"
-                                        step={1}
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setYear([Math.min((newValue as number[])[0], year[1] - 1), year[1]]);
-                                            } else {
-                                                setYear([year[0], Math.max((newValue as number[])[1], year[0] + 1)]);
-                                            }
-                                        }}
-                                        value={year} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{year[1] < timeMax ? year[1] : 'now'}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{year[0] < timeMax ? year[0] : 'now'}</div>
+                                <Slider className="yearSlider grow"
+                                    min={timeMin} max={timeMax} step={1}
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setYear([Math.min((newValue as number[])[0], year[1] - 1), year[1]]);
+                                        } else {
+                                            setYear([year[0], Math.max((newValue as number[])[1], year[0] + 1)]);
+                                        }
+                                    }}
+                                    value={year} disableSwap />
+                                <div className="w-20 text-start">{year[1] < timeMax ? year[1] : 'now'}</div>
                             </div>
                         </div>
                     </div>
                     <div className="grid grid-cols-12">
-                        <div className="col-4">
+                        <div className="col-span-4">
                             <div className="text-center">BPM:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{bpm[0] < bpmLimit ? bpm[0] : '∞'}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={bpmLimit}
-                                        step={5}
-                                        className="bpmSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setBpm([Math.min((newValue as number[])[0], bpm[1] - 5), bpm[1]]);
-                                            } else {
-                                                setBpm([bpm[0], Math.max((newValue as number[])[1], bpm[0] + 5)]);
-                                            }
-                                        }}
-                                        value={bpm} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{bpm[1] < bpmLimit ? bpm[1] : '∞'}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{bpm[0] < bpmLimit ? bpm[0] : '∞'}</div>
+                                <Slider min={0}
+                                    max={bpmLimit}
+                                    step={5}
+                                    className="bpmSlider grow"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setBpm([Math.min((newValue as number[])[0], bpm[1] - 5), bpm[1]]);
+                                        } else {
+                                            setBpm([bpm[0], Math.max((newValue as number[])[1], bpm[0] + 5)]);
+                                        }
+                                    }}
+                                    value={bpm} disableSwap />
+                                <div className="w-20 text-start">{bpm[1] < bpmLimit ? bpm[1] : '∞'}</div>
                             </div>
                         </div>
-                        <div className="col-4">
+                        <div className="col-span-4">
                             <div className="text-center">Stars:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{sr[0] < srLimit ? sr[0] : '∞'}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={srLimit}
-                                        step={0.5}
-                                        className="srSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setSR([Math.min((newValue as number[])[0], sr[1] - 0.5), sr[1]]);
-                                            } else {
-                                                setSR([sr[0], Math.max((newValue as number[])[1], sr[0] + 0.5)]);
-                                            }
-                                        }}
-                                        value={sr} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{sr[1] < srLimit ? sr[1] : '∞'}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{sr[0] < srLimit ? sr[0] : '∞'}</div>
+                                <Slider min={0}
+                                    max={srLimit}
+                                    step={0.5}
+                                    className="srSlider grow"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setSR([Math.min((newValue as number[])[0], sr[1] - 0.5), sr[1]]);
+                                        } else {
+                                            setSR([sr[0], Math.max((newValue as number[])[1], sr[0] + 0.5)]);
+                                        }
+                                    }}
+                                    value={sr} disableSwap />
+                                <div className="w-20 text-start">{sr[1] < srLimit ? sr[1] : '∞'}</div>
                             </div>
                         </div>
-                        <div className="col-4">
+                        <div className="col-span-4">
                             <div className="text-center">Length:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div
-                                    className="col-2 text-end">{length[0] < lengthLimit ? secondsToTime(length[0]) : '∞'}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={lengthLimit}
-                                        step={15}
-                                        className="lengthSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setLength([Math.min((newValue as number[])[0], length[1] - 30), length[1]]);
-                                            } else {
-                                                setLength([length[0], Math.max((newValue as number[])[1], length[0] + 30)]);
-                                            }
-                                        }}
-                                        value={length} disableSwap />
-                                </div>
-                                <div
-                                    className="col-2 text-start">{length[1] < lengthLimit ? secondsToTime(length[1]) : '∞'}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{length[0] < lengthLimit ? secondsToTime(length[0]) : '∞'}</div>
+                                <Slider min={0}
+                                    max={lengthLimit}
+                                    step={15}
+                                    className="lengthSlider"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setLength([Math.min((newValue as number[])[0], length[1] - 30), length[1]]);
+                                        } else {
+                                            setLength([length[0], Math.max((newValue as number[])[1], length[0] + 30)]);
+                                        }
+                                    }}
+                                    value={length} disableSwap />
+                                <div className="w-20 text-start">{length[1] < lengthLimit ? secondsToTime(length[1]) : '∞'}</div>
                             </div>
                         </div>
                     </div>
                     <div className="grid grid-cols-12">
-                        <div className="col-3">
+                        <div className="col-span-3">
                             <div className="text-center">AR:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{ar[0]}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={statLimit}
-                                        step={0.5}
-                                        className="arSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setAR([Math.min((newValue as number[])[0], ar[1] - 1), ar[1]]);
-                                            } else {
-                                                setAR([ar[0], Math.max((newValue as number[])[1], ar[0] + 1)]);
-                                            }
-                                        }}
-                                        value={ar} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{ar[1]}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{ar[0]}</div>
+                                <Slider min={0}
+                                    max={statLimit}
+                                    step={0.5}
+                                    className="arSlider"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setAR([Math.min((newValue as number[])[0], ar[1] - 1), ar[1]]);
+                                        } else {
+                                            setAR([ar[0], Math.max((newValue as number[])[1], ar[0] + 1)]);
+                                        }
+                                    }}
+                                    value={ar} disableSwap />
+                                <div className="w-20 text-start">{ar[1]}</div>
                             </div>
                         </div>
-                        <div className="col-3">
+                        <div className="col-span-3">
                             <div className="text-center">CS:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{cs[0]}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={statLimit}
-                                        step={0.5}
-                                        className="csSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setCS([Math.min((newValue as number[])[0], cs[1] - 1), cs[1]]);
-                                            } else {
-                                                setCS([cs[0], Math.max((newValue as number[])[1], cs[0] + 1)]);
-                                            }
-                                        }}
-                                        value={cs} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{cs[1]}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{cs[0]}</div>
+                                <Slider min={0}
+                                    max={statLimit}
+                                    step={0.5}
+                                    className="csSlider"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setCS([Math.min((newValue as number[])[0], cs[1] - 1), cs[1]]);
+                                        } else {
+                                            setCS([cs[0], Math.max((newValue as number[])[1], cs[0] + 1)]);
+                                        }
+                                    }}
+                                    value={cs} disableSwap />
+                                <div className="w-20 text-start">{cs[1]}</div>
                             </div>
                         </div>
-                        <div className="col-3">
+                        <div className="col-span-3">
                             <div className="text-center">HP:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{hp[0]}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider min={0}
-                                        max={statLimit}
-                                        step={0.5}
-                                        className="hpSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setHP([Math.min((newValue as number[])[0], hp[1] - 1), hp[1]]);
-                                            } else {
-                                                setHP([hp[0], Math.max((newValue as number[])[1], hp[0] + 1)]);
-                                            }
-                                        }}
-                                        value={hp} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{hp[1]}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{hp[0]}</div>
+                                <Slider min={0}
+                                    max={statLimit}
+                                    step={0.5}
+                                    className="hpSlider"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setHP([Math.min((newValue as number[])[0], hp[1] - 1), hp[1]]);
+                                        } else {
+                                            setHP([hp[0], Math.max((newValue as number[])[1], hp[0] + 1)]);
+                                        }
+                                    }}
+                                    value={hp} disableSwap />
+                                <div className="w-20 text-start">{hp[1]}</div>
                             </div>
                         </div>
-                        <div className="col-3">
+                        <div className="col-span-3">
                             <div className="text-center">OD:</div>
-                            <div className="grid grid-cols-12 items-center">
-                                <div className="col-2 text-end">{od[0]}</div>
-                                <div className="col-8 flex items-center">
-                                    <Slider
-                                        min={0}
-                                        max={statLimit}
-                                        step={0.5}
-                                        className="odSlider"
-                                        onChange={(event, newValue, activeThumb) => {
-                                            if (activeThumb === 0) {
-                                                setOD([Math.min((newValue as number[])[0], od[1] - 1), od[1]]);
-                                            } else {
-                                                setOD([od[0], Math.max((newValue as number[])[1], od[0] + 1)]);
-                                            }
-                                        }}
-                                        value={od} disableSwap />
-                                </div>
-                                <div className="col-2 text-start">{od[1]}</div>
+                            <div className="flex flex-row gap-4 justify-center items-center">
+                                <div className="w-20 text-end">{od[0]}</div>
+                                <Slider
+                                    min={0}
+                                    max={statLimit}
+                                    step={0.5}
+                                    className="odSlider"
+                                    onChange={(event, newValue, activeThumb) => {
+                                        if (activeThumb === 0) {
+                                            setOD([Math.min((newValue as number[])[0], od[1] - 1), od[1]]);
+                                        } else {
+                                            setOD([od[0], Math.max((newValue as number[])[1], od[0] + 1)]);
+                                        }
+                                    }}
+                                    value={od} disableSwap />
+                                <div className="w-20 text-start">{od[1]}</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="flex flex-row gap-3">
-                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
-                        <div>Status:</div>
-                        <div className="flex flex flex-row flex-wrap gap-2 items-center" role="group">
-                            {songStatus.map((thing: BeatmapsetStatusType, index: number) =>
-                                <button type="button"
-                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded-lg${!status.includes(thing) && 'fakeDisabled'}`}
-                                    key={index + 1}
-                                    onClick={() => status.includes(thing) ? setStatus([]) : setStatus([...status, thing])}
-                                    style={{ backgroundColor: (colors.beatmap as any)[thing] }}>
-                                    {thing.toLowerCase()}
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
+                    <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4">
                         <div>Mode:</div>
-                        <div className="flex flex flex-row flex-wrap gap-2" role="group">
+                        <div className="flex flex-row flex-wrap gap-3" role="group">
                             {songModes.map((thing: GameModeType, index: number) =>
                                 <button type="button"
-                                    className={`btn text-black fw-bold border-0 darkenOnHover rounded-lg${!modes.includes(thing) && 'fakeDisabled'}`}
+                                    className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!modes.includes(thing) && 'fakeDisabled'}`}
                                     key={index + 1}
                                     onClick={() => modes.includes(thing) ? setModes(modes.filter(v => v != thing)) : setModes([...modes, thing])}
                                     style={{ backgroundColor: (colors.modes as any)[thing] }}>
                                     {thing.toLowerCase()}
-                                </button>
-                            )}
+                                </button>)}
+                        </div>
+                    </div>
+                    <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4 grow">
+                        <div>Status:</div>
+                        <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
+                            {songStatus.map((thing: BeatmapsetStatusType, index: number) =>
+                                <button type="button"
+                                    className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!status.includes(thing) && 'fakeDisabled'}`}
+                                    key={index + 1}
+                                    onClick={() => status.includes(thing) ? setStatus([]) : setStatus([...status, thing])}
+                                    style={{ backgroundColor: (colors.beatmap as any)[thing] }}>
+                                    {thing.toLowerCase()}
+                                </button>)}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-3">
-                    <div className="darkestColor rounded-lgp-3 flex flex-col gap-2 flex-ggrid grid-cols-12-1">
-                        <div>Sort:</div>
-                        <div className="flex flex flex-row flex-wrap gap-2">
-                            {songSort.map((sor) =>
-                                <button className={`btn flex flex flex-row gap-1 accentColor text-black fw-bold border-0 darkenOnHover rounded-lg${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
-                                    onClick={() => {
-                                        const s: any = sort[0]?.split(':')[0];
-                                        const o: any = sort[0]?.split(':')[1];
-                                        if (s && o) {
-                                            if (s === sor) {
-                                                if (o === 'asc') setSort([]);
-                                                else setSort([`${sor}:asc`])
-                                            } else {
-                                                setSort([`${sor}:desc`])
-                                            }
+                <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4">
+                    <div>Sort:</div>
+                    <div className="flex flex-row flex-wrap gap-3">
+                        {songSort.map((sor) =>
+                            <button className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                                onClick={() => {
+                                    const s: any = sort[0]?.split(':')[0];
+                                    const o: any = sort[0]?.split(':')[1];
+                                    if (s && o) {
+                                        if (s === sor) {
+                                            if (o === 'asc') setSort([]);
+                                            else setSort([`${sor}:asc`])
                                         } else {
                                             setSort([`${sor}:desc`])
                                         }
-                                    }}>
-                                    <div className="text-black">{sor.replace('beatmaps.', '').replace('_', ' ')}</div>
-                                    {sort[0]?.split(':')[0] === sor && sort[0]?.split(':')[1] === 'desc' && <i className="bi bi-caret-down-fill text-black"></i>}
-                                    {sort[0]?.split(':')[0] === sor && sort[0]?.split(':')[1] === 'asc' && <i className="bi bi-caret-up-fill text-black"></i>}
-                                </button>
-                            )}
-                        </div>
+                                    } else {
+                                        setSort([`${sor}:desc`])
+                                    }
+                                }}>
+                                <div className="text-black">{sor.replace('beatmaps.', '').replace('_', ' ')}</div>
+                                {sort[0]?.split(':')[0] === sor && sort[0]?.split(':')[1] === 'desc' && <i className="bi bi-caret-down-fill text-black"></i>}
+                                {sort[0]?.split(':')[0] === sor && sort[0]?.split(':')[1] === 'asc' && <i className="bi bi-caret-up-fill text-black"></i>}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-12 gap-2 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 justify-center">
                 {results.map((set: BeatmapSet, index: number) =>
                     <div className="col-12 col-md-8 col-xl-5 col-xxl-4 rounded-3 overflow-hidden p-0">
                         <BeatmapsetCard key={index + 1} data={set} index={index} />
@@ -512,7 +495,7 @@ const BeatmapsPage = () => {
                 )}
                 {results.length < resultsNum &&
                     <button
-                        className="btn btn-success flex flex flex-row gap-2 justify-center w-full"
+                        className="btn btn-success flex flex-row gap-2 justify-center w-full"
                         onClick={() => getBeatmaps(false)}>
                         <i className="bi bi-caret-down-fill"></i>
                         <div>Load more</div>

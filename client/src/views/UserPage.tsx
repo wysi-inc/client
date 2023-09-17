@@ -41,6 +41,7 @@ import {
     BsBarChartLine,
     BsStopwatch
 } from "react-icons/bs";
+
 import { colors } from "../resources/store";
 import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
@@ -55,7 +56,8 @@ import GroupBadge from "../components/GroupBadge";
 import BeatmapsetCard from "../components/BeatmapsetCard";
 
 import Twemoji from 'react-twemoji';
-import { JsxElement } from "typescript";
+import NumberAnimation from "../components/NumberAnimation";
+import CountUp from "react-countup";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -88,15 +90,6 @@ interface dataInterface {
 }
 
 const UserPage = () => {
-    const colorDiv = useRef<HTMLDivElement | null>(null);
-    const [accentColor, setAccentColor] = useState<string>('white');
-
-    useEffect(() => {
-        if (colorDiv.current) {
-            setAccentColor(window.getComputedStyle(colorDiv.current).backgroundColor);
-        }
-    }, [colorDiv.current]);
-
     const { urlUser } = useParams();
     const { urlMode } = useParams();
 
@@ -191,7 +184,7 @@ const UserPage = () => {
             label: 'Rank',
             data: getGlobalData(),
             fill: false,
-            borderColor: accentColor,
+            borderColor: colors.ui.accent,
             tension: 0.1,
         }],
     };
@@ -201,7 +194,7 @@ const UserPage = () => {
             label: 'Rank',
             data: getCountryData(),
             fill: false,
-            borderColor: accentColor,
+            borderColor: colors.ui.accent,
             tension: 0.1,
         }],
     };
@@ -211,7 +204,7 @@ const UserPage = () => {
             label: 'Play Count',
             data: getPlaysData(),
             fill: false,
-            borderColor: colors.charts.plays,
+            borderColor: colors.ui.accent,
             tension: 0.1
         }]
     };
@@ -221,7 +214,7 @@ const UserPage = () => {
             label: 'Replays Watched',
             data: getReplaysData(),
             fill: false,
-            borderColor: colors.charts.plays,
+            borderColor: colors.ui.accent,
             tension: 0.1
         }]
     };
@@ -435,19 +428,18 @@ const UserPage = () => {
 
     return (
         <>
-            <div className="bg-accent" ref={colorDiv}></div>
-            <div className="card image-full overflow-hidden rounded-none">
-                <figure><img src={userData.cover_url} alt="Shoes" style={{ filter: 'blur(4px) brightness(40%)' }} className="object-cover rounded-none" onError={addDefaultSrc} /></figure>
-                <div className="flex flex-col p-5 gap-2 card-body">
+            <div style={{ backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover" }}>
+                <div style={{ backgroundColor: "#000000bb", backdropFilter: "blur(2px)" }}
+                    className="flex flex-col p-5 gap-2 card-body rounded-none">
                     <div className="grid grid-cols-10 flex-wrap gap-5">
-                        <div className="col-span-2 flex flex-col items-center gap-2">
+                        <div className="col-span-2 flex flex-col items-center gap-3">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
-                                alt='pfp' className="rounded-xl mb-3"
-                                style={{ width: 256, height: 256 }} />
-                            <div className="flex flex-row gap-2 items-center">
+                                alt='pfp' className="rounded-xl aspect-square mb-2"
+                                style={{ width: '100%' }} />
+                            <div className="flex flex-row gap-2 items-center w-full">
                                 <div className="text-neutral-content">{userData.statistics.level.current}</div>
-                                <progress className="progress progress-warning w-56" value={userData.statistics.level.progress} max="100"></progress>
+                                <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
                             <div className="text-center text-lg tooltip"
@@ -467,7 +459,7 @@ const UserPage = () => {
                                         <GroupBadge group={group}
                                             key={index + 1} />
                                     )}
-                                    {userData.is_supporter && <SupporterIcon size={32} />}
+                                    {userData.is_supporter && <SupporterIcon size={32} level={userData.support_level} />}
                                 </div>
                                 <div className="profileTitle">{userData.title}</div>
                                 <div data-tooltip-id="tooltip"
@@ -476,7 +468,7 @@ const UserPage = () => {
                                     <div className="text-lg">Global Rank:</div>
                                     <div className="text-2xl flex flex-row items-center gap-2">
                                         <HiGlobeAlt />
-                                        <div>#{userData.statistics.global_rank?.toLocaleString()}</div>
+                                        <div>#{userData.statistics.global_rank ? <CountUp end={userData.statistics.global_rank} duration={1} /> : '-'}</div>
                                     </div>
                                 </div>
                                 <div data-tooltip-id="tooltip"
@@ -485,7 +477,7 @@ const UserPage = () => {
                                     <div className="text-lg">Country Rank:</div>
                                     <div className="text-2xl flex flex-row items-center gap-2">
                                         <CountryShape code={userData.country.code} size={24} />
-                                        <div>#{userData.statistics.country_rank?.toLocaleString()}</div>
+                                        <div>#{userData.statistics.country_rank ? <CountUp end={userData.statistics.country_rank} duration={1} /> : '-'}</div>
                                         {userData.country.code === 'CAT' ?
                                             <div className="tooltip" data-tip={userData.country.name}>
                                                 <img alt={userData.country.code} className="emoji-flag"
@@ -503,35 +495,35 @@ const UserPage = () => {
                                     className="flex flex-col gap-1">
                                     <div className="text-lg">Performance:</div>
                                     <div className="text-xl flex flex-row items-center gap-2">
-                                        <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
+                                        <div><CountUp end={Math.round(userData.statistics.pp)} duration={1} />pp</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <div className="text-lg">Accuracy:</div>
                                     <div className="text-xl flex flex-row items-center gap-2">
-                                        <div>{(userData.statistics.hit_accuracy).toFixed(2)}%</div>
+                                        <div><CountUp end={userData.statistics.hit_accuracy} decimals={2} duration={1} />%</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-row items-center gap-3">
                                     <div className="h5 flex flex-col items-center">
                                         <div style={{ color: colors.ranks.xh }}>XH</div>
-                                        <div>{userData.statistics.grade_counts.ssh}</div>
+                                        <div><CountUp end={userData.statistics.grade_counts.ssh} duration={1} /></div>
                                     </div>
                                     <div className="h5 flex flex-col items-center">
                                         <div style={{ color: colors.ranks.x }}>X</div>
-                                        <div>{userData.statistics.grade_counts.ss}</div>
+                                        <div><CountUp end={userData.statistics.grade_counts.ss} duration={1} /></div>
                                     </div>
                                     <div className="h5 flex flex-col items-center">
                                         <div style={{ color: colors.ranks.sh }}>SH</div>
-                                        <div>{userData.statistics.grade_counts.sh}</div>
+                                        <div><CountUp end={userData.statistics.grade_counts.sh} duration={1} /></div>
                                     </div>
                                     <div className="h5 flex flex-col items-center">
                                         <div style={{ color: colors.ranks.s }}>S</div>
-                                        <div>{userData.statistics.grade_counts.s}</div>
+                                        <div><CountUp end={userData.statistics.grade_counts.s} duration={1} /></div>
                                     </div>
                                     <div className="h5 flex flex-col items-center">
                                         <div style={{ color: colors.ranks.a }}>A</div>
-                                        <div>{userData.statistics.grade_counts.a}</div>
+                                        <div><CountUp end={userData.statistics.grade_counts.a} duration={1} /></div>
                                     </div>
                                 </div>
                             </div>
@@ -543,7 +535,7 @@ const UserPage = () => {
                                         <HiChevronDoubleUp />
                                         <div className="tooltip"
                                             data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
-                                            {(userData.statistics.ranked_score).toLocaleString()}
+                                            <CountUp end={userData.statistics.ranked_score} duration={1} />
                                         </div>
                                     </div>
                                 </div>
@@ -551,7 +543,7 @@ const UserPage = () => {
                                     <div className="text-lg">Max Combo:</div>
                                     <div className="text-xl flex flex-row items-center gap-2">
                                         <HiFire />
-                                        <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
+                                        <div><CountUp end={userData.statistics.maximum_combo} duration={1} />x</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1">
@@ -560,7 +552,7 @@ const UserPage = () => {
                                         <i className="bi bi-clock"></i>
                                         <div className="tooltip"
                                             data-tip={secondsToTime(userData.statistics.play_time)}>
-                                            {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
+                                            <CountUp end={Math.round((userData.statistics.play_time / 60 / 60))} duration={1} />h
                                         </div>
                                     </div>
                                 </div>
@@ -568,14 +560,16 @@ const UserPage = () => {
                                     <div className="text-lg">Play Count:</div>
                                     <div className="text-xl flex flex-row items-center gap-2">
                                         <HiReply />
-                                        <div>{userData.statistics.play_count.toLocaleString()}</div>
+                                        <div><CountUp end={userData.statistics.play_count} duration={1} /></div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <div className="text-lg">Hits x Play:</div>
                                     <div className="text-xl flex flex-row items-center gap-2">
                                         <HiCalculator />
-                                        <div>{Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count)}</div>
+                                        <div>
+                                            <CountUp end={Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count)} duration={1} />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -589,7 +583,7 @@ const UserPage = () => {
                         </div>}
                 </div>
             </div>
-            <div className="p-3 m-0 flex flex-row flex-wrap items-center gap-3 bg-base-200 shadow">
+            <div className="bg-accent-800 drop-shadow-lg p-4 m-0 flex flex-row flex-wrap items-center gap-4">
                 <div className="flex flex-row items-center gap-2">
                     <i className="bi bi-people-fill"></i>
                     <div>Followers: {userData.follower_count.toLocaleString()}</div>
@@ -637,44 +631,39 @@ const UserPage = () => {
                         </Twemoji>
                     </div>}
             </div>
-            <div className="grid grid-cols-5 gap-4 p-4 justify-center">
-                <div className="col-span-3 flex flex-col gap-4 p-0 m-0" ref={div1Ref}>
+            <div className="bg-accent-600 grid grid-cols-5 gap-4 p-4 justify-center">
+                <div className="drop-shadow-lg col-span-3 flex flex-col gap-4 p-0 m-0" ref={div1Ref}>
                     <div className="rounded-lg overflow-hidden shadow">
-                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
+                        <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-graph-up"></i>
                             <div>History</div>
                         </div>
-                        <div className="tabs tabs-boxed content-center rounded-none justify-center bg-base-200">
-                            {getGlobalData().length > 0 &&
-                                <button
-                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 1 && 'tab-active font-bold'}`}
-                                    onClick={() => setHistoryTabIndex(1)}>
-                                    <i className="bi bi-globe2"></i>
-                                    <div>Global Rank</div>
-                                </button>}
-                            {getCountryData().length > 0 &&
-                                <button
-                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 2 && 'tab-active font-bold'}`}
-                                    onClick={() => setHistoryTabIndex(2)}>
-                                    <CountryShape code={userData.country.code} size={18} />
-                                    <div>Country Rank</div>
-                                </button>}
-                            {getPlaysData().length > 0 &&
-                                <button
-                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 3 && 'tab-active font-bold'}`}
-                                    onClick={() => setHistoryTabIndex(3)}>
-                                    <i className="bi bi-arrow-counterclockwise"></i>
-                                    <div>Play Count</div>
-                                </button>}
-                            {getReplaysData().length > 0 &&
-                                <button
-                                    className={`tab flex flex-row gap-2  ${historyTabIndex === 4 && 'tab-active font-bold'}`}
-                                    onClick={() => setHistoryTabIndex(4)}>
-                                    <i className="bi bi-arrow-counterclockwise"></i>
-                                    <div>Replays Watched</div>
-                                </button>}
+                        <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
+                            <button
+                                className={`tab flex flex-row gap-2  ${historyTabIndex === 1 && 'tab-active text-base-100'}`}
+                                onClick={() => setHistoryTabIndex(1)}>
+                                <div>Global Rank</div>
+                            </button>
+                            <button
+                                className={`tab flex flex-row gap-2  ${historyTabIndex === 2 && 'tab-active text-base-100'}`}
+                                onClick={() => setHistoryTabIndex(2)}>
+                                <CountryShape code={userData.country.code} size={18} />
+                                <div>Country Rank</div>
+                            </button>
+                            <button
+                                className={`tab flex flex-row gap-2  ${historyTabIndex === 3 && 'tab-active text-base-100'}`}
+                                onClick={() => setHistoryTabIndex(3)}>
+                                <i className="bi bi-arrow-counterclockwise"></i>
+                                <div>Play Count</div>
+                            </button>
+                            <button
+                                className={`tab flex flex-row gap-2  ${historyTabIndex === 4 && 'tab-active text-base-100'}`}
+                                onClick={() => setHistoryTabIndex(4)}>
+                                <i className="bi bi-arrow-counterclockwise"></i>
+                                <div>Replays Watched</div>
+                            </button>
                         </div>
-                        <div style={{ height: 250 }} className="bg-base-300 flex justify-center items-center">
+                        <div style={{ height: 250 }} className="bg-accent-950 flex justify-center items-center">
                             <div className="w-full p-3" hidden={historyTabIndex !== 1}
                                 style={{ height: 250 }}>
                                 <Line data={globalHistoryData} options={lineOptionsReverse} />
@@ -694,18 +683,18 @@ const UserPage = () => {
                         </div>
                     </div>
                     <div className="rounded-lg overflow-hidden shadow">
-                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
+                        <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-bar-chart-line"></i>
                             <div>Top Play Stats</div>
                         </div>
-                        <div className="p-2 bg-base-300">
+                        <div className="p-2 bg-accent-950">
                             <TopScoresPanel data={userData} best={bestScores} />
                         </div>
                     </div>
                 </div>
-                <div className="col-span-2 flex flex-col overflow-hidden rounded-lg shadow"
+                <div className="drop-shadow-lg col-span-2 flex flex-col overflow-hidden rounded-lg shadow"
                     ref={div2Ref} style={{ height: div1Height }}>
-                    <div className="p-2 grid grid-cols-6 items-center bg-base-100">
+                    <div className="p-2 grid grid-cols-6 items-center bg-accent-800">
                         <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-controller"></i>
                             <div>Scores</div>
@@ -719,16 +708,16 @@ const UserPage = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-base-200">
+                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
                         {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active font-bold'}`}
+                            <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active text-base-100'}`}
                                 onClick={() => tab.setTabs(tab.num)} key={i + 1}>
                                 {tab.icon}
                                 <div>{tab.title}</div>
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div className="overflow-y-scroll p-3 bg-base-300">
+                    <div className="overflow-y-scroll p-3 bg-accent-950">
                         {scoresData.map((dat: dataInterface, i: number) =>
                             <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
@@ -749,9 +738,9 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div className="col-span-2 rounded-lg overflow-hidden shadow"
+                <div className="drop-shadow-lg col-span-2 rounded-lg overflow-hidden shadow"
                     ref={div2Ref} style={{ height: div1Height }}>
-                    <div className="p-2 grid grid-cols-6 items-center bg-base-100">
+                    <div className="p-2 grid grid-cols-6 items-center bg-accent-800">
                         <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-file-earmark-music"></i>
                             <div>Beatmaps</div>
@@ -765,16 +754,16 @@ const UserPage = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="tabs tabs-boxed content-center rounded-none justify-center">
+                    <div className="bg-accent-900 tabs tabs-boxed content-center rounded-none justify-center">
                         {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active font-bold'}`}
+                            <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
                                 onClick={() => tab.setTabs(tab.num)} key={i + 1}>
                                 {tab.icon}
                                 <div>{tab.title}</div>
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div className="overflow-y-scroll p-3 bg-base-300">
+                    <div className="overflow-y-scroll p-3 bg-accent-950">
                         {beatmapsData.map((dat: dataInterface, i: number) =>
                             <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
@@ -795,17 +784,17 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div className="col-span-3 flex flex-col gap-4 p-0 m-0" ref={div2Ref}
+                <div className="drop-shadow-lg col-span-3 flex flex-col gap-4 p-0 m-0" ref={div2Ref}
                     style={{ height: div1Height }}>
-                    <div className="rounded-lg overflow-hidden bg-base-300 shadow p-0 flex flex-col">
-                        <div className="p-2 bg-base-100 flex flex-row gap-2 justify-center">
+                    <div className="rounded-lg overflow-hidden p-0 flex flex-col">
+                        <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-award"></i>
                             <div>Medals</div>
                         </div>
-                        <div className="flex flex-col overflow-y-scroll overflow-x-hidden">
-                            <div className="grid grid-cols-6">
+                        <div className="flex flex-col overflow-y-scroll bg-accent-950 overflow-x-hidden">
+                            <div className="grid grid-cols-6 ">
                                 <div className="col-span-5">
-                                    <div className="text-center p-2 bg-base-200">
+                                    <div className="text-center p-2 bg-accent-900">
                                         Recent Medals
                                     </div>
                                     <div className="p-3 pt-2">
@@ -823,7 +812,7 @@ const UserPage = () => {
                                     </div>
                                 </div>
                                 <div className="col-span-1">
-                                    <div className="text-center p-2 bg-base-200">
+                                    <div className="text-center p-2 bg-accent-900">
                                         Rarest Medal
                                     </div>
                                     <div className="p-3 pt-2">
@@ -843,7 +832,7 @@ const UserPage = () => {
                                 {Object.entries(medalsByCategory).map(([category, medals]: [string, MedalInterface[]], key: number) => (
                                     <div key={key}>
                                         <div
-                                            className="text-center p-2 flex flex-row justify-center items-center bg-base-200">
+                                            className="text-center p-2 flex flex-row justify-center items-center bg-accent-900">
                                             <div className="text-center">
                                                 {category}:
                                             </div>

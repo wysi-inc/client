@@ -1,31 +1,38 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'accent': {
+          '50': '#f6f7f9',
+          '100': '#ededf1',
+          '200': '#d6d8e1',
+          '300': '#b3b7c6',
+          '400': '#8990a7',
+          '500': '#6a718d',
+          '600': '#555a74',
+          '700': '#414558',
+          '800': '#3c4050',
+          '900': '#353745',
+          '950': '#23252e',
+        },
+      }
+    }
+  },
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   daisyui: {
     themes: [
-      "dark",
-      "light",
-      "dracula",
       {
         wysi: {
-          "primary": "#a991f7",
-          "secondary": "#f6d860",
-          "accent": "#37cdbe",
-          "neutral": "#393939",
-          "base-100": "#1e1e1e",
-
-          "--rounded-box": "1rem", // border radius rounded-box utility class, used in card and other large boxes
-          "--rounded-btn": "0.5rem", // border radius rounded-btn utility class, used in buttons and similar element
-          "--rounded-badge": "1.9rem", // border radius rounded-badge utility class, used in badges and similar
-          "--animation-btn": "0.25s", // duration of animation when you click on button
-          "--animation-input": "0.2s", // duration of animation for inputs like checkbox, toggle, radio, etc
-          "--btn-text-case": "uppercase", // set default text transform for buttons
-          "--btn-focus-scale": "0.95", // scale transform of button when you focus on it
-          "--border-btn": "1px", // border width of buttons
-          "--tab-border": "1px", // border width of tabs
-          "--tab-radius": "0.5rem", // border radius of tabs
+          ...require("daisyui/src/theming/themes")["[data-theme=dracula]"],
+          'text': '#ffffff',
+          'primary-content': '#ffffff',
+          'secondary-content': '#ffffff',
+          'neutral-content': '#ffffff',
+          'base-content': '#ffffff',
+          "--border-btn": "0px", // border width of buttons
         },
       },
     ],

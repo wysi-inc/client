@@ -5,6 +5,7 @@ export interface ColorsInterface {
         font: string,
         bg: string,
         main: string,
+        accent: string,
     },
     modes: {
         any: string,
@@ -421,6 +422,8 @@ export interface UserCompact {
     last_visit: string;
     pm_friends_only: boolean;
     username: string;
+    profile_colour: string;
+    default_group: string;
 }
 
 export interface BeatmapSet {
