@@ -63,7 +63,7 @@ const SearchBox = () => {
 
     return (
         <>
-            <button className="btn btn-ghost flex flex-row gap-3" onClick={show}>
+            <button className="btn flex flex-row gap-3" onClick={show}>
                 <FaSearch />
                 <div>Search someone</div>
             </button>

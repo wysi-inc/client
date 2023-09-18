@@ -1,6 +1,5 @@
 import React from 'react';
-import {UserBadge} from "../resources/interfaces";
-import moment from "moment/moment";
+import { UserBadge } from "../resources/interfaces";
 
 interface BadgePropsInterface {
     badge: UserBadge;
@@ -8,18 +7,13 @@ interface BadgePropsInterface {
 
 const Badge = (props: BadgePropsInterface) => {
     return (
-        <div style={{width: 86, height: 40}}>
-            <a href={props.badge.url} target={"_blank"}
-               data-tooltip-id="tooltip"
-               data-tooltip-html={
-                   `<div class="text-center fs-6">${props.badge.description}</div>
-                                        <div class="text-center" style="color: #f5f5f5cc; font-size: 12px">
-                                            ${moment(props.badge.awarded_at).calendar()}
-                                        </div>`}>
+        <div style={{ width: 86, height: 40 }} className='tooltip'
+            data-tip={props.badge.description}>
+            <a href={props.badge.url} target={"_blank"}>
                 <img src={props.badge.image_url}
-                     alt="badge"
-                     width={86}
-                     height={40}/>
+                    alt="badge"
+                    width={86}
+                    height={40} />
             </a>
         </div>
     )

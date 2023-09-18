@@ -4,6 +4,7 @@
 
 * {
     box-sizing: border-box;
+    /* outline: 1px solid #ffffff; */
 }
 
 main {
@@ -50,6 +51,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .darkenOnHover {
     transition: .1s ease-in-out;
+}
+
+.tooltip::before, .tooltip::after {
+    transition: .1s ease-in-out !important;
+    z-index: 10000;
 }
 
 .darkenOnHover:hover {
@@ -225,15 +231,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     #9969C7,
     #804FB3,
     #6A359C,
-    #552586
-    ) !important;
+    #552586) !important;
 }
 
 .yearSlider .MuiSlider-rail {
     background: linear-gradient(to right,
     #C0C0C0,
-    #98ddfc
-    ) !important;
+    #98ddfc) !important;
+}
+
+.MuiSlider-rail {
+    filter: brightness(50%) !important;
 }
 
 .MuiSlider-track {
@@ -243,6 +251,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .MuiSlider-track {
     border: 0 !important;
     background-color: transparent !important;
+    backdrop-filter: brightness(200%);
     outline: solid 2px #ffffff;
 }
 
@@ -294,4 +303,8 @@ input::after, input::before {
 .emoji {
     height: 16px;
     display: inline-block;
+}
+
+.setCard {
+    box-shadow: 0 0 2px 0px #1e1e1e inset, 0 0 2px 0px #1e1e1e;
 }

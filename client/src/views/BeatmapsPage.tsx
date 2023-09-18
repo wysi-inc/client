@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from '../resources/axios-config';
 import { BeatmapSet } from "../resources/interfaces";
-import BeatmapsetCard from "../components/BeatmapsetCard";
+import BeatmapsetCard from "../cards/BeatmapsetCard";
 import { GameModeType, SongGenreType, SongLanguageType, BeatmapsetStatusType, SongSortType } from "../resources/types";
 import { Slider } from "@mui/material";
 import { secondsToTime } from "../resources/functions";
@@ -232,9 +232,9 @@ const BeatmapsPage = () => {
     }
 
     return (
-        <div className="p-4 bg-accent-800">
-            <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900">
-                <div className="text-xl flex flex-row justify-between items-center">
+        <div className="p-4">
+            <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900 drop-shadow-lg">
+                <div className="bg-accent-950 rounded-lg p-4 text-xl flex flex-row justify-between items-center">
                     <div>Beatmap Search:</div>
                     <div className="flex flex-row gap-2 items-center">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
@@ -259,23 +259,23 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4 bg-accent-950 rounded-lg p-4">
-                    <div className="col-span-3">
+                <div className="grid grid-cols-4 gap-4 bg-accent-950 rounded-lg p-4 drop-shadow-lg">
+                    <div className="col-span-4 md:col-span-2 lg:col-span-3">
                         <div className="mb-2 text-center">Title:</div>
                         <input type="text" className="input input-bordered w-full text-center"
                             placeholder="..." autoFocus={true}
                             value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-4 md:col-span-2 lg:col-span-1">
                         <div className="mb-2 text-center">Mapper:</div>
                         <input type="text" className="input input-bordered w-full text-center"
                             placeholder="..."
                             value={mapper} onChange={(e) => setMapper(e.target.value)} />
                     </div>
                 </div>
-                <div className="rounded-lg flex flex-col p-4 gap-4 bg-accent-950">
-                    <div className="grid grid-cols-12">
-                        <div className="col-start-4 col-span-6">
+                <div className="rounded-lg flex flex-col p-4 gap-3 bg-accent-950 drop-shadow-lg">
+                    <div className="grid grid-cols-7">
+                        <div className="col-span-7 md:col-start-3 md:col-span-3">
                             <div className="text-center">Year:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{year[0] < timeMax ? year[0] : 'now'}</div>
@@ -293,8 +293,8 @@ const BeatmapsPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-4">
+                    <div className="grid grid-cols-12 gap-3">
+                        <div className="col-span-12 md:col-span-4">
                             <div className="text-center">BPM:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{bpm[0] < bpmLimit ? bpm[0] : '∞'}</div>
@@ -313,7 +313,7 @@ const BeatmapsPage = () => {
                                 <div className="w-20 text-start">{bpm[1] < bpmLimit ? bpm[1] : '∞'}</div>
                             </div>
                         </div>
-                        <div className="col-span-4">
+                        <div className="col-span-12 md:col-span-4">
                             <div className="text-center">Stars:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{sr[0] < srLimit ? sr[0] : '∞'}</div>
@@ -332,7 +332,7 @@ const BeatmapsPage = () => {
                                 <div className="w-20 text-start">{sr[1] < srLimit ? sr[1] : '∞'}</div>
                             </div>
                         </div>
-                        <div className="col-span-4">
+                        <div className="col-span-12 md:col-span-4">
                             <div className="text-center">Length:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{length[0] < lengthLimit ? secondsToTime(length[0]) : '∞'}</div>
@@ -352,8 +352,8 @@ const BeatmapsPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-3">
+                    <div className="grid grid-cols-12 gap-3">
+                        <div className="col-span-6 md:col-span-3">
                             <div className="text-center">AR:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{ar[0]}</div>
@@ -372,7 +372,7 @@ const BeatmapsPage = () => {
                                 <div className="w-20 text-start">{ar[1]}</div>
                             </div>
                         </div>
-                        <div className="col-span-3">
+                        <div className="col-span-6 md:col-span-3">
                             <div className="text-center">CS:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{cs[0]}</div>
@@ -391,7 +391,7 @@ const BeatmapsPage = () => {
                                 <div className="w-20 text-start">{cs[1]}</div>
                             </div>
                         </div>
-                        <div className="col-span-3">
+                        <div className="col-span-6 md:col-span-3">
                             <div className="text-center">HP:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{hp[0]}</div>
@@ -410,7 +410,7 @@ const BeatmapsPage = () => {
                                 <div className="w-20 text-start">{hp[1]}</div>
                             </div>
                         </div>
-                        <div className="col-span-3">
+                        <div className="col-span-6 md:col-span-3">
                             <div className="text-center">OD:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{od[0]}</div>
@@ -432,8 +432,8 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-3">
-                    <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4">
+                <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-3 md:col-span-1 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                         <div>Mode:</div>
                         <div className="flex flex-row flex-wrap gap-3" role="group">
                             {songModes.map((thing: GameModeType, index: number) =>
@@ -446,7 +446,7 @@ const BeatmapsPage = () => {
                                 </button>)}
                         </div>
                     </div>
-                    <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4 grow">
+                    <div className="col-span-3 md:col-span-2 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                         <div>Status:</div>
                         <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
                             {songStatus.map((thing: BeatmapsetStatusType, index: number) =>
@@ -460,7 +460,7 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4">
+                <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                     <div>Sort:</div>
                     <div className="flex flex-row flex-wrap gap-3">
                         {songSort.map((sor) =>

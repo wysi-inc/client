@@ -9,7 +9,7 @@ interface SupporterIconProps {
 const SupporterIcon = (props: SupporterIconProps) => {
     return (
         <div className="badge badge-primary">{
-            [...Array(props.level)].map((_, i) => <ImHeart/>)
+            [...Array(props.level)].map((_, i) => <ImHeart key={i}/>)
         }</div>
     )
 }

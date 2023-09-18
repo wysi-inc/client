@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Score, ModsEntity } from "../resources/interfaces";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { colors, modsInt, playerStore, PlayerStoreInterface } from "../resources/store";
-import ModIcon from "./ModIcon";
+import ModIcon from "../components/ModIcon";
 import moment from "moment/moment";
-import StatusBadge from "./StatusBadge";
+import StatusBadge from "../components/StatusBadge";
 import axios from "../resources/axios-config";
-import DiffIcon from "./DiffIcon";
+import DiffIcon from "../components/DiffIcon";
 import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import { HiOutlineClock } from "react-icons/hi";
 
@@ -62,9 +62,10 @@ const ScoreCard = (props: ScoreProps) => {
     }
 
     return (
-        <div className="rounded-lg overflow-hidden" style={{ backgroundImage: `url(${props.score.beatmapset.covers.cover})`, backgroundSize: "cover" }}>
-            <div style={{ backgroundColor: "#000000bb", backdropFilter: "blur(2px)" }}
-                className="flex flex-col p-3 gap-2 card-body">
+        <div className="flex grow drop-shadow-lg rounded-xl"
+            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
+            <div className="flex flex-col p-3 gap-2 grow"
+                style={{ backdropFilter: "blur(2px)" }}>
                 <div className="grid grid-cols-5 gap-3 items-center">
                     <div className="col-span-4 flex flex-row gap-3">
                         <img src={props.score.beatmapset.covers.list}
@@ -109,31 +110,29 @@ const ScoreCard = (props: ScoreProps) => {
                             {moment(props.score.ended_at).format('DD MMM YYYY')}
                         </div>
                     </div>
-                    <div className="flex flex-row items-center content-end gap-2">
-                        <div className="py-0 px-2 m-0">
+                    <div className="flex flex-row items-center content-end gap-5">
+                        <div>
                             #{props.index}
                         </div>
                         <div className="tooltip" data-tip="download">
-                            <a className="btn btn-ghost"
-                                href={`https://catboy.best/d/${props.score.beatmapset.id}`}>
+                            <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}>
                                 <HiDocumentArrowDown />
                             </a>
                         </div>
                         <div className="tooltip" data-tip="osu!direct">
-                            <a className="btn btn-ghost"
-                                href={`osu://b/${props.score.beatmap_id}`}>
+                            <a href={`osu://b/${props.score.beatmap_id}`}>
                                 <HiMiniBarsArrowDown />
                             </a>
                         </div>
                         <div className="tooltip" data-tip="listen">
-                            <button className="btn btn-ghost" onClick={() => {
+                            <button onClick={() => {
                                 play(props.score.beatmapset.id, props.score.beatmapset.title, props.score.beatmapset.artist)
                             }}><i className="bi bi-headphones"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-2 justify-start xl:justify-between items-center"
+                <div className="flex flex-row flex-wrap gap-2 items-center"
                     style={{ fontSize: 14 }}>
                     <div className="flex flex-row gap-1 items-center">
                         <HiMiniStar />
@@ -221,8 +220,7 @@ const ScoreCard = (props: ScoreProps) => {
                         </div>
                         <div className="flex flex-row gap-2 align-items-end">
                             <div className="h5">{Math.round(props.score.pp)}pp</div>
-                            <div className="h6"
-                                style={{ color: '#cccccc' }}>{chokePP ? `(${chokePP}pp if FC)` : `FC`}</div>
+                            <div className="h6" style={{ color: '#cccccc' }}>{chokePP ? `(${chokePP}pp if FC)` : `FC`}</div>
                         </div>
                     </div>
                 </div>

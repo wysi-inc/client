@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ModsEntity, Score, userData } from "../resources/interfaces";
+import { ModsEntity, Score, UserData } from "../resources/interfaces";
 import { colors } from "../resources/store";
 import PpLine from "./PpLine";
 import BarPieChart from "./BarPieChart";
@@ -7,7 +7,7 @@ import ModIcon from "./ModIcon";
 import { secondsToTime } from "../resources/functions";
 
 interface topScoresProps {
-    data: userData;
+    data: UserData;
     best: Score[];
 }
 
@@ -42,7 +42,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         setScoresRanks(getScoresRanks());
     }, [props.best])
 
-    const commonMods : string[] = useMemo(() => {
+    const commonMods: string[] = useMemo(() => {
         const modsCounter: { [key: string]: number } = {};
         props.best.map(score =>
             score.mods.length > 0 ?
@@ -56,7 +56,7 @@ const TopScoresPanel = (props: topScoresProps) => {
             });
         let largestKey = null;
         let largestValue = -Infinity;
-    
+
         for (const key in modsCounter) {
             if (modsCounter[key] > largestValue) {
                 largestKey = key;
@@ -167,27 +167,29 @@ const TopScoresPanel = (props: topScoresProps) => {
 
     return (
         <div className="grid grid-cols-2 p-3 gap-3">
-            <div>
-                <BarPieChart title={"Hit Ratios"} data={scoresHitsLabels} />
+            <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
+                <div>Hit Ratios</div>
+                <BarPieChart data={scoresHitsLabels} width={300}/>
             </div>
-            <div>
-                <BarPieChart title={"Rank Ratios"} data={scoresRanksLabels} />
+            <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
+                <div>Rank Ratios</div>
+                <BarPieChart data={scoresRanksLabels} width={300} />
             </div>
             <div className="col-span-2">
-                <PpLine data={props.best} color={colors.ui.font} />
+                <PpLine data={props.best} color={colors.ui.font} width={300} />
             </div>
             <div className="col-span-2 flex flex-col items-center">
                 <div>Average play:</div>
-                <div className="flex flex flex-row flex-wrap justify-center gap-2 mt-2">
-                    <div className="flex flex flex-row gap-1 items-center">
+                <div className="flex flex-row flex-wrap justify-center gap-2 mt-2">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>Mods:</div>
-                        <div className="flex flex flex-row gap-1">
-                            {commonMods.map((mod : string, index : number) =>
-                                <ModIcon acronym={mod} size={20} key={index + 1}/>)}
+                        <div className="flex flex-row gap-1">
+                            {commonMods.map((mod: string, index: number) =>
+                                <ModIcon acronym={mod} size={20} key={index + 1} />)}
                         </div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>Length:</div>
                         <i className="bi bi-stopwatch"></i>
                         <div>
@@ -195,27 +197,27 @@ const TopScoresPanel = (props: topScoresProps) => {
                         </div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>BPM:</div>
                         <div>{averageBpm}</div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>Acc:</div>
                         <div>{averageAcc.toFixed(2)}%</div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>Combo:</div>
                         <div>{averageCombo}x</div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>PP:</div>
                         <div>{averagePP}pp</div>
                     </div>
                     <div>|</div>
-                    <div className="flex flex flex-row gap-1 items-center">
+                    <div className="flex flex-row gap-1 items-center">
                         <div>Rank:</div>
                         <div style={{ color: (colors.ranks as any)[averageRank.toLowerCase()] }}>
                             {averageRank}

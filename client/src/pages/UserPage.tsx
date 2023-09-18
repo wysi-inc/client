@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useMemo, Dispatch, SetStateAction } from "react";
 import { useParams } from "react-router-dom";
 import axios from '../resources/axios-config';
-import { Chart, registerables, ChartOptions, ChartType } from 'chart.js';
+import { Chart, registerables, ChartOptions, ChartData } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { Line } from "react-chartjs-2";
 import Spinner from 'react-bootstrap/Spinner';
@@ -17,7 +18,7 @@ import {
     SortedMedals,
     UserAchievement,
     UserBadge,
-    userData,
+    UserData,
     UserGroup,
 } from "../resources/interfaces";
 
@@ -45,24 +46,24 @@ import {
 import { colors } from "../resources/store";
 import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
-import ScoreCard from "../components/ScoreCard";
-import TopScoresPanel from "../components/TopScoresPanel";
+import ScoreCard from "../cards/ScoreCard";
+import TopScoresPanel, { BarPieChartData } from "../components/TopScoresPanel";
 import Medal from "../components/Medal";
 import Badge from "../components/Badge";
 import CountryShape from "../components/CountryShape";
 import ModeSelector from "../components/ModeSelector";
 import SupporterIcon from "../components/SupporterIcon";
 import GroupBadge from "../components/GroupBadge";
-import BeatmapsetCard from "../components/BeatmapsetCard";
+import BeatmapsetCard from "../cards/BeatmapsetCard";
 
 import Twemoji from 'react-twemoji';
-import NumberAnimation from "../components/NumberAnimation";
 import CountUp from "react-countup";
+import BarPieChart from "../components/BarPieChart";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
 Chart.defaults.animation = false;
-Chart.defaults.elements.point.radius = 0;
+Chart.defaults.elements.point.radius = 2;
 Chart.defaults.interaction.intersect = false;
 Chart.defaults.interaction.mode = 'index';
 Chart.defaults.indexAxis = 'x';
@@ -70,6 +71,8 @@ Chart.defaults.responsive = true;
 Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.tooltip.displayColors = false;
 Chart.defaults.borderColor = colors.ui.font + '22';
+
+type AxisType = "time" | undefined;
 
 interface tabInterface {
     num: number,
@@ -88,18 +91,29 @@ interface dataInterface {
     count: number,
     setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
 }
+interface UserPageProps {
+    userId: string;
+    userMode: GameModeType;
+}
 
-const UserPage = () => {
-    const { urlUser } = useParams();
-    const { urlMode } = useParams();
-
-    const [userData, setUserData] = useState<userData | null>(null);
+const UserPage = (props: UserPageProps) => {
+    const [userData, setUserData] = useState<UserData | null>(null);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
 
     const [medals, setMedals] = useState<MedalInterface[]>([]);
     const [medalsByCategory, setMedalsByCategory] = useState<SortedMedals>({});
     const [lastMedals, setLastMedals] = useState<MedalInterface[]>([]);
     const [rarestMedal, setRarestMedal] = useState<MedalInterface | null>(null);
+
+    const [globalData, setGlobalData] = useState<number[]>([]);
+    const [countryData, setCountryData] = useState<number[]>([]);
+    const [playsData, setPlaysData] = useState<number[]>([]);
+    const [replaysData, setReplaysData] = useState<number[]>([]);
+
+    const [globalLabels, setGlobalLabels] = useState<Date[]>([]);
+    const [countryLabels, setCountryLabels] = useState<Date[]>([]);
+    const [playsLabels, setPlaysLabels] = useState<Date[]>([]);
+    const [replaysLabels, setReplaysLabels] = useState<Date[]>([]);
 
     const [bestScores, setBestScores] = useState<Score[]>([])
     const [recentScores, setRecentScores] = useState<Score[]>([])
@@ -114,7 +128,7 @@ const UserPage = () => {
     const [pendingBeatmaps, setPendingBeatmaps] = useState<BeatmapSet[]>([]);
     const [rankedBeatmaps, setRankedBeatmaps] = useState<BeatmapSet[]>([]);
 
-    const [historyTabIndex, setHistoryTabIndex] = useState<number>(0);
+    const [historyTabIndex, setHistoryTabIndex] = useState<number>(1);
     const [scoresTabIndex, setScoresTabIndex] = useState<number>(0);
     const [beatmapsTabIndex, setBeatmapsTabIndex] = useState<number>(0);
     const beatmapReqLimit: number = 20;
@@ -133,15 +147,12 @@ const UserPage = () => {
             div2Ref.current.style.height = `${height}px`;
             setDiv1Height(height);
         }
-    }, [window.innerWidth, div1Ref.current?.clientHeight]);
+    }, [div1Ref.current?.clientHeight]);
 
     useEffect((): void => {
         clearData();
-        const checkedMode: GameModeType = urlMode?.toLowerCase() as GameModeType;
-        if (urlUser !== undefined) {
-            getUser(checkedMode ? checkedMode : 'default').then();
-        }
-    }, [urlUser, urlMode]);
+        getUser();
+    }, [props.userId, props.userMode]);
 
     useEffect(() => {
         if (!userData) return;
@@ -155,11 +166,92 @@ const UserPage = () => {
         getMedals();
     }, [])
 
-    if (urlUser === undefined) {
-        return (
-            <div>Search a user on the top bar</div>
-        )
+    const globalHistoryDataInitial = {
+        labels: [],
+        datasets: [{
+            label: 'Rank',
+            data: [],
+            fill: false,
+            borderColor: colors.ui.accent,
+            tension: 0.1,
+        }],
     }
+    const countryHistoryDataInitial = {
+        labels: [],
+        datasets: [{
+            label: 'Rank',
+            data: [],
+            fill: false,
+            borderColor: colors.ui.accent,
+            tension: 0.1,
+        }],
+    }
+    const playsHistoryDataInitial = {
+        labels: [],
+        datasets: [{
+            label: 'Play Count',
+            data: [],
+            fill: false,
+            borderColor: colors.ui.accent,
+            tension: 0.1
+        }]
+    }
+    const replaysHistoryDataInitial = {
+        labels: [],
+        datasets: [{
+            label: 'Replays Watched',
+            data: [],
+            fill: false,
+            borderColor: colors.ui.accent,
+            tension: 0.1
+        }]
+    }
+    const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(globalHistoryDataInitial);
+    const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(countryHistoryDataInitial);
+    const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(playsHistoryDataInitial);
+    const [replaysHistoryData, setReplaysHistoryData] = useState<ChartData<'line'>>(replaysHistoryDataInitial);
+
+    const lineOptions: ChartOptions<'line'> = {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+            y: {
+                reverse: false,
+                ticks: {
+                    precision: 0
+                },
+            },
+            x: {
+                type: 'time' as AxisType,
+                time: {
+                    displayFormats: {
+                        day: 'dd/mm/yy',
+                    },
+                },
+            }
+        }
+    };
+    const lineOptionsReverse: ChartOptions<'line'> = {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+            y: {
+                reverse: true,
+                ticks: {
+                    precision: 0
+                }
+            },
+            x: {
+                type: 'time' as AxisType,
+                time: {
+                    displayFormats: {
+                        day: 'dd/mm/yy',
+                    },
+                },
+            }
+        },
+    };
+
     if (!userData) {
         return (
             <Spinner animation="border" role="status" className="mx-auto my-3">
@@ -178,77 +270,13 @@ const UserPage = () => {
         )
     }
 
-    const globalHistoryData: any = {
-        labels: getGlobalLabels(),
-        datasets: [{
-            label: 'Rank',
-            data: getGlobalData(),
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1,
-        }],
-    };
-    const countryHistoryData: any = {
-        labels: getCountryLabels(),
-        datasets: [{
-            label: 'Rank',
-            data: getCountryData(),
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1,
-        }],
-    };
-    const playsHistoryData: any = {
-        labels: getPlaysLabels(),
-        datasets: [{
-            label: 'Play Count',
-            data: getPlaysData(),
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1
-        }]
-    };
-    const replaysHistoryData: any = {
-        labels: getReplaysPlaysLabels(),
-        datasets: [{
-            label: 'Replays Watched',
-            data: getReplaysData(),
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1
-        }]
-    };
-
-    const lineOptions: ChartOptions<'line'> = {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-            y: {
-                reverse: false,
-                ticks: {
-                    precision: 0
-                },
-            },
-            x: {
-                display: false
-            }
-        }
-    };
-    const lineOptionsReverse: ChartOptions<'line'> = {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-            y: {
-                reverse: true,
-                ticks: {
-                    precision: 0
-                }
-            },
-            x: {
-                display: false
-            }
-        },
-    };
+    const scoresRanksLabels: BarPieChartData[] = [
+        { label: 'XH', color: colors.ranks.xh, value: userData.statistics.grade_counts.ssh },
+        { label: 'X', color: colors.ranks.x, value: userData.statistics.grade_counts.ss },
+        { label: 'SH', color: colors.ranks.sh, value: userData.statistics.grade_counts.sh },
+        { label: 'S', color: colors.ranks.s, value: userData.statistics.grade_counts.sh },
+        { label: 'A', color: colors.ranks.a, value: userData.statistics.grade_counts.a },
+    ];
 
     const scoresTabs: tabInterface[] = [
         {
@@ -427,12 +455,12 @@ const UserPage = () => {
     ]
 
     return (
-        <>
-            <div style={{ backgroundImage: `url(${userData.cover_url})`, backgroundSize: "cover" }}>
-                <div style={{ backgroundColor: "#000000bb", backdropFilter: "blur(2px)" }}
-                    className="flex flex-col p-5 gap-2 card-body rounded-none">
-                    <div className="grid grid-cols-10 flex-wrap gap-5">
-                        <div className="col-span-2 flex flex-col items-center gap-3">
+        <div>
+            <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
+                <div style={{ backdropFilter: "blur(2px)" }}
+                    className="flex flex-col p-8 gap-8 card-body rounded-none">
+                    <div className="grid grid-cols-7 flex-wrap gap-4 xl:gap-8">
+                        <div className="col-span-7 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
                                 alt='pfp' className="rounded-xl aspect-square mb-2"
@@ -447,136 +475,109 @@ const UserPage = () => {
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>
-                        <div className="col-span-8 flex flex-row justify-between">
-                            <div className="flex flex-col gap-2">
-                                <div className="flex flex-row gap-3 items-center">
-                                    <a className="text-3xl font-bold underline"
-                                        target={"_blank"}
-                                        href={`https://osu.ppy.sh/users/${userData.id}`}>
-                                        {userData.username}
-                                    </a>
-                                    {userData.groups.map((group: UserGroup, index: number) =>
-                                        <GroupBadge group={group}
-                                            key={index + 1} />
-                                    )}
-                                    {userData.is_supporter && <SupporterIcon size={32} level={userData.support_level} />}
+                        <div className="col-span-7 md:col-span-2 xl:col-span-2 gap-3 flex flex-col items-center md:items-start justify-between">
+                            <div className="flex flex-row gap-3 items-center">
+                                <a className="text-4xl font-bold"
+                                    target={"_blank"}
+                                    href={`https://osu.ppy.sh/users/${userData.id}`}>
+                                    {userData.username}
+                                </a>
+                                {userData.groups.map((group: UserGroup, index: number) =>
+                                    <GroupBadge group={group}
+                                        key={index + 1} />
+                                )}
+                                {userData.is_supporter && <SupporterIcon size={32} level={userData.support_level} />}
+                            </div>
+                            <div className="profileTitle">{userData.title}</div>
+                            <div data-tooltip-id="tooltip"
+                                data-tooltip-html={`${maniaG}`}
+                                className="flex flex-col gap-1">
+                                <div className="text-lg">Global Rank:</div>
+                                <div className="text-2xl flex flex-row items-center gap-2">
+                                    <HiGlobeAlt />
+                                    <div>#{userData.statistics.global_rank ? <CountUp end={userData.statistics.global_rank} duration={1} /> : '-'}</div>
                                 </div>
-                                <div className="profileTitle">{userData.title}</div>
-                                <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaG}`}
-                                    className="flex flex-col gap-1">
-                                    <div className="text-lg">Global Rank:</div>
-                                    <div className="text-2xl flex flex-row items-center gap-2">
-                                        <HiGlobeAlt />
-                                        <div>#{userData.statistics.global_rank ? <CountUp end={userData.statistics.global_rank} duration={1} /> : '-'}</div>
-                                    </div>
+                            </div>
+                            <div data-tooltip-id="tooltip"
+                                data-tooltip-html={`${maniaC}`}
+                                className="flex flex-col gap-1">
+                                <div className="text-lg">Country Rank:</div>
+                                <div className="text-2xl flex flex-row items-center gap-2">
+                                    <CountryShape code={userData.country.code} size={32} />
+                                    <div>#{userData.statistics.country_rank ? <CountUp end={userData.statistics.country_rank} duration={1} /> : '-'}</div>
+                                    {userData.country.code === 'CAT' ?
+                                        <div className="tooltip tooltip-right" data-tip={userData.country.name}>
+                                            <img alt={userData.country.code} className="emoji-flag"
+                                                src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
+                                        </div> :
+                                        <Twemoji options={{ className: 'emoji-flag', noWrapper: true }}>
+                                            <ReactCountryFlag countryCode={userData.country.code}
+                                                className="tooltip tooltip-right"
+                                                data-tip={userData.country.name} />
+                                        </Twemoji>}
                                 </div>
-                                <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaC}`}
-                                    className="flex flex-col gap-1">
-                                    <div className="text-lg">Country Rank:</div>
-                                    <div className="text-2xl flex flex-row items-center gap-2">
-                                        <CountryShape code={userData.country.code} size={24} />
-                                        <div>#{userData.statistics.country_rank ? <CountUp end={userData.statistics.country_rank} duration={1} /> : '-'}</div>
-                                        {userData.country.code === 'CAT' ?
-                                            <div className="tooltip" data-tip={userData.country.name}>
-                                                <img alt={userData.country.code} className="emoji-flag"
-                                                    src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
-                                            </div> :
-                                            <Twemoji options={{ className: 'emoji-flag', noWrapper: true }}>
-                                                <ReactCountryFlag countryCode={userData.country.code}
-                                                    className="tooltip"
-                                                    data-tip={userData.country.name} />
-                                            </Twemoji>}
-                                    </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Performance:</div>
+                                <div className="text-xl flex flex-row items-center gap-2">
+                                    <div><CountUp end={Math.round(userData.statistics.pp)} duration={1} />pp</div>
                                 </div>
-                                <div data-tooltip-id="tooltip"
-                                    data-tooltip-html={`${maniaPP}`}
-                                    className="flex flex-col gap-1">
-                                    <div className="text-lg">Performance:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <div><CountUp end={Math.round(userData.statistics.pp)} duration={1} />pp</div>
-                                    </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Accuracy:</div>
+                                <div className="text-xl flex flex-row items-center gap-2">
+                                    <div><CountUp end={userData.statistics.hit_accuracy} decimals={2} duration={1} />%</div>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Accuracy:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <div><CountUp end={userData.statistics.hit_accuracy} decimals={2} duration={1} />%</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-row items-center gap-3">
-                                    <div className="h5 flex flex-col items-center">
-                                        <div style={{ color: colors.ranks.xh }}>XH</div>
-                                        <div><CountUp end={userData.statistics.grade_counts.ssh} duration={1} /></div>
-                                    </div>
-                                    <div className="h5 flex flex-col items-center">
-                                        <div style={{ color: colors.ranks.x }}>X</div>
-                                        <div><CountUp end={userData.statistics.grade_counts.ss} duration={1} /></div>
-                                    </div>
-                                    <div className="h5 flex flex-col items-center">
-                                        <div style={{ color: colors.ranks.sh }}>SH</div>
-                                        <div><CountUp end={userData.statistics.grade_counts.sh} duration={1} /></div>
-                                    </div>
-                                    <div className="h5 flex flex-col items-center">
-                                        <div style={{ color: colors.ranks.s }}>S</div>
-                                        <div><CountUp end={userData.statistics.grade_counts.s} duration={1} /></div>
-                                    </div>
-                                    <div className="h5 flex flex-col items-center">
-                                        <div style={{ color: colors.ranks.a }}>A</div>
-                                        <div><CountUp end={userData.statistics.grade_counts.a} duration={1} /></div>
+                            </div>
+                            <BarPieChart data={scoresRanksLabels} width={250} />
+                        </div>
+                        <div className="col-span-7 md:col-span-3 xl:col-span-2 flex col-start-4 xl:col-start-6 flex-col items-center md:items-end gap-3 xl:justify-between">
+                            <ModeSelector mode={gameMode} userId={userData.id} />
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Ranked Score:</div>
+                                <div className="tooltip tooltip-left text-xl flex flex-row items-center gap-2"
+                                    data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
+                                    <HiChevronDoubleUp />
+                                    <div>
+                                        <CountUp end={userData.statistics.ranked_score} duration={1} />
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <ModeSelector mode={gameMode} userId={userData.id} />
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Ranked Score:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <HiChevronDoubleUp />
-                                        <div className="tooltip"
-                                            data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
-                                            <CountUp end={userData.statistics.ranked_score} duration={1} />
-                                        </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Max Combo:</div>
+                                <div className="text-xl flex flex-row items-center gap-2">
+                                    <HiFire />
+                                    <div><CountUp end={userData.statistics.maximum_combo} duration={1} />x</div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Play Time:</div>
+                                <div className="text-xl flex flex-row items-center gap-2 tooltip tooltip-left"
+                                    data-tip={secondsToTime(userData.statistics.play_time)}>
+                                    <i className="bi bi-clock"></i>
+                                    <div>
+                                        <CountUp end={Math.round((userData.statistics.play_time / 60 / 60))} duration={1} />h
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Max Combo:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <HiFire />
-                                        <div><CountUp end={userData.statistics.maximum_combo} duration={1} />x</div>
-                                    </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Play Count:</div>
+                                <div className="text-xl flex flex-row items-center gap-2">
+                                    <HiReply />
+                                    <div><CountUp end={userData.statistics.play_count} duration={1} /></div>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Play Time:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <i className="bi bi-clock"></i>
-                                        <div className="tooltip"
-                                            data-tip={secondsToTime(userData.statistics.play_time)}>
-                                            <CountUp end={Math.round((userData.statistics.play_time / 60 / 60))} duration={1} />h
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Play Count:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <HiReply />
-                                        <div><CountUp end={userData.statistics.play_count} duration={1} /></div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <div className="text-lg">Hits x Play:</div>
-                                    <div className="text-xl flex flex-row items-center gap-2">
-                                        <HiCalculator />
-                                        <div>
-                                            <CountUp end={Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count)} duration={1} />
-                                        </div>
-                                    </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="text-lg">Hits x Play:</div>
+                                <div className="text-xl flex flex-row items-center gap-2">
+                                    <HiCalculator />
+                                    <div><CountUp end={Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count)} duration={1} /></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {userData.badges.length > 0 &&
-                        <div className="flex flex-row flex-wrap gap-2 px-5 py-4 items-center justify-content-start">
+                        <div className="flex flex-row flex-wrap gap-2 items-center justify-content-start">
                             {userData.badges.map((badge: UserBadge, index: number) =>
                                 <Badge badge={badge} key={index + 1} />
                             )}
@@ -631,8 +632,8 @@ const UserPage = () => {
                         </Twemoji>
                     </div>}
             </div>
-            <div className="bg-accent-600 grid grid-cols-5 gap-4 p-4 justify-center">
-                <div className="drop-shadow-lg col-span-3 flex flex-col gap-4 p-0 m-0" ref={div1Ref}>
+            <div className="grid grid-cols-5 gap-4 p-4 justify-center">
+                <div className="drop-shadow-lg col-span-5 xl:col-span-3 flex flex-col gap-4 p-0 m-0" ref={div1Ref}>
                     <div className="rounded-lg overflow-hidden shadow">
                         <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-graph-up"></i>
@@ -642,6 +643,7 @@ const UserPage = () => {
                             <button
                                 className={`tab flex flex-row gap-2  ${historyTabIndex === 1 && 'tab-active text-base-100'}`}
                                 onClick={() => setHistoryTabIndex(1)}>
+                                <HiGlobeAlt />
                                 <div>Global Rank</div>
                             </button>
                             <button
@@ -664,19 +666,19 @@ const UserPage = () => {
                             </button>
                         </div>
                         <div style={{ height: 250 }} className="bg-accent-950 flex justify-center items-center">
-                            <div className="w-full p-3" hidden={historyTabIndex !== 1}
+                            <div className="grow p-4" hidden={historyTabIndex !== 1}
                                 style={{ height: 250 }}>
                                 <Line data={globalHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="w-full p-3 text-center h1" hidden={historyTabIndex !== 2}
+                            <div className="grow p-4" hidden={historyTabIndex !== 2}
                                 style={{ height: 250 }}>
                                 <Line data={countryHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="w-full p-3" hidden={historyTabIndex !== 3}
+                            <div className="grow p-4" hidden={historyTabIndex !== 3}
                                 style={{ height: 250 }}>
                                 <Line data={playsHistoryData} options={lineOptions} />
                             </div>
-                            <div className="w-full p-3" hidden={historyTabIndex !== 4}
+                            <div className="grow p-4" hidden={historyTabIndex !== 4}
                                 style={{ height: 250 }}>
                                 <Line data={replaysHistoryData} options={lineOptions} />
                             </div>
@@ -687,20 +689,20 @@ const UserPage = () => {
                             <i className="bi bi-bar-chart-line"></i>
                             <div>Top Play Stats</div>
                         </div>
-                        <div className="p-2 bg-accent-950">
+                        <div className="p-4 bg-accent-950">
                             <TopScoresPanel data={userData} best={bestScores} />
                         </div>
                     </div>
                 </div>
-                <div className="drop-shadow-lg col-span-2 flex flex-col overflow-hidden rounded-lg shadow"
-                    ref={div2Ref} style={{ height: div1Height }}>
+                <div className="drop-shadow-lg col-span-5 xl:col-span-2 flex flex-col overflow-hidden rounded-lg shadow grow"
+                    style={{ height: div1Height }}>
                     <div className="p-2 grid grid-cols-6 items-center bg-accent-800">
                         <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-controller"></i>
                             <div>Scores</div>
                         </div>
                         <div className="col-span-1 flex justify-content-end">
-                            <button className="darkenOnHover m-0 p-0"
+                            <button className="darkenOnHover"
                                 onClick={() => {
                                     getScores(userData.id, gameMode, false);
                                 }}>
@@ -717,7 +719,7 @@ const UserPage = () => {
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div className="overflow-y-scroll p-3 bg-accent-950">
+                    <div className="overflow-y-scroll p-4 bg-accent-950 grow">
                         {scoresData.map((dat: dataInterface, i: number) =>
                             <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
@@ -738,8 +740,8 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div className="drop-shadow-lg col-span-2 rounded-lg overflow-hidden shadow"
-                    ref={div2Ref} style={{ height: div1Height }}>
+                <div className="drop-shadow-lg col-span-5 xl:col-span-2 flex flex-col overflow-hidden rounded-lg shadow grow"
+                    style={{ height: div1Height }}>
                     <div className="p-2 grid grid-cols-6 items-center bg-accent-800">
                         <div className="col-start-2 col-span-4 flex flex-row gap-2 justify-center">
                             <i className="bi bi-file-earmark-music"></i>
@@ -754,7 +756,7 @@ const UserPage = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="bg-accent-900 tabs tabs-boxed content-center rounded-none justify-center">
+                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
                         {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
                             <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
                                 onClick={() => tab.setTabs(tab.num)} key={i + 1}>
@@ -763,11 +765,11 @@ const UserPage = () => {
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div className="overflow-y-scroll p-3 bg-accent-950">
+                    <div className="overflow-y-scroll p-4 bg-accent-950 grow">
                         {beatmapsData.map((dat: dataInterface, i: number) =>
                             <div className={`${dat.tab === dat.num ? 'flex' : 'hidden'} flex-col gap-3`} key={i + 1}>
                                 {dat.maps.length === 0 && dat.count !== 0 &&
-                                    <Spinner animation="border" role="status" className="mx-auto mt-4">
+                                    <Spinner animation="border" role="status" className="mx-auto">
                                         <div className="visually-hidden">Loading...</div>
                                     </Spinner>}
                                 {(dat.maps as BeatmapSet[])[0]?.title &&
@@ -784,9 +786,9 @@ const UserPage = () => {
                             </div>)}
                     </div>
                 </div>
-                <div className="drop-shadow-lg col-span-3 flex flex-col gap-4 p-0 m-0" ref={div2Ref}
+                <div className="drop-shadow-lg col-span-5 xl:col-span-3 flex flex-col gap-4 p-0 m-0" ref={div2Ref}
                     style={{ height: div1Height }}>
-                    <div className="rounded-lg overflow-hidden p-0 flex flex-col">
+                    <div className="grow rounded-lg overflow-hidden p-0 flex flex-col">
                         <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-award"></i>
                             <div>Medals</div>
@@ -857,7 +859,7 @@ const UserPage = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 
     function clearData(): void {
@@ -874,29 +876,33 @@ const UserPage = () => {
         setGraveyardBeatmaps([]);
         setPendingBeatmaps([]);
         setNominatedBeatmaps([]);
+        setGlobalHistoryData(globalHistoryDataInitial);
+        setCountryHistoryData(countryHistoryDataInitial);
+        setPlaysHistoryData(playsHistoryDataInitial);
+        setReplaysHistoryData(replaysHistoryDataInitial);
     }
 
-    async function getUser(mode: GameModeType) {
+    async function getUser() {
         const res = await axios.post('/user', {
-            id: urlUser,
-            mode: mode
+            id: props.userId,
+            mode: props.userMode,
         })
-        const data: userData = res.data;
+        const data: UserData = res.data;
         if (!data.id) return;
         if (data.is_bot) return;
         console.log(data);
         let searchMode: GameModeType;
-        if (mode === "default") {
+        if (props.userMode === "default") {
             searchMode = data.playmode;
         } else {
-            searchMode = mode;
+            searchMode = props.userMode;
         }
         window.history.pushState({}, '', `/users/${data.id}/${searchMode}`);
         setUserData(data);
+        setCharts(data);
         setGameMode(searchMode);
         getScores(data.id, searchMode, true);
         getBeatmaps(data.id, searchMode, true);
-        setHistoryTab(data.replays_watched_counts?.length, data.monthly_playcounts?.length, data.db_info.country_rank?.length, data.db_info.global_rank?.length);
     }
 
     async function getScores(id: number, mode: GameModeType, changeTab: boolean) {
@@ -974,7 +980,6 @@ const UserPage = () => {
 
     async function getThings(id: number, mode: GameModeType, thing: 'scores' | 'beatmapsets', type: string, offset: number, limit: number, things: any[], setThings: Dispatch<SetStateAction<any[]>>) {
         const url: string = `https://osu.ppy.sh/users/${id}/${thing}/${type}?mode=${mode}&limit=${limit}&offset=${offset}`
-        if (offset === 0) console.log(`get more ${thing}`, url);
         try {
             const res = await axios.post('/proxy', { url: url });
             const data: any[] = res.data;
@@ -1059,68 +1064,70 @@ const UserPage = () => {
         setRarestMedal(data);
     }
 
-    function getGlobalLabels(): string[] {
-        if (!userData?.db_info.global_rank) return [];
-        return userData?.db_info.global_rank.map(obj => moment(obj.date).format('DD MMM YYYY'));
+    function setCharts(user: UserData) {
+        getGlobalData(user);
+        getCountryData(user);
+        getPlaysData(user);
+        getReplaysData(user);
     }
 
-    function getGlobalData(): number[] {
-        if (!userData?.db_info.global_rank) return [];
-        return userData?.db_info.global_rank.map(obj => obj.rank);
+    function getGlobalData(user: UserData) {
+        if (!user?.db_info.global_rank) return;
+        setGlobalHistoryData({
+            labels: user.db_info.global_rank.map(obj => new Date(obj.date)),
+            datasets: [{
+                label: 'Global Rank',
+                data: user.db_info.global_rank.map(obj => obj.rank),
+                fill: false,
+                borderColor: colors.ui.accent,
+                tension: 0.1,
+            }],
+        })
     }
 
-    function getCountryLabels(): string[] {
-        if (!userData?.db_info.country_rank) return [];
-        return userData?.db_info.country_rank.map(obj => moment(obj.date).format('DD MMM YYYY'));
+    function getCountryData(user: UserData) {
+        if (!user?.db_info.country_rank) return;
+        setCountryHistoryData({
+            labels: user.db_info.country_rank.map(obj => new Date(obj.date)),
+            datasets: [{
+                label: 'Country Rank',
+                data: user.db_info.country_rank.map(obj => obj.rank),
+                fill: false,
+                borderColor: colors.ui.accent,
+                tension: 0.1,
+            }],
+        })
     }
 
-    function getCountryData(): number[] {
-        if (!userData?.db_info.country_rank) return [];
-        return userData?.db_info.country_rank.map(obj => obj.rank);
+    function getPlaysData(user: UserData) {
+        if (!user?.monthly_playcounts) return;
+        setPlaysHistoryData({
+            labels: user.monthly_playcounts.map((obj: MonthlyData) => new Date(obj.start_date)),
+            datasets: [{
+                label: 'Plays',
+                data: user.monthly_playcounts.map((obj: MonthlyData) => obj.count),
+                fill: false,
+                borderColor: colors.ui.accent,
+                tension: 0.1,
+            }],
+        })
     }
 
-    function getPlaysData(): number[] {
-        if (!userData) {
-            return [];
-        }
-        return userData.monthly_playcounts.map((obj: MonthlyData) => obj.count);
+    function getReplaysData(user: UserData) {
+        if (!user?.replays_watched_counts) return;
+        setReplaysHistoryData({
+            labels: user.replays_watched_counts.map((obj: MonthlyData) => new Date(obj.start_date)),
+            datasets: [{
+                label: 'Replays Watched',
+                data: user.replays_watched_counts.map((obj: MonthlyData) => obj.count),
+                fill: false,
+                borderColor: colors.ui.accent,
+                tension: 0.1,
+            }],
+        })
     }
 
-    function getPlaysLabels(): string[] {
-        if (!userData) {
-            return [];
-        }
-        return userData.monthly_playcounts.map((obj: MonthlyData) => {
-            return moment(new Date(obj.start_date)).format('MMM YYYY');
-        });
-    }
-
-    function getReplaysData(): number[] {
-        if (!userData) {
-            return [];
-        }
-        return userData.replays_watched_counts.map((obj: MonthlyData) => obj.count);
-    }
-
-    function getReplaysPlaysLabels(): string[] {
-        if (!userData) {
-            return [];
-        }
-        return userData.replays_watched_counts.map((obj: MonthlyData) => {
-            return moment(new Date(obj.start_date)).format('MMM YYYY');
-        });
-    }
-
-    function setHistoryTab(replays: number, plays: number, country: number, global: number): void {
-        let tab: number = 0;
-        if (replays > 0) tab = 4;
-        if (plays > 0) tab = 3;
-        if (country > 0) tab = 2;
-        if (global > 0) tab = 1;
-        setHistoryTabIndex(tab);
-    }
-
-    function generateStatisticsMarkup(userData: userData | null, type: string) {
+    function generateStatisticsMarkup(userData: UserData | null, type: string) {
         if (userData === null) return '';
         if (!userData.statistics?.variants) return '';
 
