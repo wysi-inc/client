@@ -169,11 +169,11 @@ const TopScoresPanel = (props: topScoresProps) => {
         <div className="grid grid-cols-2 p-3 gap-3">
             <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
                 <div>Hit Ratios</div>
-                <BarPieChart data={scoresHitsLabels} width={300}/>
+                <BarPieChart data={scoresHitsLabels} width={250}/>
             </div>
             <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
                 <div>Rank Ratios</div>
-                <BarPieChart data={scoresRanksLabels} width={300} />
+                <BarPieChart data={scoresRanksLabels} width={250} />
             </div>
             <div className="col-span-2">
                 <PpLine data={props.best} color={colors.ui.font} width={300} />

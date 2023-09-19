@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
+
+import { useDebounce } from "usehooks-ts";
+
+import { Slider } from "@mui/material";
+import { BsCheckLg } from "react-icons/bs";
+import Spinner from "react-bootstrap/Spinner";
+import { BiCopy, BiSolidEraser } from "react-icons/bi";
+
+import { colors } from "../resources/store";
 import axios from '../resources/axios-config';
 import { BeatmapSet } from "../resources/interfaces";
 import BeatmapsetCard from "../cards/BeatmapsetCard";
-import { GameModeType, SongGenreType, SongLanguageType, BeatmapsetStatusType, SongSortType } from "../resources/types";
-import { Slider } from "@mui/material";
 import { secondsToTime } from "../resources/functions";
-import { colors } from "../resources/store";
-import { useDebounce } from "usehooks-ts";
-import Spinner from "react-bootstrap/Spinner";
-import { BiCopy, BiSolidEraser } from "react-icons/bi";
-import { BsCheckLg } from "react-icons/bs";
+import { BeatmapsetStatusType, GameModeType, SongGenreType, SongLanguageType, SongSortType } from "../resources/types";
 
 const BeatmapsPage = () => {
 

@@ -5,6 +5,7 @@ import { playerStore, PlayerStoreInterface } from "../resources/store";
 import DiffIcon from "../components/DiffIcon";
 import moment from "moment";
 import StatusBadge from "../components/StatusBadge";
+import {GiMusicalNotes} from "react-icons/gi";
 
 interface BeatmapsetCardProps {
     index: number,
@@ -53,19 +54,28 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                         <img src={`https://assets.ppy.sh/beatmaps/${props.data.id}/covers/list.jpg?${props.data.id}`}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
-                            style={{ height: '100%', width: 60, objectFit: "cover" }} />
-                        <div className="flex flex-col gap-2" style={{ width: 300 }}>
-                            <a className="h5 truncate text-decoration-none"
-                                href={`https://osu.ppy.sh/beatmapsets/${props.data.id}`} target={"_blank"}>
-                                {props.data.title}
-                            </a>
-                            <div className="flex flex-row gap-2 items-center text-light">
-                                <i className="bi bi-music-note-beamed"></i>
-                                <div className="truncate">{props.data.artist}</div>
+                            style={{ height: 80, width: 60, objectFit: 'cover' }} />
+                        <div className="flex flex-col gap-1 grow">
+                            <div className="truncate">
+                                <a href={`https://osu.ppy.sh/beatmapsets/${props.data.id}`} target={"_blank"}
+                                    rel="noreferrer"
+                                    className="text-light h5 text-decoration-none truncate">
+                                    {props.data.title}
+                                </a>
                             </div>
-                            <div className="flex flex-row gap-2 items-center text-light">
-                                <img src={`https://a.ppy.sh/${props.data.user_id}`} className="rounded" style={{ height: 24, width: 24 }} />
-                                <div>{props.data.creator}</div>
+                            <div className="truncate flex flex-row gap-2 items-center text-light">
+                                <div className="flex justify-center w-6">
+                                    <GiMusicalNotes/>
+                                </div>
+                                <div className="truncate">
+                                    {props.data.artist}
+                                    </div>
+                            </div>
+                            <div className="truncate flex flex-row gap-2 items-center text-light">
+                                <img src={`https://a.ppy.sh/${props.data.user_id}`} className="rounded-md w-6 h-6" alt="img" />
+                                <div className="inline-block">
+                                {props.data.creator}
+                                </div>
                             </div>
                         </div>
                     </div>

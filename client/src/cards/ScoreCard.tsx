@@ -9,6 +9,8 @@ import axios from "../resources/axios-config";
 import DiffIcon from "../components/DiffIcon";
 import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import { HiOutlineClock } from "react-icons/hi";
+import { FaHeadphones } from "react-icons/fa";
+import {GiMusicalNotes} from "react-icons/gi";
 
 interface ScoreProps {
     index: number;
@@ -61,18 +63,22 @@ const ScoreCard = (props: ScoreProps) => {
             .catch(e => console.error(e));
     }
 
+    function playSong() {
+        play(props.score.beatmapset.id, props.score.beatmapset.title, props.score.beatmapset.artist);
+    }
+
     return (
         <div className="flex grow drop-shadow-lg rounded-xl"
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
             <div className="flex flex-col p-3 gap-2 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
-                <div className="grid grid-cols-5 gap-3 items-center">
-                    <div className="col-span-4 flex flex-row gap-3">
+                <div className="flex flex-row justify-between gap-3 items-center">
+                    <div className="grow flex flex-row gap-3">
                         <img src={props.score.beatmapset.covers.list}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />
-                        <div className="flex flex-col gap-1" style={{ width: 260 }}>
+                        <div className="flex flex-col gap-1 grow">
                             <div className="truncate">
                                 <a href={props.score.beatmap.url} target={"_blank"}
                                     rel="noreferrer"
@@ -81,15 +87,16 @@ const ScoreCard = (props: ScoreProps) => {
                                 </a>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
-                                <i className="bi bi-music-note-beamed"></i>
+                                <div className="flex justify-center w-6">
+                                    <GiMusicalNotes/>
+                                </div>
                                 <div className="truncate">{props.score.beatmapset.artist}</div>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
-                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-lg"
-                                    style={{ height: 24, width: 24 }} alt="img" />
-                                <h6 className="inline-block">
+                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-md w-6 h-6" alt="img" />
+                                <div className="inline-block">
                                     {props.score.beatmapset.creator}
-                                </h6>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,7 +109,7 @@ const ScoreCard = (props: ScoreProps) => {
                         <div className="text-end">{props.score.rank}</div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-1 justify-between items-center">
+                <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-4 items-center">
                         <div data-tooltip-id="tooltip"
                             data-tooltip-content={moment(props.score.ended_at).fromNow()}
@@ -114,59 +121,50 @@ const ScoreCard = (props: ScoreProps) => {
                         <div>
                             #{props.index}
                         </div>
-                        <div className="tooltip" data-tip="download">
+                        <div data-tooltip-id="tooltip" data-tooltip-content="download">
                             <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}>
                                 <HiDocumentArrowDown />
                             </a>
                         </div>
-                        <div className="tooltip" data-tip="osu!direct">
+                        <div data-tooltip-id="tooltip" data-tooltip-content="osu!direct">
                             <a href={`osu://b/${props.score.beatmap_id}`}>
                                 <HiMiniBarsArrowDown />
                             </a>
                         </div>
-                        <div className="tooltip" data-tip="listen">
-                            <button onClick={() => {
-                                play(props.score.beatmapset.id, props.score.beatmapset.title, props.score.beatmapset.artist)
-                            }}><i className="bi bi-headphones"></i>
+                        <div data-tooltip-id="tooltip" data-tooltip-content="listen">
+                            <button onClick={playSong}>
+                                <FaHeadphones />
                             </button>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row flex-wrap gap-2 items-center"
+                <div className="flex flex-row flex-wrap gap-4 items-center"
                     style={{ fontSize: 14 }}>
                     <div className="flex flex-row gap-1 items-center">
                         <HiMiniStar />
                         {newSR ? newSR : props.score.beatmap.difficulty_rating}
                     </div>
-                    <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
                         <HiOutlineClock />
                         {secondsToTime(newLen ? newLen : props.score.beatmap.total_length)}
                     </div>
-                    <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
                         <HiMiniMusicalNote />
                         {newBPM ? newBPM : props.score.beatmap.bpm}
                     </div>
-                    <div>|</div>
                     <div>CS: {newCS ? newCS : props.score.beatmap.cs}</div>
-                    <div>|</div>
                     <div>AR: {newAR ? newAR : props.score.beatmap.ar}</div>
-                    <div>|</div>
                     <div>OD: {newOD ? newOD : props.score.beatmap.accuracy}</div>
-                    <div>|</div>
                     <div>HP: {newHP ? newHP : props.score.beatmap.drain}</div>
                 </div>
                 <div className="flex flex-row justify-between items-center"
                     style={{ fontSize: 16 }}>
-                    <div className="flex flex-row gap-2">
+                    <div className="flex flex-row gap-4">
                         <div>{(props.score.accuracy * 100).toFixed(2)}%</div>
-                        <div>|</div>
                         <div>{props.score.max_combo}x</div>
-                        <div>|</div>
                         <div>{props.score.total_score.toLocaleString()}</div>
                     </div>
-                    <div className="flex flex-row gap-2">
+                    <div className="flex flex-row gap-4">
                         {props.score.statistics?.perfect &&
                             <div style={{ color: colors.judgements.x320 }}>
                                 {props.score.statistics.perfect}
@@ -205,7 +203,7 @@ const ScoreCard = (props: ScoreProps) => {
                             </div>}
                     </div>
                 </div>
-                <div className="flex flex-row justify-between rounded-lg p-2 items-center"
+                <div className="flex flex-row justify-between items-center rounded-lg p-2 "
                     style={{ backgroundColor: '#ffffff22' }}>
                     <div className="flex flex-row items-center gap-2">
                         <StatusBadge status={props.score.beatmapset.status} />

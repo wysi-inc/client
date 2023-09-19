@@ -106,9 +106,10 @@ app.post('/getMedals', async (req, res) => {
 app.post('/users', async (req, res) => {
     const mode = req.body.mode;
     const type = req.body.type;
+    const page = req.body.page;
     const object = {
         cursor: {
-            page: 0,
+            page: page,
         },
         filter: 'all',       
     };

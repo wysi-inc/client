@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
-import SearchBox from "./components/SearchBox";
+
 import { Link } from "react-router-dom";
 import { themeChange } from 'theme-change'
 
+import SearchBox from "./components/SearchBox";
+
 const Navbar = () => {
+
     useEffect(() => {
-        themeChange(false)
+        themeChange(false);
     }, [])
+
     return (
         <nav className="navbar bg-accent-900 drop-shadow-lg p-0 px-2 sticky-top">
             <div className="navbar-start gap-2 pl-0">

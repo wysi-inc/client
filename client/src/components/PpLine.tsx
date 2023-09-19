@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { colors } from "../resources/store";
-import { Tooltip } from "react-tooltip";
 import { Score } from "../resources/interfaces";
 
 interface PpLineProps {
@@ -20,6 +19,7 @@ const PpLine = (props: PpLineProps) => {
                 <div style={{ height: 8 }} className="flex flex-row rounded-full overflow-hidden">
                     {allPPs.map((num, index) =>
                         <div key={index + 1} className="simpleDarkenOnHover"
+                            data-tooltip-id="tooltip" data-tooltip-content={hoverScore}
                             onMouseEnter={() => setHoverScore(`${props.data[index].beatmapset.title} [${props.data[index].beatmap.version}]: ${num}pp ${props.data[index].rank}`)}
                             onMouseLeave={() => setHoverScore('')}
                             style={{ width: props.width / props.data.length, height: "100%", backgroundColor: (colors.ranks as any)[props.data[index].rank.toLowerCase()] }}></div>
@@ -34,7 +34,7 @@ const PpLine = (props: PpLineProps) => {
                 }} className="flex items-end">
                     <div style={{
                         height: 2,
-                        width: props.width/2,
+                        width: props.width / 2,
                         backgroundColor: props.color,
                     }}></div>
                 </div>
@@ -46,13 +46,10 @@ const PpLine = (props: PpLineProps) => {
                     className="flex items-end">
                     <div style={{
                         height: 2,
-                        width: props.width/2,
+                        width: props.width / 2,
                         backgroundColor: props.color,
                     }}></div>
                 </div>
-            </div>
-            <div style={{ height: 20 }}>
-                {hoverScore}
             </div>
         </div>
     )

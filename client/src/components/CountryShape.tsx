@@ -14,7 +14,8 @@ const CountryShape = (props: CountryShapeProps) => {
                  style={{
                      filter: 'brightness(0) invert(1)',
                      height: props.size,
-                     width: props.size
+                     width: props.size,
+                     objectFit: 'contain'
                  }} src={svgFile}/>
         );
     } catch (error) {
