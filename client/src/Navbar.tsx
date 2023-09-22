@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Link } from "react-router-dom";
 import { themeChange } from 'theme-change'
-
+import { HiMenu } from "react-icons/hi"
 import SearchBox from "./components/SearchBox";
 
 const Navbar = () => {
@@ -15,16 +15,16 @@ const Navbar = () => {
         <nav className="navbar bg-accent-900 drop-shadow-lg p-0 px-2 sticky-top">
             <div className="navbar-start gap-2 pl-0">
                 <div className="lg:hidden dropdown">
-                    <details className="dropdown">
-                        <summary className="m-1 btn btn-ghost">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
-                        </summary>
-                        <ul className="p-2 shadow menu dropdown-content z-[10000] bg-base-100 rounded-box w-52">
+                    <div className="dropdown">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle">
+                            <HiMenu/>
+                        </label>
+                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li><Link to={'/'}>Home</Link></li>
                             <li><Link to={'/users'}>Users</Link></li>
                             <li><Link to={'/beatmaps'}>Beatmaps</Link></li>
                         </ul>
-                    </details>
+                    </div>
                 </div>
                 <Link to={'/'} className="text-xl font-semibold hidden md:flex flex-row gap-3 btn p-2 btn-ghost lowercase">
                     <img src={require('./assets/wysi727logo.svg').default} className="w-8 h-8" alt="logo" />

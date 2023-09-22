@@ -50,12 +50,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .darkenOnHover {
-    transition: .1s ease-in-out;
+    transition: .01s ease-in;
 }
 
 .tooltip::before, .tooltip::after {
-    transition: .1s ease-in-out !important;
-    z-index: 10000;
+    transition: .01s ease-in !important;
+    z-index: 10000 !important;
+}
+
+.tooltip::before:hover, .tooltip::after:hover {
+    transition: .01s ease-in !important;
+    z-index: 10000 !important;
 }
 
 .darkenOnHover:hover {

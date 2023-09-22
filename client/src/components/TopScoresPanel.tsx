@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ModsEntity, Score, UserData } from "../resources/interfaces";
 import { colors } from "../resources/store";
 import PpLine from "./PpLine";
 import BarPieChart from "./BarPieChart";
 import ModIcon from "./ModIcon";
 import { secondsToTime } from "../resources/functions";
+import { User } from "../resources/interfaces/user";
+import { Score } from "../resources/interfaces/score";
 
 interface topScoresProps {
-    data: UserData;
+    data: User;
     best: Score[];
 }
 
@@ -56,15 +57,16 @@ const TopScoresPanel = (props: topScoresProps) => {
             });
         let largestKey = null;
         let largestValue = -Infinity;
-
+    
         for (const key in modsCounter) {
             if (modsCounter[key] > largestValue) {
                 largestKey = key;
                 largestValue = modsCounter[key];
             }
         }
-        return largestKey ? largestKey.split("-") : [];
-    }, [props.best])
+        const formattedMods = largestKey ? largestKey.split("-").map(String) : [];
+        return formattedMods;
+    }, [props.best]);    
 
     const scoresHitsLabels: BarPieChartData[] = [
         { label: '320', color: colors.judgements.x320, value: scoresHits.x320 },
@@ -169,7 +171,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         <div className="grid grid-cols-2 p-3 gap-3">
             <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
                 <div>Hit Ratios</div>
-                <BarPieChart data={scoresHitsLabels} width={250}/>
+                <BarPieChart data={scoresHitsLabels} width={250} />
             </div>
             <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
                 <div>Rank Ratios</div>
@@ -185,7 +187,7 @@ const TopScoresPanel = (props: topScoresProps) => {
                         <div>Mods:</div>
                         <div className="flex flex-row gap-1">
                             {commonMods.map((mod: string, index: number) =>
-                                <ModIcon acronym={mod} size={20} key={index + 1} />)}
+                                    <ModIcon acronym={mod} size={20} key={index + 1} />)}
                         </div>
                     </div>
                     <div>|</div>

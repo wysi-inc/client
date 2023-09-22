@@ -1,5 +1,5 @@
-import {ColorsInterface} from "./interfaces";
 import {create} from "zustand";
+import { ColorsInterface } from "./interfaces/general";
 
 export const colors: ColorsInterface = {
     ui: {

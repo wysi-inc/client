@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { BeatmapsEntity, BeatmapSet } from "../resources/interfaces";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { playerStore, PlayerStoreInterface } from "../resources/store";
 import DiffIcon from "../components/DiffIcon";
 import moment from "moment";
 import StatusBadge from "../components/StatusBadge";
-import {GiMusicalNotes} from "react-icons/gi";
+import { GiMusicalNotes } from "react-icons/gi";
+import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
+import { Link } from "react-router-dom";
 
 interface BeatmapsetCardProps {
     index: number,
@@ -26,7 +27,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
             } else {
                 return a.mode_int - b.mode_int;
             }
-        }).map((beatmap: BeatmapsEntity, index: number) => {
+        }).map((beatmap: Beatmap, index: number) => {
             if (expanded) {
                 return <DiffIcon key={index + 1} diff={beatmap.difficulty_rating} size={24}
                     mode={beatmap.mode} name={beatmap.version} />
@@ -45,8 +46,8 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     }, [expanded, props.data])
 
     return (
-        <div className="flex grow drop-shadow-lg rounded-xl h-full"
-            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.data.id}/covers/cover.jpg?${props.data.id})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
+        <div className="flex grow bg-accent-900"
+            style={{ background: `center / cover linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.data.id}/covers/cover.jpg?${props.data.id})`}}>
             <div className="grow flex flex-col gap-2 p-3"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="grid grid-cols-5 gap-3">
@@ -57,24 +58,23 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />
                         <div className="flex flex-col gap-1 grow">
                             <div className="truncate">
-                                <a href={`https://osu.ppy.sh/beatmapsets/${props.data.id}`} target={"_blank"}
-                                    rel="noreferrer"
+                                <Link to={`/beatmaps/${props.data.id}`}
                                     className="text-light h5 text-decoration-none truncate">
                                     {props.data.title}
-                                </a>
+                                </Link>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <div className="flex justify-center w-6">
-                                    <GiMusicalNotes/>
+                                    <GiMusicalNotes />
                                 </div>
                                 <div className="truncate">
                                     {props.data.artist}
-                                    </div>
+                                </div>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
-                                <img src={`https://a.ppy.sh/${props.data.user_id}`} className="rounded-md w-6 h-6" alt="img" />
+                                <img src={`https://a.ppy.sh/${props.data.user_id}`} className="rounded-md w-6 h-6" alt="img" loading="lazy" />
                                 <div className="inline-block">
-                                {props.data.creator}
+                                    {props.data.creator}
                                 </div>
                             </div>
                         </div>
@@ -124,7 +124,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                     </div>
                 </div>
                 <div className="flex flex-row flex-wrap gap-2 rounded-lg p-2"
-                    style={{ backgroundColor: '#ffffff22' }}>
+                    style={{ backgroundColor: '#ffffff22'}}>
                     <StatusBadge status={props.data.status} />
                     {expanded && <div className="w-full"></div>}
                     {diffIconsHTML}

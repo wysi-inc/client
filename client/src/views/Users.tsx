@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -6,9 +6,9 @@ import UserPage from "../pages/UserPage";
 import UserCard from "../cards/UserCard";
 import axios from "../resources/axios-config";
 import { GameModeType } from "../resources/types";
-import { UserRanks } from "../resources/interfaces";
 import PageTabs from "../components/PageTabs";
 import { colors } from "../resources/store";
+import { UserRanks } from "../resources/interfaces/user";
 
 const Users = () => {
     const { urlUser } = useParams();
@@ -19,7 +19,7 @@ const Users = () => {
 
     const [users, setUsers] = useState<UserRanks[]>([]);
     const [page, setPage] = useState<number>(1);
-    const [category, setCategory] = useState<'performance' | 'score'>('score');
+    const [category, setCategory] = useState<'performance' | 'score'>('performance');
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -66,7 +66,7 @@ const Users = () => {
                     <button className="join-item btn btn-secondary text-base-100 font-bold" onClick={() => {
                         setCategory("score");
                         getUsers();
-                        }}>Ranked Score</button>
+                    }}>Ranked Score</button>
                 </div>
                 <div className="flex justify-center">
                     <PageTabs setNewPage={setPage} current={page} min={1} max={200} />

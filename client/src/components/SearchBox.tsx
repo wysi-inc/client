@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
-import { UserCompact } from "../resources/interfaces";
 import axios from "../resources/axios-config";
 import ReactCountryFlag from "react-country-flag";
 import OnlineDot from "./OnlineDot";
@@ -9,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Twemoji from "react-twemoji";
 import { FaSearch } from "react-icons/fa";
 import GroupBadge from "./GroupBadge";
+import { UserCompact } from "../resources/interfaces/user";
 
 const SearchBox = () => {
 
@@ -67,7 +67,7 @@ const SearchBox = () => {
                 <FaSearch />
                 <div>Search someone</div>
             </button>
-            <dialog id="searchModal" className="modal">
+            <dialog id="searchModal" className="modal modal-top md:modal-middle text-base-content">
                 <div className="modal-box flex flex-col gap-3">
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>

@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import ReactCountryFlag from 'react-country-flag';
 
 import OnlineDot from '../components/OnlineDot';
-import { UserRanks } from '../resources/interfaces';
 import { secondsToTime } from '../resources/functions';
+import { UserRanks } from '../resources/interfaces/user';
 
 interface UserCardProps {
     user: UserRanks;
@@ -18,8 +18,7 @@ interface UserCardProps {
 
 const UserCard = (props: UserCardProps) => {
     return (
-        <Link to={`/users/${props.user.user.id}`} className="rounded-xl overflow-hidden grow drop-shadow-lg"
-            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.user.user.cover.url})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
+        <Link to={`/users/${props.user.user.id}`} className="rounded-xl overflow-hidden grow drop-shadow-lg bg-accent-800">
             <div style={{ backdropFilter: "blur(2px)" }} className="p-3 gap-3 grow flex flex-col">
                 <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3 items-center">
                     <div className="col-span-2 md:col-span-1 lg:col-span-1 flex flex-row gap-3 items-center">

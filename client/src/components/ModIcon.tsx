@@ -5,11 +5,13 @@ interface ModIconProps {
 }
 const ModIcon = (props: ModIconProps) => {
     return (
-        <img style={{height: props.size}}
-             src={require(`../assets/mod-icons/${props.acronym.toLowerCase()}.png`)}
-             alt={props.acronym}
-             data-tooltip-id="tooltip"
-             data-tooltip-content={props.acronym}/>
+        <div className="tooltip"
+            data-tip={props.acronym}>
+            <img style={{ height: props.size }}
+                src={require(`../assets/mod-icons/${props.acronym.toLowerCase()}.png`)}
+                loading="lazy"
+                alt={props.acronym} />
+        </div>
     )
 }
 export default ModIcon;

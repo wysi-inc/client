@@ -86,7 +86,7 @@ const DiffIcon = (props: DiffIconProps) => {
     }
 
     return (
-        <div data-tooltip-id="tooltip" data-tooltip-content={`★ ${props.diff} - [${props.name}]`}>
+        <div data-tip={`★ ${props.diff} - [${props.name}]`} className="tooltip">
             {getIcon()}
         </div>
     )

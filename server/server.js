@@ -149,8 +149,7 @@ app.post('/user', async (req, res) => {
     }
 });
 
-
-app.post('/beatmaps', async (req, res) => {
+app.post('/beatmapsets', async (req, res) => {
     try {
         let queryData = {
             query: req.body.query,
@@ -168,9 +167,15 @@ app.post('/beatmaps', async (req, res) => {
     }
 })
 
-// app.post('/beatmapset', async (req, res) => {
-//
-// });
+app.post('/beatmapset', async (req, res) => {
+    try {
+        const setId = req.body.setId;
+        const data = await v2.beatmap.set.details(setId);
+        res.send(data);
+    } catch (err) {
+        res.status(500).send({error: err});
+    }
+});
 
 app.listen(port, () => {
     console.log(`App running in port ${port}`);

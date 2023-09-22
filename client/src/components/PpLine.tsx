@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { colors } from "../resources/store";
-import { Score } from "../resources/interfaces";
+import { Score } from "../resources/interfaces/score";
 
 interface PpLineProps {
     data: Score[];
@@ -16,10 +16,9 @@ const PpLine = (props: PpLineProps) => {
             <div>Top {props.data.length} plays</div>
             <div className="flex flex-row gap-2 items-center justify-center mt-2">
                 <div>{allPPs[0]}pp</div>
-                <div style={{ height: 8 }} className="flex flex-row rounded-full overflow-hidden">
+                <div style={{ height: 8 }} className="flex flex-row rounded-full">
                     {allPPs.map((num, index) =>
-                        <div key={index + 1} className="simpleDarkenOnHover"
-                            data-tooltip-id="tooltip" data-tooltip-content={hoverScore}
+                        <div key={index + 1} className="simpleDarkenOnHover tooltip" data-tip={hoverScore}
                             onMouseEnter={() => setHoverScore(`${props.data[index].beatmapset.title} [${props.data[index].beatmap.version}]: ${num}pp ${props.data[index].rank}`)}
                             onMouseLeave={() => setHoverScore('')}
                             style={{ width: props.width / props.data.length, height: "100%", backgroundColor: (colors.ranks as any)[props.data[index].rank.toLowerCase()] }}></div>

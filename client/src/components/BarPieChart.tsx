@@ -19,16 +19,16 @@ const BarPieChart = (props: BarPieChartProps) => {
                     </div>
                 )}
             </div>
-            <div className="flex flex-row rounded-full overflow-hidden">
+            <div className="flex flex-row rounded-full">
                 {props.data.map((obj: BarPieChartData, index: number) =>
-                    <div className="simpleDarkenOnHover" key={index + 1}
-                        data-tooltip-id="tooltip" data-tooltip-content={`${Math.round(obj.value / total * 100)}%`}
-                        data-tooltip-place="bottom"
-                        style={{
-                            width: ((obj.value / total) * 100 * (props.width / 100)) ? ((obj.value / total) * 100 * (props.width / 100)) : 0,
-                            height: 8
-                        }}>
-                        <div className="w-full h-full" style={{ backgroundColor: obj.color }}></div>
+                    <div key={index + 1} className="tooltip tooltip-bottom" data-tip={`${Math.round(obj.value / total * 100)}%`}>
+                        <div className="simpleDarkenOnHover"
+                            style={{
+                                width: ((obj.value / total) * 100 * (props.width / 100)) ? ((obj.value / total) * 100 * (props.width / 100)) : 0,
+                                height: 8
+                            }}>
+                            <div className="w-full h-full" style={{ backgroundColor: obj.color }}></div>
+                        </div>
                     </div>
                 )}
             </div>

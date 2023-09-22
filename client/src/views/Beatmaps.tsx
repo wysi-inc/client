@@ -1,24 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+
+import { useParams } from "react-router-dom";
 
 import { useDebounce } from "usehooks-ts";
 
 import { Slider } from "@mui/material";
 import { BsCheckLg } from "react-icons/bs";
-import Spinner from "react-bootstrap/Spinner";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
 
 import { colors } from "../resources/store";
 import axios from '../resources/axios-config';
-import { BeatmapSet } from "../resources/interfaces";
-import BeatmapsetCard from "../cards/BeatmapsetCard";
 import { secondsToTime } from "../resources/functions";
-import { BeatmapsetStatusType, GameModeType, SongGenreType, SongLanguageType, SongSortType } from "../resources/types";
+import { BeatmapsetStatusType, GameModeType } from "../resources/types";
+import BeatmapsetPage from "../pages/BeatmapsetPage";
+import { BeatmapSet } from "../resources/interfaces/beatmapset";
+import BeatmapsetCard from "../cards/BeatmapsetCard";
+
+import List from 'react-virtualized/dist/commonjs/List';
+import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
+import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
 
 const BeatmapsPage = () => {
+    const { urlSetId } = useParams();
+
+    useEffect((): void => {
+        if (urlSetId === undefined) {
+
+        } else {
+
+        }
+    }, [urlSetId]);
 
     const [results, setResults] = useState<BeatmapSet[]>([])
     const [resultsNum, setResultsNum] = useState<number>(0)
-    const [searching, setSearching] = useState<boolean>(false);
 
     const bpmLimit = 300;
     const srLimit = 10;
@@ -50,72 +64,25 @@ const BeatmapsPage = () => {
 
     const [sort, setSort] = useState<string[]>([]);
 
+    const widthRef = useRef<HTMLDivElement | null>(null);
+
+    const clientWidth = useMemo(() => widthRef.current?.clientWidth ? widthRef.current?.clientWidth : 1000, [widthRef.current?.clientWidth])
+
+    const debouncedValue: string = useDebounce<string>(getQuery().f + getQuery().q + sort + modes.toString() + status + sort.toString(), 500);
+
     useEffect((): void => {
-        const queryParameters = new URLSearchParams(window.location.search)
-        const urlTitle = queryParameters.get('title');
-        const urlMapper = queryParameters.get('mapper');
-
-        const urlBPM0 = queryParameters.get('bpm0');
-        const urlBPM1 = queryParameters.get('bpm1');
-        const urlSR0 = queryParameters.get('sr0');
-        const urlSR1 = queryParameters.get('sr1');
-        const urlLen0 = queryParameters.get('len0');
-        const urlLen1 = queryParameters.get('len1');
-        const urlAR0 = queryParameters.get('ar0');
-        const urlAR1 = queryParameters.get('ar1');
-        const urlCS0 = queryParameters.get('cs0');
-        const urlCS1 = queryParameters.get('cs1');
-        const urlHP0 = queryParameters.get('hp0');
-        const urlHP1 = queryParameters.get('hp1');
-        const urlOD0 = queryParameters.get('od0');
-        const urlOD1 = queryParameters.get('od1');
-        const urlYear0 = queryParameters.get('year0');
-        const urlYear1 = queryParameters.get('year1');
-
-        const urlModes = queryParameters.getAll('modes');
-        if (urlModes) {
-            if (urlModes.length > 0) setModes(urlModes as GameModeType[])
+        if (urlSetId === undefined) {
+            getUrlParams();
+            getBeatmaps();
         }
-        const urlStatus = queryParameters.getAll('status');
-        if (urlStatus) {
-            if (urlStatus.length > 0) setStatus(urlStatus as BeatmapsetStatusType[])
-        }
-        const urlSort = queryParameters.getAll('sort');
-        if (urlSort) {
-            if (urlSort.length > 0) setSort(urlSort);
-        }
-        if (urlTitle) {
-            setTitle(urlTitle);
-        }
-        if (urlMapper) {
-            setMapper(urlMapper);
-        }
-        if (urlBPM0 && urlBPM1) {
-            setBpm([parseInt(urlBPM0), parseInt(urlBPM1)])
-        }
-        if (urlSR0 && urlSR1) {
-            setSR([parseInt(urlSR0), parseInt(urlSR1)])
-        }
-        if (urlLen0 && urlLen1) {
-            setLength([parseInt(urlLen0), parseInt(urlLen1)])
-        }
-        if (urlAR0 && urlAR1) {
-            setAR([parseInt(urlAR0), parseInt(urlAR1)])
-        }
-        if (urlCS0 && urlCS1) {
-            setCS([parseInt(urlCS0), parseInt(urlCS1)])
-        }
-        if (urlOD0 && urlOD1) {
-            setOD([parseInt(urlOD0), parseInt(urlOD1)])
-        }
-        if (urlHP0 && urlHP1) {
-            setHP([parseInt(urlHP0), parseInt(urlHP1)])
-        }
-        if (urlYear0 && urlYear1) {
-            setYear([parseInt(urlYear0), parseInt(urlYear1)])
-        }
-        window.history.pushState({}, '', '/beatmaps');
     }, [])
+
+    useEffect(() => {
+        if (urlSetId === undefined) {
+            getBeatmaps();
+        }
+    }, [debouncedValue]);
+
 
     function clearSearch(): void {
         setTitle('');
@@ -192,50 +159,121 @@ const BeatmapsPage = () => {
         return { q: query, f: filters };
     }
 
+    function getUrlParams() {
+        const queryParameters = new URLSearchParams(window.location.search)
+        const urlTitle = queryParameters.get('title');
+        const urlMapper = queryParameters.get('mapper');
+
+        const urlBPM0 = queryParameters.get('bpm0');
+        const urlBPM1 = queryParameters.get('bpm1');
+        const urlSR0 = queryParameters.get('sr0');
+        const urlSR1 = queryParameters.get('sr1');
+        const urlLen0 = queryParameters.get('len0');
+        const urlLen1 = queryParameters.get('len1');
+        const urlAR0 = queryParameters.get('ar0');
+        const urlAR1 = queryParameters.get('ar1');
+        const urlCS0 = queryParameters.get('cs0');
+        const urlCS1 = queryParameters.get('cs1');
+        const urlHP0 = queryParameters.get('hp0');
+        const urlHP1 = queryParameters.get('hp1');
+        const urlOD0 = queryParameters.get('od0');
+        const urlOD1 = queryParameters.get('od1');
+        const urlYear0 = queryParameters.get('year0');
+        const urlYear1 = queryParameters.get('year1');
+
+        const urlModes = queryParameters.getAll('modes');
+        if (urlModes) {
+            if (urlModes.length > 0) setModes(urlModes as GameModeType[])
+        }
+        const urlStatus = queryParameters.getAll('status');
+        if (urlStatus) {
+            if (urlStatus.length > 0) setStatus(urlStatus as BeatmapsetStatusType[])
+        }
+        const urlSort = queryParameters.getAll('sort');
+        if (urlSort) {
+            if (urlSort.length > 0) setSort(urlSort);
+        }
+        if (urlTitle) {
+            setTitle(urlTitle);
+        }
+        if (urlMapper) {
+            setMapper(urlMapper);
+        }
+        if (urlBPM0 && urlBPM1) {
+            setBpm([parseInt(urlBPM0), parseInt(urlBPM1)])
+        }
+        if (urlSR0 && urlSR1) {
+            setSR([parseInt(urlSR0), parseInt(urlSR1)])
+        }
+        if (urlLen0 && urlLen1) {
+            setLength([parseInt(urlLen0), parseInt(urlLen1)])
+        }
+        if (urlAR0 && urlAR1) {
+            setAR([parseInt(urlAR0), parseInt(urlAR1)])
+        }
+        if (urlCS0 && urlCS1) {
+            setCS([parseInt(urlCS0), parseInt(urlCS1)])
+        }
+        if (urlOD0 && urlOD1) {
+            setOD([parseInt(urlOD0), parseInt(urlOD1)])
+        }
+        if (urlHP0 && urlHP1) {
+            setHP([parseInt(urlHP0), parseInt(urlHP1)])
+        }
+        if (urlYear0 && urlYear1) {
+            setYear([parseInt(urlYear0), parseInt(urlYear1)])
+        }
+    }
+
     const songModes: GameModeType[] = ["osu", "taiko", "fruits", "mania"];
     const songStatus: BeatmapsetStatusType[] = ['ranked', 'approved', 'qualified', 'loved', 'pending', 'wip', 'graveyard'];
 
     const songSort = ['bpm', 'favourite_count', 'last_updated', 'play_count', 'ranked_date', 'submitted_date', 'beatmaps.total_length'];
 
-    const debouncedValue: string = useDebounce<string>(getQuery().f + getQuery().q + sort + modes.toString() + status + sort.toString(), 500);
-
-    useEffect(() => {
-        getBeatmaps(true);
-    }, [debouncedValue]);
-
-    function getBeatmaps(clear: boolean): void {
-        setSearching(true);
+    async function getBeatmaps() {
         const q = {
             query: getQuery().q,
             filter: getQuery().f,
             mode: modes.length < 1 ? [-1] : modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
             status: status.length < 1 ? [-3] : status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
             limit: 50,
-            offset: clear ? 0 : results.length,
+            offset: 0,
             sort: sort,
         }
-        axios.post('/beatmaps', q).then((r): void => {
-            if (r.data.error || r.data.length < 1) {
-                console.error(r.data.error)
-                setResults([]);
-                setResultsNum(0);
-            } else {
-                if (clear) {
-                    setResults(r.data.results)
-                } else {
-                    setResults([...results, ...r.data.results]);
-                }
-                setResultsNum(parseInt(r.data.total))
-            }
-        }).catch((e) => {
-            console.error(e);
-        }).finally(() => {
-            setSearching(false);
-        })
+        try {
+            const res = await axios.post('/beatmapsets', q);
+            const data = res.data;
+            setResultsNum(parseInt(data.total))
+            setResults(data.results)
+        } catch (err) {
+            console.error(err);
+        }
     }
 
+    async function getMoreBeatmaps({ startIndex, stopIndex }: any) {
+        const q = {
+            query: getQuery().q,
+            filter: getQuery().f,
+            mode: modes.length < 1 ? [-1] : modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
+            status: status.length < 1 ? [-3] : status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
+            limit: stopIndex * 3,
+            offset: startIndex * 3,
+            sort: sort,
+        }
+        try {
+            const res = await axios.post('/beatmapsets', q);
+            const data = res.data;
+            setResultsNum(parseInt(data.total))
+            setResults([...results, ...data.results])
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} />);
+
     return (
-        <div className="p-4">
+        <div className="p-4" ref={widthRef}>
             <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900 drop-shadow-lg">
                 <div className="bg-accent-950 rounded-lg p-4 text-xl flex flex-row justify-between items-center">
                     <div>Beatmap Search:</div>
@@ -490,25 +528,46 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 justify-center">
-                {results.map((set: BeatmapSet, index: number) =>
-                    <div className="col-12 col-md-8 col-xl-5 col-xxl-4 rounded-3 overflow-hidden p-0">
-                        <BeatmapsetCard key={index + 1} data={set} index={index} />
-                    </div>
-                )}
-                {results.length < resultsNum &&
-                    <button
-                        className="btn btn-success flex flex-row gap-2 justify-center w-full"
-                        onClick={() => getBeatmaps(false)}>
-                        <i className="bi bi-caret-down-fill"></i>
-                        <div>Load more</div>
-                    </button>}
-                <Spinner animation="border" role="status" hidden={!searching}>
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
+            <div className="gap-4" style={{height: 1000}}>
+                <InfiniteLoader
+                    isRowLoaded={isRowLoaded}
+                    loadMoreRows={getMoreBeatmaps}
+                    rowCount={resultsNum / 3}>
+                    {({ onRowsRendered, registerChild }) => (
+                        <AutoSizer>
+                            {({ height, width }) => (
+                                <List height={height}
+                                    width={width}
+                                    onRowsRendered={onRowsRendered}
+                                    ref={registerChild}
+                                    rowCount={results.length / 3}
+                                    rowHeight={196}
+                                    rowRenderer={rowRenderer}
+                                />)}
+                        </AutoSizer>
+                    )}
+                </InfiniteLoader>
             </div>
         </div>
     )
+
+    function rowRenderer({ key, index, style }: any) {
+        let k = (index + 1) * 3;
+        return (
+            <div style={style} key={key}>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                    {k - 3 < resultsNum && <BeatmapsetCard index={k - 3} data={results[k - 3]} />}
+                    {k - 2 < resultsNum && <BeatmapsetCard index={k - 2} data={results[k - 2]} />}
+                    {k - 1 < resultsNum && <BeatmapsetCard index={k - 1} data={results[k - 1]} />}
+                </div>
+            </div>
+        )
+    }
+
+    function isRowLoaded({ index }: any) {
+        return !!results[(index + 1) * 3];
+    }
+
 }
 
 export default BeatmapsPage;

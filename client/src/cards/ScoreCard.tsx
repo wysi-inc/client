@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Score, ModsEntity } from "../resources/interfaces";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { colors, modsInt, playerStore, PlayerStoreInterface } from "../resources/store";
 import ModIcon from "../components/ModIcon";
@@ -10,7 +9,8 @@ import DiffIcon from "../components/DiffIcon";
 import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import { HiOutlineClock } from "react-icons/hi";
 import { FaHeadphones } from "react-icons/fa";
-import {GiMusicalNotes} from "react-icons/gi";
+import { GiMusicalNotes } from "react-icons/gi";
+import { ModsEntity, Score } from "../resources/interfaces/score";
 
 interface ScoreProps {
     index: number;
@@ -30,37 +30,38 @@ const ScoreCard = (props: ScoreProps) => {
 
     useEffect(() => {
         getPPChoke();
-    }
-        , []);
+    }, []);
 
-    function getPPChoke() {
+    async function getPPChoke() {
         if (props.score.legacy_perfect) return;
         const acc = props.score.accuracy * 100;
         const mods = props.score.mods?.map((m) => m.acronym === 'NC' ? 64 : (modsInt as any)[m.acronym]);
         const modComv = mods !== undefined ? mods.length > 0 ? mods.reduce((a, b) => a + b) : mods[0] : '';
 
         const url = `https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${modComv}`;
-        axios.post('/proxy', { url: url })
-            .then((r) => {
-                if (props.score.mods) {
-                    if (props.score.mods?.length > 0) {
-                        setNewAR(parseFloat(r.data.map.ar.toFixed(1)));
-                        setNewCS(parseFloat(r.data.map.cs.toFixed(1)));
-                        setNewOD(parseFloat(r.data.map.od.toFixed(1)));
-                        setNewHP(parseFloat(r.data.map.hp.toFixed(1)));
-                        setNewSR(r.data.difficulty.stars.toFixed(2));
-                        setNewBPM(Math.round(r.data.map.bpm));
-                        const m = props.score.mods.map(obj => obj.acronym);
-                        const length = props.score.beatmap.total_length;
-                        if (m.includes('DT')) setNewLen(length * 0.75);
-                        if (m.includes('HT')) setNewLen(length * 1.5);
-                    }
+        try {
+            const r = await axios.post('/proxy', { url: url });
+            const data = r.data;
+            if (props.score.mods) {
+                if (props.score.mods?.length > 0) {
+                    setNewAR(parseFloat(data.map.ar.toFixed(1)));
+                    setNewCS(parseFloat(data.map.cs.toFixed(1)));
+                    setNewOD(parseFloat(data.map.od.toFixed(1)));
+                    setNewHP(parseFloat(data.map.hp.toFixed(1)));
+                    setNewSR(data.difficulty.stars.toFixed(2));
+                    setNewBPM(Math.round(data.map.bpm));
+                    const m = props.score.mods.map(obj => obj.acronym);
+                    const length = props.score.beatmap.total_length;
+                    if (m.includes('DT')) setNewLen(length * 0.75);
+                    if (m.includes('HT')) setNewLen(length * 1.5);
                 }
-                const pp = r.data.pp[parseFloat(acc.toString())];
-                if (Math.round(pp.pp) !== Math.round(props.score.pp))
-                    setChokePP(Math.round(pp.pp));
-            })
-            .catch(e => console.error(e));
+            }
+            const pp = data.pp[parseFloat(acc.toString())];
+            if (Math.round(pp.pp) !== Math.round(props.score.pp))
+                setChokePP(Math.round(pp.pp));
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function playSong() {
@@ -68,8 +69,8 @@ const ScoreCard = (props: ScoreProps) => {
     }
 
     return (
-        <div className="flex grow drop-shadow-lg rounded-xl"
-            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover})`, backgroundSize: "cover", backgroundPosition: 'center' }}>
+        <div className="flex grow bg-accent-900"
+            style={{ background: `center / cover linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover})`}}>
             <div className="flex flex-col p-3 gap-2 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="flex flex-row justify-between gap-3 items-center">
@@ -88,12 +89,12 @@ const ScoreCard = (props: ScoreProps) => {
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <div className="flex justify-center w-6">
-                                    <GiMusicalNotes/>
+                                    <GiMusicalNotes />
                                 </div>
                                 <div className="truncate">{props.score.beatmapset.artist}</div>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
-                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-md w-6 h-6" alt="img" />
+                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-md w-6 h-6" alt="img" loading="lazy" />
                                 <div className="inline-block">
                                     {props.score.beatmapset.creator}
                                 </div>
@@ -111,28 +112,30 @@ const ScoreCard = (props: ScoreProps) => {
                 </div>
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-4 items-center">
-                        <div data-tooltip-id="tooltip"
-                            data-tooltip-content={moment(props.score.ended_at).fromNow()}
-                            className="h6">
+                        <div className="tooltip"
+                            data-tip={moment(props.score.ended_at).fromNow()}>
                             {moment(props.score.ended_at).format('DD MMM YYYY')}
                         </div>
                     </div>
-                    <div className="flex flex-row items-center content-end gap-5">
-                        <div>
+                    <div className="flex flex-row items-center content-end gap-2">
+                        <div className="p-1">
                             #{props.index}
                         </div>
-                        <div data-tooltip-id="tooltip" data-tooltip-content="download">
-                            <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}>
+                        <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}
+                            className="tooltip" data-tip="download">
+                            <button className="btn btn-ghost btn-circle btn-sm">
                                 <HiDocumentArrowDown />
-                            </a>
-                        </div>
-                        <div data-tooltip-id="tooltip" data-tooltip-content="osu!direct">
-                            <a href={`osu://b/${props.score.beatmap_id}`}>
+                            </button>
+                        </a>
+                        <a href={`osu://b/${props.score.beatmap_id}`}
+                            className="tooltip" data-tip="osu!direct">
+                            <button className="btn btn-ghost btn-circle btn-sm">
                                 <HiMiniBarsArrowDown />
-                            </a>
-                        </div>
-                        <div data-tooltip-id="tooltip" data-tooltip-content="listen">
-                            <button onClick={playSong}>
+                            </button>
+                        </a>
+                        <div className="tooltip" data-tip="listen">
+                            <button className="btn btn-ghost btn-circle btn-sm"
+                                onClick={playSong}>
                                 <FaHeadphones />
                             </button>
                         </div>
@@ -203,7 +206,7 @@ const ScoreCard = (props: ScoreProps) => {
                             </div>}
                     </div>
                 </div>
-                <div className="flex flex-row justify-between items-center rounded-lg p-2 "
+                <div className="flex flex-row justify-between items-center rounded-lg p-2"
                     style={{ backgroundColor: '#ffffff22' }}>
                     <div className="flex flex-row items-center gap-2">
                         <StatusBadge status={props.score.beatmapset.status} />
