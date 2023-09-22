@@ -125,7 +125,7 @@ export interface BeatThings {
   
 
 export interface DBRankHistory {
-    date: Date;
+    time: number;
     rank: number;
 }
 

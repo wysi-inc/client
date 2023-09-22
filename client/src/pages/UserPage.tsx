@@ -123,7 +123,7 @@ const UserPage = (props: UserPageProps) => {
     //ONLY ONCE!!!!!
     useEffect(() => {
         getMedals();
-    }, [getMedals])
+    }, [])
 
     const globalHistoryDataInitial = {
         labels: [],
@@ -825,7 +825,7 @@ const UserPage = (props: UserPageProps) => {
     function getGlobalData(user: User) {
         if (!user?.db_info.global_rank) return;
         setGlobalHistoryData({
-            labels: user.db_info.global_rank.map(obj => new Date(obj.date)),
+            labels: user.db_info.global_rank.map(obj => new Date(obj.time * 1000)),
             datasets: [{
                 label: 'Global Rank',
                 data: user.db_info.global_rank.map(obj => obj.rank),
@@ -839,7 +839,7 @@ const UserPage = (props: UserPageProps) => {
     function getCountryData(user: User) {
         if (!user?.db_info.country_rank) return;
         setCountryHistoryData({
-            labels: user.db_info.country_rank.map(obj => new Date(obj.date)),
+            labels: user.db_info.country_rank.map(obj => new Date(obj.time * 1000)),
             datasets: [{
                 label: 'Country Rank',
                 data: user.db_info.country_rank.map(obj => obj.rank),

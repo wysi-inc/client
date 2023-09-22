@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://192.168.1.33:5000/',
+    baseURL: 'https://api.wysi727.com/',
 });
 
 export default instance;
