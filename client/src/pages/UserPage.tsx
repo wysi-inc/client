@@ -280,21 +280,21 @@ const UserPage = (props: UserPageProps) => {
 
     return (
         <div>
-            <div style={{ background: `center / cover linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url})` }}>
+            <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
                 <div style={{ backdropFilter: "blur(2px)" }}
                     className="flex flex-col p-8 gap-8 card-body rounded-none">
                     <div className="grid grid-cols-7 flex-wrap gap-4 xl:gap-8">
                         <div className="col-span-7 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
-                                alt='pfp' className="rounded-xl aspect-square mb-2"
+                                alt='pfp' className="aspect-square mb-2"
                                 style={{ width: '100%' }} />
                             <div className="flex flex-row gap-2 items-center w-full">
                                 <div className="text-neutral-content">{userData.statistics.level.current}</div>
                                 <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
-                            <div className="text-center text-lg tooltip"
+                            <div className="text-center text-lg tooltip tooltip-bottom"
                                 data-tip={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
@@ -455,8 +455,8 @@ const UserPage = (props: UserPageProps) => {
                     </div>}
             </div>
             <div className="grid grid-cols-5 gap-4 md:p-4 justify-center">
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg rounded-xl overflow-hidden" ref={div1Ref}>
-                    <div className="rounded-lg shadow">
+                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg" ref={div1Ref}>
+                    <div className="shadow">
                         <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-graph-up"></i>
                             <div>History</div>
@@ -506,7 +506,7 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="rounded-lg shadow">
+                    <div className="shadow">
                         <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                             <i className="bi bi-bar-chart-line"></i>
                             <div>Top Play Stats</div>
@@ -516,7 +516,7 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg rounded-xl overflow-hidden" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="p-2 bg-accent-800 4 flex flex-row gap-2 justify-center">
                         <i className="bi bi-controller"></i>
                         <div>Scores</div>
@@ -534,7 +534,7 @@ const UserPage = (props: UserPageProps) => {
                         {scoresSwitch()}
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg rounded-xl overflow-hidden" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="p-2 flex flex-row gap-2 justify-center bg-accent-800">
                         <i className="bi bi-file-earmark-music"></i>
                         <div>Beatmaps</div>
@@ -552,8 +552,8 @@ const UserPage = (props: UserPageProps) => {
                         {beatmapsSwitch()}
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg rounded-xl overflow-hidden" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-cente">
+                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
+                    <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
                         <i className="bi bi-award"></i>
                         <div>Medals</div>
                     </div>
@@ -569,7 +569,7 @@ const UserPage = (props: UserPageProps) => {
                                         <div>most recent</div>
                                         <div>least recent</div>
                                     </div>
-                                    <div className="flex flex-row gap-1 overflow-hidden">
+                                    <div className="flex flex-row gap-1">
                                         {lastMedals.map((medal: Medal, index: number) => (
                                             <MedalBadge thisMedal={medal} userMedals={userData.user_achievements}
                                                 key={index} />))}
@@ -585,7 +585,7 @@ const UserPage = (props: UserPageProps) => {
                                         style={{ fontSize: 14, top: -8 }}>
                                         Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
                                     </div>
-                                    <div className="p-3 rounded-lg grid justify-center">
+                                    <div className="p-3 grid justify-center">
                                         {rarestMedal &&
                                             <MedalBadge thisMedal={rarestMedal}
                                                 userMedals={userData.user_achievements} />}
@@ -879,7 +879,7 @@ const UserPage = (props: UserPageProps) => {
     }
 
     function scoresSwitch() {
-        const rowHeight = 253;
+        const rowHeight = 270;
         if (!userData) return <></>;
         switch (scoresTabIndex) {
             case 1:
@@ -959,7 +959,7 @@ const UserPage = (props: UserPageProps) => {
 
     function beatmapsSwitch() {
         if (!userData) return <></>;
-        const rowHeight = 184;
+        const rowHeight = 200;
         switch (beatmapsTabIndex) {
             case 1:
                 return <InfiniteLoader

@@ -1,5 +1,7 @@
 import React from "react"
-import {GameModeType} from "../resources/types";
+import { GameModeType } from "../resources/types";
+import { Link } from "react-router-dom";
+import ModeIcon from "./ModeIcon";
 
 interface ModeSelectorProps {
     mode: GameModeType;
@@ -7,17 +9,14 @@ interface ModeSelectorProps {
 }
 
 const ModeSelector = (props: ModeSelectorProps) => {
-    function sendTo(mode: GameModeType): void {
-        window.location.replace(`/users/${props.userId}/${mode}`);
-    }
+
     const modes: GameModeType[] = ['osu', 'taiko', 'fruits', 'mania']
     return (
         <div className="flex flex-row gap-2 justify-content-around">
-            {modes.map((mode:GameModeType, index: number) =>
-                <button className="border-0 darkenOnHover" disabled={props.mode === mode}
-                        onClick={() => sendTo(mode)} key={index + 1}>
-                    <img src={require(`../assets/mode-icons/${mode}.svg`)} alt={mode} style={{height: 28, width: 28}}/>
-                </button>
+            {modes.map((mode: GameModeType, index: number) =>
+                <Link to={`/users/${props.userId}/${mode}`} key={index}>
+                    <ModeIcon size={32} mode={mode} color={props.mode === mode ? '#ffffff66' : '#ffffff'} />
+                </Link>
             )}
         </div>
     )

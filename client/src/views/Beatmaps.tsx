@@ -22,14 +22,7 @@ import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
 
 const BeatmapsPage = () => {
     const { urlSetId } = useParams();
-
-    useEffect((): void => {
-        if (urlSetId === undefined) {
-
-        } else {
-
-        }
-    }, [urlSetId]);
+    const { urlDiffId } = useParams();
 
     const [results, setResults] = useState<BeatmapSet[]>([])
     const [resultsNum, setResultsNum] = useState<number>(0)
@@ -65,8 +58,6 @@ const BeatmapsPage = () => {
     const [sort, setSort] = useState<string[]>([]);
 
     const widthRef = useRef<HTMLDivElement | null>(null);
-
-    const clientWidth = useMemo(() => widthRef.current?.clientWidth ? widthRef.current?.clientWidth : 1000, [widthRef.current?.clientWidth])
 
     const debouncedValue: string = useDebounce<string>(getQuery().f + getQuery().q + sort + modes.toString() + status + sort.toString(), 500);
 
@@ -270,7 +261,7 @@ const BeatmapsPage = () => {
         }
     }
 
-    if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} />);
+    if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} diffId={parseInt(urlDiffId ? urlDiffId : "")} />);
 
     return (
         <div className="p-4" ref={widthRef}>
@@ -528,11 +519,11 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="gap-4" style={{height: 1000}}>
+            <div className="gap-4" style={{ height: 1000 }}>
                 <InfiniteLoader
                     isRowLoaded={isRowLoaded}
                     loadMoreRows={getMoreBeatmaps}
-                    rowCount={resultsNum / 3}>
+                    rowCount={Math.floor(resultsNum / 3)}>
                     {({ onRowsRendered, registerChild }) => (
                         <AutoSizer>
                             {({ height, width }) => (
@@ -540,7 +531,7 @@ const BeatmapsPage = () => {
                                     width={width}
                                     onRowsRendered={onRowsRendered}
                                     ref={registerChild}
-                                    rowCount={results.length / 3}
+                                    rowCount={Math.floor(results.length / 3)}
                                     rowHeight={196}
                                     rowRenderer={rowRenderer}
                                 />)}

@@ -16,38 +16,11 @@ interface BeatmapsetCardProps {
 const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
     const [showArrow, setShowArrow] = useState<boolean>(false)
-    const [diffIconsHTML, setDiffIconsHTML] = useState<any>();
-    const [expanded, setExpanded] = useState<boolean>(false);
     const shortLimit = 12;
-
-    function DiffRow() {
-        return props.data.beatmaps.sort((a, b) => {
-            if (a.mode === b.mode) {
-                return a.difficulty_rating - b.difficulty_rating;
-            } else {
-                return a.mode_int - b.mode_int;
-            }
-        }).map((beatmap: Beatmap, index: number) => {
-            if (expanded) {
-                return <DiffIcon key={index + 1} diff={beatmap.difficulty_rating} size={24}
-                    mode={beatmap.mode} name={beatmap.version} />
-            } else if (index < shortLimit) {
-                return <DiffIcon key={index + 1} diff={beatmap.difficulty_rating} size={24}
-                    mode={beatmap.mode} name={beatmap.version} />
-            } else {
-                setShowArrow(true);
-            }
-        }
-        )
-    }
-
-    useEffect(() => {
-        setDiffIconsHTML(DiffRow);
-    }, [expanded, props.data])
 
     return (
         <div className="flex grow bg-accent-900"
-            style={{ background: `center / cover linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.data.id}/covers/cover.jpg?${props.data.id})`}}>
+            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.data.id}/covers/cover.jpg?${props.data.id}) center / cover no-repeat` }}>
             <div className="grow flex flex-col gap-2 p-3"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="grid grid-cols-5 gap-3">
@@ -124,17 +97,26 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                     </div>
                 </div>
                 <div className="flex flex-row flex-wrap gap-2 rounded-lg p-2"
-                    style={{ backgroundColor: '#ffffff22'}}>
+                    style={{ backgroundColor: '#ffffff22' }}>
                     <StatusBadge status={props.data.status} />
-                    {expanded && <div className="w-full"></div>}
-                    {diffIconsHTML}
+                    {props.data.beatmaps.sort((a, b) => {
+                        if (a.mode === b.mode) {
+                            return a.difficulty_rating - b.difficulty_rating;
+                        } else {
+                            return a.mode_int - b.mode_int;
+                        }
+                    }).map((beatmap: Beatmap, index: number) => {
+                        if (index < shortLimit) {
+                            return <DiffIcon setId={props.data.id} diffId={beatmap.id}
+                            key={index + 1} diff={beatmap.difficulty_rating} size={24}
+                                mode={beatmap.mode} name={beatmap.version} />
+                        } else if (!showArrow) {
+                            setShowArrow(true);
+                        }
+                    })}
                     {showArrow &&
                         <div className="tooltip" data-tip={`${props.data.beatmaps.length} difficulties`}>
-                            <button className="border-0 darkenOnHover p-0 ms-auto me-2"
-                                style={{ background: "none" }}
-                                onClick={() => setExpanded(!expanded)}>
-                                <i className={`bi bi-caret-${expanded ? 'up' : 'down'}-fill`}></i>
-                            </button>
+                            +
                         </div>}
                 </div>
             </div>

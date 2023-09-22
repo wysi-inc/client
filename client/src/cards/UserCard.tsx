@@ -8,17 +8,19 @@ import ReactCountryFlag from 'react-country-flag';
 import OnlineDot from '../components/OnlineDot';
 import { secondsToTime } from '../resources/functions';
 import { UserRanks } from '../resources/interfaces/user';
+import { GameModeType } from '../resources/types';
 
 interface UserCardProps {
     user: UserRanks;
     index: number;
     grid: string;
     category: string;
+    mode: GameModeType;
 }
 
 const UserCard = (props: UserCardProps) => {
     return (
-        <Link to={`/users/${props.user.user.id}`} className="rounded-xl overflow-hidden grow drop-shadow-lg bg-accent-800">
+        <Link to={`/users/${props.user.user.id}/${props.mode}`} className="rounded-xl overflow-hidden grow drop-shadow-lg bg-accent-800">
             <div style={{ backdropFilter: "blur(2px)" }} className="p-3 gap-3 grow flex flex-col">
                 <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3 items-center">
                     <div className="col-span-2 md:col-span-1 lg:col-span-1 flex flex-row gap-3 items-center">

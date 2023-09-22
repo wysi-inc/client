@@ -70,9 +70,9 @@ const ScoreCard = (props: ScoreProps) => {
 
     return (
         <div className="flex grow bg-accent-900"
-            style={{ background: `center / cover linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover})`}}>
+            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover}) center / cover no-repeat` }}>
             <div className="flex flex-col p-3 gap-2 grow"
-                style={{ backdropFilter: "blur(2px)" }}>
+                style={{ backdropFilter: "blur(0px)" }}>
                 <div className="flex flex-row justify-between gap-3 items-center">
                     <div className="grow flex flex-row gap-3">
                         <img src={props.score.beatmapset.covers.list}
@@ -210,7 +210,8 @@ const ScoreCard = (props: ScoreProps) => {
                     style={{ backgroundColor: '#ffffff22' }}>
                     <div className="flex flex-row items-center gap-2">
                         <StatusBadge status={props.score.beatmapset.status} />
-                        <DiffIcon diff={props.score.beatmap.difficulty_rating} size={24}
+                        <DiffIcon diffId={props.score.beatmap.id} setId={props.score.beatmapset.id}
+                            diff={props.score.beatmap.difficulty_rating} size={24}
                             mode={props.score.beatmap.mode} name={props.score.beatmap.version} />
                     </div>
                     <div className="flex flex-row gap-1 fw-bold justify-content-end items-center">

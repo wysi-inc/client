@@ -24,7 +24,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
-                    <Route path="/beatmaps/:urlSetId?" element={<Beatmaps />} />
+                    <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
                 </Routes>
             </main>
             <SongPlayer />

@@ -20,6 +20,7 @@ const Users = () => {
     const [users, setUsers] = useState<UserRanks[]>([]);
     const [page, setPage] = useState<number>(1);
     const [category, setCategory] = useState<'performance' | 'score'>('performance');
+    const [mode, setMode] = useState<GameModeType>('osu');
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -27,7 +28,7 @@ const Users = () => {
         if (urlUser === undefined) {
             setUserId(undefined);
             setUserMode(undefined);
-            getUsers();
+            getUsers(category, mode);
         } else {
             const checkedMode: GameModeType = urlMode?.toLowerCase() as GameModeType;
             setUserMode(checkedMode ? checkedMode : 'default');
@@ -38,12 +39,14 @@ const Users = () => {
 
     if (userId && userMode) return (<UserPage userId={userId} userMode={userMode} />);
 
-    async function getUsers() {
+    async function getUsers(c: 'score' | 'performance', m: GameModeType) {
         setLoading(true);
+        setCategory(c)
+        setMode(m);
         const res = await axios.post('/users',
             {
-                mode: 'osu',
-                type: category,
+                mode: m,
+                type: c,
                 page: page,
             }
         );
@@ -59,23 +62,35 @@ const Users = () => {
         <div className="flex flex-col p-3 gap-3">
             <div className="grid grid-cols-3">
                 <div className="join justify-start">
-                    <button className="join-item btn btn-secondary text-base-100 font-bold" onClick={() => {
-                        setCategory("performance");
-                        getUsers();
-                    }}>Performance</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold" onClick={() => {
-                        setCategory("score");
-                        getUsers();
-                    }}>Ranked Score</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers('performance', mode);
+                        }}>Performance</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers('score', mode);
+                        }}>Ranked Score</button>
                 </div>
                 <div className="flex justify-center">
                     <PageTabs setNewPage={setPage} current={page} min={1} max={200} />
                 </div>
                 <div className="join justify-end">
-                    <button className="join-item btn btn-secondary text-base-100 font-bold">osu</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold">taiko</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold">fruits</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold">mania</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers(category, 'osu');
+                        }}>osu</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers(category, 'taiko');
+                        }}>taiko</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers(category, 'fruits');
+                        }}>fruits</button>
+                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                        onClick={() => {
+                            getUsers(category, 'mania');
+                        }}>mania</button>
                 </div>
             </div>
             <div className="bg-accent-900 p-3 rounded-xl">
@@ -100,7 +115,7 @@ const Users = () => {
                 {loading ? <div>loading...</div> :
                     <div className="grid grid-cols-1 gap-2 grow">
                         {users.map((user, index) =>
-                            <UserCard grid={cardGrid} user={user} category={category} index={index + (50 * (page - 1) + 1)} key={index} />
+                            <UserCard mode={mode} grid={cardGrid} user={user} category={category} index={index + (50 * (page - 1) + 1)} key={index} />
                         )}
                     </div>}
             </div>
