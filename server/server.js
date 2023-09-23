@@ -17,7 +17,7 @@ import cache from "./constants/cache.js"
 
     console.log("Connected to the database");
 
-    const fastify = f({ logger: true });
+    const fastify = f();
     fastify.register(cors)
     await auth.login(process.env.CLIENT_ID, process.env.CLIENT_SECRET, ['public'])
 
