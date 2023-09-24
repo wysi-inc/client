@@ -66,18 +66,9 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
 
   useEffect(() => {
     if (!beatmapset) return;
-    let diffId;
-    if (!props.diffId) {
-      setDiff(beatmapset.beatmaps[0]);
-    } else {
-      beatmapset.beatmaps.map((beat) => {
-        if (beat.id === props.diffId) {
-          diffId = beat.id;
-          setDiff(beat);
-        }
-        return '';
-      });
-    }
+    const beat = beatmapset.beatmaps.filter(b => b.id == props.diffId)[0] || beatmapset.beatmaps[0]
+    const diffId = beat.id
+    setDiff(beat)
     window.history.replaceState({}, '', `/beatmaps/${props.setId}/${diffId}`);
   }, [beatmapset, props.setId, props.diffId])
 
@@ -126,7 +117,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                   alt="cover" className="rounded-lg" loading="lazy"
                   style={{ height: 138, objectFit: 'cover' }} />
                 <div className="flex flex-row gap-3">
-                  <div>Submited at {moment(beatmapset.submitted_date).format('DD MMM YYYY')}</div>
+                  <div>Submited at {moment(beatmapset.submitted_date * 1000).format('DD MMM YYYY')}</div>
                 </div>
                 <div className="flex flex-row gap-2">
                   <img src={`https://a.ppy.sh/${beatmapset.user_id}`} className="rounded-md w-14 object-cover" alt="img" loading="lazy" />
