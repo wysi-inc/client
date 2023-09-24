@@ -485,7 +485,7 @@ const BeatmapsPage = () => {
                                 <button type="button"
                                     className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!status.includes(thing) && 'fakeDisabled'}`}
                                     key={index + 1}
-                                    onClick={() => status.includes(thing) ? setStatus([]) : setStatus([...status, thing])}
+                                    onClick={() => status.includes(thing) ? setStatus(status.filter(v => v != thing)) : setStatus([...status, thing])}
                                     style={{ backgroundColor: (colors.beatmap as any)[thing] }}>
                                     {thing.toLowerCase()}
                                 </button>)}
