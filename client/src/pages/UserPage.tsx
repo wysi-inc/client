@@ -38,6 +38,8 @@ import MedalBadge from "../components/MedalBadge";
 import List from 'react-virtualized/dist/commonjs/List';
 import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
+import LoadMoreButton from "../components/LoadMoreButton";
+import InfiniteScroll from 'react-infinite-scroller';
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -52,6 +54,8 @@ Chart.defaults.plugins.tooltip.displayColors = false;
 Chart.defaults.borderColor = colors.ui.font + '22';
 
 type AxisType = "time" | undefined;
+type cardType = 'scores' | 'beatmapsets';
+type categoryType = 'pinned' | 'best' | 'firsts' | 'recent' | 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
 
 export interface tabGroup {
     setTabs: Dispatch<SetStateAction<number>>,
@@ -81,13 +85,15 @@ interface UserPageProps {
 }
 
 const UserPage = (props: UserPageProps) => {
-    const [userData, setUserData] = useState<User | null>(null);
+    const [userData, setUserData] = useState<User | null | undefined>(undefined);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
 
     const [medals, setMedals] = useState<Medal[]>([]);
     const [medalsByCategory, setMedalsByCategory] = useState<SortedMedals>({});
     const [lastMedals, setLastMedals] = useState<Medal[]>([]);
     const [rarestMedal, setRarestMedal] = useState<Medal | null>(null);
+
+    const [bestCalc, setBestCalc] = useState<Score[]>([]);
 
     const [bestScores, setBestScores] = useState<Score[]>([])
     const [recentScores, setRecentScores] = useState<Score[]>([])
@@ -165,6 +171,7 @@ const UserPage = (props: UserPageProps) => {
             tension: 0.1
         }]
     }
+
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(globalHistoryDataInitial);
     const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(countryHistoryDataInitial);
     const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(playsHistoryDataInitial);
@@ -211,11 +218,16 @@ const UserPage = (props: UserPageProps) => {
         },
     };
 
-    if (!userData) {
+    if (userData === undefined) {
         return (
             <Spinner animation="border" role="status" className="mx-auto my-3">
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
+        )
+    }
+    if (userData === null) {
+        return (
+            <div>User not found</div>
         )
     }
     if (userData.is_bot) {
@@ -223,11 +235,7 @@ const UserPage = (props: UserPageProps) => {
             <div>User is a bot, bots are not supported yet</div>
         )
     }
-    if (userData.id === undefined) {
-        return (
-            <div>User not found</div>
-        )
-    }
+
 
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: userData.statistics.grade_counts.ssh },
@@ -248,38 +256,21 @@ const UserPage = (props: UserPageProps) => {
         ]
     }
 
-    const scoresData: dataInterface[] = [
-        { num: 1, thing: 'pinned', group: 'scores', tab: scoresTabIndex, maps: pinnedScores, count: userData.scores_pinned_count, setMore: setPinnedScores },
-        { num: 2, thing: 'best', group: 'scores', tab: scoresTabIndex, maps: bestScores, count: userData.scores_best_count, setMore: setBestScores },
-        { num: 3, thing: 'firsts', group: 'scores', tab: scoresTabIndex, maps: firstsScores, count: userData.scores_first_count, setMore: setFirstsScores },
-        { num: 4, thing: 'recent', group: 'scores', tab: scoresTabIndex, maps: recentScores, count: userData.scores_recent_count, setMore: setRecentScores },
-    ]
-
     const beatmapsTabs: tabGroup = {
         setTabs: setBeatmapsTabIndex,
         items: [
             { num: 1, title: 'Favourites', icon: <HiOutlineStar />, count: userData.favourite_beatmapset_count, },
             { num: 2, title: 'Ranked', icon: <HiChevronDoubleUp />, count: userData.ranked_and_approved_beatmapset_count },
-            { num: 3, title: 'Loved', icon: <BsSuitHeartFill />, count: userData.loved_beatmapset_count },
-            { num: 4, title: 'Guest', icon: <BiSolidUserDetail />, count: userData.guest_beatmapset_count },
-            { num: 5, title: 'Graveyard', icon: <FaSkull />, count: userData.graveyard_beatmapset_count },
-            { num: 6, title: 'Nominated', icon: <BiSolidTrophy />, count: userData.nominated_beatmapset_count },
-            { num: 7, title: 'Pending', icon: <BsHourglassSplit />, count: userData.pending_beatmapset_count },
+            { num: 3, title: 'Guest', icon: <BiSolidUserDetail />, count: userData.guest_beatmapset_count },
+            { num: 4, title: 'Loved', icon: <BsSuitHeartFill />, count: userData.loved_beatmapset_count },
+            { num: 5, title: 'Nominated', icon: <BiSolidTrophy />, count: userData.nominated_beatmapset_count },
+            { num: 6, title: 'Pending', icon: <BsHourglassSplit />, count: userData.pending_beatmapset_count },
+            { num: 7, title: 'Graveyard', icon: <FaSkull />, count: userData.graveyard_beatmapset_count },
         ]
     }
 
-    const beatmapsData: dataInterface[] = [
-        { num: 1, thing: 'favourite', group: 'beatmapsets', tab: beatmapsTabIndex, maps: favouriteBeatmaps, count: userData.favourite_beatmapset_count, setMore: setFavouriteBeatmaps },
-        { num: 2, thing: 'ranked', group: 'beatmapsets', tab: beatmapsTabIndex, maps: rankedBeatmaps, count: userData.ranked_and_approved_beatmapset_count, setMore: setRankedBeatmaps },
-        { num: 3, thing: 'loved', group: 'beatmapsets', tab: beatmapsTabIndex, maps: lovedBeatmaps, count: userData.loved_beatmapset_count, setMore: setLovedBeatmaps },
-        { num: 4, thing: 'guest', group: 'beatmapsets', tab: beatmapsTabIndex, maps: guestBeatmaps, count: userData.guest_beatmapset_count, setMore: setGuestBeatmaps },
-        { num: 5, thing: 'graveyard', group: 'beatmapsets', tab: beatmapsTabIndex, maps: graveyardBeatmaps, count: userData.graveyard_beatmapset_count, setMore: setGraveyardBeatmaps },
-        { num: 6, thing: 'nominated', group: 'beatmapsets', tab: beatmapsTabIndex, maps: nominatedBeatmaps, count: userData.nominated_beatmapset_count, setMore: setNominatedBeatmaps },
-        { num: 7, thing: 'pending', group: 'beatmapsets', tab: beatmapsTabIndex, maps: pendingBeatmaps, count: userData.pending_beatmapset_count, setMore: setPendingBeatmaps },
-    ]
-
     return (
-        <div>
+        <>
             <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
                 <div style={{ backdropFilter: "blur(2px)" }}
                     className="flex flex-col p-8 gap-8 card-body rounded-none">
@@ -287,7 +278,7 @@ const UserPage = (props: UserPageProps) => {
                         <div className="col-span-7 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
-                                alt='pfp' className="aspect-square mb-2"
+                                alt='pfp' className="aspect-square mb-2 rounded-lg"
                                 style={{ width: '100%' }} />
                             <div className="flex flex-row gap-2 items-center w-full">
                                 <div className="text-neutral-content">{userData.statistics.level.current}</div>
@@ -512,7 +503,7 @@ const UserPage = (props: UserPageProps) => {
                             <div>Top Play Stats</div>
                         </div>
                         <div className="p-4">
-                            <TopScoresPanel data={userData} best={bestScores} />
+                            <TopScoresPanel data={userData} best={bestCalc} />
                         </div>
                     </div>
                 </div>
@@ -530,8 +521,57 @@ const UserPage = (props: UserPageProps) => {
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div style={{ height: 602 }}>
-                        {scoresSwitch()}
+                    <div style={{ height: 602 }} className={`${scoresTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 10, pinnedScores.length, 'scores', 'pinned', setPinnedScores, pinnedScores)}
+                            hasMore={pinnedScores.length < userData.scores_pinned_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {pinnedScores.map((s: Score, i: number) =>
+                                <ScoreCard index={i + 1} score={s} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={scoresTabIndex !== 2} style={{ height: 602 }} className={`${scoresTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 10, bestScores.length, 'scores', 'best', setBestScores, bestScores)}
+                            hasMore={bestScores.length < userData.scores_best_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {bestScores.map((s: Score, i: number) =>
+                                <ScoreCard index={i + 1} score={s} key={i} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={scoresTabIndex !== 3} style={{ height: 602 }} className={`${scoresTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, firstsScores.length, 'scores', 'firsts', setFirstsScores, firstsScores)}
+                            hasMore={firstsScores.length < userData.scores_first_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {firstsScores.map((s: Score, i: number) =>
+                                <ScoreCard index={i + 1} score={s} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={scoresTabIndex !== 4} style={{ height: 602 }} className={`${scoresTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, recentScores.length, 'scores', 'recent', setRecentScores, recentScores)}
+                            hasMore={recentScores.length < userData.scores_recent_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {recentScores.map((s: Score, i: number) =>
+                                <ScoreCard index={i + 1} score={s} />
+                            )}
+                        </InfiniteScroll>
                     </div>
                 </div>
                 <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
@@ -548,8 +588,96 @@ const UserPage = (props: UserPageProps) => {
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div style={{ height: 602 }}>
-                        {beatmapsSwitch()}
+                    <div hidden={beatmapsTabIndex !== 1} style={{ height: 602 }} className={`${beatmapsTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, favouriteBeatmaps.length, 'beatmapsets', 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
+                            hasMore={favouriteBeatmaps.length < userData.favourite_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {favouriteBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 2} style={{ height: 602 }} className={`${beatmapsTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, rankedBeatmaps.length, 'beatmapsets', 'ranked', setRankedBeatmaps, rankedBeatmaps)}
+                            hasMore={rankedBeatmaps.length < userData.ranked_and_approved_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {rankedBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 3} style={{ height: 602 }} className={`${beatmapsTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, guestBeatmaps.length, 'beatmapsets', 'guest', setGuestBeatmaps, guestBeatmaps)}
+                            hasMore={guestBeatmaps.length < userData.guest_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {guestBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 4} style={{ height: 602 }} className={`${beatmapsTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, lovedBeatmaps.length, 'beatmapsets', 'loved', setLovedBeatmaps, lovedBeatmaps)}
+                            hasMore={lovedBeatmaps.length < userData.loved_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {lovedBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 5} style={{ height: 602 }} className={`${beatmapsTabIndex !== 5 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, nominatedBeatmaps.length, 'beatmapsets', 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
+                            hasMore={nominatedBeatmaps.length < userData.guest_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {nominatedBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 6} style={{ height: 602 }} className={`${beatmapsTabIndex !== 6 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, pendingBeatmaps.length, 'beatmapsets', 'pending', setPendingBeatmaps, pendingBeatmaps)}
+                            hasMore={pendingBeatmaps.length < userData.pending_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {pendingBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                    <div hidden={beatmapsTabIndex !== 7} style={{ height: 602 }} className={`${beatmapsTabIndex !== 7 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getThings(userData.id, gameMode, 5, graveyardBeatmaps.length, 'beatmapsets', 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
+                            hasMore={graveyardBeatmaps.length < userData.graveyard_beatmapset_count}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {graveyardBeatmaps.map((b: BeatmapSet, i: number) =>
+                                <BeatmapsetCard index={i + 1} data={b} />
+                            )}
+                        </InfiniteScroll>
                     </div>
                 </div>
                 <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
@@ -618,7 +746,7 @@ const UserPage = (props: UserPageProps) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 
     function clearData(): void {
@@ -642,105 +770,90 @@ const UserPage = (props: UserPageProps) => {
     }
 
     async function getUser() {
-        const res = await axios.post('/user', {
-            id: props.userId,
-            mode: props.userMode,
-        })
-        const data: User = res.data;
-        if (!data.id) return;
-        if (data.is_bot) return;
-        console.log(data);
-        let searchMode: GameModeType;
-        if (props.userMode === "default") {
-            searchMode = data.playmode;
-        } else {
-            searchMode = props.userMode;
-        }
-        window.history.replaceState({}, '', `/users/${data.id}/${searchMode}`);
-        setUserData(data);
-        setCharts(data);
-        setGameMode(searchMode);
-        getScores(data.id, data.playmode);
-        getBeatmaps(data.id, data.playmode);
+        try {
+            const res = await axios.post('/user', {
+                id: props.userId,
+                mode: props.userMode,
+            })
+            const data = res.data;
+            if (data.error === null) {
+                setUserData(null);
+                return;
+            };
+            const user: User = data;
+            setUserData(data);
+            if (user.is_bot) return;
+            let searchMode: GameModeType;
+            if (props.userMode === "default") {
+                searchMode = user.playmode;
+            } else {
+                searchMode = props.userMode;
+            }
+            window.history.replaceState({}, '', `/users/${user.id}/${searchMode}`);
 
-        let tab = 0;
-        if (data.scores_pinned_count > 0) {
-            tab = 1;
-        } else if (data.scores_best_count > 0) {
-            tab = 2;
-        } else if (data.scores_first_count > 0) {
-            tab = 3;
-        } else if (data.scores_recent_count > 0) {
-            tab = 4;
+            getBestCalc(user.id, searchMode);
+            getGlobalData(user);
+            getCountryData(user);
+            getPlaysData(user);
+            getReplaysData(user);
+            setGameMode(searchMode);
+
+            let scoresTab: number = 0;
+            let beatmapsTab: number = 0;
+
+            if (user.scores_pinned_count > 0) {
+                scoresTab = 1;
+            } else if (user.scores_best_count > 0) {
+                scoresTab = 2;
+            } else if (user.scores_first_count > 0) {
+                scoresTab = 3;
+            } else if (user.scores_recent_count > 0) {
+                scoresTab = 4;
+            }
+            if (user.favourite_beatmapset_count > 0) {
+                beatmapsTab = 1;
+            } else if (user.ranked_beatmapset_count > 0) {
+                beatmapsTab = 2;
+            } else if (user.guest_beatmapset_count > 0) {
+                beatmapsTab = 3;
+            } else if (user.loved_beatmapset_count > 0) {
+                beatmapsTab = 4;
+            } else if (user.nominated_beatmapset_count > 0) {
+                beatmapsTab = 5;
+            } else if (user.pending_beatmapset_count > 0) {
+                beatmapsTab = 6;
+            } else if (user.graveyard_beatmapset_count > 0) {
+                beatmapsTab = 7;
+            }
+            setScoresTabIndex(scoresTab);
+            setBeatmapsTabIndex(beatmapsTab);
+        } catch (err) {
+            console.error(err);
+            setUserData(null);
         }
-        setScoresTabIndex(tab);
     }
 
-    async function getScores(id: number, mode: GameModeType,) {
+    async function getBestCalc(id: number, m: GameModeType) {
         try {
-            const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/top_ranks?mode=${mode}`
+            const res = await axios.post('/proxy', { url: `https://osu.ppy.sh/users/${id}/scores/best?mode=${m}&limit=100&offset=0` });
+            setBestCalc(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function getThings(id: number, m: GameModeType, l: number, o: number, t: cardType, c: categoryType, set: Dispatch<SetStateAction<any[]>>, get: Score[] | BeatmapSet[]) {
+        try {
+            const url = `https://osu.ppy.sh/users/${id}/${t}/${c}?mode=${m}&limit=${l}&offset=${o}`;
+            console.log(`loading ${c}...`, url)
             const res = await axios.post('/proxy', { url: url });
             const d = res.data;
-            setPinnedScores(d.pinned.items);
-            setFirstsScores(d.firsts.items);
+            if (d.length < 1) return;
+            set([...get, ...d]);
+            return;
         } catch (err) {
             console.error(err);
-        }
-        try {
-            const url: string = `https://osu.ppy.sh/users/${id}/scores/best?mode=${mode}&limit=100&offset=0`
-            const res = await axios.post('/proxy', { url: url });
-            const d: Score[] = res.data;
-            setBestScores(d);
-        } catch (err) {
-            console.error(err);
-        }
-        try {
-            const url: string = `https://osu.ppy.sh/users/${id}/scores/recent?mode=${mode}&limit=5&offset=0`
-            const res = await axios.post('/proxy', { url: url });
-            const d: Score[] = res.data;
-            setRecentScores(d);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function getBeatmaps(id: number, mode: GameModeType) {
-        const url: string = `https://osu.ppy.sh/users/${id}/extra-pages/beatmaps?mode=${mode}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data = res.data;
-            let tab: number = 0;
-            if (data.pending.count > 0) {
-                setPendingBeatmaps(data.pending.items)
-                tab = 7;
-            }
-            if (data.nominated.count > 0) {
-                setNominatedBeatmaps(data.nominated.items)
-                tab = 6;
-            }
-            if (data.graveyard.count > 0) {
-                setGraveyardBeatmaps(data.graveyard.items)
-                tab = 5;
-            }
-            if (data.guest.count > 0) {
-                setGuestBeatmaps(data.guest.items)
-                tab = 4;
-            }
-            if (data.loved.count > 0) {
-                setLovedBeatmaps(data.loved.items);
-                tab = 3;
-            }
-            if (data.ranked.count > 0) {
-                setRankedBeatmaps(data.ranked.items);
-                tab = 2;
-            }
-            if (data.favourite.count > 0) {
-                setFavouriteBeatmaps(data.favourite.items);
-                tab = 1;
-            }
-            setBeatmapsTabIndex(tab);
-        } catch (err) {
-            console.error(err);
+            return;
         }
     }
 
@@ -815,13 +928,6 @@ const UserPage = (props: UserPageProps) => {
         setRarestMedal(data);
     }
 
-    function setCharts(user: User) {
-        getGlobalData(user);
-        getCountryData(user);
-        getPlaysData(user);
-        getReplaysData(user);
-    }
-
     function getGlobalData(user: User) {
         if (!user?.db_info.global_rank) return;
         setGlobalHistoryData({
@@ -876,541 +982,6 @@ const UserPage = (props: UserPageProps) => {
                 tension: 0.1,
             }],
         })
-    }
-
-    function scoresSwitch() {
-        const rowHeight = 270;
-        if (!userData) return <></>;
-        switch (scoresTabIndex) {
-            case 1:
-                return <InfiniteLoader
-                    isRowLoaded={isPinnedRowLoaded}
-                    loadMoreRows={loadPinnedRows}
-                    rowCount={userData.scores_pinned_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={pinnedScores.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={PinnedScoreRenderer} />)}
-                        </AutoSizer>
-                    )}</InfiniteLoader>;
-            case 2:
-                return <InfiniteLoader
-                    isRowLoaded={isBestRowLoaded}
-                    loadMoreRows={loadBestRows}
-                    rowCount={userData.scores_best_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={bestScores.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={BestScoreRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}</InfiniteLoader>;
-            case 3:
-                return <InfiniteLoader
-                    isRowLoaded={isFirstsRowLoaded}
-                    loadMoreRows={loadFirstsRows}
-                    rowCount={userData.scores_first_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={firstsScores.length}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowHeight={rowHeight}
-                                    rowRenderer={FirstsScoreRenderer} />)}
-                        </AutoSizer>
-                    )}</InfiniteLoader>;
-            case 4:
-                return <InfiniteLoader
-                    isRowLoaded={isRecentRowLoaded}
-                    loadMoreRows={loadRecentRows}
-                    rowCount={userData.scores_recent_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={recentScores.length}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowHeight={rowHeight}
-                                    rowRenderer={RecentScoreRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}</InfiniteLoader>;
-            default:
-                return <></>;
-        }
-    }
-
-    function beatmapsSwitch() {
-        if (!userData) return <></>;
-        const rowHeight = 200;
-        switch (beatmapsTabIndex) {
-            case 1:
-                return <InfiniteLoader
-                    isRowLoaded={isFavouriteRowLoaded}
-                    loadMoreRows={loadFavouriteRows}
-                    rowCount={userData.favourite_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={favouriteBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={FavouriteBeatmapRenderer} />)}
-                        </AutoSizer>
-                    )}</InfiniteLoader>;
-            case 2:
-                return <InfiniteLoader
-                    isRowLoaded={isRankedRowLoaded}
-                    loadMoreRows={loadRankedRows}
-                    rowCount={userData.ranked_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={rankedBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={RankedBeatmapRenderer}
-                                />)}
-                        </AutoSizer>)}</InfiniteLoader>;
-            case 3:
-                return <InfiniteLoader
-                    isRowLoaded={isLovedRowLoaded}
-                    loadMoreRows={loadLovedRows}
-                    rowCount={userData.loved_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={lovedBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={LovedBeatmapRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>;
-            case 4:
-                return <InfiniteLoader
-                    isRowLoaded={isGuestRowLoaded}
-                    loadMoreRows={loadGuestRows}
-                    rowCount={userData.guest_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={guestBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={GuestBeatmapRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>;
-            case 5:
-                return <InfiniteLoader
-                    isRowLoaded={isGraveyardRowLoaded}
-                    loadMoreRows={loadGraveyardRows}
-                    rowCount={userData.graveyard_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={graveyardBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={GraveyardedBeatmapRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>;
-            case 6:
-                return <InfiniteLoader
-                    isRowLoaded={isNominatedRowLoaded}
-                    loadMoreRows={loadNominatedRows}
-                    rowCount={userData.nominated_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={nominatedBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={NominatedBeatmapRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>;
-            case 7:
-                return <InfiniteLoader
-                    isRowLoaded={isPendingRowLoaded}
-                    loadMoreRows={loadPendingRows}
-                    rowCount={userData.pending_beatmapset_count}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List width={width}
-                                    height={height}
-                                    rowCount={pendingBeatmaps.length}
-                                    rowHeight={rowHeight}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowRenderer={PendingBeatmapRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>;
-            default:
-                return <></>;
-        }
-    }
-
-    function PinnedScoreRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <ScoreCard index={index + 1} score={pinnedScores[index]} />
-            </div>
-        );
-    }
-
-    function BestScoreRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <ScoreCard index={index + 1} score={bestScores[index]} />
-            </div>
-        );
-    }
-
-    function FirstsScoreRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <ScoreCard index={index + 1} score={firstsScores[index]} />
-            </div>
-        );
-    }
-
-    function RecentScoreRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <ScoreCard index={index + 1} score={recentScores[index]} />
-            </div>
-        );
-    }
-
-    function FavouriteBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={favouriteBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function RankedBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={rankedBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function LovedBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={favouriteBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function GuestBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={guestBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function GraveyardedBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={graveyardBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function NominatedBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={nominatedBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function PendingBeatmapRenderer({
-        key, // Unique key within array of rows
-        index, // Index of row within collection
-        isScrolling, // The List is currently being scrolled
-        isVisible, // This row is visible within the List (eg it is not an overscanned row)
-        style, // Style object to be applied to row (to position it)
-    }: any) {
-        return (
-            <div key={key} style={style}>
-                <BeatmapsetCard index={index + 1} data={pendingBeatmaps[index]} />
-            </div>
-        );
-    }
-
-    function isPinnedRowLoaded({ index }: any) {
-        return !!pinnedScores[index];
-    }
-
-    function isBestRowLoaded({ index }: any) {
-        return !!bestScores[index];
-    }
-
-    function isFirstsRowLoaded({ index }: any) {
-        return !!firstsScores[index];
-    }
-
-    function isRecentRowLoaded({ index }: any) {
-        return !!recentScores[index];
-    }
-
-    function isFavouriteRowLoaded({ index }: any) {
-        return !!favouriteBeatmaps[index];
-    }
-    function isRankedRowLoaded({ index }: any) {
-        return !!rankedBeatmaps[index];
-    }
-    function isLovedRowLoaded({ index }: any) {
-        return !!lovedBeatmaps[index];
-    }
-    function isGuestRowLoaded({ index }: any) {
-        return !!guestBeatmaps[index];
-    }
-    function isPendingRowLoaded({ index }: any) {
-        return !!pendingBeatmaps[index];
-    }
-    function isGraveyardRowLoaded({ index }: any) {
-        return !!graveyardBeatmaps[index];
-    }
-    function isNominatedRowLoaded({ index }: any) {
-        return !!nominatedBeatmaps[index];
-    }
-
-    async function loadPinnedRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/scores/pinned?mode=${userData.playmode}&limit=${stopIndex}&offset=${startIndex}`
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: Score[] = res.data;
-            setPinnedScores([...pinnedScores, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-        return;
-    }
-    async function loadBestRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/scores/best?mode=${userData.playmode}&limit=${stopIndex}&offset=${startIndex}`
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: Score[] = res.data;
-            setBestScores([...bestScores, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-        return;
-    }
-    async function loadFirstsRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/scores/firsts?mode=${userData.playmode}&limit=${stopIndex}&offset=${startIndex}`
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: Score[] = res.data;
-            setFirstsScores([...firstsScores, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-        return;
-    }
-    async function loadRecentRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/scores/recent?mode=${userData.playmode}&limit=${stopIndex}&offset=${startIndex}`
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: Score[] = res.data;
-            setRecentScores([...recentScores, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-        return;
-    }
-    async function loadFavouriteRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/favourite?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setFavouriteBeatmaps([...favouriteBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadGraveyardRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/graveyard?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setGraveyardBeatmaps([...graveyardBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadGuestRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/guest?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setGuestBeatmaps([...guestBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadLovedRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/loved?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setLovedBeatmaps([...lovedBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadNominatedRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/nominated?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setNominatedBeatmaps([...nominatedBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadPendingRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/pending?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setPendingBeatmaps([...pendingBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    async function loadRankedRows({ startIndex, stopIndex }: any) {
-        if (!userData) return;
-        const url: string = `https://osu.ppy.sh/users/${userData.id}/beatmapsets/ranked?limit=${stopIndex}&offset=${startIndex}`;
-        try {
-            const res = await axios.post('/proxy', { url: url });
-            const data: BeatmapSet[] = res.data;
-            setRankedBeatmaps([...rankedBeatmaps, ...data]);
-        } catch (err) {
-            console.error(err);
-        }
     }
 
 }

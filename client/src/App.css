@@ -286,7 +286,7 @@ input::after, input::before {
 }
 
 .fakeDisabled {
-    filter: brightness(50%) !important;
+    filter: brightness(40%) !important;
 
 }
 

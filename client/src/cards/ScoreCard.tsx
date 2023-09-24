@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addDefaultSrc, secondsToTime } from "../resources/functions";
+import { addDefaultSrc, getModsInt, secondsToTime } from "../resources/functions";
 import { colors, modsInt, playerStore, PlayerStoreInterface } from "../resources/store";
 import ModIcon from "../components/ModIcon";
 import moment from "moment/moment";
@@ -8,9 +8,10 @@ import axios from "../resources/axios-config";
 import DiffIcon from "../components/DiffIcon";
 import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import { HiOutlineClock } from "react-icons/hi";
-import { FaHeadphones } from "react-icons/fa";
+import { FaHeadphonesAlt } from "react-icons/fa";
 import { GiMusicalNotes } from "react-icons/gi";
 import { ModsEntity, Score } from "../resources/interfaces/score";
+import { Link } from "react-router-dom";
 
 interface ScoreProps {
     index: number;
@@ -19,14 +20,14 @@ interface ScoreProps {
 
 const ScoreCard = (props: ScoreProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
-    const [chokePP, setChokePP] = useState<number | undefined>();
-    const [newAR, setNewAR] = useState<number | undefined>();
-    const [newOD, setNewOD] = useState<number | undefined>();
-    const [newCS, setNewCS] = useState<number | undefined>();
-    const [newHP, setNewHP] = useState<number | undefined>();
-    const [newSR, setNewSR] = useState<number | undefined>();
-    const [newBPM, setNewBPM] = useState<number | undefined>();
-    const [newLen, setNewLen] = useState<number | undefined>();
+    const [chokePP, setChokePP] = useState<number | undefined>(undefined);
+    const [newAR, setNewAR] = useState<number | undefined>(undefined);
+    const [newOD, setNewOD] = useState<number | undefined>(undefined);
+    const [newCS, setNewCS] = useState<number | undefined>(undefined);
+    const [newHP, setNewHP] = useState<number | undefined>(undefined);
+    const [newSR, setNewSR] = useState<number | undefined>(undefined);
+    const [newBPM, setNewBPM] = useState<number | undefined>(undefined);
+    const [newLen, setNewLen] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         getPPChoke();
@@ -35,12 +36,11 @@ const ScoreCard = (props: ScoreProps) => {
     async function getPPChoke() {
         if (props.score.legacy_perfect) return;
         const acc = props.score.accuracy * 100;
-        const mods = props.score.mods?.map((m) => m.acronym === 'NC' ? 64 : (modsInt as any)[m.acronym]);
-        const modComv = mods !== undefined ? mods.length > 0 ? mods.reduce((a, b) => a + b) : mods[0] : '';
-
-        const url = `https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${modComv}`;
+        const m = props.score.mods?.map(m => m.acronym);
         try {
-            const r = await axios.post('/proxy', { url: url });
+            const r = await axios.post('/proxy', { 
+                url: `https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${getModsInt(m)}` 
+            });
             const data = r.data;
             if (props.score.mods) {
                 if (props.score.mods?.length > 0) {
@@ -50,7 +50,6 @@ const ScoreCard = (props: ScoreProps) => {
                     setNewHP(parseFloat(data.map.hp.toFixed(1)));
                     setNewSR(data.difficulty.stars.toFixed(2));
                     setNewBPM(Math.round(data.map.bpm));
-                    const m = props.score.mods.map(obj => obj.acronym);
                     const length = props.score.beatmap.total_length;
                     if (m.includes('DT')) setNewLen(length * 0.75);
                     if (m.includes('HT')) setNewLen(length * 1.5);
@@ -72,7 +71,7 @@ const ScoreCard = (props: ScoreProps) => {
         <div className="flex grow bg-accent-900"
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover}) center / cover no-repeat` }}>
             <div className="flex flex-col p-3 gap-2 grow"
-                style={{ backdropFilter: "blur(0px)" }}>
+                style={{ backdropFilter: "blur(2px)" }}>
                 <div className="flex flex-row justify-between gap-3 items-center">
                     <div className="grow flex flex-row gap-3">
                         <img src={props.score.beatmapset.covers.list}
@@ -81,11 +80,11 @@ const ScoreCard = (props: ScoreProps) => {
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />
                         <div className="flex flex-col gap-1 grow">
                             <div className="truncate">
-                                <a href={props.score.beatmap.url} target={"_blank"}
+                                <Link to={`/beatmaps/${props.score.beatmapset.id}/${props.score.beatmap_id}`} target={"_blank"}
                                     rel="noreferrer"
                                     className="text-light h5 text-decoration-none truncate">
                                     {props.score.beatmapset.title}
-                                </a>
+                                </Link>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <div className="flex justify-center w-6">
@@ -136,7 +135,7 @@ const ScoreCard = (props: ScoreProps) => {
                         <div className="tooltip" data-tip="listen">
                             <button className="btn btn-ghost btn-circle btn-sm"
                                 onClick={playSong}>
-                                <FaHeadphones />
+                                <FaHeadphonesAlt />
                             </button>
                         </div>
                     </div>
@@ -222,7 +221,7 @@ const ScoreCard = (props: ScoreProps) => {
                         </div>
                         <div className="flex flex-row gap-2 align-items-end">
                             <div className="h5">{Math.round(props.score.pp)}pp</div>
-                            <div className="h6" style={{ color: '#cccccc' }}>{chokePP ? `(${chokePP}pp if FC)` : `FC`}</div>
+                            <div className="h6" style={{ color: '#cccccc' }}>{chokePP !== undefined ? `(${chokePP}pp if FC)` : `FC`}</div>
                         </div>
                     </div>
                 </div>

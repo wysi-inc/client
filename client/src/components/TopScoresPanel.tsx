@@ -178,7 +178,7 @@ const TopScoresPanel = (props: topScoresProps) => {
                 <BarPieChart data={scoresRanksLabels} width={250} />
             </div>
             <div className="col-span-2">
-                <PpLine data={props.best} color={colors.ui.font} width={300} />
+                <PpLine data={props.best} color={colors.ui.font} width={350} />
             </div>
             <div className="col-span-2 flex flex-col items-center">
                 <div>Average play:</div>

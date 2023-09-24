@@ -1,3 +1,5 @@
+import { modsInt } from "./store";
+
 export function secondsToTime(seconds: number) {
     seconds = Number(seconds);
     let d = Math.floor(seconds / (3600 * 24));
@@ -12,4 +14,9 @@ export function secondsToTime(seconds: number) {
 }
 export function addDefaultSrc(ev: any) {
     ev.target.src = 'https://osu.ppy.sh/images/layout/avatar-guest.png'
+}
+
+export function getModsInt(ms: string[] | undefined) {
+    const mods = ms?.map(m => m === 'NC' ? 64 : (modsInt as any)[m]);
+    return mods !== undefined ? mods.length > 0 ? mods.reduce((a, b) => a + b) : mods[0] : '';
 }

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { themeChange } from 'theme-change'
 import { HiMenu } from "react-icons/hi"
 import SearchBox from "./components/SearchBox";
+import { FaGithub, FaDiscord } from 'react-icons/fa';
 
 const Navbar = () => {
 
@@ -12,12 +13,13 @@ const Navbar = () => {
     }, [])
 
     return (
-        <nav className="navbar bg-accent-900 drop-shadow-lg p-0 px-2 sticky-top">
+        <nav className="sticky top-0 navbar bg-accent-900 drop-shadow-lg p-0 px-2"
+            style={{zIndex: 2000}}>
             <div className="navbar-start gap-2 pl-0">
                 <div className="lg:hidden dropdown">
                     <div className="dropdown">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
-                            <HiMenu/>
+                            <HiMenu />
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li><Link to={'/'}>Home</Link></li>
@@ -42,12 +44,12 @@ const Navbar = () => {
                 <SearchBox />
             </div>
             <div className="navbar-end gap-2">
-                <button className="btn btn-ghost btn-circle">
-                    <i className="bi bi-discord"></i>
-                </button>
-                <button className="btn btn-ghost btn-circle">
-                    <i className="bi bi-github"></i>
-                </button>
+                <a target='_blank' href='' className="btn btn-ghost btn-circle">
+                    <FaDiscord />
+                </a>
+                <a target='_blank' href='https://github.com/M4rti21/wysi727-new' className="btn btn-ghost btn-circle">
+                    <FaGithub />
+                </a>
             </div>
         </nav>
     )

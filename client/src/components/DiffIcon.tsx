@@ -43,8 +43,8 @@ const DiffIcon = (props: DiffIconProps) => {
 
     return (
         <Link to={`/beatmaps/${props.setId}/${props.diffId}`}
-        data-tip={`★ ${props.diff} - [${props.name}]`} className="tooltip">
-            <ModeIcon size={props.size} color={color} mode={props.mode}/>
+            data-tip={`★ ${props.diff} - [${props.name}]`} className="tooltip">
+            <ModeIcon size={props.size} color={color} mode={props.mode} />
         </Link>
     )
 }

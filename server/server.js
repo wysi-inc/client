@@ -27,6 +27,8 @@ import cache from "./constants/cache.js"
         await auth.login(process.env.CLIENT_ID, process.env.CLIENT_SECRET, ['public'])
     }, 1000 * 60 * 60 * 24)
 
+    fastify.get('/', async (req, res) => {msg: 'server is up'});
+
     fastify.post('/proxy', async (req, res) => await (await fetch(req.body.url)).json());
 
     fastify.post('/getMedals', async (req, res) => await (await fetch(`https://osekai.net/medals/api/medals.php`, { method: "POST" })).json());

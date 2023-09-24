@@ -1,7 +1,8 @@
-import React, {useState} from "react";
-import {playerStore, PlayerStoreInterface} from "../resources/store";
+import React, { useState } from "react";
+import { playerStore, PlayerStoreInterface } from "../resources/store";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import { MdClose } from 'react-icons/md';
 
 const SongPlayer = () => {
     const startVolume: number = 20;
@@ -13,19 +14,19 @@ const SongPlayer = () => {
     const [show, setShow] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(startVolume);
     return (
-        <div className="player absolute bottom-0" hidden={!show}>
+        <div className="player sticky bottom-0" hidden={!show}>
             <div className="bg shadow-lg rounded-top overflow-hidden">
                 <div className="py-2 titleBox flex flex-row items-center justify-content-between">
                     <div className="flex flex-row px-3 items-center gap-3">
                         <i className="bi bi-headphones"></i>
-                        <div className="d-inline-block truncate" style={{width: 400}}>
+                        <div className="d-inline-block truncate" style={{ width: 400 }}>
                             {artist} - {title}
                         </div>
                     </div>
-                    <button className="btn" onClick={() => {
+                    <button className="btn btn-ghost btn-circle" onClick={() => {
                         play(0, '', '')
                     }}>
-                        <i className="bi bi-x-lg"></i>
+                        <MdClose />
                     </button>
                 </div>
                 <AudioPlayer

@@ -7,6 +7,7 @@ import StatusBadge from "../components/StatusBadge";
 import { GiMusicalNotes } from "react-icons/gi";
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Link } from "react-router-dom";
+import { FaHeadphonesAlt } from "react-icons/fa"
 
 interface BeatmapsetCardProps {
     index: number,
@@ -91,7 +92,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             <button onClick={() => {
                                 play(props.data.id, props.data.title, props.data.artist)
                             }} style={{ background: "none" }}>
-                                <i className="bi bi-headphones"></i>
+                                <FaHeadphonesAlt />
                             </button>
                         </div>
                     </div>
@@ -108,7 +109,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                     }).map((beatmap: Beatmap, index: number) => {
                         if (index < shortLimit) {
                             return <DiffIcon setId={props.data.id} diffId={beatmap.id}
-                            key={index + 1} diff={beatmap.difficulty_rating} size={24}
+                                key={index + 1} diff={beatmap.difficulty_rating} size={24}
                                 mode={beatmap.mode} name={beatmap.version} />
                         } else if (!showArrow) {
                             setShowArrow(true);

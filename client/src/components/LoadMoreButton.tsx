@@ -1,11 +1,11 @@
 import React from "react";
 
-const Home = () => {
-
+const LoadMoreButton = () => {
     return (
         <div>
+            a
         </div>
     )
 }
 
-export default Home;
+export default LoadMoreButton;
