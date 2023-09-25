@@ -13,10 +13,12 @@ import SongPlayer from "./components/SongPlayer";
 
 import './App.css';
 import './assets/ibm-plex.css';
+import ScrollToTop from './resources/ScrollToTop';
 
 function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Navbar />
             <div className="bg-accent-950">
                 <main style={{ maxWidth: 1600 }} className="bg-accent-600 mx-auto">

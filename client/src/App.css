@@ -35,18 +35,14 @@ input[type=number] {
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin: 0 !important;
     padding: 0 !important;
-    color: #ffffff;
 }
+
 .tab-active {
     color: #272935 !important;
     font-weight: bold !important;
 }
 .row {
     margin: 0 !important;
-}
-
-.h1, .h2, .h3, .h4, .h5 {
-    color: #ffffff !important;
 }
 
 .darkenOnHover {

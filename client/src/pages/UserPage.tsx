@@ -36,6 +36,7 @@ import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/me
 import MedalBadge from "../components/MedalBadge";
 
 import InfiniteScroll from 'react-infinite-scroller';
+import CountryFlag from "../components/CountryFlag";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -346,11 +347,8 @@ const UserPage = (props: UserPageProps) => {
                                             <img alt={userData.country.code} className="emoji-flag"
                                                 src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
                                         </div> :
-                                        <Twemoji options={{ className: 'emoji-flag', noWrapper: true }}>
-                                            <ReactCountryFlag countryCode={userData.country.code}
-                                                className="tooltip tooltip-right"
-                                                data-tip={userData.country.name} />
-                                        </Twemoji>}
+                                        <CountryFlag size={24} name={userData.country.name} code={userData.country.code} />
+                                    }
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">

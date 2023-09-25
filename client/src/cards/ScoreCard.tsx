@@ -69,12 +69,12 @@ const ScoreCard = (props: ScoreProps) => {
 
     return (
         <div className="flex grow bg-accent-900"
-            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${props.score.beatmapset.covers.cover}) center / cover no-repeat` }}>
+            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmap_id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col p-3 gap-2 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="flex flex-row justify-between gap-3 items-center">
                     <div className="grow flex flex-row gap-3">
-                        <img src={props.score.beatmapset.covers.list}
+                        <img src={`https://assets.ppy.sh/beatmaps/${props.score.beatmap_id}/covers/cover.jpg?${props.score.beatmapset.id}`}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />

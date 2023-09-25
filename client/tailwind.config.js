@@ -30,7 +30,6 @@ module.exports = {
           'text': '#ffffff',
           'primary-content': '#ffffff',
           'secondary-content': '#ffffff',
-          'neutral-content': '#ffffff',
           'base-content': '#ffffff',
           "--border-btn": "0px", // border width of buttons
         },
