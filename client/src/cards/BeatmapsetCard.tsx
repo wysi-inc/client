@@ -109,7 +109,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                     }).map((beatmap: Beatmap, index: number) => {
                         if (index < shortLimit) {
                             return <DiffIcon setId={props.data.id} diffId={beatmap.id}
-                                key={index + 1} diff={beatmap.difficulty_rating} size={24}
+                                key={index} diff={beatmap.difficulty_rating} size={24}
                                 mode={beatmap.mode} name={beatmap.version} />
                         } else if (!showArrow) {
                             setShowArrow(true);

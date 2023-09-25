@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'https://dev.lemres.de/',
+    baseURL: 'https://api.wysi727.com/',
 });
 
 export default instance;

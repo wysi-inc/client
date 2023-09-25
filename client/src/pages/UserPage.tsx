@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "re
 
 import moment from "moment";
 import Twemoji from 'react-twemoji';
-import { Line } from "react-chartjs-2";
+import { Line, Radar } from "react-chartjs-2";
 import zoomPlugin from 'chartjs-plugin-zoom';
 import ReactCountryFlag from "react-country-flag";
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
@@ -35,10 +35,6 @@ import { MonthlyData, User, UserAchievement, UserBadge, UserGroup } from "../res
 import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/medals";
 import MedalBadge from "../components/MedalBadge";
 
-import List from 'react-virtualized/dist/commonjs/List';
-import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
-import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
-import LoadMoreButton from "../components/LoadMoreButton";
 import InfiniteScroll from 'react-infinite-scroller';
 
 Chart.register(zoomPlugin, ...registerables);
@@ -131,7 +127,7 @@ const UserPage = (props: UserPageProps) => {
         getMedals();
     }, [])
 
-    const globalHistoryDataInitial = {
+    const globalHistoryDataInitial: ChartData<'line'> = {
         labels: [],
         datasets: [{
             label: 'Rank',
@@ -141,7 +137,7 @@ const UserPage = (props: UserPageProps) => {
             tension: 0.1,
         }],
     }
-    const countryHistoryDataInitial = {
+    const countryHistoryDataInitial: ChartData<'line'> = {
         labels: [],
         datasets: [{
             label: 'Rank',
@@ -151,7 +147,7 @@ const UserPage = (props: UserPageProps) => {
             tension: 0.1,
         }],
     }
-    const playsHistoryDataInitial = {
+    const playsHistoryDataInitial: ChartData<'line'> = {
         labels: [],
         datasets: [{
             label: 'Play Count',
@@ -161,7 +157,7 @@ const UserPage = (props: UserPageProps) => {
             tension: 0.1
         }]
     }
-    const replaysHistoryDataInitial = {
+    const replaysHistoryDataInitial: ChartData<'line'> = {
         labels: [],
         datasets: [{
             label: 'Replays Watched',
@@ -171,11 +167,24 @@ const UserPage = (props: UserPageProps) => {
             tension: 0.1
         }]
     }
+    const skillInitialData: ChartData<'radar'> = {
+        labels: [],
+        datasets: [
+            {
+                label: 'Skills',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }
+        ],
+    };
 
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(globalHistoryDataInitial);
     const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(countryHistoryDataInitial);
     const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(playsHistoryDataInitial);
     const [replaysHistoryData, setReplaysHistoryData] = useState<ChartData<'line'>>(replaysHistoryDataInitial);
+    const [skillsData, setSkillsData] = useState<ChartData<'radar'>>(skillInitialData);
 
     const lineOptions: ChartOptions<'line'> = {
         maintainAspectRatio: false,
@@ -217,6 +226,22 @@ const UserPage = (props: UserPageProps) => {
             }
         },
     };
+    const radarOptions: ChartOptions<'radar'> = {
+        scales: {
+            r: {
+                angleLines: {
+                    display: false
+                },
+                min: 0,
+                max: 100,
+                animate: true,
+                beginAtZero: true,
+                ticks: {
+                    display: false
+                }
+            }
+        }
+    }
 
     if (userData === undefined) {
         return (
@@ -275,7 +300,7 @@ const UserPage = (props: UserPageProps) => {
                 <div style={{ backdropFilter: "blur(2px)" }}
                     className="flex flex-col p-8 gap-8 card-body rounded-none">
                     <div className="grid grid-cols-7 flex-wrap gap-4 xl:gap-8">
-                        <div className="col-span-7 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
+                        <div className="col-span-9 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
                                 alt='pfp' className="aspect-square mb-2 rounded-lg"
@@ -290,7 +315,7 @@ const UserPage = (props: UserPageProps) => {
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>
-                        <div className="col-span-7 md:col-span-2 xl:col-span-2 gap-3 flex flex-col items-center md:items-start justify-between">
+                        <div className="col-span-7 md:col-span-2 gap-3 flex flex-col items-center md:items-start justify-between">
                             <div className="flex flex-row gap-3 items-center">
                                 <a className="text-4xl font-bold"
                                     target={"_blank"} rel="noreferrer"
@@ -341,6 +366,9 @@ const UserPage = (props: UserPageProps) => {
                                 </div>
                             </div>
                             <BarPieChart data={scoresRanksLabels} width={250} />
+                        </div>
+                        <div className="col-span-7 md:col-span-2">
+                            <Radar data={skillsData} options={radarOptions} />
                         </div>
                         <div className="col-span-7 md:col-span-3 xl:col-span-2 flex col-start-4 xl:col-start-6 flex-col items-center md:items-end gap-3 xl:justify-between">
                             <ModeSelector mode={gameMode} userId={userData.id} />
@@ -836,7 +864,35 @@ const UserPage = (props: UserPageProps) => {
     async function getBestCalc(id: number, m: GameModeType) {
         try {
             const res = await axios.post('/proxy', { url: `https://osu.ppy.sh/users/${id}/scores/best?mode=${m}&limit=100&offset=0` });
-            setBestCalc(res.data);
+            const scores: Score[] = res.data;
+            setBestCalc(scores);
+            const len = 100;
+            scores.length = len;
+            const r = await axios.post('/skill', {
+                scores: scores,
+                mode: m
+            })
+            console.log(r.data);
+            setSkillsData(
+                {
+                    labels: ['Agility', 'Precision', 'Reaction', 'Stamina', 'Tenacity', 'Timing'],
+                    datasets: [
+                        {
+                            label: 'Skills',
+                            data: [
+                                r.data.agility / len * 10,
+                                r.data.precision / len * 10,
+                                r.data.reaction / len * 10 / 1.5,
+                                r.data.stamina / len * 10,
+                                r.data.tenacity / len * 10,
+                                r.data.timing / len * 10 / 1.5],
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                        }
+                    ],
+                })
+            console.log('done')
         } catch (err) {
             console.error(err);
         }

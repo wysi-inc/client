@@ -23,6 +23,7 @@ const PageTabs = (props: PageTabsProps) => {
                     page && props.setNewPage(page);
                 }} className="join-item p-2 bg-primary">
                     <input className="text-center input input-bordered p-0 h-full"
+                        style={{backgroundColor: '#ffffff44'}}
                         placeholder="..." type="number"
                         min={props.min} max={props.max} value={page} onChange={(e) => setPage(e.target.valueAsNumber)} />
                 </form>

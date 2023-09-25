@@ -117,7 +117,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                   alt="cover" className="rounded-lg" loading="lazy"
                   style={{ height: 138, objectFit: 'cover' }} />
                 <div className="flex flex-row gap-3">
-                  <div>Submited at {moment(beatmapset.submitted_date * 1000).format('DD MMM YYYY')}</div>
+                  <div>Submited at {moment(typeof beatmapset.submitted_date === "number" ? beatmapset.submitted_date * 1000 : beatmapset.submitted_date).format('DD MMM YYYY')}</div>
                 </div>
                 <div className="flex flex-row gap-2">
                   <img src={`https://a.ppy.sh/${beatmapset.user_id}`} className="rounded-md w-14 object-cover" alt="img" loading="lazy" />
@@ -161,7 +161,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                   <div>{diff.version}</div>
                 </div>
                 <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-col gap-4">
-                  <div className="flex flex-row gap-8 items-center justify-center">
+                  <div className="flex flex-row flex-wrap gap-8 items-center justify-center">
                     <div className="flex flex-row gap-1 items-center">
                       <HiMiniStar />
                       <div>{SR ? SR : diff.difficulty_rating}</div>
@@ -203,12 +203,12 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                     <div className="text-start">{(HP ? HP : diff.drain).toFixed(1)}</div>
                   </div>
                 </div>
-                <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row gap-2 items-center justify-center">
+                <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row flex-wrap gap-2 items-center justify-center">
                   <button className={`${mods.length > 0 && 'fakeDisabled'} darkenOnHover`}
                     onClick={() => setMods([])}><ModIcon size={24} acronym="NM" />
                   </button>
-                  {mn.map(t =>
-                    <button className={`${!mods.includes(t) && 'fakeDisabled'} darkenOnHover`}
+                  {mn.map((t, i) =>
+                    <button key={i} className={`${!mods.includes(t) && 'fakeDisabled'} darkenOnHover`}
                       onClick={() => mods.includes(t) ? setMods(mods.filter(m => m !== t)) : setMods([...mods, t])}>
                       <ModIcon size={24} acronym={t} />
                     </button>

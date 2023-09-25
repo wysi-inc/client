@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState, useRef } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -15,10 +16,7 @@ import { BeatmapsetStatusType, GameModeType } from "../resources/types";
 import BeatmapsetPage from "../pages/BeatmapsetPage";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import BeatmapsetCard from "../cards/BeatmapsetCard";
-
-import List from 'react-virtualized/dist/commonjs/List';
-import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
-import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
+import InfiniteScroll from "react-infinite-scroller";
 
 const BeatmapsPage = () => {
     const { urlSetId } = useParams();
@@ -66,13 +64,13 @@ const BeatmapsPage = () => {
             getUrlParams();
             getBeatmaps();
         }
-    }, [])
+    }, [urlSetId])
 
     useEffect(() => {
         if (urlSetId === undefined) {
             getBeatmaps();
         }
-    }, [debouncedValue]);
+    }, [debouncedValue, urlSetId]);
 
 
     function clearSearch(): void {
@@ -241,14 +239,14 @@ const BeatmapsPage = () => {
         }
     }
 
-    async function getMoreBeatmaps({ startIndex, stopIndex }: any) {
+    async function getMoreBeatmaps(limit: number, offset: number) {
         const q = {
             query: getQuery().q,
             filter: getQuery().f,
             mode: modes.length < 1 ? [-1] : modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
             status: status.length < 1 ? [-3] : status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
-            limit: stopIndex * 3,
-            offset: startIndex * 3,
+            limit: limit,
+            offset: offset,
             sort: sort,
         }
         try {
@@ -468,11 +466,11 @@ const BeatmapsPage = () => {
                     <div className="col-span-3 md:col-span-1 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                         <div>Mode:</div>
                         <div className="flex flex-row flex-wrap gap-3" role="group">
-                            {songModes.map((thing: GameModeType, index: number) =>
+                            {songModes.map((thing: GameModeType, i: number) =>
                                 <button type="button"
                                     className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!modes.includes(thing) && 'fakeDisabled'}`}
-                                    key={index + 1}
-                                    onClick={() => modes.includes(thing) ? setModes(modes.filter(v => v != thing)) : setModes([...modes, thing])}
+                                    key={i}
+                                    onClick={() => modes.includes(thing) ? setModes(modes.filter(v => v !== thing)) : setModes([...modes, thing])}
                                     style={{ backgroundColor: (colors.modes as any)[thing] }}>
                                     {thing.toLowerCase()}
                                 </button>)}
@@ -481,11 +479,11 @@ const BeatmapsPage = () => {
                     <div className="col-span-3 md:col-span-2 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                         <div>Status:</div>
                         <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
-                            {songStatus.map((thing: BeatmapsetStatusType, index: number) =>
+                            {songStatus.map((thing: BeatmapsetStatusType, i: number) =>
                                 <button type="button"
                                     className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!status.includes(thing) && 'fakeDisabled'}`}
-                                    key={index + 1}
-                                    onClick={() => status.includes(thing) ? setStatus(status.filter(v => v != thing)) : setStatus([...status, thing])}
+                                    key={i}
+                                    onClick={() => status.includes(thing) ? setStatus(status.filter(v => v !== thing)) : setStatus([...status, thing])}
                                     style={{ backgroundColor: (colors.beatmap as any)[thing] }}>
                                     {thing.toLowerCase()}
                                 </button>)}
@@ -495,8 +493,9 @@ const BeatmapsPage = () => {
                 <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
                     <div>Sort:</div>
                     <div className="flex flex-row flex-wrap gap-3">
-                        {songSort.map((sor) =>
-                            <button className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                        {songSort.map((sor, i: number) =>
+                            <button key={i}
+                                className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
                                 onClick={() => {
                                     const s: any = sort[0]?.split(':')[0];
                                     const o: any = sort[0]?.split(':')[1];
@@ -519,45 +518,23 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="gap-4" style={{ height: 1000 }}>
-                <InfiniteLoader
-                    isRowLoaded={isRowLoaded}
-                    loadMoreRows={getMoreBeatmaps}
-                    rowCount={Math.floor(resultsNum / 3)}>
-                    {({ onRowsRendered, registerChild }) => (
-                        <AutoSizer>
-                            {({ height, width }) => (
-                                <List height={height}
-                                    width={width}
-                                    onRowsRendered={onRowsRendered}
-                                    ref={registerChild}
-                                    rowCount={Math.floor(results.length / 3)}
-                                    rowHeight={196}
-                                    rowRenderer={rowRenderer}
-                                />)}
-                        </AutoSizer>
-                    )}
-                </InfiniteLoader>
+            <div style={{ height: 1000 }} className="overflow-x-hidden overflow-y-scroll">
+                <InfiniteScroll
+                    pageStart={0}
+                    loadMore={() => getMoreBeatmaps(15, results.length)}
+                    hasMore={results.length < resultsNum}
+                    loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                    useWindow={false}
+                >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 ">
+                        {results.map((b: BeatmapSet, i: number) =>
+                            <BeatmapsetCard index={i} data={b} />
+                        )}
+                    </div>
+                </InfiniteScroll>
             </div>
         </div>
     )
-
-    function rowRenderer({ key, index, style }: any) {
-        let k = (index + 1) * 3;
-        return (
-            <div style={style} key={key}>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                    {k - 3 < resultsNum && <BeatmapsetCard index={k - 3} data={results[k - 3]} />}
-                    {k - 2 < resultsNum && <BeatmapsetCard index={k - 2} data={results[k - 2]} />}
-                    {k - 1 < resultsNum && <BeatmapsetCard index={k - 1} data={results[k - 1]} />}
-                </div>
-            </div>
-        )
-    }
-
-    function isRowLoaded({ index }: any) {
-        return !!results[(index + 1) * 3];
-    }
 
 }
 
