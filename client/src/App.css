@@ -11,7 +11,8 @@ main {
     min-height: 100vh;
 }
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
 }
@@ -32,7 +33,18 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
     margin: 0 !important;
     padding: 0 !important;
 }
@@ -41,6 +53,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     color: #272935 !important;
     font-weight: bold !important;
 }
+
 .row {
     margin: 0 !important;
 }
@@ -49,12 +62,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     transition: .01s ease-in;
 }
 
-.tooltip::before, .tooltip::after {
+.tooltip::before,
+.tooltip::after {
     transition: .01s ease-in !important;
     z-index: 10000 !important;
 }
 
-.tooltip::before:hover, .tooltip::after:hover {
+.tooltip::before:hover,
+.tooltip::after:hover {
     transition: .01s ease-in !important;
     z-index: 10000 !important;
 }
@@ -150,12 +165,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-left: 8px;
 }
 
-.rhap_total-time, .rhap_progress-indicator, .rhap_additional-controls, .rhap_volume-indicator {
+.rhap_total-time,
+.rhap_progress-indicator,
+.rhap_additional-controls,
+.rhap_volume-indicator {
     display: none !important;
 }
 
 .title-container {
-    overflow: hidden; /* Hide overflowing content */
+    overflow: hidden;
+    /* Hide overflowing content */
 }
 
 .titleBox {
@@ -163,21 +182,28 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .scrolling {
-    overflow: hidden; /* Hide overflowing text */
+    overflow: hidden;
+    /* Hide overflowing text */
 }
 
 .scrolling-text {
-    white-space: nowrap; /* Prevent text from wrapping */
-    text-overflow: ellipsis; /* Display ellipsis (...) when text overflows */
-    animation: scroll 10s linear infinite; /* Apply scrolling animation */
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+    text-overflow: ellipsis;
+    /* Display ellipsis (...) when text overflows */
+    animation: scroll 10s linear infinite;
+    /* Apply scrolling animation */
 }
 
 @keyframes scroll {
     0% {
-        transform: translateX(100%); /* Start from the right side of the container */
+        transform: translateX(100%);
+        /* Start from the right side of the container */
     }
+
     100% {
-        transform: translateX(-100%); /* Scroll to the left side of the container */
+        transform: translateX(-100%);
+        /* Scroll to the left side of the container */
     }
 }
 
@@ -200,45 +226,48 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .srSlider .MuiSlider-rail {
     background: linear-gradient(to right,
-    #4290fe,
-    #4cb6ff,
-    #4fffd4,
-    #cdf458,
-    #fc9964,
-    #f64d7a,
-    #ad4dc2,
-    #4d4bc4,
-    #12106a,
-    #000000,
-    #000000) !important;
+            #4290fe,
+            #4cb6ff,
+            #4fffd4,
+            #cdf458,
+            #fc9964,
+            #f64d7a,
+            #ad4dc2,
+            #4d4bc4,
+            #12106a,
+            #000000,
+            #000000) !important;
 }
 
-.hpSlider .MuiSlider-rail, .arSlider .MuiSlider-rail, .csSlider .MuiSlider-rail, .odSlider .MuiSlider-rail {
+.hpSlider .MuiSlider-rail,
+.arSlider .MuiSlider-rail,
+.csSlider .MuiSlider-rail,
+.odSlider .MuiSlider-rail {
     background: linear-gradient(to right,
-    #61de2a,
-    #fff65f,
-    #ff291e) !important;
+            #61de2a,
+            #fff65f,
+            #ff291e) !important;
 }
 
 .bpmSlider .MuiSlider-rail {
     background: linear-gradient(to right,
-    #4290fe,
-    #ff291e) !important;
+            #4290fe,
+            #ff291e) !important;
 }
 
 .lengthSlider .MuiSlider-rail {
     background: linear-gradient(to right,
-    #B589D6,
-    #9969C7,
-    #804FB3,
-    #6A359C,
-    #552586) !important;
+            #B589D6,
+            #9969C7,
+            #804FB3,
+            #6A359C,
+            #552586) !important;
 }
 
 .yearSlider .MuiSlider-rail {
     background: linear-gradient(to right,
-    #C0C0C0,
-    #98ddfc) !important;
+            #C0C0C0,
+            #98ddfc) !important;
 }
 
 .MuiSlider-rail {
@@ -262,22 +291,30 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 
-input::after, input::before {
+input::after,
+input::before {
     display: none !important;
 }
 
-.MuiSlider-thumb, .MuiSlider-thumb:focus, .MuiSlider-thumb:hover, .Mui-focusVisible {
+.MuiSlider-thumb,
+.MuiSlider-thumb:focus,
+.MuiSlider-thumb:hover,
+.Mui-focusVisible {
     box-shadow: none !important;
     width: 6px !important;
     border-radius: 6px !important;
 }
 
-.MuiSlider-thumb:active, .MuiSlider-thumb:hover {
+.MuiSlider-thumb:active,
+.MuiSlider-thumb:hover {
     filter: brightness(50%) !important;
     cursor: pointer !important;
 }
 
-.MuiSlider-thumb::before, .MuiSlider-thumb::after, .Mui-active::before, .Mui-active::after {
+.MuiSlider-thumb::before,
+.MuiSlider-thumb::after,
+.Mui-active::before,
+.Mui-active::after {
     display: none !important;
 }
 
@@ -290,7 +327,7 @@ input::after, input::before {
     display: table;
 }
 
-.divsRow > div {
+.divsRow>div {
     display: table-cell
 }
 
@@ -301,6 +338,7 @@ input::after, input::before {
 .emoji-flag {
     height: 32px;
 }
+
 .emoji {
     height: 16px;
     display: inline-block;
@@ -308,4 +346,20 @@ input::after, input::before {
 
 .setCard {
     box-shadow: 0 0 2px 0px #1e1e1e inset, 0 0 2px 0px #1e1e1e;
+}
+
+.spin {
+    animation-duration: 4s;
+    animation-name: spin;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

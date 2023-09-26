@@ -1,14 +1,13 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
 import axios from "../resources/axios-config";
-import ReactCountryFlag from "react-country-flag";
 import OnlineDot from "./OnlineDot";
 import SupporterIcon from "./SupporterIcon";
 import { Link, useNavigate } from "react-router-dom";
-import Twemoji from "react-twemoji";
 import { FaSearch } from "react-icons/fa";
 import GroupBadge from "./GroupBadge";
 import { UserCompact } from "../resources/interfaces/user";
+import CountryFlag from "./CountryFlag";
 
 const SearchBox = () => {
 
@@ -79,7 +78,7 @@ const SearchBox = () => {
                     }}>
                         <div className="join grow">
                             <button className="btn join-item rounded-s-lg">
-                            <FaSearch />
+                                <FaSearch />
                             </button>
                             <input className="input input-bordered join-item grow"
                                 id="searchInput"
@@ -97,11 +96,7 @@ const SearchBox = () => {
                                     <div className="flex flex-row gap-2 items-center">
                                         <img src={user.avatar_url} height={40} width={40} alt="pfp"
                                             className="rounded" />
-                                        <Twemoji options={{ className: 'emoji-flag-sm' }}>
-                                            <ReactCountryFlag countryCode={user.country_code}
-                                                data-tooltip-id="tooltip"
-                                                data-tooltip-content={user.country_code} />
-                                        </Twemoji>
+                                        <CountryFlag size={24} code={user.country?.code} name={user.country?.name} />
                                         <div>{user.username}</div>
                                         {user.profile_colour &&
                                             <GroupBadge group={{
@@ -123,7 +118,7 @@ const SearchBox = () => {
                                 </Link>
                             ))}</div>
                     }
-                </div >
+                </div>
                 <form method="dialog" className="modal-backdrop">
                     <button>close</button>
                 </form>

@@ -6,10 +6,7 @@ import moment from "moment/moment";
 import StatusBadge from "../components/StatusBadge";
 import axios from "../resources/axios-config";
 import DiffIcon from "../components/DiffIcon";
-import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
-import { HiOutlineClock } from "react-icons/hi";
-import { FaHeadphonesAlt } from "react-icons/fa";
-import { GiMusicalNotes } from "react-icons/gi";
+import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
 import { ModsEntity, Score } from "../resources/interfaces/score";
 import { Link } from "react-router-dom";
 
@@ -69,34 +66,33 @@ const ScoreCard = (props: ScoreProps) => {
 
     return (
         <div className="flex grow bg-accent-900"
-            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmap_id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
+            style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col p-3 gap-2 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="flex flex-row justify-between gap-3 items-center">
                     <div className="grow flex flex-row gap-3">
-                        <img src={`https://assets.ppy.sh/beatmaps/${props.score.beatmap_id}/covers/cover.jpg?${props.score.beatmapset.id}`}
+                        <img src={`https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/list.jpg?${props.score.beatmapset.id}`}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />
                         <div className="flex flex-col gap-1 grow">
                             <div className="truncate">
-                                <Link to={`/beatmaps/${props.score.beatmapset.id}/${props.score.beatmap_id}`} target={"_blank"}
-                                    rel="noreferrer"
+                                <Link to={`/beatmaps/${props.score.beatmapset.id}/${props.score.beatmap_id}`}
                                     className="text-light h5 text-decoration-none truncate">
                                     {props.score.beatmapset.title}
                                 </Link>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <div className="flex justify-center w-6">
-                                    <GiMusicalNotes />
+                                    <FaMicrophoneAlt />
                                 </div>
                                 <div className="truncate">{props.score.beatmapset.artist}</div>
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
-                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-md w-6 h-6" alt="img" loading="lazy" />
-                                <div className="inline-block">
+                                <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="rounded-md w-6 h-6" alt="img" loading="lazy" onError={addDefaultSrc}/>
+                                <Link to={`/users/${props.score.beatmapset.user_id}`} className="inline-block">
                                     {props.score.beatmapset.creator}
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -123,13 +119,13 @@ const ScoreCard = (props: ScoreProps) => {
                         <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}
                             className="tooltip" data-tip="download">
                             <button className="btn btn-ghost btn-circle btn-sm">
-                                <HiDocumentArrowDown />
+                                <FaDownload />
                             </button>
                         </a>
                         <a href={`osu://b/${props.score.beatmap_id}`}
                             className="tooltip" data-tip="osu!direct">
                             <button className="btn btn-ghost btn-circle btn-sm">
-                                <HiMiniBarsArrowDown />
+                                <FaFileDownload />
                             </button>
                         </a>
                         <div className="tooltip" data-tip="listen">
@@ -143,15 +139,15 @@ const ScoreCard = (props: ScoreProps) => {
                 <div className="flex flex-row flex-wrap gap-4 items-center"
                     style={{ fontSize: 14 }}>
                     <div className="flex flex-row gap-1 items-center">
-                        <HiMiniStar />
+                        <FaStar />
                         {newSR ? newSR : props.score.beatmap.difficulty_rating}
                     </div>
                     <div className="flex flex-row gap-1 items-center">
-                        <HiOutlineClock />
+                        <FaRegClock />
                         {secondsToTime(newLen ? newLen : props.score.beatmap.total_length)}
                     </div>
                     <div className="flex flex-row gap-1 items-center">
-                        <HiMiniMusicalNote />
+                        <FaItunesNote />
                         {newBPM ? newBPM : props.score.beatmap.bpm}
                     </div>
                     <div>CS: {newCS ? newCS : props.score.beatmap.cs}</div>

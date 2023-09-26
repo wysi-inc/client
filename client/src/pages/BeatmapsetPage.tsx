@@ -2,22 +2,19 @@ import React, { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 
-import { GiMusicalNotes } from "react-icons/gi";
-
 import axios from "../resources/axios-config";
 import DiffIcon from "../components/DiffIcon";
 import { addDefaultSrc, getModsInt, secondsToTime } from "../resources/functions";
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
-import { HiOutlineClock } from "react-icons/hi";
-import { HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import moment from "moment";
 import ModIcon from "../components/ModIcon";
 import { GameModeType } from "../resources/types";
 import { Score } from "../resources/interfaces/score";
 import BeatmapsetScoreCard from "../cards/BeatmapsetScoreCard";
-import { FaHeadphonesAlt, FaDownload, FaFileDownload } from "react-icons/fa";
+import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
 import { PlayerStoreInterface, playerStore } from "../resources/store";
 import StatusBadge from "../components/StatusBadge";
+import { Prev } from "react-bootstrap/esm/PageItem";
 
 interface BeatmapsetPageProps {
   setId: number;
@@ -33,16 +30,19 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
 
   const [acc, setAcc] = useState<number>(100);
   const [mods, setMods] = useState<string[]>([]);
-  const [PP, setPP] = useState<number>(0);
 
-  const [OD, setOD] = useState<number | undefined>();
-  const [AR, setAR] = useState<number | undefined>();
-  const [CS, setCS] = useState<number | undefined>();
-  const [HP, setHP] = useState<number | undefined>();
+  const INITIAL_SET_STATS = {
+    pp: 0,
+    bpm: diff?.bpm ? diff.bpm : 0,
+    len: diff?.total_length ? diff.total_length : 0,
+    sr: diff?.difficulty_rating ? diff.difficulty_rating : 0,
+    ar: diff?.ar ? diff.ar : 0,
+    cs: diff?.cs ? diff.cs : 0,
+    od: diff?.accuracy ? diff.accuracy : 0,
+    hp: diff?.drain ? diff.drain : 0,
+  }
 
-  const [SR, setSR] = useState<number | undefined>();
-  const [LEN, setLEN] = useState<number | undefined>();
-  const [BPM, setBPM] = useState<number | undefined>();
+  const [stats, setStats] = useState(INITIAL_SET_STATS);
 
   useEffect(() => {
     getBeatmap(props.setId);
@@ -50,24 +50,28 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
 
   useEffect(() => {
     if (!diff) return;
-    getStats(diff);
+    getStats();
     getLeaderboards(diff.id, diff.mode)
   }, [diff, mods])
 
-  async function getStats(b: Beatmap) {
+  async function getStats() {
+    if (!diff) return;
     try {
-      const url = `https://catboy.best/api/meta/${b.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`;
-      const d = (await axios.post('/proxy', { url: url })).data;
-      setPP(Math.round(d.pp[100].pp));
-      setSR(d.difficulty.stars.toFixed(2));
-      setBPM(d.map.bpm);
-      setLEN(b.total_length)
-      setOD(d.map.od);
-      setAR(d.map.ar);
-      setHP(d.map.hp);
-      setCS(d.map.cs);
-      if (mods.includes('DT')) setLEN(b.total_length * 0.75);
-      else if (mods.includes('HT')) setLEN(b.total_length * 1.5);
+      const d = (await axios.post('/proxy', {
+        url: `https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`
+      })).data;
+      setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
+      setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
+      setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
+
+      setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
+      setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
+      setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
+      setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
+
+      if (mods.includes('DT')) setStats(prev => ({ ...prev, len: diff.total_length * 0.75 }));
+      else if (mods.includes('HT')) setStats(prev => ({ ...prev, len: diff.total_length * 1.5 }));
+      else setStats(prev => ({ ...prev, len: diff.total_length }));
     } catch (err) {
       console.error(err);
     }
@@ -79,7 +83,6 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
       const r = await axios.post('/proxy', {
         url: `https://osu.ppy.sh/beatmaps/${id}/scores?mode=${mode}&type=global`
       })
-      console.log(r.data.scores);
       const sc: Score[] = r.data.scores;
       for (let i = 0; i < sc.length; i++) {
         sc[i].beatmapset = beatmapset;
@@ -92,7 +95,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
 
   useEffect(() => {
     if (!beatmapset) return;
-    const beat = beatmapset.beatmaps.filter(b => b.id == props.diffId)[0] || beatmapset.beatmaps[0]
+    const beat = beatmapset.beatmaps.filter(b => b.id === props.diffId)[0] || beatmapset.beatmaps[0]
     const diffId = beat.id
     setDiff(beat)
     window.history.replaceState({}, '', `/beatmaps/${props.setId}/${diffId}`);
@@ -108,13 +111,14 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
       let diffId;
       if (props.diffId) {
         let i = 0;
-        data.beatmaps.map((beat) => {
-          if (beat.id === props.diffId) {
-            i = beat.id;
+        for (const b of data.beatmaps) {
+          if (b.id === props.diffId) {
+            i = b.id;
+            break;
           }
-        });
+        }
         setDiff(data.beatmaps[i]);
-        diffId = data.beatmaps[i].id;
+        diffId = data.beatmaps[i]?.id;
       } else {
         setDiff(data.beatmaps[0]);
         diffId = data.beatmaps[0].id;
@@ -154,22 +158,24 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                     <img src={`https://a.ppy.sh/${beatmapset.user_id}`} className="rounded-md w-14 object-cover" alt="img" loading="lazy" />
                     <div className="flex flex-col gap-2">
                       <Link to={`/users/${beatmapset.user_id}`} className="text-xl">{beatmapset.creator}</Link>
-                      <div className="me-auto"><StatusBadge status={beatmapset.status}/></div>
+                      <div className="me-auto"><StatusBadge status={beatmapset.status} /></div>
                     </div>
                   </div>
                   <div className="join grow">
-                    <button className="join-item btn btn-secondary grow"
-                      onClick={playSong}>
-                      <FaHeadphonesAlt />
-                    </button>
+                    <div className="tooltip tooltip-bottom grow flex" data-tip="listen">
+                      <button className="join-item btn btn-secondary grow"
+                        onClick={playSong}>
+                        <FaHeadphonesAlt />
+                      </button>
+                    </div>
                     <a href={`https://catboy.best/d/${beatmapset.id}`}
-                      className="tooltip grow flex" data-tip="download">
+                      className="tooltip tooltip-bottom grow flex" data-tip="download">
                       <button className="join-item btn btn-secondary grow">
                         <FaDownload />
                       </button>
                     </a>
                     <a href={`osu://b/${diff?.id}`}
-                      className="tooltip grow flex" data-tip="osu!direct">
+                      className="tooltip tooltip-bottom grow flex" data-tip="osu!direct">
                       <button className="join-item btn btn-secondary grow">
                         <FaFileDownload />
                       </button>
@@ -182,7 +188,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                   </div>
                   <div className="text-xl flex flex-row gap-2 items-center">
                     <div>
-                      <GiMusicalNotes />
+                      <FaMicrophoneAlt />
                     </div>
                     <div>
                       {beatmapset.artist}
@@ -192,8 +198,8 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                     {beatmapset.beatmaps.sort((a, b) => a.mode === b.mode ?
                       a.difficulty_rating - b.difficulty_rating : a.mode_int - b.mode_int
                     ).map((b: Beatmap, i: number) =>
-                      <div className='h-8 w-8 flex items-center justify-center rounded-md' style={{ outline: `#ffffff99 ${diff?.id === b.id ? 'solid 2px' : 'none'}` }}>
-                        <DiffIcon key={i} size={24} mode={b.mode}
+                      <div key={i} className='h-8 w-8 flex items-center justify-center rounded-md' style={{ outline: `#ffffff99 ${diff?.id === b.id ? 'solid 2px' : 'none'}` }}>
+                        <DiffIcon size={24} mode={b.mode}
                           diff={b.difficulty_rating} name={b.version}
                           setId={b.beatmapset_id} diffId={b.id} />
                       </div>
@@ -202,77 +208,75 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                 </div>
               </div>
             </div>
-            <div className="rounded-xl p-3 gap-3 bg-accent-700 flex flex-col">
-              {diff &&
-                <>
-                  <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row gap-2">
-                    <DiffIcon setId={beatmapset.id} diffId={diff.id}
-                      size={24} mode={diff.mode} diff={diff.difficulty_rating} name={diff.version} />
-                    <div>{diff.version}</div>
-                  </div>
-                  <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-col gap-4">
-                    <div className="flex flex-row flex-wrap gap-8 items-center justify-center">
-                      <div className="flex flex-row gap-1 items-center">
-                        <HiMiniStar />
-                        <div>{SR ? SR : diff.difficulty_rating}</div>
-                      </div>
-                      <div className="flex flex-row gap-1 items-center">
-                        <HiOutlineClock />
-                        <div>{secondsToTime(LEN ? LEN : diff.total_length)}</div>
-                      </div>
-                      <div className="flex flex-row gap-1 items-center">
-                        <HiMiniMusicalNote />
-                        <div>{Math.round(BPM ? BPM : diff.bpm)}bpm</div>
-                      </div>
-                      <div>
-                        {PP}pp
-                      </div>
+            {diff &&
+              <div className="rounded-xl p-3 gap-3 bg-accent-700 flex flex-col">
+                <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row gap-2">
+                  <DiffIcon setId={beatmapset.id} diffId={diff.id}
+                    size={24} mode={diff.mode} diff={diff.difficulty_rating} name={diff.version} />
+                  <div>{diff.version}</div>
+                </div>
+                <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-col gap-4">
+                  <div className="flex flex-row flex-wrap gap-8 items-center justify-center">
+                    <div className="flex flex-row gap-1 items-center">
+                      <FaStar />
+                      <div>{stats.sr}</div>
                     </div>
-                    <div className="flex flex-row gap-3 items-center">
-                      <div className="text-end">AR:</div>
-                      <progress className="progress progress-accent justify-between"
-                        value={AR ? AR : diff.ar} max="11"></progress>
-                      <div className="text-start">{(AR ? AR : diff.ar).toFixed(1)}</div>
+                    <div className="flex flex-row gap-1 items-center">
+                      <FaRegClock />
+                      <div>{secondsToTime(stats.len)}</div>
                     </div>
-                    <div className="flex flex-row gap-3 items-center justify-between">
-                      <div className="text-end">CS:</div>
-                      <progress className="progress progress-accent"
-                        value={CS ? CS : diff.cs} max="11"></progress>
-                      <div className="text-start">{(CS ? CS : diff.cs).toFixed(1)}</div>
+                    <div className="flex flex-row gap-1 items-center">
+                      <FaItunesNote />
+                      <div>{stats.bpm}bpm</div>
                     </div>
-                    <div className="flex flex-row gap-3 items-center justify-between">
-                      <div className="text-end">OD:</div>
-                      <progress className="progress progress-accent"
-                        value={OD ? OD : diff.accuracy} max="11"></progress>
-                      <div className="text-start">{(OD ? OD : diff.accuracy).toFixed(1)}</div>
-                    </div>
-                    <div className="flex flex-row gap-3 items-center justify-between">
-                      <div className="text-end">HP:</div>
-                      <progress className="progress progress-accent"
-                        value={HP ? HP : diff.drain} max="11"></progress>
-                      <div className="text-start">{(HP ? HP : diff.drain).toFixed(1)}</div>
+                    <div>
+                      {stats.pp}pp
                     </div>
                   </div>
-                  <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row flex-wrap gap-2 items-center justify-center">
-                    <button className={`${mods.length > 0 && 'fakeDisabled'} darkenOnHover`}
-                      onClick={() => setMods([])}><ModIcon size={24} acronym="NM" />
+                  <div className="flex flex-row gap-3 items-center">
+                    <div className="text-end">AR:</div>
+                    <progress className="progress progress-accent justify-between"
+                      value={stats.ar} max="11"></progress>
+                    <div className="text-start">{stats.ar}</div>
+                  </div>
+                  <div className="flex flex-row gap-3 items-center justify-between">
+                    <div className="text-end">CS:</div>
+                    <progress className="progress progress-accent"
+                      value={stats.cs} max="11"></progress>
+                    <div className="text-start">{stats.cs}</div>
+                  </div>
+                  <div className="flex flex-row gap-3 items-center justify-between">
+                    <div className="text-end">OD:</div>
+                    <progress className="progress progress-accent"
+                      value={stats.od} max="11"></progress>
+                    <div className="text-start">{stats.od}</div>
+                  </div>
+                  <div className="flex flex-row gap-3 items-center justify-between">
+                    <div className="text-end">HP:</div>
+                    <progress className="progress progress-accent"
+                      value={stats.hp} max="11"></progress>
+                    <div className="text-start">{stats.hp}</div>
+                  </div>
+                </div>
+                <div className="p-4 bg-accent-950 rounded-lg drop-shadow-md flex flex-row flex-wrap gap-2 items-center justify-center">
+                  <button className={`${mods.length > 0 && 'fakeDisabled'} darkenOnHover`}
+                    onClick={() => setMods([])}><ModIcon size={24} acronym="NM" />
+                  </button>
+                  {mn.map((t, i) =>
+                    <button key={i} className={`${!mods.includes(t) && 'fakeDisabled'} darkenOnHover`}
+                      onClick={() => mods.includes(t) ? setMods(mods.filter(m => m !== t)) : setMods([...mods, t])}>
+                      <ModIcon size={24} acronym={t} />
                     </button>
-                    {mn.map((t, i) =>
-                      <button key={i} className={`${!mods.includes(t) && 'fakeDisabled'} darkenOnHover`}
-                        onClick={() => mods.includes(t) ? setMods(mods.filter(m => m !== t)) : setMods([...mods, t])}>
-                        <ModIcon size={24} acronym={t} />
-                      </button>
-                    )}
-                  </div>
-                </>
-              }
-            </div>
+                  )}
+                </div>
+              </div>
+            }
           </div>
         </div>
-      </div>
+      </div >
       <div className="p-3 flex flex-col gap-2">
         {scores.map((s: Score, i: number) =>
-          <BeatmapsetScoreCard key={i} score={s} index={i + 1} />
+          <BeatmapsetScoreCard key={s.id} score={s} index={i + 1} />
         )}
       </div>
     </>

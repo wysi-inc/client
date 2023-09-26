@@ -5,14 +5,14 @@ import moment from "moment";
 import Twemoji from 'react-twemoji';
 import { Line, Radar } from "react-chartjs-2";
 import zoomPlugin from 'chartjs-plugin-zoom';
-import ReactCountryFlag from "react-country-flag";
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 
-import { FaSkull } from "react-icons/fa";
+import { FaSkull, FaRegClock } from "react-icons/fa";
 import Spinner from 'react-bootstrap/Spinner';
 import { BiSolidTrophy, BiSolidUserDetail } from "react-icons/bi";
-import { HiCalculator, HiChevronDoubleUp, HiFire, HiGlobeAlt, HiOutlineStar, HiReply } from "react-icons/hi";
+import { HiCalculator, HiChevronDoubleUp, HiFire, HiGlobeAlt, HiOutlineStar } from "react-icons/hi";
 import { BsBarChartLine, BsFillPinAngleFill, BsHourglassSplit, BsStopwatch, BsSuitHeartFill } from "react-icons/bs";
+import {ImSpinner11} from "react-icons/im";
 
 import Badge from "../components/Badge";
 import ScoreCard from "../cards/ScoreCard";
@@ -391,7 +391,7 @@ const UserPage = (props: UserPageProps) => {
                                 <div className="text-lg">Play Time:</div>
                                 <div className="text-xl flex flex-row items-center gap-2 tooltip tooltip-left"
                                     data-tip={secondsToTime(userData.statistics.play_time)}>
-                                    <i className="bi bi-clock"></i>
+                                    <FaRegClock/>
                                     <div>
                                         {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
                                     </div>
@@ -400,7 +400,7 @@ const UserPage = (props: UserPageProps) => {
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Play Count:</div>
                                 <div className="text-xl flex flex-row items-center gap-2">
-                                    <HiReply />
+                                    <ImSpinner11 />
                                     <div>{userData.statistics.play_count.toLocaleString()}</div>
                                 </div>
                             </div>
@@ -617,7 +617,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 1} style={{ height: 602 }} className={`${beatmapsTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, favouriteBeatmaps.length, 'beatmapsets', 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, favouriteBeatmaps.length, 'beatmapsets', 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
                             hasMore={favouriteBeatmaps.length < userData.favourite_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -630,7 +630,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 2} style={{ height: 602 }} className={`${beatmapsTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, rankedBeatmaps.length, 'beatmapsets', 'ranked', setRankedBeatmaps, rankedBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, rankedBeatmaps.length, 'beatmapsets', 'ranked', setRankedBeatmaps, rankedBeatmaps)}
                             hasMore={rankedBeatmaps.length < userData.ranked_and_approved_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -643,7 +643,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 3} style={{ height: 602 }} className={`${beatmapsTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, guestBeatmaps.length, 'beatmapsets', 'guest', setGuestBeatmaps, guestBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, guestBeatmaps.length, 'beatmapsets', 'guest', setGuestBeatmaps, guestBeatmaps)}
                             hasMore={guestBeatmaps.length < userData.guest_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -656,7 +656,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 4} style={{ height: 602 }} className={`${beatmapsTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, lovedBeatmaps.length, 'beatmapsets', 'loved', setLovedBeatmaps, lovedBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, lovedBeatmaps.length, 'beatmapsets', 'loved', setLovedBeatmaps, lovedBeatmaps)}
                             hasMore={lovedBeatmaps.length < userData.loved_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -669,7 +669,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 5} style={{ height: 602 }} className={`${beatmapsTabIndex !== 5 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, nominatedBeatmaps.length, 'beatmapsets', 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, nominatedBeatmaps.length, 'beatmapsets', 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
                             hasMore={nominatedBeatmaps.length < userData.guest_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -682,7 +682,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 6} style={{ height: 602 }} className={`${beatmapsTabIndex !== 6 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, pendingBeatmaps.length, 'beatmapsets', 'pending', setPendingBeatmaps, pendingBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, pendingBeatmaps.length, 'beatmapsets', 'pending', setPendingBeatmaps, pendingBeatmaps)}
                             hasMore={pendingBeatmaps.length < userData.pending_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -695,7 +695,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 7} style={{ height: 602 }} className={`${beatmapsTabIndex !== 7 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, graveyardBeatmaps.length, 'beatmapsets', 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
+                            loadMore={() => getThings(userData.id, gameMode, 10, graveyardBeatmaps.length, 'beatmapsets', 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
                             hasMore={graveyardBeatmaps.length < userData.graveyard_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}

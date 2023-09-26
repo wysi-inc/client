@@ -4,10 +4,10 @@ import { playerStore, PlayerStoreInterface } from "../resources/store";
 import DiffIcon from "../components/DiffIcon";
 import moment from "moment";
 import StatusBadge from "../components/StatusBadge";
-import { GiMusicalNotes } from "react-icons/gi";
+import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaRegClock, FaItunesNote, FaMicrophoneAlt, FaHeart } from "react-icons/fa";
+import { ImSpinner11 } from "react-icons/im"
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Link } from "react-router-dom";
-import { FaHeadphonesAlt } from "react-icons/fa"
 
 interface BeatmapsetCardProps {
     index: number,
@@ -39,7 +39,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <div className="flex justify-center w-6">
-                                    <GiMusicalNotes />
+                                    <FaMicrophoneAlt />
                                 </div>
                                 <div className="truncate">
                                     {props.data.artist}
@@ -47,15 +47,19 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             </div>
                             <div className="truncate flex flex-row gap-2 items-center text-light">
                                 <img src={`https://a.ppy.sh/${props.data.user_id}`} className="rounded-md w-6 h-6" alt="img" loading="lazy" />
-                                <div className="inline-block">
+                                <Link to={`/users/${props.data.user_id}`} className="inline-block">
                                     {props.data.creator}
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-1 flex flex-col gap-2 items-end">
-                        <div>{secondsToTime(props.data.beatmaps.sort((a, b) => b.total_length - a.total_length)[0].total_length)}</div>
-                        <div className="flex flex-row gap-1"><i className="bi bi-music-note-beamed"></i>
+                        <div className="flex flex-row gap-1 items-center">
+                            <FaRegClock />
+                            <div>{secondsToTime(props.data.beatmaps.sort((a, b) => b.total_length - a.total_length)[0].total_length)}</div>
+                        </div>
+                        <div className="flex flex-row gap-1 items-center">
+                            <FaItunesNote />
                             <div>{Math.round(props.data.bpm)}</div>
                         </div>
                     </div>
@@ -67,29 +71,29 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             {moment(typeof props.data.submitted_date === "number" ? props.data.submitted_date * 1000 : props.data.submitted_date).format('DD MMM YYYY')}
                         </div>
                     </div>
-                    <div className="flex flex-row gap-5 items-center justify-content-end">
-                        <div>
-                            <i className="bi bi-arrow"></i>
+                    <div className="flex flex-row gap-4 items-center justify-content-end">
+                        <div className="flex flex-row gap-2 items-center">
+                            <ImSpinner11 />
                             <div>{props.data.play_count.toLocaleString()}</div>
                         </div>
-                        <div className="flex gap-1">
-                            <i className="bi bi-suit-heart-fill"></i>
+                        <div className="flex flex-row gap-2 items-center">
+                            <FaHeart />
                             <div>{props.data.favourite_count.toLocaleString()}</div>
                         </div>
                         <div className="tooltip" data-tip="download">
-                            <a href={`https://catboy.best/d/${props.data.id}`}
+                            <a className="btn btn-ghost btn-circle btn-sm" href={`https://catboy.best/d/${props.data.id}`}
                                 style={{ background: "none" }}>
-                                <i className="bi bi-download"></i>
+                                <FaDownload />
                             </a>
                         </div>
                         <div className="tooltip" data-tip="osu!direct">
-                            <a href={`osu://b/${props.data.beatmaps[0].id}`}
+                            <a className="btn btn-ghost btn-circle btn-sm" href={`osu://b/${props.data.beatmaps[0].id}`}
                                 style={{ background: "none" }}>
-                                <i className="bi bi-file-earmark-plus"></i>
+                                <FaFileDownload />
                             </a>
                         </div>
                         <div className="tooltip" data-tip="listen">
-                            <button onClick={() => {
+                            <button className="btn btn-ghost btn-circle btn-sm" onClick={() => {
                                 play(props.data.id, props.data.title, props.data.artist)
                             }} style={{ background: "none" }}>
                                 <FaHeadphonesAlt />
