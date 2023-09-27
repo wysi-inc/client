@@ -25,6 +25,10 @@ const Users = () => {
 
     const debouncedValue = useDebounce(page, 500);
 
+    useEffect(() => {
+        setUsers([]);
+    }, [page])
+
     useEffect((): void => {
         setActualPage(page);
         if (urlUser === undefined) {
@@ -116,7 +120,7 @@ const Users = () => {
                             users.map((user, index) =>
                                 <UserCard mode={mode} grid={cardGrid} user={user} category={category} index={index + (50 * (actualPage - 1) + 1)} key={index} />
                             ) : 
-                            <span className="loading loading-dots loading-md"></span>}
+                            <tr className="loading loading-dots loading-md"></tr>}
                     </tbody>
                 </table>
             </div>

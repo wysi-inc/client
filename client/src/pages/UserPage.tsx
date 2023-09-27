@@ -168,6 +168,7 @@ const UserPage = (props: UserPageProps) => {
     const medalsByCategory: SortedMedals = useMemo(() => getMedalsByCategory(medals), [medals]);
     const lastMedals: Medal[] = useMemo(() => getLastMedals(userData?.user_achievements, medals, 15), [userData]);
     const rarestMedal: Medal | null = useMemo(() => getRarestMedal(userData?.user_achievements, medals), [userData]);
+    const achievedMedalsCount = useMemo(() => getAchievedMedalsCount(userData?.user_achievements, medalsByCategory), [userData]);
 
     const [bestCalc, setBestCalc] = useState<Score[]>([]);
 
@@ -721,8 +722,8 @@ const UserPage = (props: UserPageProps) => {
                                 <div className="p-3 pt-2 flex flex-col grow">
                                     <div className="pb-1 px-2 text-center"
                                         style={{ fontSize: 14, top: -8 }}>
-                                        {(getAchievedMedalsCount()[category] / medals.length * 100).toFixed(2)}%
-                                        ({getAchievedMedalsCount()[category]}/{medals.length})
+                                        {(achievedMedalsCount[category] / medals.length * 100).toFixed(2)}%
+                                        ({achievedMedalsCount[category]}/{medals.length})
                                     </div>
                                     <div className="flex flex-row flex-wrap gap-1 justify-center grow">
                                         {medals.map((medal: Medal, index: number) => (
@@ -873,65 +874,6 @@ const UserPage = (props: UserPageProps) => {
         }
     }
 
-    function getMedalsByCategory(data: Medal[]) {
-        data.sort((a: any, b: any) => {
-            if (a.Grouping === b.Grouping) {
-                return parseInt(a.value, 10) - parseInt(b.value, 10);
-            }
-            return a.Grouping.localeCompare(b.Grouping);
-        });
-        const categoryArrays: SortedMedals = {};
-        for (const obj of data) {
-            if (categoryArrays[obj.Grouping]) {
-                categoryArrays[obj.Grouping].push(obj);
-            } else {
-                categoryArrays[obj.Grouping] = [obj];
-            }
-        }
-        return categoryArrays;
-    }
-
-    function getLastMedals(userMedals: UserAchievement[] | undefined, medals: Medal[], num: number) {
-        if (!userMedals) return [];
-        const sortedArray = userMedals
-            .sort((a: UserAchievement, b: UserAchievement) => {
-                const dateA: Date = new Date(a.achieved_at);
-                const dateB: Date = new Date(b.achieved_at);
-                return dateA.getTime() - dateB.getTime();
-            }).reverse().slice(0, num)
-            .map((obj: UserAchievement) => obj.achievement_id)
-            .map((id: number) => medals.find((medal: any): boolean => parseInt(medal.MedalID) === id))
-            .filter((medal: Medal | undefined): medal is Medal => medal !== undefined);
-        return sortedArray;
-    }
-
-    function getAchievedMedalsCount(): MedalCategories {
-        const achievedMedalsCount: MedalCategories = {};
-        Object.entries(medalsByCategory)
-            .forEach(([category, medals]: [string, Medal[]]) => {
-                achievedMedalsCount[category] = 0;
-                userData?.user_achievements.forEach((achievedMedal: UserAchievement): void => {
-                    if (medals.find((medal: Medal): boolean => parseInt(medal.MedalID) === achievedMedal.achievement_id)) {
-                        achievedMedalsCount[category]++;
-                    }
-                });
-            });
-        return achievedMedalsCount;
-    }
-
-    function getRarestMedal(userMedals: UserAchievement[] | undefined, medals: Medal[]) {
-        if (!userMedals) return null;
-        const data = userMedals.map((obj: UserAchievement) => obj.achievement_id)
-            .map((id: number) => medals.find((medal: Medal): boolean => String(medal.MedalID) === String(id)))
-            .reduce((rarest: Medal | null, medal: Medal | undefined): Medal => {
-                if (!rarest || (medal && medal.Rarity < rarest.Rarity)) {
-                    return medal as Medal;
-                }
-                return rarest;
-            }, null)
-        return data;
-    }
-
     function getGlobalData(user: User) {
         if (!user?.db_info.global_rank) return;
         setGlobalHistoryData({
@@ -1005,4 +947,64 @@ function useMedals() {
             console.error(err)
         }
     }
+}
+
+function getMedalsByCategory(data: Medal[]) {
+    data.sort((a: any, b: any) => {
+        if (a.Grouping === b.Grouping) {
+            return parseInt(a.value, 10) - parseInt(b.value, 10);
+        }
+        return a.Grouping.localeCompare(b.Grouping);
+    });
+    const categoryArrays: SortedMedals = {};
+    for (const obj of data) {
+        if (categoryArrays[obj.Grouping]) {
+            categoryArrays[obj.Grouping].push(obj);
+        } else {
+            categoryArrays[obj.Grouping] = [obj];
+        }
+    }
+    return categoryArrays;
+}
+
+function getLastMedals(userMedals: UserAchievement[] | undefined, medals: Medal[], num: number) {
+    if (!userMedals) return [];
+    const sortedArray = userMedals
+        .sort((a: UserAchievement, b: UserAchievement) => {
+            const dateA: Date = new Date(a.achieved_at);
+            const dateB: Date = new Date(b.achieved_at);
+            return dateA.getTime() - dateB.getTime();
+        }).reverse().slice(0, num)
+        .map((obj: UserAchievement) => obj.achievement_id)
+        .map((id: number) => medals.find((medal: any): boolean => parseInt(medal.MedalID) === id))
+        .filter((medal: Medal | undefined): medal is Medal => medal !== undefined);
+    return sortedArray;
+}
+
+function getAchievedMedalsCount(userMedals: UserAchievement[] | undefined, obj: SortedMedals): MedalCategories {
+    if (!userMedals) return {};
+    const achievedMedalsCount: MedalCategories = {};
+    Object.entries(obj)
+        .forEach(([category, medals]: [string, Medal[]]) => {
+            achievedMedalsCount[category] = 0;
+            userMedals.forEach((achievedMedal: UserAchievement): void => {
+                if (medals.find((medal: Medal): boolean => parseInt(medal.MedalID) === achievedMedal.achievement_id)) {
+                    achievedMedalsCount[category]++;
+                }
+            });
+        });
+    return achievedMedalsCount;
+}
+
+function getRarestMedal(userMedals: UserAchievement[] | undefined, medals: Medal[]) {
+    if (!userMedals) return null;
+    const data = userMedals.map((obj: UserAchievement) => obj.achievement_id)
+        .map((id: number) => medals.find((medal: Medal): boolean => String(medal.MedalID) === String(id)))
+        .reduce((rarest: Medal | null, medal: Medal | undefined): Medal => {
+            if (!rarest || (medal && medal.Rarity < rarest.Rarity)) {
+                return medal as Medal;
+            }
+            return rarest;
+        }, null)
+    return data;
 }

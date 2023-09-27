@@ -111,7 +111,8 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                         }
                     }).map((beatmap: Beatmap, index: number) =>
                         <DiffIcon setId={props.data.id} diffId={beatmap.id}
-                            key={index} diff={beatmap.difficulty_rating} size={24}
+                            key={index}
+                            diff={beatmap.difficulty_rating} size={24}
                             mode={beatmap.mode} name={beatmap.version} />
                     )}
                 </div>
