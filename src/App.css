@@ -1,0 +1,375 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+    /* outline: 1px solid #ffffff; */
+}
+
+main {
+    min-height: 100vh;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.tab-active {
+    color: #272935 !important;
+    font-weight: bold !important;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.darkenOnHover {
+    transition: .01s ease-in;
+}
+
+.tooltip::before,
+.tooltip::after {
+    transition: .01s ease-in !important;
+    z-index: 10000 !important;
+}
+
+.tooltip::before:hover,
+.tooltip::after:hover {
+    transition: .01s ease-in !important;
+    z-index: 10000 !important;
+}
+
+.darkenOnHover:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+    transform: scale(.95);
+    transition: .1s ease-in-out;
+}
+
+.simpleDarkenOnHover:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+}
+
+#tooltip {
+    z-index: 1000;
+}
+
+.darkestColor {
+    background-color: #151012 !important;
+}
+
+.backgroundColor {
+    background-color: #1c1618 !important;
+}
+
+.darkColor {
+    background-color: #2a2226 !important;
+}
+
+.midColor {
+    background-color: #382e32 !important;
+}
+
+.accentColor {
+    background-color: #ac396d !important;
+}
+
+.secondaryColor {
+    background-color: #3d2932 !important;
+}
+
+.titleColor {
+    background-color: #46393f !important;
+}
+
+.profileTitle {
+    background: #F8B500;
+    background: linear-gradient(to right, #F8B500 0%, #FCCD4D 0%, #FBDF93 100%, #FCEABB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.player {
+    position: sticky;
+    width: min-content;
+    height: 88px;
+    top: calc(100vh - 88px);
+    z-index: 1000;
+}
+
+.bg {
+    background-color: #2a2226;
+}
+
+.rhap_container {
+    background-color: #00000000 !important;
+    padding: 5px !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.rhap_controls-section {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.rhap_time {
+    color: #ffffff !important;
+}
+
+.rhap_volume-bar {
+    width: 50px !important;
+}
+
+.rhap_progress-section {
+    width: 300px !important;
+    margin-left: 8px;
+}
+
+.rhap_total-time,
+.rhap_progress-indicator,
+.rhap_additional-controls,
+.rhap_volume-indicator {
+    display: none !important;
+}
+
+.title-container {
+    overflow: hidden;
+    /* Hide overflowing content */
+}
+
+.titleBox {
+    height: 38px;
+}
+
+.scrolling {
+    overflow: hidden;
+    /* Hide overflowing text */
+}
+
+.scrolling-text {
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+    text-overflow: ellipsis;
+    /* Display ellipsis (...) when text overflows */
+    animation: scroll 10s linear infinite;
+    /* Apply scrolling animation */
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(100%);
+        /* Start from the right side of the container */
+    }
+
+    100% {
+        transform: translateX(-100%);
+        /* Scroll to the left side of the container */
+    }
+}
+
+.form-control:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.modal-content {
+    border: none !important;
+    background-color: #1c1618 !important;
+}
+
+.MuiSlider-rail {
+    opacity: 1 !important;
+    background-clip: border-box !important;
+    overflow: hidden !important;
+    height: 10px !important;
+}
+
+.srSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+            #4290fe,
+            #4cb6ff,
+            #4fffd4,
+            #cdf458,
+            #fc9964,
+            #f64d7a,
+            #ad4dc2,
+            #4d4bc4,
+            #12106a,
+            #000000,
+            #000000) !important;
+}
+
+.hpSlider .MuiSlider-rail,
+.arSlider .MuiSlider-rail,
+.csSlider .MuiSlider-rail,
+.odSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+            #61de2a,
+            #fff65f,
+            #ff291e) !important;
+}
+
+.bpmSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+            #4290fe,
+            #ff291e) !important;
+}
+
+.lengthSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+            #B589D6,
+            #9969C7,
+            #804FB3,
+            #6A359C,
+            #552586) !important;
+}
+
+.yearSlider .MuiSlider-rail {
+    background: linear-gradient(to right,
+            #C0C0C0,
+            #98ddfc) !important;
+}
+
+.MuiSlider-rail {
+    filter: brightness(50%) !important;
+}
+
+.MuiSlider-track {
+    height: 10px !important;
+}
+
+.MuiSlider-track {
+    border: 0 !important;
+    background-color: transparent !important;
+    backdrop-filter: brightness(200%);
+    outline: solid 2px #ffffff;
+}
+
+.MuiSlider-thumb {
+    transition: .1s ease-in-out !important;
+    background-color: #ffffff00 !important;
+}
+
+
+input::after,
+input::before {
+    display: none !important;
+}
+
+.MuiSlider-thumb,
+.MuiSlider-thumb:focus,
+.MuiSlider-thumb:hover,
+.Mui-focusVisible {
+    box-shadow: none !important;
+    width: 6px !important;
+    border-radius: 6px !important;
+}
+
+.MuiSlider-thumb:active,
+.MuiSlider-thumb:hover {
+    filter: brightness(50%) !important;
+    cursor: pointer !important;
+}
+
+.MuiSlider-thumb::before,
+.MuiSlider-thumb::after,
+.Mui-active::before,
+.Mui-active::after {
+    display: none !important;
+}
+
+.fakeDisabled {
+    filter: brightness(40%) !important;
+
+}
+
+.divsRow {
+    display: table;
+}
+
+.divsRow>div {
+    display: table-cell
+}
+
+.emoji-flag-sm {
+    height: 24px;
+}
+
+.emoji-flag {
+    height: 32px;
+}
+
+.emoji {
+    height: 16px;
+    display: inline-block;
+}
+
+.setCard {
+    box-shadow: 0 0 2px 0px #1e1e1e inset, 0 0 2px 0px #1e1e1e;
+}
+
+.spin {
+    animation-duration: 4s;
+    animation-name: spin;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+td:first-child,
+th:first-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+td:last-child,
+th:last-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
