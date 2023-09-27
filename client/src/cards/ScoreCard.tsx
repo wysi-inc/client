@@ -35,9 +35,7 @@ const ScoreCard = (props: ScoreProps) => {
         const acc = props.score.accuracy * 100;
         const m = props.score.mods?.map(m => m.acronym);
         try {
-            const r = await axios.post('/proxy', { 
-                url: `https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${getModsInt(m)}` 
-            });
+            const r = await axios.get(`https://catboy.best/api/meta/${props.score.beatmap_id}?misses=0&acc=${acc}&mods=${getModsInt(m)}`);
             const data = r.data;
             if (props.score.mods) {
                 if (props.score.mods?.length > 0) {

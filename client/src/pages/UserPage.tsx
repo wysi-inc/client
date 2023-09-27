@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 
 import moment from "moment";
 import Twemoji from 'react-twemoji';
@@ -12,7 +12,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { BiSolidTrophy, BiSolidUserDetail } from "react-icons/bi";
 import { HiCalculator, HiChevronDoubleUp, HiFire, HiGlobeAlt, HiOutlineStar } from "react-icons/hi";
 import { BsBarChartLine, BsFillPinAngleFill, BsHourglassSplit, BsStopwatch, BsSuitHeartFill } from "react-icons/bs";
-import {ImSpinner11} from "react-icons/im";
+import { ImSpinner11 } from "react-icons/im";
 
 import Badge from "../components/Badge";
 import ScoreCard from "../cards/ScoreCard";
@@ -81,14 +81,93 @@ interface UserPageProps {
     userMode: GameModeType;
 }
 
+const lineOptions: ChartOptions<'line'> = {
+    maintainAspectRatio: false,
+    responsive: true,
+    scales: {
+        y: {
+            reverse: false,
+            ticks: {
+                precision: 0
+            },
+        },
+        x: {
+            type: 'time' as AxisType,
+            time: {
+                displayFormats: {
+                    day: 'dd/mm/yy',
+                },
+            },
+        }
+    }
+};
+const lineOptionsReverse: ChartOptions<'line'> = {
+    maintainAspectRatio: false,
+    responsive: true,
+    scales: {
+        y: {
+            reverse: true,
+            ticks: {
+                precision: 0
+            }
+        },
+        x: {
+            type: 'time' as AxisType,
+            time: {
+                displayFormats: {
+                    day: 'dd/mm/yy',
+                },
+            },
+        }
+    },
+};
+const radarOptions: ChartOptions<'radar'> = {
+    scales: {
+        r: {
+            angleLines: {
+                display: false
+            },
+            min: 0,
+            max: 100,
+            animate: true,
+            beginAtZero: true,
+            ticks: {
+                display: false
+            }
+        }
+    }
+}
+const LINE_CHART_INITIAL: ChartData<'line'> = {
+    labels: [],
+    datasets: [{
+        label: '',
+        data: [],
+        fill: false,
+        borderColor: colors.ui.accent,
+        tension: 0.1
+    }]
+}
+const RADAR_CHART_INITIAL: ChartData<'radar'> = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Skills',
+            data: [],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
+    ],
+};
+
 const UserPage = (props: UserPageProps) => {
     const [userData, setUserData] = useState<User | null | undefined>(undefined);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
 
-    const [medals, setMedals] = useState<Medal[]>([]);
-    const [medalsByCategory, setMedalsByCategory] = useState<SortedMedals>({});
-    const [lastMedals, setLastMedals] = useState<Medal[]>([]);
-    const [rarestMedal, setRarestMedal] = useState<Medal | null>(null);
+    const medals: Medal[] = useMedals();
+    const medalsByCategory: SortedMedals = useMemo(() => getMedalsByCategory(medals), [medals]);
+    const lastMedals: Medal[] = useMemo(() => getLastMedals(userData?.user_achievements, medals, 15), [userData]);
+    const rarestMedal: Medal | null = useMemo(() => getRarestMedal(userData?.user_achievements, medals), [userData]);
 
     const [bestCalc, setBestCalc] = useState<Score[]>([]);
 
@@ -123,126 +202,11 @@ const UserPage = (props: UserPageProps) => {
         getRarestMedal(userData.user_achievements, medals);
     }, [userData, medals]);
 
-    //ONLY ONCE!!!!!
-    useEffect(() => {
-        getMedals();
-    }, [])
-
-    const globalHistoryDataInitial: ChartData<'line'> = {
-        labels: [],
-        datasets: [{
-            label: 'Rank',
-            data: [],
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1,
-        }],
-    }
-    const countryHistoryDataInitial: ChartData<'line'> = {
-        labels: [],
-        datasets: [{
-            label: 'Rank',
-            data: [],
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1,
-        }],
-    }
-    const playsHistoryDataInitial: ChartData<'line'> = {
-        labels: [],
-        datasets: [{
-            label: 'Play Count',
-            data: [],
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1
-        }]
-    }
-    const replaysHistoryDataInitial: ChartData<'line'> = {
-        labels: [],
-        datasets: [{
-            label: 'Replays Watched',
-            data: [],
-            fill: false,
-            borderColor: colors.ui.accent,
-            tension: 0.1
-        }]
-    }
-    const skillInitialData: ChartData<'radar'> = {
-        labels: [],
-        datasets: [
-            {
-                label: 'Skills',
-                data: [],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-            }
-        ],
-    };
-
-    const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(globalHistoryDataInitial);
-    const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(countryHistoryDataInitial);
-    const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(playsHistoryDataInitial);
-    const [replaysHistoryData, setReplaysHistoryData] = useState<ChartData<'line'>>(replaysHistoryDataInitial);
-    const [skillsData, setSkillsData] = useState<ChartData<'radar'>>(skillInitialData);
-
-    const lineOptions: ChartOptions<'line'> = {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-            y: {
-                reverse: false,
-                ticks: {
-                    precision: 0
-                },
-            },
-            x: {
-                type: 'time' as AxisType,
-                time: {
-                    displayFormats: {
-                        day: 'dd/mm/yy',
-                    },
-                },
-            }
-        }
-    };
-    const lineOptionsReverse: ChartOptions<'line'> = {
-        maintainAspectRatio: false,
-        responsive: true,
-        scales: {
-            y: {
-                reverse: true,
-                ticks: {
-                    precision: 0
-                }
-            },
-            x: {
-                type: 'time' as AxisType,
-                time: {
-                    displayFormats: {
-                        day: 'dd/mm/yy',
-                    },
-                },
-            }
-        },
-    };
-    const radarOptions: ChartOptions<'radar'> = {
-        scales: {
-            r: {
-                angleLines: {
-                    display: false
-                },
-                min: 0,
-                max: 100,
-                animate: true,
-                beginAtZero: true,
-                ticks: {
-                    display: false
-                }
-            }
-        }
-    }
+    const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
+    const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
+    const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
+    const [replaysHistoryData, setReplaysHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
+    const [skillsData, setSkillsData] = useState<ChartData<'radar'>>(RADAR_CHART_INITIAL);
 
     if (userData === undefined) {
         return (
@@ -391,7 +355,7 @@ const UserPage = (props: UserPageProps) => {
                                 <div className="text-lg">Play Time:</div>
                                 <div className="text-xl flex flex-row items-center gap-2 tooltip tooltip-left"
                                     data-tip={secondsToTime(userData.statistics.play_time)}>
-                                    <FaRegClock/>
+                                    <FaRegClock />
                                     <div>
                                         {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
                                     </div>
@@ -789,10 +753,10 @@ const UserPage = (props: UserPageProps) => {
         setGraveyardBeatmaps([]);
         setPendingBeatmaps([]);
         setNominatedBeatmaps([]);
-        setGlobalHistoryData(globalHistoryDataInitial);
-        setCountryHistoryData(countryHistoryDataInitial);
-        setPlaysHistoryData(playsHistoryDataInitial);
-        setReplaysHistoryData(replaysHistoryDataInitial);
+        setGlobalHistoryData(LINE_CHART_INITIAL);
+        setCountryHistoryData(LINE_CHART_INITIAL);
+        setPlaysHistoryData(LINE_CHART_INITIAL);
+        setReplaysHistoryData(LINE_CHART_INITIAL);
     }
 
     async function getUser() {
@@ -864,33 +828,31 @@ const UserPage = (props: UserPageProps) => {
             const res = await axios.post('/proxy', { url: `https://osu.ppy.sh/users/${id}/scores/best?mode=${m}&limit=100&offset=0` });
             const scores: Score[] = res.data;
             setBestCalc(scores);
-            const len = 100;
-            scores.length = len;
-            const r = await axios.post('/skill', {
-                scores: scores,
-                mode: m
-            })
-            console.log(r.data);
-            setSkillsData(
-                {
-                    labels: ['Agility', 'Precision', 'Reaction', 'Stamina', 'Tenacity', 'Timing'],
-                    datasets: [
-                        {
-                            label: 'Skills',
-                            data: [
-                                r.data.agility / len * 10,
-                                r.data.precision / len * 10,
-                                r.data.reaction / len * 10 / 1.5,
-                                r.data.stamina / len * 10,
-                                r.data.tenacity / len * 10,
-                                r.data.timing / len * 10 / 1.5],
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1,
-                        }
-                    ],
-                })
-            console.log('done')
+            // const len = 100;
+            // scores.length = len;
+            // const r = await axios.post('/skill', {
+            //     scores: scores,
+            //     mode: m
+            // })
+            // console.log(r.data);
+            // setSkillsData({
+            //     labels: ['Agility', 'Precision', 'Reaction', 'Stamina', 'Tenacity', 'Timing'],
+            //     datasets: [
+            //         {
+            //             label: 'Skills',
+            //             data: [
+            //                 r.data.agility / len * 10,
+            //                 r.data.precision / len * 10,
+            //                 r.data.reaction / len * 10 / 1.5,
+            //                 r.data.stamina / len * 10,
+            //                 r.data.tenacity / len * 10,
+            //                 r.data.timing / len * 10 / 1.5],
+            //             backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            //             borderColor: 'rgba(255, 99, 132, 1)',
+            //             borderWidth: 1,
+            //         }
+            //     ],
+            // })
         } catch (err) {
             console.error(err);
         }
@@ -911,20 +873,6 @@ const UserPage = (props: UserPageProps) => {
         }
     }
 
-    async function getMedals() {
-        try {
-            const res = await axios.post('/getMedals')
-            const data: Medal[] = res.data;
-            data.sort((a: any, b: any) => {
-                return parseInt(a.MedalID) - parseInt(b.MedalID);
-            });
-            setMedals(data);
-            getMedalsByCategory(data);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     function getMedalsByCategory(data: Medal[]) {
         data.sort((a: any, b: any) => {
             if (a.Grouping === b.Grouping) {
@@ -940,10 +888,11 @@ const UserPage = (props: UserPageProps) => {
                 categoryArrays[obj.Grouping] = [obj];
             }
         }
-        setMedalsByCategory(categoryArrays);
+        return categoryArrays;
     }
 
-    function getLastMedals(userMedals: UserAchievement[], medals: Medal[], num: number) {
+    function getLastMedals(userMedals: UserAchievement[] | undefined, medals: Medal[], num: number) {
+        if (!userMedals) return [];
         const sortedArray = userMedals
             .sort((a: UserAchievement, b: UserAchievement) => {
                 const dateA: Date = new Date(a.achieved_at);
@@ -953,7 +902,7 @@ const UserPage = (props: UserPageProps) => {
             .map((obj: UserAchievement) => obj.achievement_id)
             .map((id: number) => medals.find((medal: any): boolean => parseInt(medal.MedalID) === id))
             .filter((medal: Medal | undefined): medal is Medal => medal !== undefined);
-        setLastMedals(sortedArray);
+        return sortedArray;
     }
 
     function getAchievedMedalsCount(): MedalCategories {
@@ -970,7 +919,8 @@ const UserPage = (props: UserPageProps) => {
         return achievedMedalsCount;
     }
 
-    function getRarestMedal(userMedals: UserAchievement[], medals: Medal[]) {
+    function getRarestMedal(userMedals: UserAchievement[] | undefined, medals: Medal[]) {
+        if (!userMedals) return null;
         const data = userMedals.map((obj: UserAchievement) => obj.achievement_id)
             .map((id: number) => medals.find((medal: Medal): boolean => String(medal.MedalID) === String(id)))
             .reduce((rarest: Medal | null, medal: Medal | undefined): Medal => {
@@ -979,7 +929,7 @@ const UserPage = (props: UserPageProps) => {
                 }
                 return rarest;
             }, null)
-        setRarestMedal(data);
+        return data;
     }
 
     function getGlobalData(user: User) {
@@ -1040,3 +990,19 @@ const UserPage = (props: UserPageProps) => {
 
 }
 export default UserPage;
+
+function useMedals() {
+    const [m, setM] = useState<Medal[]>([]);
+    getM();
+    return m;
+    async function getM() {
+        try {
+            const r = await axios.post('/getMedals');
+            const data: Medal[] = r.data;
+            data.sort((a: any, b: any) => parseInt(a.MedalID) - parseInt(b.MedalID));
+            setM(data);
+        } catch (err) {
+            console.error(err)
+        }
+    }
+}

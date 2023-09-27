@@ -363,3 +363,13 @@ input::before {
         transform: rotate(360deg);
     }
 }
+
+td:first-child,
+th:first-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+td:last-child,
+th:last-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}

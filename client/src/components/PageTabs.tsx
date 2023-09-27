@@ -31,7 +31,6 @@ const PageTabs = (props: PageTabsProps) => {
                 {props.current < props.max - 1 && <button className="join-item btn btn-primary text-base-100 font-bold" onClick={() => page && props.setNewPage(props.current + 2)}>{props.current + 2}</button>}
             </div>
             {props.current < props.max - 2 && <button className="btn btn-primary text-base-100 font-bold" onClick={() => page && props.setNewPage(props.max)}>{props.max}</button>}
-
         </div>
     )
 }

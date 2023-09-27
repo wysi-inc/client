@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { playerStore, PlayerStoreInterface } from "../resources/store";
 import DiffIcon from "../components/DiffIcon";
@@ -16,8 +16,6 @@ interface BeatmapsetCardProps {
 
 const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
-    const [showArrow, setShowArrow] = useState<boolean>(false)
-    const shortLimit = 12;
 
     return (
         <div className="flex grow bg-accent-900"
@@ -81,7 +79,8 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             <div>{props.data.favourite_count.toLocaleString()}</div>
                         </div>
                         <div className="tooltip" data-tip="download">
-                            <a className="btn btn-ghost btn-circle btn-sm" href={`https://catboy.best/d/${props.data.id}`}
+                            <a className="btn btn-ghost btn-circle btn-sm"
+                                href={`https://catboy.best/d/${props.data.id}`}
                                 style={{ background: "none" }}>
                                 <FaDownload />
                             </a>
@@ -110,19 +109,11 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                         } else {
                             return a.mode_int - b.mode_int;
                         }
-                    }).map((beatmap: Beatmap, index: number) => {
-                        if (index < shortLimit) {
-                            return <DiffIcon setId={props.data.id} diffId={beatmap.id}
-                                key={index} diff={beatmap.difficulty_rating} size={24}
-                                mode={beatmap.mode} name={beatmap.version} />
-                        } else if (!showArrow) {
-                            setShowArrow(true);
-                        }
-                    })}
-                    {showArrow &&
-                        <div className="tooltip" data-tip={`${props.data.beatmaps.length} difficulties`}>
-                            +
-                        </div>}
+                    }).map((beatmap: Beatmap, index: number) =>
+                        <DiffIcon setId={props.data.id} diffId={beatmap.id}
+                            key={index} diff={beatmap.difficulty_rating} size={24}
+                            mode={beatmap.mode} name={beatmap.version} />
+                    )}
                 </div>
             </div>
         </div>

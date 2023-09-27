@@ -1,12 +1,9 @@
 import React from 'react';
 
-import Twemoji from 'react-twemoji';
-import CountUp from "react-countup";
 import { Link } from 'react-router-dom';
-import ReactCountryFlag from 'react-country-flag';
 
 import OnlineDot from '../components/OnlineDot';
-import { secondsToTime } from '../resources/functions';
+import { addDefaultSrc } from '../resources/functions';
 import { UserRanks } from '../resources/interfaces/user';
 import { GameModeType } from '../resources/types';
 import CountryFlag from '../components/CountryFlag';
@@ -21,41 +18,27 @@ interface UserCardProps {
 
 const UserCard = (props: UserCardProps) => {
     return (
-        <Link to={`/users/${props.user.user.id}/${props.mode}`} className="bg-accent-800 rounded-xl grow drop-shadow-lg items-center p-3 gap-3 grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3">
-            <div className="col-span-2 md:col-span-1 lg:col-span-1 flex flex-row gap-3 items-center">
-                <div className="font-bold w-13">#{props.index}</div>
+        <tr className="bg-accent-800">
+            <th>#{props.index}</th>
+            <td><div className="flex items-center justify-center">
                 <CountryFlag size={24} name={props.user.user.country.name} code={props.user.user.country.code} />
-                <img src={props.user.user.avatar_url} alt="avatar" className="h-7 w-7 rounded-md" />
-                <div>{props.user.user.username}</div>
-            </div>
-            <div className="col-span-1 md:col-span-1 lg:col-span-2 flex flex-row gap-3 items-center">
-                <div className={`grow grid ${props.grid} items-center text-accent-300`}>
-                    <div className={`${props.category === 'performance' && 'text-white'}`}><CountUp end={props.user.pp} duration={1} />pp</div>
-                    <div className="hidden md:block">
-                        <CountUp end={props.user.hit_accuracy} duration={1} decimals={2} />%
-                    </div>
-                    <div className="hidden md:block">
-                        <div data-tooltip-id="tooltip" data-tooltip-content={secondsToTime(props.user.play_time)}>
-                            <CountUp end={Math.round((props.user.play_time / 60 / 60))} duration={1} />h
-                        </div>
-                    </div>
-                    <div className="hidden md:block">
-                        <CountUp end={props.user.play_count} duration={1} />
-                    </div>
-                    <div className={`hidden lg:block col-span-2 ${props.category === 'score' && 'text-white'}`}>
-                        <CountUp end={props.user.ranked_score} duration={1} />
-                    </div>
-                    <div className="hidden xl:grid grid-cols-5 gap-4 col-span-3">
-                        <div><CountUp end={props.user.grade_counts.ssh} duration={1} /></div>
-                        <div><CountUp end={props.user.grade_counts.ss} duration={1} /></div>
-                        <div><CountUp end={props.user.grade_counts.sh} duration={1} /></div>
-                        <div><CountUp end={props.user.grade_counts.s} duration={1} /></div>
-                        <div><CountUp end={props.user.grade_counts.a} duration={1} /></div>
-                    </div>
-                </div>
-                <div className="flex justify-end"><OnlineDot isOnline={props.user.user.is_online} size={24} /></div>
-            </div>
-        </Link>
+            </div></td>
+            <td><Link to={`/users/${props.user.user.id}/${props.mode}`} className="flex flex-row gap-2 items-center">
+                <img className="rounded-md" src={props.user.user.avatar_url} style={{ height: 24, width: 24 }} onError={addDefaultSrc} alt="pfp" />
+                {props.user.user.username}
+            </Link></td>
+            <td>{Math.round(props.user.pp)}pp</td>
+            <td>{props.user.hit_accuracy.toFixed(2)}%</td>
+            <td>{Math.round((props.user.play_time / 60 / 60))}h</td>
+            <td>{props.user.play_count}</td>
+            <td>{props.user.ranked_score}</td>
+            <td><div className="grid grid-cols-5 gap-4">
+                <div>{props.user.grade_counts.ss + props.user.grade_counts.ssh}</div>
+                <div>{props.user.grade_counts.s + props.user.grade_counts.sh}</div>
+                <div>{props.user.grade_counts.a}</div>
+            </div></td>
+            <td><OnlineDot isOnline={props.user.user.is_online} size={24} /></td>
+        </tr>
     )
 }
 

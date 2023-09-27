@@ -275,23 +275,23 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
         </div>
       </div>
       <div className="p-3 flex flex-col gap-2">
-        <table className="">
+        <table className="border-separate border-spacing-y-1">
           <thead>
             <tr>
               <th className="text-start"></th>
               <th className="text-start"></th>
               <th className="text-start"></th>
-              <th className="text-start">Accuracy</th>
-              <th className="text-start">Combo</th>
               <th className="text-start">Score</th>
               <th className="text-start">PP</th>
+              <th className="text-start">Combo</th>
+              <th className="text-start">Acc</th>
               <th className="text-start">Hits</th>
               <th className="text-start">Grade</th>
               <th className="text-start">Mods</th>
               <th className="text-start">Date</th>
             </tr>
           </thead>
-          <tbody className="mt-3 rounded-lg bg-accent-800">
+          <tbody className="mt-3">
             {scores.map((s: Score, i: number) =>
               <BeatmapsetScoreCard key={s.id} score={s} index={i + 1} />
             )}

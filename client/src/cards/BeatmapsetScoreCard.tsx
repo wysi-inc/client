@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { colors } from "../resources/store";
 import ModIcon from "../components/ModIcon";
 import moment from "moment/moment";
-import { HiDocumentArrowDown, HiMiniBarsArrowDown, HiMiniMusicalNote, HiMiniStar } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import CountryFlag from "../components/CountryFlag";
 import { ModsEntity, Score } from "../resources/interfaces/score";
+import { addDefaultSrc } from "../resources/functions";
 
 interface ScoreProps {
     index: number;
@@ -14,15 +14,24 @@ interface ScoreProps {
 
 const BeatmapsetScoreCard = (props: ScoreProps) => {
     return (
-        <tr className="pb-3">
-            <th>#{props.index}</th>
-            <td><CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} /></td>
-            <td><Link to={`/users/${props.score.user.id}`}>{props.score.user.username}</Link></td>
-            <td>{(props.score.accuracy * 100).toFixed(2)}%</td>
-            <td>{props.score.max_combo}x</td>
+        <tr className="bg-accent-800">
+            <th className="text-end">#{props.index}</th>
+            <td>
+                <div className="flex items-center justify-center">
+                    <CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} />
+                </div>
+            </td>
+            <td>
+                <Link to={`/users/${props.score.user.id}`} className="flex flex-row gap-2 items-center">
+                    <img className="rounded-md" src={props.score.user.avatar_url} style={{ height: 24, width: 24 }} onError={addDefaultSrc} alt="pfp" />
+                    {props.score.user.username}
+                </Link>
+            </td>
             <td>{props.score.total_score.toLocaleString()}</td>
             <td>{Math.round(props.score.pp).toLocaleString()}pp</td>
-            <td><div className="col-span-2 flex flex-row gap-4">
+            <td>{props.score.max_combo}x</td>
+            <td>{(props.score.accuracy * 100).toFixed(2)}%</td>
+            <td><div className="flex flex-row gap-4">
                 {props.score.statistics?.perfect &&
                     <div style={{ color: colors.judgements.x320 }}>
                         {props.score.statistics.perfect}
@@ -71,8 +80,8 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
                 )}
             </div></td>
             <td><div className="tooltip col-span-2"
-                data-tip={moment(props.score.ended_at).fromNow()}>
-                {moment(props.score.ended_at).format('DD MMM YYYY')}
+                data-tip={moment(props.score.ended_at).format('DD/MM/YYYY')}>
+                {moment(props.score.ended_at).fromNow()}
             </div></td>
         </tr>
     );

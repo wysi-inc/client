@@ -39,9 +39,6 @@ const BeatmapsPage = () => {
     const { urlSetId } = useParams();
     const { urlDiffId } = useParams();
 
-    const [results, setResults] = useState<BeatmapSet[]>([])
-    const [resultsNum, setResultsNum] = useState<number>(0)
-
     const bpmLimit = 300;
     const srLimit = 10;
     const lengthLimit = 600;
@@ -73,10 +70,11 @@ const BeatmapsPage = () => {
 
     const [query, setQuery] = useState(INITIAL_QUERY);
 
+    const [results, setResults] = useState<BeatmapSet[]>([])
+    const [resultsNum, setResultsNum] = useState<number>(0)
+
     const [copied, setCopied] = useState<boolean>(false);
     const [cleared, setCleared] = useState<boolean>(false);
-
-    const widthRef = useRef<HTMLDivElement | null>(null);
 
     const debouncedValue = useDebounce(query, 500);
 
@@ -263,7 +261,7 @@ const BeatmapsPage = () => {
     if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} diffId={parseInt(urlDiffId ? urlDiffId : "")} />);
 
     return (
-        <div className="p-4" ref={widthRef}>
+        <div className="p-4">
             <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900 drop-shadow-lg">
                 <div className="bg-accent-950 rounded-lg p-4 text-xl flex flex-row justify-between items-center">
                     <div>Beatmap Search:</div>
@@ -276,7 +274,6 @@ const BeatmapsPage = () => {
                                     clearSearch();
                                 }}>
                                 {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
-
                             </button>
                         </div>
                         <div className="tooltip" data-tip="Copy">
