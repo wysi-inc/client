@@ -14,12 +14,14 @@ import SongPlayer from "./c_web/w_comp/SongPlayer";
 import './App.css';
 import './assets/ibm-plex.css';
 import ScrollToTop from './resources/ScrollToTop';
+import AlertManager from './c_web/w_comp/AlertManager';
 
 function App() {
     return (
         <BrowserRouter>
             <ScrollToTop />
             <Navbar />
+            <AlertManager/>
             <div className="bg-accent-950">
                 <main style={{ maxWidth: 1600 }} className="mx-auto bg-accent-600">
                     <Routes>

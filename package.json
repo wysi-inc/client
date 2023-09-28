@@ -17,7 +17,6 @@
     "@types/react-query": "^1.2.9",
     "@uidotdev/usehooks": "^2.1.1",
     "axios": "^1.4.0",
-    "bootstrap-icons": "^1.10.5",
     "chart.js": "^4.4.0",
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-zoom": "^2.0.1",

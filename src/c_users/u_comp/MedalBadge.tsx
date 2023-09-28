@@ -7,6 +7,7 @@ interface MedalProps {
 }
 
 const MedalBadge = (props: MedalProps) => {
+    
     const size = 48;
     return (
         <div className="tooltip" data-tip={props.thisMedal.Name}>

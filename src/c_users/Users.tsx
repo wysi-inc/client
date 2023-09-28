@@ -9,8 +9,11 @@ import { GameModeType } from "../resources/types";
 import PageTabs from "../c_web/w_comp/PageTabs";
 import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
+import { alertManager, alertManagerInterface } from "../resources/store";
 
 const Users = () => {
+    const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
+
     const { urlUser } = useParams();
     const { urlMode } = useParams();
 
@@ -44,33 +47,7 @@ const Users = () => {
 
     if (userId && userMode) return (<UserPage userId={userId} userMode={userMode} />);
 
-    if (!users) return (
-        <div className="alert alert-error">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 stroke-current shrink-0" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>Error! Failed to fetch users</span>
-        </div>
-    );
-
-    async function getUsers(c: 'score' | 'performance', m: GameModeType) {
-        try {
-            setUsers([]);
-            setCategory(c)
-            setMode(m);
-            const res = await axios.post('/users',
-                {
-                    mode: m,
-                    type: c,
-                    page: page,
-                }
-            );
-            const data: UserRanks[] = res.data.ranking;
-            setUsers(data);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    const cardGrid = "grid-cols-1 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-9";
+    if (!users) return (<></>);
 
     return (
         <div className="flex flex-col gap-3 p-3">
@@ -125,7 +102,7 @@ const Users = () => {
                     <tbody className="mt-3">
                         {users.length > 0 ?
                             users.map((user, index) =>
-                                <UserCard mode={mode} grid={cardGrid} user={user} category={category} index={index + (50 * (actualPage - 1) + 1)} key={index} />
+                                <UserCard mode={mode} user={user} category={category} index={index + (50 * (actualPage - 1) + 1)} key={index} />
                             ) :
                             <tr className="loading loading-dots loading-md"></tr>}
                     </tbody>
@@ -134,5 +111,25 @@ const Users = () => {
             {users.length > 0 && <PageTabs setNewPage={setPage} current={page} min={1} max={200} />}
         </div>
     );
+
+    async function getUsers(c: 'score' | 'performance', m: GameModeType) {
+        try {
+            setUsers([]);
+            setCategory(c)
+            setMode(m);
+            const res = await axios.post('/users',
+                {
+                    mode: m,
+                    type: c,
+                    page: page,
+                }
+            );
+            const data: UserRanks[] = res.data.ranking;
+            setUsers(data);
+        } catch (err) {
+            console.error(err);
+            addAlert('error', 'Error: Failed to fetch users');
+        }
+    }
 }
 export default Users;

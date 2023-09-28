@@ -28,7 +28,6 @@ const ScoreCard = (props: ScoreProps) => {
 
     useEffect(() => {
         getPPChoke();
-        console.log(props.score)
     }, []);
 
     async function getPPChoke() {

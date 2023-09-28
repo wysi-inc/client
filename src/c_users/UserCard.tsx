@@ -9,7 +9,6 @@ import CountryFlag from './u_comp/CountryFlag';
 interface UserCardProps {
     user: UserRanks;
     index: number;
-    grid: string;
     category: string;
     mode: GameModeType;
 }
@@ -25,17 +24,17 @@ const UserCard = (props: UserCardProps) => {
                 <img className="rounded-md" src={props.user.user.avatar_url} style={{ height: 24, width: 24 }} onError={addDefaultSrc} alt="pfp" />
                 {props.user.user.username}
             </Link></td>
-            <td>{Math.round(props.user.pp)}pp</td>
+            <td>{!props.user.pp ? 0 : Math.round(props.user.pp).toLocaleString()}pp</td>
             <td>{props.user.hit_accuracy.toFixed(2)}%</td>
             <td>{Math.round((props.user.play_time / 60 / 60))}h</td>
-            <td>{props.user.play_count}</td>
-            <td>{props.user.ranked_score}</td>
+            <td>{props.user.play_count.toLocaleString()}</td>
+            <td>{props.user.ranked_score.toLocaleString()}</td>
             <td><div className="grid grid-cols-5 gap-4">
-                <div>{props.user.grade_counts.ssh}</div>
-                <div>{props.user.grade_counts.ss}</div>
-                <div>{props.user.grade_counts.sh}</div>
-                <div>{props.user.grade_counts.s}</div>
-                <div>{props.user.grade_counts.a}</div>
+                <div>{props.user.grade_counts.ssh.toLocaleString()}</div>
+                <div>{props.user.grade_counts.ss.toLocaleString()}</div>
+                <div>{props.user.grade_counts.sh.toLocaleString()}</div>
+                <div>{props.user.grade_counts.s.toLocaleString()}</div>
+                <div>{props.user.grade_counts.a.toLocaleString()}</div>
             </div></td>
             <td><OnlineDot isOnline={props.user.user.is_online} size={24} /></td>
         </tr>

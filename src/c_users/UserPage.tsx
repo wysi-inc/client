@@ -1,42 +1,37 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import axios from '../resources/axios-config';
 import moment from "moment";
-import Twemoji from 'react-twemoji';
-import { Line, Radar } from "react-chartjs-2";
-import zoomPlugin from 'chartjs-plugin-zoom';
-import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 
-import { FaSkull, FaRegClock, FaUsers, FaTwitter, FaDiscord, FaMapMarkerAlt, FaHeart, FaChartLine, FaMedal, FaEye, FaGlobe, FaGlobeAfrica, FaRegBuilding, FaChartPie, FaListUl } from "react-icons/fa";
-import Spinner from 'react-bootstrap/Spinner';
-import { BiSolidTrophy, BiSolidUserDetail } from "react-icons/bi";
-import { HiCalculator, HiChevronDoubleUp, HiFire, HiOutlineStar } from "react-icons/hi";
-import { BsBarChartLine, BsFillPinAngleFill, BsHourglassSplit, BsStopwatch, BsSuitHeartFill } from "react-icons/bs";
-import { ImSpinner11 } from "react-icons/im";
+import { Line, Radar } from "react-chartjs-2";
+import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
+import 'chartjs-adapter-date-fns';
+import InfiniteScroll from 'react-infinite-scroller';
+import Twemoji from 'react-twemoji';
+
+import { FaSkull, FaRegClock, FaChartBar, FaTrophy, FaMapPin, FaStopwatch, FaUserFriends, FaCalculator, FaHourglassHalf, FaStar, FaAngleDoubleUp, FaUsers, FaTwitter, FaDiscord, FaUndo, FaMapMarkerAlt, FaHeart, FaChartLine, FaMedal, FaEye, FaGlobe, FaGlobeAfrica, FaRegBuilding, FaChartPie, FaListUl, FaFireAlt, FaChevronUp } from "react-icons/fa";
 
 import Badge from "./u_comp/Badge";
-import ScoreCard from "../c_scores/ScoreCard";
-import { colors } from "../resources/store";
-import axios from '../resources/axios-config';
 import GroupBadge from "./u_comp/GroupBadge";
 import BarPieChart from "./u_comp/BarPieChart";
-import BeatmapsetCard from "../c_beatmaps/BeatmapsetCard";
 import CountryShape from "./u_comp/CountryShape";
 import ModeSelector from "./u_comp/ModeSelector";
 import SupporterIcon from "./u_comp/SupporterIcon";
+import MedalBadge from "./u_comp/MedalBadge";
+import CountryFlag from "./u_comp/CountryFlag";
+import ScoreCard from "../c_scores/ScoreCard";
+import BeatmapsetCard from "../c_beatmaps/BeatmapsetCard";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
-import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
+import { GameModeType } from "../resources/types";
 import TopScoresPanel, { BarPieChartData } from "./u_comp/TopScoresPanel";
 
-import 'chartjs-adapter-date-fns';
 import { Score } from "../resources/interfaces/score";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { MonthlyData, User, UserAchievement, UserBadge, UserGroup } from "../resources/interfaces/user";
 import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/medals";
-import MedalBadge from "./u_comp/MedalBadge";
 
-import InfiniteScroll from 'react-infinite-scroller';
-import CountryFlag from "./u_comp/CountryFlag";
+import { alertManager, alertManagerInterface, colors } from "../resources/store";
+import { BeatmapsObj, ScoresObj, beatmapCategoryType, beatmapListItem, scoreCategoryType, scoreListItem, tabInterface } from "./u_interfaces";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -50,36 +45,25 @@ Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.tooltip.displayColors = false;
 Chart.defaults.borderColor = colors.ui.font + '22';
 
-type AxisType = "time" | undefined;
-type cardType = 'scores' | 'beatmapsets';
-type scoreCategoryType = 'pinned' | 'best' | 'firsts' | 'recent';
-type beatmapCategoryType = 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
-
-export interface tabGroup {
-    setTabs: Dispatch<SetStateAction<number>>,
-    items: tabInterface[],
-}
-
-export interface tabInterface {
-    num: number,
-    title: string,
-    icon: JSX.Element,
-    count: number,
-}
-
-export interface dataInterface {
-    num: number,
-    thing: ScoreType | BeatmapType,
-    group: 'scores' | 'beatmapsets',
-    tab: number,
-    maps: Score[] | BeatmapSet[],
-    count: number,
-    setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
-}
-
 interface UserPageProps {
     userId: string;
     userMode: GameModeType;
+}
+
+const BEATMAPS_INITIAL: BeatmapsObj = {
+    favourite: [],
+    ranked: [],
+    guest: [],
+    loved: [],
+    nominated: [],
+    pending: [],
+    graveyard: [],
+}
+const SCORES_INITIAL: ScoresObj = {
+    pinned: [],
+    best: [],
+    firsts: [],
+    recent: [],
 }
 
 const lineOptions: ChartOptions<'line'> = {
@@ -162,6 +146,8 @@ const RADAR_CHART_INITIAL: ChartData<'radar'> = {
 };
 
 const UserPage = (props: UserPageProps) => {
+    const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
+
     const [userData, setUserData] = useState<User | null | undefined>(undefined);
     const [gameMode, setGameMode] = useState<GameModeType>('osu');
 
@@ -173,18 +159,8 @@ const UserPage = (props: UserPageProps) => {
 
     const [bestCalc, setBestCalc] = useState<Score[]>([]);
 
-    const [bestScores, setBestScores] = useState<Score[]>([])
-    const [recentScores, setRecentScores] = useState<Score[]>([])
-    const [pinnedScores, setPinnedScores] = useState<Score[]>([])
-    const [firstsScores, setFirstsScores] = useState<Score[]>([])
-
-    const [favouriteBeatmaps, setFavouriteBeatmaps] = useState<BeatmapSet[]>([]);
-    const [graveyardBeatmaps, setGraveyardBeatmaps] = useState<BeatmapSet[]>([]);
-    const [guestBeatmaps, setGuestBeatmaps] = useState<BeatmapSet[]>([]);
-    const [lovedBeatmaps, setLovedBeatmaps] = useState<BeatmapSet[]>([]);
-    const [nominatedBeatmaps, setNominatedBeatmaps] = useState<BeatmapSet[]>([]);
-    const [pendingBeatmaps, setPendingBeatmaps] = useState<BeatmapSet[]>([]);
-    const [rankedBeatmaps, setRankedBeatmaps] = useState<BeatmapSet[]>([]);
+    const [scores, setScores] = useState<ScoresObj>(SCORES_INITIAL);
+    const [beatmaps, setBeatmaps] = useState<BeatmapsObj>(BEATMAPS_INITIAL);
 
     const [historyTabIndex, setHistoryTabIndex] = useState<number>(1);
     const [scoresTabIndex, setScoresTabIndex] = useState<number>(0);
@@ -212,22 +188,19 @@ const UserPage = (props: UserPageProps) => {
 
     if (userData === undefined) {
         return (
-            <Spinner animation="border" role="status" className="mx-auto my-3">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>
+            <span className="loading loading-dots loading-md"></span>
         )
     }
     if (userData === null) {
         return (
-            <div>User not found</div>
+            <></>
         )
     }
     if (userData.is_bot) {
         return (
-            <div>User is a bot, bots are not supported yet</div>
+            <></>
         )
     }
-
 
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: userData.statistics.grade_counts.ssh },
@@ -237,29 +210,37 @@ const UserPage = (props: UserPageProps) => {
         { label: 'A', color: colors.ranks.a, value: userData.statistics.grade_counts.a },
     ];
 
-    const scoresTabs: tabGroup =
-    {
-        setTabs: setScoresTabIndex,
-        items: [
-            { num: 1, title: 'Pinned', icon: <BsFillPinAngleFill />, count: userData.scores_pinned_count },
-            { num: 2, title: 'Best', icon: <BsBarChartLine />, count: userData.scores_best_count },
-            { num: 3, title: 'Firsts', icon: <HiOutlineStar />, count: userData.scores_first_count },
-            { num: 4, title: 'Recent', icon: <BsStopwatch />, count: userData.scores_recent_count },
-        ]
-    }
+    const scoresTabs: tabInterface[] = [
+        { num: 1, title: 'Pinned', icon: <FaMapPin />, count: userData.scores_pinned_count },
+        { num: 2, title: 'Best', icon: <FaChartBar />, count: userData.scores_best_count },
+        { num: 3, title: 'Firsts', icon: <FaStar />, count: userData.scores_first_count },
+        { num: 4, title: 'Recent', icon: <FaStopwatch />, count: userData.scores_recent_count },
+    ]
+    const scoresList: scoreListItem[] = [
+        { id: 1, scores: scores.pinned, len: userData.scores_pinned_count, type: 'pinned' },
+        { id: 2, scores: scores.best, len: userData.scores_best_count, type: 'best' },
+        { id: 3, scores: scores.firsts, len: userData.scores_first_count, type: 'firsts' },
+        { id: 4, scores: scores.recent, len: userData.scores_recent_count, type: 'recent' },
+    ]
+    const beatmapsTabs: tabInterface[] = [
+        { num: 1, title: 'Favourites', icon: <FaStar />, count: userData.favourite_beatmapset_count, },
+        { num: 2, title: 'Ranked', icon: <FaChevronUp />, count: userData.ranked_and_approved_beatmapset_count },
+        { num: 3, title: 'Guest', icon: <FaUserFriends />, count: userData.guest_beatmapset_count },
+        { num: 4, title: 'Loved', icon: <FaHeart />, count: userData.loved_beatmapset_count },
+        { num: 5, title: 'Nominated', icon: <FaTrophy />, count: userData.nominated_beatmapset_count },
+        { num: 6, title: 'Pending', icon: <FaHourglassHalf />, count: userData.pending_beatmapset_count },
+        { num: 7, title: 'Graveyard', icon: <FaSkull />, count: userData.graveyard_beatmapset_count },
+    ]
 
-    const beatmapsTabs: tabGroup = {
-        setTabs: setBeatmapsTabIndex,
-        items: [
-            { num: 1, title: 'Favourites', icon: <HiOutlineStar />, count: userData.favourite_beatmapset_count, },
-            { num: 2, title: 'Ranked', icon: <HiChevronDoubleUp />, count: userData.ranked_and_approved_beatmapset_count },
-            { num: 3, title: 'Guest', icon: <BiSolidUserDetail />, count: userData.guest_beatmapset_count },
-            { num: 4, title: 'Loved', icon: <BsSuitHeartFill />, count: userData.loved_beatmapset_count },
-            { num: 5, title: 'Nominated', icon: <BiSolidTrophy />, count: userData.nominated_beatmapset_count },
-            { num: 6, title: 'Pending', icon: <BsHourglassSplit />, count: userData.pending_beatmapset_count },
-            { num: 7, title: 'Graveyard', icon: <FaSkull />, count: userData.graveyard_beatmapset_count },
-        ]
-    }
+    const beatmapsList: beatmapListItem[] = [
+        { id: 1, beatmaps: beatmaps.favourite, len: userData.favourite_beatmapset_count, type: 'favourite' },
+        { id: 2, beatmaps: beatmaps.ranked, len: userData.ranked_beatmapset_count, type: 'ranked' },
+        { id: 3, beatmaps: beatmaps.guest, len: userData.guest_beatmapset_count, type: 'guest' },
+        { id: 4, beatmaps: beatmaps.loved, len: userData.loved_beatmapset_count, type: 'loved' },
+        { id: 5, beatmaps: beatmaps.nominated, len: userData.nominated_beatmapset_count, type: 'nominated' },
+        { id: 6, beatmaps: beatmaps.pending, len: userData.pending_beatmapset_count, type: 'pending' },
+        { id: 7, beatmaps: beatmaps.graveyard, len: userData.graveyard_beatmapset_count, type: 'graveyard' },
+    ]
 
     return (
         <>
@@ -267,7 +248,7 @@ const UserPage = (props: UserPageProps) => {
                 <div style={{ backdropFilter: "blur(2px)" }}
                     className="flex flex-col gap-8 p-8 rounded-none card-body">
                     <div className="grid flex-wrap grid-cols-7 gap-4 xl:gap-8">
-                        <div className="flex flex-col col-span-9 gap-3 justify-start items-center md:col-span-2 xl:col-span-1">
+                        <div className="flex flex-col col-span-9 gap-3 justify-between items-center md:col-span-2 xl:col-span-1">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
                                 alt='pfp' className="mb-2 rounded-lg aspect-square"
@@ -277,6 +258,7 @@ const UserPage = (props: UserPageProps) => {
                                 <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
+                            <ModeSelector mode={gameMode} userId={userData.id} />
                             <div className="text-lg text-center tooltip tooltip-bottom"
                                 data-tip={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
@@ -329,33 +311,32 @@ const UserPage = (props: UserPageProps) => {
                                     <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
                                 </div>
                             </div>
-                            <BarPieChart data={scoresRanksLabels} width={250} />
                         </div>
-                        <div className="col-span-7 md:col-span-2">
-                            <Radar data={skillsData} options={radarOptions} />
+                        <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2">
+                            <div><Radar data={skillsData} options={radarOptions} /></div>
+                            <div><BarPieChart data={scoresRanksLabels} width={250} /></div>
                         </div>
-                        <div className="flex flex-col col-span-7 col-start-4 gap-3 items-center md:col-span-3 xl:col-span-2 xl:col-start-6 md:items-end xl:justify-between">
-                            <ModeSelector mode={gameMode} userId={userData.id} />
-                            <div className="flex flex-col gap-1 justify-end">
+                        <div className="flex flex-col col-span-7 col-start-4 gap-3 justify-between items-end md:col-span-3 xl:col-span-2 xl:col-start-6">
+                            <div className="flex flex-col gap-1 justify-end text-end">
                                 <div className="text-lg">Ranked Score:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl tooltip tooltip-left"
+                                <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                     data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
-                                    <HiChevronDoubleUp />
+                                    <FaAngleDoubleUp />
                                     <div>
                                         {userData.statistics.ranked_score.toLocaleString()}
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 justify-end text-end">
                                 <div className="text-lg">Max Combo:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl">
-                                    <HiFire />
+                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                    <FaFireAlt />
                                     <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 justify-end text-end">
                                 <div className="text-lg">Play Time:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl tooltip tooltip-left"
+                                <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                     data-tip={secondsToTime(userData.statistics.play_time)}>
                                     <FaRegClock />
                                     <div>
@@ -363,17 +344,17 @@ const UserPage = (props: UserPageProps) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 justify-end text-end">
                                 <div className="text-lg">Play Count:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl">
-                                    <ImSpinner11 />
+                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                    <FaUndo />
                                     <div>{userData.statistics.play_count.toLocaleString()}</div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 justify-end text-end">
                                 <div className="text-lg">Hits x Play:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl">
-                                    <HiCalculator />
+                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                    <FaCalculator />
                                     <div>
                                         {Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count).toLocaleString()}
                                     </div>
@@ -382,7 +363,7 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     </div>
                     {userData.badges.length > 0 &&
-                        <div className="flex flex-row flex-wrap gap-2 items-center justify-content-start">
+                        <div className="flex flex-row flex-wrap gap-2 items-center">
                             {userData.badges.map((badge: UserBadge, index: number) =>
                                 <Badge badge={badge} key={index + 1} />
                             )}
@@ -501,66 +482,29 @@ const UserPage = (props: UserPageProps) => {
                         <div>Scores</div>
                     </div>
                     <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
-                        {scoresTabs.items.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                        {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
                             <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active text-base-100'}`}
-                                onClick={() => scoresTabs.setTabs(tab.num)} key={i + 1}>
+                                onClick={() => setScoresTabIndex(tab.num)} key={i}>
                                 {tab.icon}
                                 <div>{tab.title}</div>
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div style={{ height: 602 }} className={`${scoresTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getScores(userData.id, gameMode, 15, pinnedScores.length, 'pinned', setPinnedScores, pinnedScores)}
-                            hasMore={pinnedScores.length < userData.scores_pinned_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {pinnedScores.map((s: Score, i: number) =>
-                                <ScoreCard index={i + 1} score={s} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={scoresTabIndex !== 2} style={{ height: 602 }} className={`${scoresTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getScores(userData.id, gameMode, 15, bestScores.length, 'best', setBestScores, bestScores)}
-                            hasMore={bestScores.length < userData.scores_best_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {bestScores.map((s: Score, i: number) =>
-                                <ScoreCard index={i + 1} score={s} key={i} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={scoresTabIndex !== 3} style={{ height: 602 }} className={`${scoresTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getScores(userData.id, gameMode, 15, firstsScores.length, 'firsts', setFirstsScores, firstsScores)}
-                            hasMore={firstsScores.length < userData.scores_first_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {firstsScores.map((s: Score, i: number) =>
-                                <ScoreCard index={i + 1} score={s} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={scoresTabIndex !== 4} style={{ height: 602 }} className={`${scoresTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getScores(userData.id, gameMode, 15, recentScores.length, 'recent', setRecentScores, recentScores)}
-                            hasMore={recentScores.length < userData.scores_recent_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {recentScores.map((s: Score, i: number) =>
-                                <ScoreCard index={i + 1} score={s} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
+                    {scoresList.map((s: scoreListItem, i: number) =>
+                        <div hidden={scoresTabIndex !== s.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
+                            <InfiniteScroll
+                                pageStart={0}
+                                loadMore={() => getScores(s.type, 15, s.scores.length)}
+                                hasMore={s.scores.length < s.len}
+                                loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                                useWindow={false}
+                            >
+                                {s.scores.map((s: Score, ind: number) =>
+                                    <ScoreCard index={ind} score={s} />
+                                )}
+                            </InfiniteScroll>
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
@@ -568,105 +512,29 @@ const UserPage = (props: UserPageProps) => {
                         <div>Beatmaps</div>
                     </div>
                     <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
-                        {beatmapsTabs.items.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                        {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
                             <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
-                                onClick={() => beatmapsTabs.setTabs(tab.num)} key={i + 1}>
+                                onClick={() => setBeatmapsTabIndex(tab.num)} key={i}>
                                 {tab.icon}
                                 <div>{tab.title}</div>
                                 <div className="badge">{tab.count}</div>
                             </button>)}
                     </div>
-                    <div hidden={beatmapsTabIndex !== 1} style={{ height: 602 }} className={`${beatmapsTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, favouriteBeatmaps.length, 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
-                            hasMore={favouriteBeatmaps.length < userData.favourite_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {favouriteBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 2} style={{ height: 602 }} className={`${beatmapsTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, rankedBeatmaps.length, 'ranked', setRankedBeatmaps, rankedBeatmaps)}
-                            hasMore={rankedBeatmaps.length < userData.ranked_and_approved_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {rankedBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 3} style={{ height: 602 }} className={`${beatmapsTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, guestBeatmaps.length, 'guest', setGuestBeatmaps, guestBeatmaps)}
-                            hasMore={guestBeatmaps.length < userData.guest_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {guestBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 4} style={{ height: 602 }} className={`${beatmapsTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, lovedBeatmaps.length, 'loved', setLovedBeatmaps, lovedBeatmaps)}
-                            hasMore={lovedBeatmaps.length < userData.loved_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {lovedBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 5} style={{ height: 602 }} className={`${beatmapsTabIndex !== 5 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 10, nominatedBeatmaps.length, 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
-                            hasMore={nominatedBeatmaps.length < userData.guest_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {nominatedBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 6} style={{ height: 602 }} className={`${beatmapsTabIndex !== 6 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, pendingBeatmaps.length, 'pending', setPendingBeatmaps, pendingBeatmaps)}
-                            hasMore={pendingBeatmaps.length < userData.pending_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {pendingBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
-                    <div hidden={beatmapsTabIndex !== 7} style={{ height: 602 }} className={`${beatmapsTabIndex !== 7 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => getBeatmaps(userData.id, 15, graveyardBeatmaps.length, 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
-                            hasMore={graveyardBeatmaps.length < userData.graveyard_beatmapset_count}
-                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                            useWindow={false}
-                        >
-                            {graveyardBeatmaps.map((b: BeatmapSet, i: number) =>
-                                <BeatmapsetCard index={i + 1} data={b} />
-                            )}
-                        </InfiniteScroll>
-                    </div>
+                    {beatmapsList.map((b: beatmapListItem, i: number) =>
+                        <div hidden={beatmapsTabIndex !== b.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
+                            <InfiniteScroll
+                                pageStart={0}
+                                loadMore={() => getBeatmaps(b.type, 15, b.beatmaps.length)}
+                                hasMore={b.beatmaps.length < b.len}
+                                loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                                useWindow={false}
+                            >
+                                {b.beatmaps.map((bs: BeatmapSet, ind: number) =>
+                                    <BeatmapsetCard index={ind} beatmapset={bs} />
+                                )}
+                            </InfiniteScroll>
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
@@ -740,17 +608,8 @@ const UserPage = (props: UserPageProps) => {
     function clearData(): void {
         setUserData(null);
         setGameMode('default');
-        setPinnedScores([]);
-        setBestScores([]);
-        setFirstsScores([]);
-        setRecentScores([]);
-        setFavouriteBeatmaps([]);
-        setRankedBeatmaps([]);
-        setGuestBeatmaps([]);
-        setLovedBeatmaps([]);
-        setGraveyardBeatmaps([]);
-        setPendingBeatmaps([]);
-        setNominatedBeatmaps([]);
+        setScores(SCORES_INITIAL);
+        setBeatmaps(BEATMAPS_INITIAL);
         setGlobalHistoryData(LINE_CHART_INITIAL);
         setCountryHistoryData(LINE_CHART_INITIAL);
         setPlaysHistoryData(LINE_CHART_INITIAL);
@@ -770,13 +629,14 @@ const UserPage = (props: UserPageProps) => {
             };
             const user: User = data;
             setUserData(data);
+
             if (user.is_bot) return;
+
             let searchMode: GameModeType;
-            if (props.userMode === "default") {
-                searchMode = user.playmode;
-            } else {
-                searchMode = props.userMode;
-            }
+
+            if (props.userMode === "default") searchMode = user.playmode;
+            else searchMode = props.userMode;
+
             window.history.replaceState({}, '', `/users/${user.id}/${searchMode}`);
 
             getBestCalc(user.id, searchMode);
@@ -787,37 +647,25 @@ const UserPage = (props: UserPageProps) => {
             setGameMode(searchMode);
 
             let scoresTab: number = 0;
-            let beatmapsTab: number = 0;
-
-            if (user.scores_pinned_count > 0) {
-                scoresTab = 1;
-            } else if (user.scores_best_count > 0) {
-                scoresTab = 2;
-            } else if (user.scores_first_count > 0) {
-                scoresTab = 3;
-            } else if (user.scores_recent_count > 0) {
-                scoresTab = 4;
-            }
-            if (user.favourite_beatmapset_count > 0) {
-                beatmapsTab = 1;
-            } else if (user.ranked_beatmapset_count > 0) {
-                beatmapsTab = 2;
-            } else if (user.guest_beatmapset_count > 0) {
-                beatmapsTab = 3;
-            } else if (user.loved_beatmapset_count > 0) {
-                beatmapsTab = 4;
-            } else if (user.nominated_beatmapset_count > 0) {
-                beatmapsTab = 5;
-            } else if (user.pending_beatmapset_count > 0) {
-                beatmapsTab = 6;
-            } else if (user.graveyard_beatmapset_count > 0) {
-                beatmapsTab = 7;
-            }
+            if (user.scores_pinned_count > 0) scoresTab = 1;
+            else if (user.scores_best_count > 0) scoresTab = 2;
+            else if (user.scores_first_count > 0) scoresTab = 3;
+            else if (user.scores_recent_count > 0) scoresTab = 4;
             setScoresTabIndex(scoresTab);
+
+            let beatmapsTab: number = 0;
+            if (user.favourite_beatmapset_count > 0) beatmapsTab = 1;
+            else if (user.ranked_beatmapset_count > 0) beatmapsTab = 2;
+            else if (user.guest_beatmapset_count > 0) beatmapsTab = 3;
+            else if (user.loved_beatmapset_count > 0) beatmapsTab = 4;
+            else if (user.nominated_beatmapset_count > 0) beatmapsTab = 5;
+            else if (user.pending_beatmapset_count > 0) beatmapsTab = 6;
+            else if (user.graveyard_beatmapset_count > 0) beatmapsTab = 7;
             setBeatmapsTabIndex(beatmapsTab);
         } catch (err) {
             console.error(err);
             setUserData(null);
+            addAlert('warning', 'This user doesnt exist');
         }
     }
 
@@ -832,7 +680,7 @@ const UserPage = (props: UserPageProps) => {
             });
             const scores: Score[] = res.data;
             setBestCalc(scores);
-            // const len = 100;
+            // const len = 25;
             // scores.length = len;
             // const r = await axios.post('/skill', {
             //     scores: scores,
@@ -862,36 +710,53 @@ const UserPage = (props: UserPageProps) => {
         }
     }
 
-    async function getScores(id: number, m: GameModeType, l: number, o: number, t: scoreCategoryType, set: Dispatch<SetStateAction<Score[]>>, get: Score[]) {
+    async function getScores(t: scoreCategoryType, l: number, o: number) {
+        if (!userData?.id) return;
+        if (!gameMode) return;
         try {
-            const res = await axios.post('/userscores', {
-                id: id,
-                mode: m,
+            const r = await axios.post('/userscores', {
+                id: userData.id,
+                mode: gameMode,
                 limit: l,
                 offset: o,
                 type: t
             });
-            const d: Score[] = res.data;
+            const d: Score[] = r.data;
             if (d.length < 1) return;
-            set([...get, ...d]);
-            return;
+            switch (t) {
+                case 'pinned': setScores((prev) => ({ ...prev, pinned: [...prev.pinned, ...d] })); break;
+                case 'best': setScores((prev) => ({ ...prev, best: [...prev.best, ...d] })); break;
+                case 'firsts': setScores((prev) => ({ ...prev, firsts: [...prev.firsts, ...d] })); break;
+                case 'recent': setScores((prev) => ({ ...prev, recent: [...prev.recent, ...d] })); break;
+                default: break;
+            }
         } catch (err) {
             console.error(err);
         }
     }
 
-    async function getBeatmaps(id: number, l: number, o: number, t: beatmapCategoryType, set: Dispatch<SetStateAction<BeatmapSet[]>>, get: BeatmapSet[]) {
+    async function getBeatmaps(t: beatmapCategoryType, l: number, o: number) {
+        if (!userData?.id) return;
         try {
-            const res = await axios.post('/userbeatmaps', {
-                id: id,
+            const r = await axios.post('/userbeatmaps', {
+                id: userData.id,
                 limit: l,
                 offset: o,
                 type: t
             });
-            const d: BeatmapSet[] = res.data;
-            if (!d.length) return;
-            set([...get, ...d]);
-            return;
+            const d: BeatmapSet[] = r.data;
+            console.log(d);
+            if (d.length < 1) return;
+            switch (t) {
+                case 'favourite': setBeatmaps((prev) => ({ ...prev, favourite: [...prev.favourite, ...d] })); break;
+                case 'ranked': setBeatmaps((prev) => ({ ...prev, ranked: [...prev.ranked, ...d] })); break;
+                case 'guest': setBeatmaps((prev) => ({ ...prev, guest: [...prev.guest, ...d] })); break;
+                case 'loved': setBeatmaps((prev) => ({ ...prev, loved: [...prev.loved, ...d] })); break;
+                case 'nominated': setBeatmaps((prev) => ({ ...prev, nominated: [...prev.loved, ...d] })); break;
+                case 'pending': setBeatmaps((prev) => ({ ...prev, pending: [...prev.pending, ...d] })); break;
+                case 'graveyard': setBeatmaps((prev) => ({ ...prev, graveyard: [...prev.graveyard, ...d] })); break;
+                default: break;
+            }
         } catch (err) {
             console.error(err);
         }
