@@ -1,5 +1,5 @@
 import React from "react"
-import { UserGroup } from "../resources/interfaces/user";
+import { UserGroup } from "../../resources/interfaces/user";
 
 interface GroupBadgeProps {
     group: UserGroup,
