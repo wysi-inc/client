@@ -8,7 +8,7 @@ const ModIcon = (props: ModIconProps) => {
         <div className="tooltip"
             data-tip={props.acronym}>
             <img style={{ height: props.size }}
-                src={require(`../assets/mod-icons/${props.acronym.toLowerCase()}.png`)}
+                src={require(`../../assets/mod-icons/${props.acronym ? props.acronym.toLowerCase() : 'nm'}.png`)}
                 loading="lazy"
                 alt={props.acronym} />
         </div>

@@ -7,36 +7,36 @@ import { Line, Radar } from "react-chartjs-2";
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 
-import { FaSkull, FaRegClock } from "react-icons/fa";
+import { FaSkull, FaRegClock, FaUsers, FaTwitter, FaDiscord, FaMapMarkerAlt, FaHeart, FaChartLine, FaMedal, FaEye, FaGlobe, FaGlobeAfrica, FaRegBuilding, FaChartPie, FaListUl } from "react-icons/fa";
 import Spinner from 'react-bootstrap/Spinner';
 import { BiSolidTrophy, BiSolidUserDetail } from "react-icons/bi";
-import { HiCalculator, HiChevronDoubleUp, HiFire, HiGlobeAlt, HiOutlineStar } from "react-icons/hi";
+import { HiCalculator, HiChevronDoubleUp, HiFire, HiOutlineStar } from "react-icons/hi";
 import { BsBarChartLine, BsFillPinAngleFill, BsHourglassSplit, BsStopwatch, BsSuitHeartFill } from "react-icons/bs";
 import { ImSpinner11 } from "react-icons/im";
 
-import Badge from "../components/Badge";
-import ScoreCard from "../cards/ScoreCard";
+import Badge from "./u_comp/Badge";
+import ScoreCard from "../c_scores/ScoreCard";
 import { colors } from "../resources/store";
 import axios from '../resources/axios-config';
-import GroupBadge from "../components/GroupBadge";
-import BarPieChart from "../components/BarPieChart";
-import BeatmapsetCard from "../cards/BeatmapsetCard";
-import CountryShape from "../components/CountryShape";
-import ModeSelector from "../components/ModeSelector";
-import SupporterIcon from "../components/SupporterIcon";
+import GroupBadge from "./u_comp/GroupBadge";
+import BarPieChart from "./u_comp/BarPieChart";
+import BeatmapsetCard from "../c_beatmaps/BeatmapsetCard";
+import CountryShape from "./u_comp/CountryShape";
+import ModeSelector from "./u_comp/ModeSelector";
+import SupporterIcon from "./u_comp/SupporterIcon";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { BeatmapType, GameModeType, ScoreType } from "../resources/types";
-import TopScoresPanel, { BarPieChartData } from "../components/TopScoresPanel";
+import TopScoresPanel, { BarPieChartData } from "./u_comp/TopScoresPanel";
 
 import 'chartjs-adapter-date-fns';
 import { Score } from "../resources/interfaces/score";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { MonthlyData, User, UserAchievement, UserBadge, UserGroup } from "../resources/interfaces/user";
 import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/medals";
-import MedalBadge from "../components/MedalBadge";
+import MedalBadge from "./u_comp/MedalBadge";
 
 import InfiniteScroll from 'react-infinite-scroller';
-import CountryFlag from "../components/CountryFlag";
+import CountryFlag from "./u_comp/CountryFlag";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -52,7 +52,8 @@ Chart.defaults.borderColor = colors.ui.font + '22';
 
 type AxisType = "time" | undefined;
 type cardType = 'scores' | 'beatmapsets';
-type categoryType = 'pinned' | 'best' | 'firsts' | 'recent' | 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
+type scoreCategoryType = 'pinned' | 'best' | 'firsts' | 'recent';
+type beatmapCategoryType = 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
 
 export interface tabGroup {
     setTabs: Dispatch<SetStateAction<number>>,
@@ -264,24 +265,24 @@ const UserPage = (props: UserPageProps) => {
         <>
             <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
                 <div style={{ backdropFilter: "blur(2px)" }}
-                    className="flex flex-col p-8 gap-8 card-body rounded-none">
-                    <div className="grid grid-cols-7 flex-wrap gap-4 xl:gap-8">
-                        <div className="col-span-9 md:col-span-2 xl:col-span-1 gap-3 flex flex-col items-center justify-start">
+                    className="flex flex-col gap-8 p-8 rounded-none card-body">
+                    <div className="grid flex-wrap grid-cols-7 gap-4 xl:gap-8">
+                        <div className="flex flex-col col-span-9 gap-3 justify-start items-center md:col-span-2 xl:col-span-1">
                             <img src={userData.avatar_url}
                                 onError={addDefaultSrc}
-                                alt='pfp' className="aspect-square mb-2 rounded-lg"
+                                alt='pfp' className="mb-2 rounded-lg aspect-square"
                                 style={{ width: '100%' }} />
                             <div className="flex flex-row gap-2 items-center w-full">
                                 <div className="text-neutral-content">{userData.statistics.level.current}</div>
                                 <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
                                 <div>{userData.statistics.level.current + 1}</div>
                             </div>
-                            <div className="text-center text-lg tooltip tooltip-bottom"
+                            <div className="text-lg text-center tooltip tooltip-bottom"
                                 data-tip={moment(userData.join_date).fromNow()}>
                                 Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                             </div>
                         </div>
-                        <div className="col-span-7 md:col-span-2 gap-3 flex flex-col items-center md:items-start justify-between">
+                        <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2 md:items-start">
                             <div className="flex flex-row gap-3 items-center">
                                 <a className="text-4xl font-bold"
                                     target={"_blank"} rel="noreferrer"
@@ -297,14 +298,14 @@ const UserPage = (props: UserPageProps) => {
                             <div className="profileTitle">{userData.title}</div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Global Rank:</div>
-                                <div className="text-2xl flex flex-row items-center gap-2">
-                                    <HiGlobeAlt />
+                                <div className="flex flex-row gap-2 items-center text-2xl">
+                                    <FaGlobeAfrica />
                                     <div>#{userData.statistics.global_rank ? userData.statistics.global_rank.toLocaleString() : '-'}</div>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Country Rank:</div>
-                                <div className="text-2xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-2xl">
                                     <CountryShape code={userData.country.code} size={26} />
                                     <div>#{userData.statistics.country_rank ? userData.statistics.country_rank.toLocaleString() : '-'}</div>
                                     {userData.country.code === 'CAT' ?
@@ -318,13 +319,13 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Performance:</div>
-                                <div className="text-xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-xl">
                                     <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Accuracy:</div>
-                                <div className="text-xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-xl">
                                     <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
                                 </div>
                             </div>
@@ -333,11 +334,11 @@ const UserPage = (props: UserPageProps) => {
                         <div className="col-span-7 md:col-span-2">
                             <Radar data={skillsData} options={radarOptions} />
                         </div>
-                        <div className="col-span-7 md:col-span-3 xl:col-span-2 flex col-start-4 xl:col-start-6 flex-col items-center md:items-end gap-3 xl:justify-between">
+                        <div className="flex flex-col col-span-7 col-start-4 gap-3 items-center md:col-span-3 xl:col-span-2 xl:col-start-6 md:items-end xl:justify-between">
                             <ModeSelector mode={gameMode} userId={userData.id} />
                             <div className="flex flex-col gap-1 justify-end">
                                 <div className="text-lg">Ranked Score:</div>
-                                <div className="tooltip tooltip-left text-xl flex flex-row items-center gap-2"
+                                <div className="flex flex-row gap-2 items-center text-xl tooltip tooltip-left"
                                     data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
                                     <HiChevronDoubleUp />
                                     <div>
@@ -347,14 +348,14 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Max Combo:</div>
-                                <div className="text-xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-xl">
                                     <HiFire />
                                     <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Play Time:</div>
-                                <div className="text-xl flex flex-row items-center gap-2 tooltip tooltip-left"
+                                <div className="flex flex-row gap-2 items-center text-xl tooltip tooltip-left"
                                     data-tip={secondsToTime(userData.statistics.play_time)}>
                                     <FaRegClock />
                                     <div>
@@ -364,14 +365,14 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Play Count:</div>
-                                <div className="text-xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-xl">
                                     <ImSpinner11 />
                                     <div>{userData.statistics.play_count.toLocaleString()}</div>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg">Hits x Play:</div>
-                                <div className="text-xl flex flex-row items-center gap-2">
+                                <div className="flex flex-row gap-2 items-center text-xl">
                                     <HiCalculator />
                                     <div>
                                         {Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count).toLocaleString()}
@@ -388,66 +389,62 @@ const UserPage = (props: UserPageProps) => {
                         </div>}
                 </div>
             </div>
-            <div className="bg-accent-800 drop-shadow-lg p-4 m-0 flex flex-row flex-wrap items-center gap-4">
-                <div className="flex flex-row items-center gap-2">
-                    <i className="bi bi-people-fill"></i>
+            <div className="flex flex-row flex-wrap gap-4 items-center p-4 m-0 drop-shadow-lg bg-accent-800">
+                <div className="flex flex-row gap-2 items-center">
+                    <FaUsers />
                     <div>Followers: {userData.follower_count.toLocaleString()}</div>
                 </div>
                 {userData.discord !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-discord"></i>
-                        <Twemoji options={{ className: 'emoji', noWrapper: true }}>
-                            {userData.discord}
-                        </Twemoji>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaDiscord />
+                        {userData.discord}
                     </div>}
                 {userData.twitter !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-twitter"></i>
-                        <Twemoji options={{ className: 'emoji' }}>
-                            {userData.twitter}
-                        </Twemoji>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaTwitter />
+                        {userData.twitter}
                     </div>}
                 {userData.website !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-globe"></i>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaGlobe />
                         <Twemoji options={{ className: 'emoji' }}>
                             {userData.website}
                         </Twemoji>
                     </div>}
                 {userData.discord !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-geo-alt-fill"></i>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaMapMarkerAlt />
                         <Twemoji options={{ className: 'emoji' }}>
                             {userData.location}
                         </Twemoji>
                     </div>}
                 {userData.interests !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-suit-heart-fill"></i>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaHeart />
                         <Twemoji options={{ className: 'emoji' }}>
                             {userData.interests}
                         </Twemoji>
                     </div>}
                 {userData.occupation !== null &&
-                    <div className="flex flex-row items-center gap-2">
-                        <i className="bi bi-buildings"></i>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaRegBuilding />
                         <Twemoji options={{ className: 'emoji' }}>
                             {userData.occupation}
                         </Twemoji>
                     </div>}
             </div>
-            <div className="grid grid-cols-5 gap-4 md:p-4 justify-center">
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg" ref={div1Ref}>
+            <div className="grid grid-cols-5 gap-4 justify-center md:p-4">
+                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-3" ref={div1Ref}>
                     <div className="shadow">
-                        <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
-                            <i className="bi bi-graph-up"></i>
+                        <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
+                            <FaChartLine />
                             <div>History</div>
                         </div>
-                        <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
+                        <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
                             <button
                                 className={`tab flex flex-row gap-2 ${historyTabIndex === 1 && 'tab-active text-base-100'}`}
                                 onClick={() => setHistoryTabIndex(1)}>
-                                <HiGlobeAlt />
+                                <FaGlobeAfrica />
                                 <div>Global Rank</div>
                             </button>
                             <button
@@ -459,38 +456,38 @@ const UserPage = (props: UserPageProps) => {
                             <button
                                 className={`tab flex flex-row gap-2 ${historyTabIndex === 3 && 'tab-active text-base-100'}`}
                                 onClick={() => setHistoryTabIndex(3)}>
-                                <i className="bi bi-arrow-counterclockwise"></i>
+                                <FaRegClock />
                                 <div>Play Count</div>
                             </button>
                             <button
                                 className={`tab flex flex-row gap-2 ${historyTabIndex === 4 && 'tab-active text-base-100'}`}
                                 onClick={() => setHistoryTabIndex(4)}>
-                                <i className="bi bi-arrow-counterclockwise"></i>
+                                <FaEye />
                                 <div>Replays Watched</div>
                             </button>
                         </div>
                         <div className="flex justify-center items-center">
-                            <div className="grow p-4" hidden={historyTabIndex !== 1}
+                            <div className="p-4 grow" hidden={historyTabIndex !== 1}
                                 style={{ height: 250 }}>
                                 <Line data={globalHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="grow p-4" hidden={historyTabIndex !== 2}
+                            <div className="p-4 grow" hidden={historyTabIndex !== 2}
                                 style={{ height: 250 }}>
                                 <Line data={countryHistoryData} options={lineOptionsReverse} />
                             </div>
-                            <div className="grow p-4" hidden={historyTabIndex !== 3}
+                            <div className="p-4 grow" hidden={historyTabIndex !== 3}
                                 style={{ height: 250 }}>
                                 <Line data={playsHistoryData} options={lineOptions} />
                             </div>
-                            <div className="grow p-4" hidden={historyTabIndex !== 4}
+                            <div className="p-4 grow" hidden={historyTabIndex !== 4}
                                 style={{ height: 250 }}>
                                 <Line data={replaysHistoryData} options={lineOptions} />
                             </div>
                         </div>
                     </div>
                     <div className="shadow">
-                        <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
-                            <i className="bi bi-bar-chart-line"></i>
+                        <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
+                            <FaChartPie />
                             <div>Top Play Stats</div>
                         </div>
                         <div className="p-4">
@@ -498,12 +495,12 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="p-2 bg-accent-800 4 flex flex-row gap-2 justify-center">
-                        <i className="bi bi-controller"></i>
+                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800 4">
+                        <FaListUl />
                         <div>Scores</div>
                     </div>
-                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
+                    <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
                         {scoresTabs.items.map((tab: tabInterface, i: number) => tab.count > 0 &&
                             <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active text-base-100'}`}
                                 onClick={() => scoresTabs.setTabs(tab.num)} key={i + 1}>
@@ -515,7 +512,7 @@ const UserPage = (props: UserPageProps) => {
                     <div style={{ height: 602 }} className={`${scoresTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, pinnedScores.length, 'scores', 'pinned', setPinnedScores, pinnedScores)}
+                            loadMore={() => getScores(userData.id, gameMode, 15, pinnedScores.length, 'pinned', setPinnedScores, pinnedScores)}
                             hasMore={pinnedScores.length < userData.scores_pinned_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -528,7 +525,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={scoresTabIndex !== 2} style={{ height: 602 }} className={`${scoresTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, bestScores.length, 'scores', 'best', setBestScores, bestScores)}
+                            loadMore={() => getScores(userData.id, gameMode, 15, bestScores.length, 'best', setBestScores, bestScores)}
                             hasMore={bestScores.length < userData.scores_best_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -541,7 +538,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={scoresTabIndex !== 3} style={{ height: 602 }} className={`${scoresTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, firstsScores.length, 'scores', 'firsts', setFirstsScores, firstsScores)}
+                            loadMore={() => getScores(userData.id, gameMode, 15, firstsScores.length, 'firsts', setFirstsScores, firstsScores)}
                             hasMore={firstsScores.length < userData.scores_first_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -554,7 +551,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={scoresTabIndex !== 4} style={{ height: 602 }} className={`${scoresTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 5, recentScores.length, 'scores', 'recent', setRecentScores, recentScores)}
+                            loadMore={() => getScores(userData.id, gameMode, 15, recentScores.length, 'recent', setRecentScores, recentScores)}
                             hasMore={recentScores.length < userData.scores_recent_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -565,12 +562,12 @@ const UserPage = (props: UserPageProps) => {
                         </InfiniteScroll>
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-2 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="p-2 flex flex-row gap-2 justify-center bg-accent-800">
-                        <i className="bi bi-file-earmark-music"></i>
+                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
+                        <FaListUl />
                         <div>Beatmaps</div>
                     </div>
-                    <div className="tabs tabs-boxed content-center rounded-none justify-center bg-accent-900">
+                    <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
                         {beatmapsTabs.items.map((tab: tabInterface, i: number) => tab.count > 0 &&
                             <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
                                 onClick={() => beatmapsTabs.setTabs(tab.num)} key={i + 1}>
@@ -582,7 +579,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 1} style={{ height: 602 }} className={`${beatmapsTabIndex !== 1 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, favouriteBeatmaps.length, 'beatmapsets', 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, favouriteBeatmaps.length, 'favourite', setFavouriteBeatmaps, favouriteBeatmaps)}
                             hasMore={favouriteBeatmaps.length < userData.favourite_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -595,7 +592,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 2} style={{ height: 602 }} className={`${beatmapsTabIndex !== 2 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, rankedBeatmaps.length, 'beatmapsets', 'ranked', setRankedBeatmaps, rankedBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, rankedBeatmaps.length, 'ranked', setRankedBeatmaps, rankedBeatmaps)}
                             hasMore={rankedBeatmaps.length < userData.ranked_and_approved_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -608,7 +605,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 3} style={{ height: 602 }} className={`${beatmapsTabIndex !== 3 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, guestBeatmaps.length, 'beatmapsets', 'guest', setGuestBeatmaps, guestBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, guestBeatmaps.length, 'guest', setGuestBeatmaps, guestBeatmaps)}
                             hasMore={guestBeatmaps.length < userData.guest_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -621,7 +618,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 4} style={{ height: 602 }} className={`${beatmapsTabIndex !== 4 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, lovedBeatmaps.length, 'beatmapsets', 'loved', setLovedBeatmaps, lovedBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, lovedBeatmaps.length, 'loved', setLovedBeatmaps, lovedBeatmaps)}
                             hasMore={lovedBeatmaps.length < userData.loved_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -634,7 +631,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 5} style={{ height: 602 }} className={`${beatmapsTabIndex !== 5 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, nominatedBeatmaps.length, 'beatmapsets', 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 10, nominatedBeatmaps.length, 'nominated', setNominatedBeatmaps, nominatedBeatmaps)}
                             hasMore={nominatedBeatmaps.length < userData.guest_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -647,7 +644,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 6} style={{ height: 602 }} className={`${beatmapsTabIndex !== 6 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, pendingBeatmaps.length, 'beatmapsets', 'pending', setPendingBeatmaps, pendingBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, pendingBeatmaps.length, 'pending', setPendingBeatmaps, pendingBeatmaps)}
                             hasMore={pendingBeatmaps.length < userData.pending_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -660,7 +657,7 @@ const UserPage = (props: UserPageProps) => {
                     <div hidden={beatmapsTabIndex !== 7} style={{ height: 602 }} className={`${beatmapsTabIndex !== 7 && 'hidden'} overflow-y-scroll overflow-x-hidden`}>
                         <InfiniteScroll
                             pageStart={0}
-                            loadMore={() => getThings(userData.id, gameMode, 10, graveyardBeatmaps.length, 'beatmapsets', 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
+                            loadMore={() => getBeatmaps(userData.id, 15, graveyardBeatmaps.length, 'graveyard', setGraveyardBeatmaps, graveyardBeatmaps)}
                             hasMore={graveyardBeatmaps.length < userData.graveyard_beatmapset_count}
                             loader={<div key={0} className="loading loading-dots loading-md"></div>}
                             useWindow={false}
@@ -671,19 +668,19 @@ const UserPage = (props: UserPageProps) => {
                         </InfiniteScroll>
                     </div>
                 </div>
-                <div className="flex flex-col bg-accent-950 col-span-5 xl:col-span-3 drop-shadow-lg" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="p-2 bg-accent-800 flex flex-row gap-2 justify-center">
-                        <i className="bi bi-award"></i>
+                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
+                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
+                        <FaMedal />
                         <div>Medals</div>
                     </div>
-                    <div className="flex flex-col grow overflow-y-scroll overflow-x-hidden">
-                        <div className="grid grid-cols-6 ">
+                    <div className="flex overflow-x-hidden overflow-y-scroll flex-col grow">
+                        <div className="grid grid-cols-6">
                             <div className="col-span-5">
-                                <div className="text-center p-2 bg-accent-900">
+                                <div className="p-2 text-center bg-accent-900">
                                     Recent Medals
                                 </div>
                                 <div className="p-3 pt-2">
-                                    <div className="flex flex-row justify-between pb-1 px-2"
+                                    <div className="flex flex-row justify-between px-2 pb-1"
                                         style={{ fontSize: 14, top: -8 }}>
                                         <div>most recent</div>
                                         <div>least recent</div>
@@ -696,15 +693,15 @@ const UserPage = (props: UserPageProps) => {
                                 </div>
                             </div>
                             <div className="col-span-1">
-                                <div className="text-center p-2 bg-accent-900">
+                                <div className="p-2 text-center bg-accent-900">
                                     Rarest Medal
                                 </div>
                                 <div className="p-3 pt-2">
-                                    <div className="pb-1 px-2 text-center"
+                                    <div className="px-2 pb-1 text-center"
                                         style={{ fontSize: 14, top: -8 }}>
                                         Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
                                     </div>
-                                    <div className="p-3 grid justify-center">
+                                    <div className="grid justify-center p-3">
                                         {rarestMedal &&
                                             <MedalBadge thisMedal={rarestMedal}
                                                 userMedals={userData.user_achievements} />}
@@ -714,13 +711,13 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                         {Object.entries(medalsByCategory).map(([category, medals]: [string, Medal[]], key: number) => (
                             <div key={key} className="grow">
-                                <div className="text-center p-2 flex flex-row justify-center items-center bg-accent-900">
+                                <div className="flex flex-row justify-center items-center p-2 text-center bg-accent-900">
                                     <div className="text-center">
                                         {category}:
                                     </div>
                                 </div>
-                                <div className="p-3 pt-2 flex flex-col grow">
-                                    <div className="pb-1 px-2 text-center"
+                                <div className="flex flex-col p-3 pt-2 grow">
+                                    <div className="px-2 pb-1 text-center"
                                         style={{ fontSize: 14, top: -8 }}>
                                         {(achievedMedalsCount[category] / medals.length * 100).toFixed(2)}%
                                         ({achievedMedalsCount[category]}/{medals.length})
@@ -826,7 +823,13 @@ const UserPage = (props: UserPageProps) => {
 
     async function getBestCalc(id: number, m: GameModeType) {
         try {
-            const res = await axios.post('/proxy', { url: `https://osu.ppy.sh/users/${id}/scores/best?mode=${m}&limit=100&offset=0` });
+            const res = await axios.post('/userscores', {
+                id: id,
+                mode: m,
+                limit: 100,
+                offset: 0,
+                type: 'best'
+            });
             const scores: Score[] = res.data;
             setBestCalc(scores);
             // const len = 100;
@@ -859,18 +862,38 @@ const UserPage = (props: UserPageProps) => {
         }
     }
 
-    async function getThings(id: number, m: GameModeType, l: number, o: number, t: cardType, c: categoryType, set: Dispatch<SetStateAction<any[]>>, get: Score[] | BeatmapSet[]) {
+    async function getScores(id: number, m: GameModeType, l: number, o: number, t: scoreCategoryType, set: Dispatch<SetStateAction<Score[]>>, get: Score[]) {
         try {
-            const url = `https://osu.ppy.sh/users/${id}/${t}/${c}?mode=${m}&limit=${l}&offset=${o}`;
-            console.log(`loading ${c}...`, url)
-            const res = await axios.post('/proxy', { url: url });
-            const d = res.data;
+            const res = await axios.post('/userscores', {
+                id: id,
+                mode: m,
+                limit: l,
+                offset: o,
+                type: t
+            });
+            const d: Score[] = res.data;
             if (d.length < 1) return;
             set([...get, ...d]);
             return;
         } catch (err) {
             console.error(err);
+        }
+    }
+
+    async function getBeatmaps(id: number, l: number, o: number, t: beatmapCategoryType, set: Dispatch<SetStateAction<BeatmapSet[]>>, get: BeatmapSet[]) {
+        try {
+            const res = await axios.post('/userbeatmaps', {
+                id: id,
+                limit: l,
+                offset: o,
+                type: t
+            });
+            const d: BeatmapSet[] = res.data;
+            if (!d.length) return;
+            set([...get, ...d]);
             return;
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -935,7 +958,9 @@ export default UserPage;
 
 function useMedals() {
     const [m, setM] = useState<Medal[]>([]);
-    getM();
+    useEffect(() => {
+        getM();
+    }, [])
     return m;
     async function getM() {
         try {

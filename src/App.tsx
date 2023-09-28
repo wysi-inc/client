@@ -4,12 +4,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import 'react-virtualized/styles.css';
 
-import Navbar from "./Navbar";
-import Footer from './Footer';
-import Home from './views/Home';
-import Users from './views/Users';
-import Beatmaps from "./views/Beatmaps";
-import SongPlayer from "./components/SongPlayer";
+import Navbar from "./c_web/Navbar";
+import Footer from './c_web/Footer';
+import Home from './c_web/Home';
+import Users from './c_users/Users';
+import Beatmaps from "./c_beatmaps/Beatmaps";
+import SongPlayer from "./c_web/w_comp/SongPlayer";
 
 import './App.css';
 import './assets/ibm-plex.css';
@@ -21,7 +21,7 @@ function App() {
             <ScrollToTop />
             <Navbar />
             <div className="bg-accent-950">
-                <main style={{ maxWidth: 1600 }} className="bg-accent-600 mx-auto">
+                <main style={{ maxWidth: 1600 }} className="mx-auto bg-accent-600">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />

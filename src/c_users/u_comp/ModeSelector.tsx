@@ -1,7 +1,7 @@
 import React from "react"
-import { GameModeType } from "../resources/types";
+import { GameModeType } from "../../resources/types";
 import { Link } from "react-router-dom";
-import ModeIcon from "./ModeIcon";
+import ModeIcon from "../../c_scores/s_comp/ModeIcon";
 
 interface ModeSelectorProps {
     mode: GameModeType;

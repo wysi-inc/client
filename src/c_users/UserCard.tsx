@@ -1,12 +1,10 @@
 import React from 'react';
-
 import { Link } from 'react-router-dom';
-
-import OnlineDot from '../components/OnlineDot';
+import OnlineDot from './u_comp/OnlineDot';
 import { addDefaultSrc } from '../resources/functions';
 import { UserRanks } from '../resources/interfaces/user';
 import { GameModeType } from '../resources/types';
-import CountryFlag from '../components/CountryFlag';
+import CountryFlag from './u_comp/CountryFlag';
 
 interface UserCardProps {
     user: UserRanks;
@@ -20,7 +18,7 @@ const UserCard = (props: UserCardProps) => {
     return (
         <tr className="bg-accent-800">
             <th>#{props.index}</th>
-            <td><div className="flex items-center justify-center">
+            <td><div className="flex justify-center items-center">
                 <CountryFlag size={24} name={props.user.user.country.name} code={props.user.user.country.code} />
             </div></td>
             <td><Link to={`/users/${props.user.user.id}/${props.mode}`} className="flex flex-row gap-2 items-center">
@@ -33,8 +31,10 @@ const UserCard = (props: UserCardProps) => {
             <td>{props.user.play_count}</td>
             <td>{props.user.ranked_score}</td>
             <td><div className="grid grid-cols-5 gap-4">
-                <div>{props.user.grade_counts.ss + props.user.grade_counts.ssh}</div>
-                <div>{props.user.grade_counts.s + props.user.grade_counts.sh}</div>
+                <div>{props.user.grade_counts.ssh}</div>
+                <div>{props.user.grade_counts.ss}</div>
+                <div>{props.user.grade_counts.sh}</div>
+                <div>{props.user.grade_counts.s}</div>
                 <div>{props.user.grade_counts.a}</div>
             </div></td>
             <td><OnlineDot isOnline={props.user.user.is_online} size={24} /></td>

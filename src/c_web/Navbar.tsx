@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { themeChange } from 'theme-change'
 import { HiMenu } from "react-icons/hi"
-import SearchBox from "./components/SearchBox";
+import SearchBox from "./w_comp/SearchBox";
 import { FaGithub, FaDiscord } from 'react-icons/fa';
 
 const Navbar = () => {
@@ -12,10 +12,12 @@ const Navbar = () => {
         themeChange(false);
     }, [])
 
+    const logo = require('../assets/wysi727logo.svg').default;
+
     return (
-        <nav className="sticky top-0 navbar bg-accent-900 drop-shadow-lg p-0 px-2"
+        <nav className="sticky top-0 p-0 px-2 drop-shadow-lg navbar bg-accent-900"
             style={{zIndex: 2000}}>
-            <div className="navbar-start gap-2 pl-0">
+            <div className="gap-2 pl-0 navbar-start">
                 <div className="lg:hidden dropdown">
                     <div className="dropdown">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
@@ -28,26 +30,26 @@ const Navbar = () => {
                         </ul>
                     </div>
                 </div>
-                <Link to={'/'} className="text-xl font-semibold hidden md:flex flex-row gap-3 btn p-2 btn-ghost lowercase">
-                    <img src={require('./assets/wysi727logo.svg').default} className="w-8 h-8" alt="logo" />
+                <Link to={'/'} className="hidden flex-row gap-3 p-2 text-xl font-semibold lowercase md:flex btn btn-ghost">
+                    <img src={logo} className="w-8 h-8" alt="logo" />
                     <div>wysi727</div>
                 </Link>
                 <div className="hidden lg:flex">
-                    <ul className="menu menu-horizontal gap-2">
-                        <li><Link to={'/'} className='text-lg capitalize font-semibold p-2'>Home</Link></li>
-                        <li><Link to={'/users'} className='text-lg capitalize font-semibold p-2'>Users</Link></li>
-                        <li><Link to={'/beatmaps'} className='text-lg capitalize font-semibold p-2'>Beatmaps</Link></li>
+                    <ul className="gap-2 menu menu-horizontal">
+                        <li><Link to={'/'} className='p-2 text-lg font-semibold capitalize'>Home</Link></li>
+                        <li><Link to={'/users'} className='p-2 text-lg font-semibold capitalize'>Users</Link></li>
+                        <li><Link to={'/beatmaps'} className='p-2 text-lg font-semibold capitalize'>Beatmaps</Link></li>
                     </ul>
                 </div>
             </div>
-            <div className="navbar-center ">
+            <div className="navbar-center">
                 <SearchBox />
             </div>
-            <div className="navbar-end gap-2">
+            <div className="gap-2 navbar-end">
                 <a target='_blank' href='' className="btn btn-ghost btn-circle">
                     <FaDiscord />
                 </a>
-                <a target='_blank' href='https://github.com/M4rti21/wysi727-new' className="btn btn-ghost btn-circle">
+                <a target='_blank' href='https://github.com/orgs/wysi-inc/repositories' className="btn btn-ghost btn-circle">
                     <FaGithub />
                 </a>
             </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { GameModeType } from "../resources/types";
+import { GameModeType } from "../../resources/types";
 
 interface ModeIconProps {
     size: number;

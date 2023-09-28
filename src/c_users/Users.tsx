@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
-import UserPage from "../pages/UserPage";
-import UserCard from "../cards/UserCard";
+import UserPage from "./UserPage";
+import UserCard from "./UserCard";
 import axios from "../resources/axios-config";
 import { GameModeType } from "../resources/types";
-import PageTabs from "../components/PageTabs";
+import PageTabs from "../c_web/w_comp/PageTabs";
 import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
 
@@ -44,6 +44,13 @@ const Users = () => {
 
     if (userId && userMode) return (<UserPage userId={userId} userMode={userMode} />);
 
+    if (!users) return (
+        <div className="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 stroke-current shrink-0" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span>Error! Failed to fetch users</span>
+        </div>
+    );
+
     async function getUsers(c: 'score' | 'performance', m: GameModeType) {
         try {
             setUsers([]);
@@ -56,8 +63,8 @@ const Users = () => {
                     page: page,
                 }
             );
-            const data = res.data;
-            setUsers(data.ranking);
+            const data: UserRanks[] = res.data.ranking;
+            setUsers(data);
         } catch (err) {
             console.error(err);
         }
@@ -66,14 +73,14 @@ const Users = () => {
     const cardGrid = "grid-cols-1 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-9";
 
     return (
-        <div className="flex flex-col p-3 gap-3">
+        <div className="flex flex-col gap-3 p-3">
             <div className="grid grid-cols-3">
-                <div className="join justify-start">
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                <div className="justify-start join">
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers('performance', mode);
                         }}>Performance</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers('score', mode);
                         }}>Ranked Score</button>
@@ -81,27 +88,27 @@ const Users = () => {
                 <div className="flex justify-center">
                     <PageTabs setNewPage={setPage} current={page} min={1} max={200} />
                 </div>
-                <div className="join justify-end">
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                <div className="justify-end join">
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers(category, 'osu');
                         }}>osu</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers(category, 'taiko');
                         }}>taiko</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers(category, 'fruits');
                         }}>fruits</button>
-                    <button className="join-item btn btn-secondary text-base-100 font-bold"
+                    <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers(category, 'mania');
                         }}>mania</button>
                 </div>
             </div>
-            <div className="bg-accent-900 p-3 rounded-xl">
-                <table className="border-separate border-spacing-y-1 w-full">
+            <div className="p-3 rounded-xl bg-accent-900">
+                <table className="w-full border-separate border-spacing-y-1">
                     <thead>
                         <tr>
                             <th className="text-start"></th>
@@ -119,7 +126,7 @@ const Users = () => {
                         {users.length > 0 ?
                             users.map((user, index) =>
                                 <UserCard mode={mode} grid={cardGrid} user={user} category={category} index={index + (50 * (actualPage - 1) + 1)} key={index} />
-                            ) : 
+                            ) :
                             <tr className="loading loading-dots loading-md"></tr>}
                     </tbody>
                 </table>

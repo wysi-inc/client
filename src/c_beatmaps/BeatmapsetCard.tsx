@@ -1,9 +1,9 @@
 import React from "react";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { playerStore, PlayerStoreInterface } from "../resources/store";
-import DiffIcon from "../components/DiffIcon";
+import DiffIcon from "./b_comp/DiffIcon";
 import moment from "moment";
-import StatusBadge from "../components/StatusBadge";
+import StatusBadge from "./b_comp/StatusBadge";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaRegClock, FaItunesNote, FaMicrophoneAlt, FaHeart } from "react-icons/fa";
 import { ImSpinner11 } from "react-icons/im"
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";

@@ -13,9 +13,9 @@ import { colors } from "../resources/store";
 import axios from '../resources/axios-config';
 import { secondsToTime } from "../resources/functions";
 import { BeatmapsetStatusType, GameModeType } from "../resources/types";
-import BeatmapsetPage from "../pages/BeatmapsetPage";
+import BeatmapsetPage from "./BeatmapsetPage";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
-import BeatmapsetCard from "../cards/BeatmapsetCard";
+import BeatmapsetCard from "./BeatmapsetCard";
 import InfiniteScroll from "react-infinite-scroller";
 import {FaAngleUp, FaAngleDown} from "react-icons/fa";
 
@@ -262,13 +262,13 @@ const BeatmapsPage = () => {
 
     return (
         <div className="p-4">
-            <div className="p-4 rounded-lg mb-3 flex flex-col gap-3 bg-accent-900 drop-shadow-lg">
-                <div className="bg-accent-950 rounded-lg p-4 text-xl flex flex-row justify-between items-center">
+            <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-accent-900">
+                <div className="flex flex-row justify-between items-center p-4 text-xl rounded-lg bg-accent-950">
                     <div>Beatmap Search:</div>
                     <div className="flex flex-row gap-2 items-center">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
                         <div className="tooltip" data-tip="Clear">
-                            <button className="btn btn-error text-lg"
+                            <button className="text-lg btn btn-error"
                                 onClick={() => {
                                     setCleared(true);
                                     clearSearch();
@@ -277,7 +277,7 @@ const BeatmapsPage = () => {
                             </button>
                         </div>
                         <div className="tooltip" data-tip="Copy">
-                            <button className="btn btn-success text-lg"
+                            <button className="text-lg btn btn-success"
                                 onClick={() => {
                                     setCopied(true);
                                     setURL();
@@ -287,21 +287,21 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4 bg-accent-950 rounded-lg p-4 drop-shadow-lg">
+                <div className="grid grid-cols-4 gap-4 p-4 rounded-lg drop-shadow-lg bg-accent-950">
                     <div className="col-span-4 md:col-span-2 lg:col-span-3">
                         <div className="mb-2 text-center">Title:</div>
-                        <input type="text" className="input input-bordered w-full text-center"
+                        <input type="text" className="w-full text-center input input-bordered"
                             placeholder="..." autoFocus={true}
                             value={query.title} onChange={(e) => setQuery((p) => ({...p, title: e.target.value}))} />
                     </div>
                     <div className="col-span-4 md:col-span-2 lg:col-span-1">
                         <div className="mb-2 text-center">Mapper:</div>
-                        <input type="text" className="input input-bordered w-full text-center"
+                        <input type="text" className="w-full text-center input input-bordered"
                             placeholder="..."
                             value={query.mapper} onChange={(e) => setQuery((p) => ({...p, mapper: e.target.value}))} />
                     </div>
                 </div>
-                <div className="rounded-lg flex flex-col p-4 gap-3 bg-accent-950 drop-shadow-lg">
+                <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-accent-950">
                     <div className="grid grid-cols-7">
                         <div className="col-span-7 md:col-start-3 md:col-span-3">
                             <div className="text-center">Year:</div>
@@ -460,7 +460,7 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                    <div className="col-span-3 md:col-span-1 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
+                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-1 bg-accent-950">
                         <div>Mode:</div>
                         <div className="flex flex-row flex-wrap gap-3" role="group">
                             {songModes.map((m: GameModeType, i: number) =>
@@ -474,7 +474,7 @@ const BeatmapsPage = () => {
                                 </button>)}
                         </div>
                     </div>
-                    <div className="col-span-3 md:col-span-2 bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
+                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-accent-950">
                         <div>Status:</div>
                         <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
                             {songStatus.map((s: BeatmapsetStatusType, i: number) =>
@@ -489,7 +489,7 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-accent-950 rounded-lg p-4 flex flex-col gap-4 drop-shadow-lg">
+                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-accent-950">
                     <div>Sort:</div>
                     <div className="flex flex-row flex-wrap gap-3">
                         {songSort.map((sor, i: number) =>
@@ -523,7 +523,7 @@ const BeatmapsPage = () => {
                     loader={<div key={0} className="loading loading-dots loading-md"></div>}
                     useWindow={false}
                 >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 ">
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                         {results.map((b: BeatmapSet, i: number) =>
                             <BeatmapsetCard index={i} data={b} />
                         )}

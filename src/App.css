@@ -31,6 +31,7 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 h1,
@@ -359,6 +360,7 @@ input::before {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -366,10 +368,10 @@ input::before {
 
 td:first-child,
 th:first-child {
-  border-radius: 0.5rem 0 0 0.5rem;
+    border-radius: 0.5rem 0 0 0.5rem;
 }
 
 td:last-child,
 th:last-child {
-  border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
 }

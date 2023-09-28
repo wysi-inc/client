@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { playerStore, PlayerStoreInterface } from "../resources/store";
+import { playerStore, PlayerStoreInterface } from "../../resources/store";
 import ReactAudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { MdClose } from 'react-icons/md';
@@ -16,7 +16,6 @@ const SongPlayer = () => {
     const [show, setShow] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(startVolume);
 
-
     function start() {
         if (volume === 0) setVolume(startVolume);
         setShow(true);
@@ -28,14 +27,14 @@ const SongPlayer = () => {
     }
 
     return (
-        <div className="player sticky bottom-0" hidden={!show}>
-            <div className="bg shadow-lg rounded-top overflow-hidden">
-                <div className="py-2 titleBox flex flex-row items-center justify-content-between">
-                    <div className="flex flex-row px-3 items-center gap-3">
+        <div className="sticky bottom-0 player" hidden={!show}>
+            <div className="overflow-hidden shadow-lg bg rounded-top">
+                <div className="flex flex-row items-center py-2 titleBox justify-content-between">
+                    <div className="flex flex-row gap-3 items-center px-3">
                         <div className="spin">
                             <BsDisc />
                         </div>
-                        <div className="d-inline-block truncate" style={{ width: 400 }}>
+                        <div className="truncate d-inline-block" style={{ width: 400 }}>
                             {artist} - {title}
                         </div>
                     </div>
@@ -54,7 +53,6 @@ const SongPlayer = () => {
                     autoPlay={true}
                     autoPlayAfterSrcChange={true}
                     onPlay={start}
-                    onPlayError={stop}
                     onEnded={stop}
                 />
             </div>

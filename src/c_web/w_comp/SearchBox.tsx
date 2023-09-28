@@ -1,13 +1,13 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
-import axios from "../resources/axios-config";
-import OnlineDot from "./OnlineDot";
-import SupporterIcon from "./SupporterIcon";
+import axios from "../../resources/axios-config";
+import OnlineDot from "../../c_users/u_comp/OnlineDot";
+import SupporterIcon from "../../c_users/u_comp/SupporterIcon";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import GroupBadge from "./GroupBadge";
-import { UserCompact } from "../resources/interfaces/user";
-import CountryFlag from "./CountryFlag";
+import GroupBadge from "../../c_users/u_comp/GroupBadge";
+import { UserCompact } from "../../resources/interfaces/user";
+import CountryFlag from "../../c_users/u_comp/CountryFlag";
 
 const SearchBox = () => {
 
@@ -62,17 +62,17 @@ const SearchBox = () => {
 
     return (
         <>
-            <button className="btn flex flex-row gap-3" onClick={show}>
+            <button className="flex flex-row gap-3 btn" onClick={show}>
                 <FaSearch />
                 <div>Search someone</div>
             </button>
             <dialog id="searchModal" className="modal modal-top md:modal-middle text-base-content">
-                <div className="modal-box flex flex-col gap-3">
+                <div className="flex flex-col gap-3 modal-box">
                     <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        <button className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">Search someone</h3>
-                    <form className="input-group w-full" onSubmit={(e) => {
+                    <h3 className="text-lg font-bold">Search someone</h3>
+                    <form className="w-full input-group" onSubmit={(e) => {
                         e.preventDefault();
                         sendTo(username);
                     }}>
@@ -92,7 +92,7 @@ const SearchBox = () => {
                             (index < 10 &&
                                 <Link to={`/users/${user.id}`}
                                     key={index + 1} onClick={hide}
-                                    className="text-decoration-none bg-accent-950 rounded-lg flex flex-row justify-between items-center grow darkenOnHover">
+                                    className="flex flex-row justify-between items-center rounded-lg text-decoration-none bg-accent-950 grow darkenOnHover">
                                     <div className="flex flex-row gap-2 items-center">
                                         <img src={user.avatar_url} height={40} width={40} alt="pfp"
                                             className="rounded" />

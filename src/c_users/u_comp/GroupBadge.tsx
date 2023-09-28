@@ -7,7 +7,7 @@ interface GroupBadgeProps {
 
 const GroupBadge = (props: GroupBadgeProps) => {
     return (
-        <div className="badge font-bold border-none" style={{color: props.group.colour}}>
+        <div className="font-bold border-none badge" style={{color: props.group.colour}}>
             {props.group.short_name}
         </div>
     )

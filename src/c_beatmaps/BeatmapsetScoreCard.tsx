@@ -1,9 +1,9 @@
 import React from "react";
 import { colors } from "../resources/store";
-import ModIcon from "../components/ModIcon";
+import ModIcon from "../c_scores/s_comp/ModIcon";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
-import CountryFlag from "../components/CountryFlag";
+import CountryFlag from "../c_users/u_comp/CountryFlag";
 import { ModsEntity, Score } from "../resources/interfaces/score";
 import { addDefaultSrc } from "../resources/functions";
 
@@ -17,7 +17,7 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
         <tr className="bg-accent-800">
             <th className="text-end">#{props.index}</th>
             <td>
-                <div className="flex items-center justify-center">
+                <div className="flex justify-center items-center">
                     <CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} />
                 </div>
             </td>
@@ -27,46 +27,34 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
                     {props.score.user.username}
                 </Link>
             </td>
-            <td>{props.score.total_score.toLocaleString()}</td>
-            <td>{Math.round(props.score.pp).toLocaleString()}pp</td>
+            <td>{props.score.score.toLocaleString()}</td>
+            <td>{props.score.pp ? Math.round(parseInt(props.score.pp)).toLocaleString() : 0}pp</td>
             <td>{props.score.max_combo}x</td>
             <td>{(props.score.accuracy * 100).toFixed(2)}%</td>
             <td><div className="flex flex-row gap-4">
-                {props.score.statistics?.perfect &&
+                {props.score.mode !== 'osu' && props.score.statistics.count_geki !== 0 &&
                     <div style={{ color: colors.judgements.x320 }}>
-                        {props.score.statistics.perfect}
+                        {props.score.statistics.count_geki}
                     </div>}
-                {props.score.statistics.great &&
+                {props.score.statistics.count_300 !== 0 &&
                     <div style={{ color: colors.judgements.x300 }}>
-                        {props.score.statistics.great}
+                        {props.score.statistics.count_300}
                     </div>}
-                {props.score.statistics?.good &&
+                {props.score.mode !== 'osu' && props.score.statistics.count_katu !== 0 &&
                     <div style={{ color: colors.judgements.x200 }}>
-                        {props.score.statistics.good}
+                        {props.score.statistics.count_katu}
                     </div>}
-                {props.score.statistics.ok &&
+                {props.score.statistics.count_100 !== 0 &&
                     <div style={{ color: colors.judgements.x100 }}>
-                        {props.score.statistics.ok}
+                        {props.score.statistics.count_100}
                     </div>}
-                {props.score.statistics.meh &&
+                {props.score.statistics.count_50 !== 0 &&
                     <div style={{ color: colors.judgements.x50 }}>
-                        {props.score.statistics.meh}
+                        {props.score.statistics.count_50}
                     </div>}
-                {props.score.statistics.large_tick_hit &&
-                    <div style={{ color: colors.judgements.x200 }}>
-                        {props.score.statistics.large_tick_hit}
-                    </div>}
-                {props.score.statistics.small_tick_hit &&
-                    <div style={{ color: colors.judgements.x100 }}>
-                        {props.score.statistics.small_tick_hit}
-                    </div>}
-                {props.score.statistics.small_tick_miss &&
-                    <div style={{ color: colors.judgements.x20 }}>
-                        {props.score.statistics.small_tick_miss}
-                    </div>}
-                {props.score.statistics.miss &&
+                {props.score.statistics.count_miss !== 0 &&
                     <div style={{ color: colors.judgements.xMiss }}>
-                        {props.score.statistics.miss}
+                        {props.score.statistics.count_miss}
                     </div>}
             </div></td>
             <td><div style={{
@@ -74,14 +62,14 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
             }} className="font-semibold">
                 {props.score.rank}
             </div></td>
-            <td><div className="flex flex-row gap-1 col-span-3">
-                {props.score.mods?.map((mod: ModsEntity, index: number) =>
-                    <ModIcon acronym={mod.acronym} size={24} key={index} />
+            <td><div className="flex flex-row col-span-3 gap-1">
+                {props.score.mods?.map((mod: string, index: number) =>
+                    <ModIcon acronym={mod} size={24} key={index} />
                 )}
             </div></td>
-            <td><div className="tooltip col-span-2"
-                data-tip={moment(props.score.ended_at).format('DD/MM/YYYY')}>
-                {moment(props.score.ended_at).fromNow()}
+            <td><div className="col-span-2 tooltip"
+                data-tip={moment(props.score.created_at).format('DD/MM/YYYY')}>
+                {moment(props.score.created_at).fromNow()}
             </div></td>
         </tr>
     );

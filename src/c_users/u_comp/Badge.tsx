@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserBadge } from '../resources/interfaces/user';
+import { UserBadge } from '../../resources/interfaces/user';
 import moment from 'moment';
 
 interface BadgePropsInterface {

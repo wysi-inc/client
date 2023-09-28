@@ -1,5 +1,5 @@
 import React from "react";
-import {ImHeart} from "react-icons/im"
+import { ImHeart } from "react-icons/im"
 
 interface SupporterIconProps {
     size: number;
@@ -8,8 +8,8 @@ interface SupporterIconProps {
 
 const SupporterIcon = (props: SupporterIconProps) => {
     return (
-        <div className="badge badge-primary">{
-            [...Array(props.level)].map((_, i) => <ImHeart key={i}/>)
+        <div className="flex flex-row badge badge-primary tooltip" data-tip="osu!supporter">{
+            [...Array(props.level)].map((_, i) => <ImHeart key={i} />)
         }</div>
     )
 }

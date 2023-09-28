@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { colors } from "../resources/store";
+import { colors } from "../../resources/store";
 import PpLine from "./PpLine";
 import BarPieChart from "./BarPieChart";
-import ModIcon from "./ModIcon";
-import { secondsToTime } from "../resources/functions";
-import { User } from "../resources/interfaces/user";
-import { Score } from "../resources/interfaces/score";
+import ModIcon from "../../c_scores/s_comp/ModIcon";
+import { secondsToTime } from "../../resources/functions";
+import { User } from "../../resources/interfaces/user";
+import { Score } from "../../resources/interfaces/score";
 
 interface topScoresProps {
     data: User;
@@ -46,8 +46,7 @@ const TopScoresPanel = (props: topScoresProps) => {
     const commonMods: string[] = useMemo(() => {
         const modsCounter: { [key: string]: number } = {};
         props.best.map(score =>
-            score.mods.length > 0 ?
-                score.mods.map(mod => mod.acronym) : ['NM'])
+            score.mods.map(mod => mod ? mod : 'NM'))
             .forEach((ele) => {
                 if (modsCounter[ele.join('-')]) {
                     modsCounter[ele.join('-')] += 1;
@@ -57,7 +56,7 @@ const TopScoresPanel = (props: topScoresProps) => {
             });
         let largestKey = null;
         let largestValue = -Infinity;
-    
+
         for (const key in modsCounter) {
             if (modsCounter[key] > largestValue) {
                 largestKey = key;
@@ -66,7 +65,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         }
         const formattedMods = largestKey ? largestKey.split("-").map(String) : [];
         return formattedMods;
-    }, [props.best]);    
+    }, [props.best]);
 
     const scoresHitsLabels: BarPieChartData[] = [
         { label: '320', color: colors.judgements.x320, value: scoresHits.x320 },
@@ -97,12 +96,12 @@ const TopScoresPanel = (props: topScoresProps) => {
             xMiss: 0,
         }
         props.best.map((obj: Score) => {
-            scoresHits.x320 += obj.statistics?.perfect ? obj.statistics.perfect : 0;
-            scoresHits.x300 += obj.statistics?.great ? obj.statistics.great : 0;
-            scoresHits.x200 += obj.statistics?.good ? obj.statistics.good : 0;
-            scoresHits.x100 += obj.statistics?.ok ? obj.statistics.ok : 0;
-            scoresHits.x50 += obj.statistics?.meh ? obj.statistics.meh : 0;
-            scoresHits.xMiss += obj.statistics?.miss ? obj.statistics.miss : 0;
+            if (obj.mode !== 'osu') scoresHits.x320 += obj.statistics?.count_geki ? obj.statistics.count_geki : 0;
+            scoresHits.x300 += obj.statistics?.count_300 ? obj.statistics.count_300 : 0;
+            if (obj.mode !== 'osu') scoresHits.x200 += obj.statistics?.count_katu ? obj.statistics.count_katu : 0;
+            scoresHits.x100 += obj.statistics?.count_100 ? obj.statistics.count_100 : 0;
+            scoresHits.x50 += obj.statistics?.count_50 ? obj.statistics.count_50 : 0;
+            scoresHits.xMiss += obj.statistics?.count_miss ? obj.statistics.count_miss : 0;
         });
         return scoresHits;
     }
@@ -139,7 +138,7 @@ const TopScoresPanel = (props: topScoresProps) => {
     }
 
     const lengths = props.best.map((score) => {
-        return calculateModifiedLength(score.beatmap.total_length, score.mods?.map((mod) => mod.acronym));
+        return calculateModifiedLength(score.beatmap.total_length, score.mods);
     });
     const totalLength = lengths?.reduce((acc, length) => acc + length, 0);
     const averageLength = totalLength / props.best.length;
@@ -152,7 +151,7 @@ const TopScoresPanel = (props: topScoresProps) => {
     }
 
     const bpms = props.best.map((score) => {
-        return calculateModifiedBpm(score.beatmap.bpm, score.mods?.map((mod) => mod.acronym));
+        return calculateModifiedBpm(score.beatmap.bpm, score.mods);
     });
     const totalBpm = bpms?.reduce((acc, bpm) => acc + bpm, 0);
 
@@ -164,30 +163,30 @@ const TopScoresPanel = (props: topScoresProps) => {
             .map((score) => score.max_combo)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averagePP =
         Math.round(props.best
-            .map((score) => score.pp)?.reduce((a, b) => a + b, 0) / props.best.length);
+            .map(sc => sc.pp ? parseInt(sc.pp) : 0)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
 
     return (
-        <div className="grid grid-cols-2 p-3 gap-3">
-            <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
+        <div className="grid grid-cols-2 gap-3 p-3">
+            <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">
                 <div>Hit Ratios</div>
                 <BarPieChart data={scoresHitsLabels} width={250} />
             </div>
-            <div className="flex flex-col col-span-2 lg:col-span-1 items-center gap-2">
+            <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">
                 <div>Rank Ratios</div>
                 <BarPieChart data={scoresRanksLabels} width={250} />
             </div>
             <div className="col-span-2">
                 <PpLine data={props.best} color={colors.ui.font} width={350} />
             </div>
-            <div className="col-span-2 flex flex-col items-center">
+            <div className="flex flex-col col-span-2 items-center">
                 <div>Average play:</div>
-                <div className="flex flex-row flex-wrap justify-center gap-2 mt-2">
+                <div className="flex flex-row flex-wrap gap-2 justify-center mt-2">
                     <div className="flex flex-row gap-1 items-center">
                         <div>Mods:</div>
                         <div className="flex flex-row gap-1">
                             {commonMods.map((mod: string, index: number) =>
-                                    <ModIcon acronym={mod} size={20} key={index + 1} />)}
+                                <ModIcon acronym={mod} size={20} key={index + 1} />)}
                         </div>
                     </div>
                     <div>|</div>

@@ -7,7 +7,7 @@ interface CountryShapeProps {
 
 const CountryShape = (props: CountryShapeProps) => {
     try {
-        const svgFile = require(`../assets/countries/${props.code.toLowerCase()}/vector.svg`);
+        const svgFile = require(`../../assets/countries/${props.code.toLowerCase()}/vector.svg`);
         return (
             <img className="countryIco"
                  alt="ico"

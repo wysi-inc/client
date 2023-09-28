@@ -1,7 +1,7 @@
 import React from "react";
-import { GameModeType } from "../resources/types";
-import { colors } from "../resources/store";
-import ModeIcon from "./ModeIcon";
+import { GameModeType } from "../../resources/types";
+import { colors } from "../../resources/store";
+import ModeIcon from "../../c_scores/s_comp/ModeIcon";
 import { Link } from "react-router-dom";
 
 interface DiffIconProps {
