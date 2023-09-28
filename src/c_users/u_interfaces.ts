@@ -3,7 +3,6 @@ import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Score } from "../resources/interfaces/score";
 import { BeatmapType, ScoreType } from "../resources/types";
 
-export type AxisType = "time" | undefined;
 export type scoreCategoryType = 'pinned' | 'best' | 'firsts' | 'recent';
 export type beatmapCategoryType = 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
 

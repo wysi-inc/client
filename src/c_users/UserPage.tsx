@@ -77,7 +77,7 @@ const lineOptions: ChartOptions<'line'> = {
             },
         },
         x: {
-            type: 'time' as AxisType,
+            type: 'time',
             time: {
                 displayFormats: {
                     day: 'dd/mm/yy',
@@ -97,7 +97,7 @@ const lineOptionsReverse: ChartOptions<'line'> = {
             }
         },
         x: {
-            type: 'time' as AxisType,
+            type: 'time',
             time: {
                 displayFormats: {
                     day: 'dd/mm/yy',
