@@ -17,46 +17,8 @@ interface ScoreProps {
 
 const ScoreCard = (props: ScoreProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
-    const [chokePP, setChokePP] = useState<number | undefined>(undefined);
-    const [newAR, setNewAR] = useState<number | undefined>(undefined);
-    const [newOD, setNewOD] = useState<number | undefined>(undefined);
-    const [newCS, setNewCS] = useState<number | undefined>(undefined);
-    const [newHP, setNewHP] = useState<number | undefined>(undefined);
-    const [newSR, setNewSR] = useState<number | undefined>(undefined);
-    const [newBPM, setNewBPM] = useState<number | undefined>(undefined);
-    const [newLen, setNewLen] = useState<number | undefined>(undefined);
 
-    useEffect(() => {
-        getPPChoke();
-    }, []);
-
-    async function getPPChoke() {
-        if (props.score.perfect) return;
-        const acc = props.score.accuracy * 100;
-        const m = props.score.mods;
-        try {
-            const r = await axios.get(`https://catboy.best/api/meta/${props.score.beatmap.id}?misses=0&acc=${acc}&mods=${props.score.mods_id}`);
-            const d = r.data;
-            if (props.score.mods) {
-                if (props.score.mods?.length > 0) {
-                    setNewAR(parseFloat(d.map.ar.toFixed(1)));
-                    setNewCS(parseFloat(d.map.cs.toFixed(1)));
-                    setNewOD(parseFloat(d.map.od.toFixed(1)));
-                    setNewHP(parseFloat(d.map.hp.toFixed(1)));
-                    setNewSR(d.difficulty.stars.toFixed(2));
-                    setNewBPM(Math.round(d.map.bpm));
-                    const length = props.score.beatmap.total_length;
-                    if (m.includes('DT')) setNewLen(length * 0.75);
-                    if (m.includes('HT')) setNewLen(length * 1.5);
-                }
-            }
-            const pp = d.pp[parseFloat(acc.toString())];
-            if (Math.round(pp.pp) !== Math.round(parseInt(props.score.pp)))
-                setChokePP(Math.round(pp.pp));
-        } catch (err) {
-            console.error(err);
-        }
-    }
+    const stats = useStats(props.score);
 
     function playSong() {
         play(props.score.beatmapset.id, props.score.beatmapset.title, props.score.beatmapset.artist);
@@ -112,7 +74,7 @@ const ScoreCard = (props: ScoreProps) => {
                     </div>
                     <div className="flex flex-row gap-2 content-end items-center">
                         <div className="p-1">
-                            #{props.index}
+                            #{props.index + 1}
                         </div>
                         <a href={`https://catboy.best/d/${props.score.beatmapset.id}`}
                             className="tooltip" data-tip="download">
@@ -138,20 +100,20 @@ const ScoreCard = (props: ScoreProps) => {
                     style={{ fontSize: 14 }}>
                     <div className="flex flex-row gap-1 items-center">
                         <FaStar />
-                        {newSR ? newSR : props.score.beatmap.difficulty_rating}
+                        {stats.sr}
                     </div>
                     <div className="flex flex-row gap-1 items-center">
                         <FaRegClock />
-                        {secondsToTime(newLen ? newLen : props.score.beatmap.total_length)}
+                        {secondsToTime(stats.len)}
                     </div>
                     <div className="flex flex-row gap-1 items-center">
                         <FaItunesNote />
-                        {newBPM ? newBPM : props.score.beatmap.bpm}
+                        {stats.bpm}
                     </div>
-                    <div>CS: {newCS ? newCS : props.score.beatmap.cs}</div>
-                    <div>AR: {newAR ? newAR : props.score.beatmap.ar}</div>
-                    <div>OD: {newOD ? newOD : props.score.beatmap.accuracy}</div>
-                    <div>HP: {newHP ? newHP : props.score.beatmap.drain}</div>
+                    <div>CS: {stats.cs}</div>
+                    <div>AR: {stats.ar}</div>
+                    <div>OD: {stats.od}</div>
+                    <div>HP: {stats.hp}</div>
                 </div>
                 <div className="flex flex-row justify-between items-center"
                     style={{ fontSize: 16 }}>
@@ -203,13 +165,66 @@ const ScoreCard = (props: ScoreProps) => {
                         </div>
                         <div className="flex flex-row gap-2 align-items-end">
                             <div className="h5">{props.score.pp ? Math.round(parseInt(props.score.pp)) : 0}pp</div>
-                            <div className="h6" style={{ color: '#cccccc' }}>{chokePP !== undefined ? `(${chokePP}pp if FC)` : `FC`}</div>
+                            <div className="h6" style={{ color: '#cccccc' }}>{stats.pp !== undefined ? `(${stats.pp}pp if FC)` : `FC`}</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
+}
+
+function useStats(score: Score) {
+
+    interface INITIAL {
+        pp: number | undefined,
+        bpm: number,
+        len: number,
+        sr: number,
+        ar: number,
+        cs: number,
+        od: number,
+        hp: number,
+    }
+    
+    const INITIAL_SET_STATS: INITIAL = {
+        pp: undefined,
+        bpm: score.beatmap.bpm,
+        len: score.beatmap.total_length,
+        sr: score.beatmap.difficulty_rating,
+        ar: score.beatmap.ar,
+        cs: score.beatmap.cs,
+        od: score.beatmap.accuracy,
+        hp: score.beatmap.drain,
+    }
+
+    const [stats, setStats] = useState(INITIAL_SET_STATS);
+
+    useEffect(() => {
+        getStats();
+    }, [])
+
+    async function getStats() {
+        try {
+            const d = await (await fetch(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${score.accuracy * 100}&mods=${score.mods_id}`)).json();
+            setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
+            setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
+            setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
+
+            setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
+            setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
+            setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
+            setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
+
+            if (score.mods.includes('DT')) setStats(prev => ({ ...prev, len: score.beatmap.total_length * 0.75 }));
+            else if (score.mods.includes('HT')) setStats(prev => ({ ...prev, len: score.beatmap.total_length * 1.5 }));
+            else setStats(prev => ({ ...prev, len: score.beatmap.total_length }));
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    return stats;
 }
 
 export default ScoreCard;

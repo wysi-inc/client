@@ -88,15 +88,15 @@ const Users = () => {
                 <table className="w-full border-separate border-spacing-y-1">
                     <thead>
                         <tr>
-                            <th className="text-start"></th>
-                            <th className="text-start"></th>
-                            <th className="text-start"></th>
-                            <th className="text-start">PP</th>
-                            <th className="text-start">Acc</th>
-                            <th className="text-start">Play Time</th>
-                            <th className="text-start">Play Count</th>
-                            <th className="text-start">Score</th>
-                            <th className="text-start">Grades</th>
+                            <th className="table-cell text-left"></th>
+                            <th className="table-cell text-left"></th>
+                            <th className="table-cell text-left"></th>
+                            <th className="table-cell text-left">PP</th>
+                            <th className="hidden text-left lg:table-cell">Acc</th>
+                            <th className="hidden text-left lg:table-cell">Play Time</th>
+                            <th className="hidden text-left lg:table-cell">Play Count</th>
+                            <th className="hidden text-left md:table-cell">Score</th>
+                            <th className="hidden text-left xl:table-cell">Grades</th>
                         </tr>
                     </thead>
                     <tbody className="mt-3">
