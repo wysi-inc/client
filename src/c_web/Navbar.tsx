@@ -1,16 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Link } from "react-router-dom";
-import { themeChange } from 'theme-change'
-import { HiMenu } from "react-icons/hi"
+import { HiMenu } from "react-icons/hi";
 import SearchBox from "./w_comp/SearchBox";
 import { FaGithub, FaDiscord } from 'react-icons/fa';
 
 const Navbar = () => {
-
-    useEffect(() => {
-        themeChange(false);
-    }, [])
 
     const logo = require('../assets/wysi727logo.svg').default;
 

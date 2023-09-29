@@ -65,6 +65,28 @@ const SCORES_INITIAL: ScoresObj = {
     firsts: [],
     recent: [],
 }
+const LINE_CHART_INITIAL: ChartData<'line'> = {
+    labels: [],
+    datasets: [{
+        label: '',
+        data: [],
+        fill: false,
+        borderColor: colors.ui.accent,
+        tension: 0.1
+    }]
+}
+const RADAR_CHART_INITIAL: ChartData<'radar'> = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Skills',
+            data: [],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+        }
+    ],
+};
 
 const lineOptions: ChartOptions<'line'> = {
     maintainAspectRatio: false,
@@ -122,28 +144,6 @@ const radarOptions: ChartOptions<'radar'> = {
         }
     }
 }
-const LINE_CHART_INITIAL: ChartData<'line'> = {
-    labels: [],
-    datasets: [{
-        label: '',
-        data: [],
-        fill: false,
-        borderColor: colors.ui.accent,
-        tension: 0.1
-    }]
-}
-const RADAR_CHART_INITIAL: ChartData<'radar'> = {
-    labels: [],
-    datasets: [
-        {
-            label: 'Skills',
-            data: [],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        }
-    ],
-};
 
 const UserPage = (props: UserPageProps) => {
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
@@ -157,10 +157,9 @@ const UserPage = (props: UserPageProps) => {
     const rarestMedal: Medal | null = useMemo(() => getRarestMedal(userData?.user_achievements, medals), [userData]);
     const achievedMedalsCount = useMemo(() => getAchievedMedalsCount(userData?.user_achievements, medalsByCategory), [userData]);
 
-    const [bestCalc, setBestCalc] = useState<Score[]>([]);
-
     const [scores, setScores] = useState<ScoresObj>(SCORES_INITIAL);
     const [beatmaps, setBeatmaps] = useState<BeatmapsObj>(BEATMAPS_INITIAL);
+    const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
 
     const [historyTabIndex, setHistoryTabIndex] = useState<number>(1);
     const [scoresTabIndex, setScoresTabIndex] = useState<number>(0);
@@ -231,7 +230,6 @@ const UserPage = (props: UserPageProps) => {
         { num: 6, title: 'Pending', icon: <FaHourglassHalf />, count: userData.pending_beatmapset_count },
         { num: 7, title: 'Graveyard', icon: <FaSkull />, count: userData.graveyard_beatmapset_count },
     ]
-
     const beatmapsList: beatmapListItem[] = [
         { id: 1, beatmaps: beatmaps.favourite, len: userData.favourite_beatmapset_count, type: 'favourite' },
         { id: 2, beatmaps: beatmaps.ranked, len: userData.ranked_beatmapset_count, type: 'ranked' },
@@ -472,7 +470,7 @@ const UserPage = (props: UserPageProps) => {
                             <div>Top Play Stats</div>
                         </div>
                         <div className="p-4">
-                            <TopScoresPanel data={userData} best={bestCalc} />
+                            <TopScoresPanel data={userData} best={scores.best} />
                         </div>
                     </div>
                 </div>
@@ -494,13 +492,16 @@ const UserPage = (props: UserPageProps) => {
                         <div hidden={scoresTabIndex !== s.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
                             <InfiniteScroll
                                 pageStart={0}
-                                loadMore={() => getScores(s.type, 15, s.scores.length)}
-                                hasMore={s.scores.length < s.len}
+                                loadMore={() => s.type !== 'best' ? getScores(s.type, 15, s.scores.length) : setBestRenderIndex((p) => p + 15)}
+                                hasMore={s.type !== 'best' ? s.scores.length < s.len : bestRenderIndex < s.len}
                                 loader={<div key={0} className="loading loading-dots loading-md"></div>}
                                 useWindow={false}
                             >
-                                {s.scores.map((s: Score, ind: number) =>
-                                    <ScoreCard index={ind} score={s} />
+                                {s.scores.map((sc: Score, ind: number) => (
+                                    s.type !== 'best' ?
+                                        <ScoreCard index={ind} score={sc} /> :
+                                        ind < bestRenderIndex && <ScoreCard index={ind} score={sc} />
+                                )
                                 )}
                             </InfiniteScroll>
                         </div>
@@ -639,7 +640,7 @@ const UserPage = (props: UserPageProps) => {
 
             window.history.replaceState({}, '', `/users/${user.id}/${searchMode}`);
 
-            getBestCalc(user.id, searchMode);
+            getBest(user.id, searchMode, 'best', 100, 0);
             getGlobalData(user);
             getCountryData(user);
             getPlaysData(user);
@@ -669,42 +670,18 @@ const UserPage = (props: UserPageProps) => {
         }
     }
 
-    async function getBestCalc(id: number, m: GameModeType) {
+    async function getBest(id: number, m: GameModeType, t: scoreCategoryType, l: number, o: number) {
         try {
-            const res = await axios.post('/userscores', {
+            const r = await axios.post('/userscores', {
                 id: id,
                 mode: m,
-                limit: 100,
-                offset: 0,
-                type: 'best'
+                limit: l,
+                offset: o,
+                type: t
             });
-            const scores: Score[] = res.data;
-            setBestCalc(scores);
-            // const len = 25;
-            // scores.length = len;
-            // const r = await axios.post('/skill', {
-            //     scores: scores,
-            //     mode: m
-            // })
-            // console.log(r.data);
-            // setSkillsData({
-            //     labels: ['Agility', 'Precision', 'Reaction', 'Stamina', 'Tenacity', 'Timing'],
-            //     datasets: [
-            //         {
-            //             label: 'Skills',
-            //             data: [
-            //                 r.data.agility / len * 10,
-            //                 r.data.precision / len * 10,
-            //                 r.data.reaction / len * 10 / 1.5,
-            //                 r.data.stamina / len * 10,
-            //                 r.data.tenacity / len * 10,
-            //                 r.data.timing / len * 10 / 1.5],
-            //             backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            //             borderColor: 'rgba(255, 99, 132, 1)',
-            //             borderWidth: 1,
-            //         }
-            //     ],
-            // })
+            const d: Score[] = r.data;
+            if (d.length < 1) return;
+            setScores((prev) => ({ ...prev, best: [...prev.best, ...d] }));
         } catch (err) {
             console.error(err);
         }

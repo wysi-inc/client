@@ -2,8 +2,6 @@ import React from 'react';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import 'react-virtualized/styles.css';
-
 import Navbar from "./c_web/Navbar";
 import Footer from './c_web/Footer';
 import Home from './c_web/Home';
