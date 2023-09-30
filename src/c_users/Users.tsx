@@ -9,7 +9,7 @@ import { GameModeType } from "../resources/types";
 import PageTabs from "../c_web/w_comp/PageTabs";
 import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
-import { alertManager, alertManagerInterface } from "../resources/store";
+import { alertManager, alertManagerInterface } from "../resources/store/tools";
 
 const Users = () => {
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);

@@ -1,5 +1,5 @@
 import React from "react";
-import { colors } from "../resources/store";
+import { colors } from "../resources/store/tools";
 import ModIcon from "../c_scores/s_comp/ModIcon";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";

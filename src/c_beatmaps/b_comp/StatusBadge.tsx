@@ -1,5 +1,5 @@
 import React from "react";
-import {colors} from "../../resources/store";
+import {colors} from "../../resources/store/tools";
 import {BeatmapsetStatusType} from "../../resources/types";
 interface StatusBadgeProps {
     status: BeatmapsetStatusType

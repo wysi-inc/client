@@ -1,6 +1,6 @@
 import React from "react";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
-import { playerStore, PlayerStoreInterface } from "../resources/store";
+import { playerStore, PlayerStoreInterface } from "../resources/store/tools";
 import DiffIcon from "./b_comp/DiffIcon";
 import moment from "moment";
 import StatusBadge from "./b_comp/StatusBadge";

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import SearchBox from "./w_comp/SearchBox";
 import { FaGithub, FaDiscord } from 'react-icons/fa';
+import Login from './w_comp/Login';
 
 const Navbar = () => {
 
@@ -11,7 +12,7 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 p-0 px-2 drop-shadow-lg navbar bg-accent-900"
-            style={{zIndex: 2000}}>
+            style={{ zIndex: 2000 }}>
             <div className="gap-2 pl-0 navbar-start">
                 <div className="lg:hidden dropdown">
                     <div className="dropdown">
@@ -47,6 +48,7 @@ const Navbar = () => {
                 <a target='_blank' href='https://github.com/orgs/wysi-inc/repositories' className="btn btn-ghost btn-circle">
                     <FaGithub />
                 </a>
+                <Login />
             </div>
         </nav>
     )

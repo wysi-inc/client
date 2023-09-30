@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import axios from "../resources/axios-config";
 import moment from "moment";
-import { PlayerStoreInterface, playerStore } from "../resources/store";
+import { PlayerStoreInterface, playerStore } from "../resources/store/tools";
 import { addDefaultSrc, getModsInt, secondsToTime } from "../resources/functions";
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Score } from "../resources/interfaces/score";

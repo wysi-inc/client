@@ -1,4 +1,4 @@
-import { modsInt } from "./store";
+import { modsInt } from "./store/tools";
 
 export function secondsToTime(seconds: number) {
     seconds = Number(seconds);

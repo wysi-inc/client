@@ -30,7 +30,7 @@ import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { MonthlyData, User, UserAchievement, UserBadge, UserGroup } from "../resources/interfaces/user";
 import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/medals";
 
-import { alertManager, alertManagerInterface, colors } from "../resources/store";
+import { alertManager, alertManagerInterface, colors } from "../resources/store/tools";
 import { BeatmapsObj, ScoresObj, beatmapCategoryType, beatmapListItem, scoreCategoryType, scoreListItem, tabInterface } from "./u_interfaces";
 
 Chart.register(zoomPlugin, ...registerables);
@@ -247,10 +247,13 @@ const UserPage = (props: UserPageProps) => {
                     className="flex flex-col gap-8 p-8 rounded-none card-body">
                     <div className="grid flex-wrap grid-cols-7 gap-4 xl:gap-8">
                         <div className="flex flex-col col-span-9 gap-3 justify-between items-center md:col-span-2 xl:col-span-1">
-                            <img src={userData.avatar_url}
-                                onError={addDefaultSrc}
-                                alt='pfp' className="mb-2 rounded-lg aspect-square"
-                                style={{ width: '100%' }} />
+                            <div className="avatar">
+                                <div className='rounded-lg'>
+                                    <img src={userData.avatar_url}
+                                        onError={addDefaultSrc}
+                                        alt='pfp' style={{ width: '100%' }} />
+                                </div>
+                            </div>
                             <div className="flex flex-row gap-2 items-center w-full">
                                 <div className="text-neutral-content">{userData.statistics.level.current}</div>
                                 <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
@@ -265,7 +268,7 @@ const UserPage = (props: UserPageProps) => {
                         <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2 md:items-start">
                             <div className="flex flex-row gap-3 items-center">
                                 <a className="text-4xl font-bold"
-                                    target={"_blank"} rel="noreferrer"
+                                    target="_blank" rel="noreferrer"
                                     href={`https://osu.ppy.sh/users/${userData.id}`}>
                                     {userData.username}
                                 </a>

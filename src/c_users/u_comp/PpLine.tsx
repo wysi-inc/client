@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { colors } from "../../resources/store";
+import { colors } from "../../resources/store/tools";
 import { Score } from "../../resources/interfaces/score";
 
 interface PpLineProps {

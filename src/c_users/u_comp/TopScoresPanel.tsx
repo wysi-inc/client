@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { colors } from "../../resources/store";
+import { colors } from "../../resources/store/tools";
 import PpLine from "./PpLine";
 import BarPieChart from "./BarPieChart";
 import ModIcon from "../../c_scores/s_comp/ModIcon";

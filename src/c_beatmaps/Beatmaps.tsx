@@ -9,7 +9,7 @@ import { Slider } from "@mui/material";
 import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
 
-import { colors } from "../resources/store";
+import { colors } from "../resources/store/tools";
 import axios from '../resources/axios-config';
 import { secondsToTime } from "../resources/functions";
 import { BeatmapsetStatusType, GameModeType } from "../resources/types";

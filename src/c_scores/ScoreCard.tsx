@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
-import { colors, playerStore, PlayerStoreInterface } from "../resources/store";
+import { colors, playerStore, PlayerStoreInterface } from "../resources/store/tools";
 import ModIcon from "./s_comp/ModIcon";
 import moment from "moment/moment";
 import StatusBadge from "../c_beatmaps/b_comp/StatusBadge";

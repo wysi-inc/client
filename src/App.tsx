@@ -13,6 +13,7 @@ import './App.css';
 import './assets/ibm-plex.css';
 import ScrollToTop from './resources/ScrollToTop';
 import AlertManager from './c_web/w_comp/AlertManager';
+import OAuth from './c_web/OAuth';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <main style={{ maxWidth: 1600 }} className="mx-auto bg-accent-600">
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/oauth-redirect" element={<OAuth />} />
                         <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
                         <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
                     </Routes>

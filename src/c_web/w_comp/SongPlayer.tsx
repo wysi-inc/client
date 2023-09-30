@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { playerStore, PlayerStoreInterface } from "../../resources/store";
+import { playerStore, PlayerStoreInterface } from "../../resources/store/tools";
 import ReactAudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { MdClose } from 'react-icons/md';

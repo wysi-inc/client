@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { ColorsInterface } from "./interfaces/general";
-import { alertProps, alertType } from "../c_web/w_comp/AlertManager";
+import { ColorsInterface } from "../interfaces/general";
+import { alertProps, alertType } from "../../c_web/w_comp/AlertManager";
 
 export const colors: ColorsInterface = {
     ui: {
@@ -144,6 +144,6 @@ export const alertManager = create<alertManagerInterface>(
         lastId: 0,
         alerts: [],
         addAlert: (ty: alertType, txt: string) => set((s) => ({ lastId: s.lastId + 1, alerts: [...s.alerts, { id: s.lastId + 1, type: ty, text: txt }] })),
-        delAlert: (id: number) => set((s) => ({alerts: s.alerts.filter((a) => a.id !== id)})),
+        delAlert: (id: number) => set((s) => ({ alerts: s.alerts.filter((a) => a.id !== id) })),
     })
 )
