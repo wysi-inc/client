@@ -41,7 +41,7 @@ const Navbar = () => {
             <div className="navbar-center">
                 <SearchBox />
             </div>
-            <div className="gap-2 navbar-end">
+            <div className="flex flex-row gap-2 items-center navbar-end">
                 <a target='_blank' href='' className="btn btn-ghost btn-circle">
                     <FaDiscord />
                 </a>

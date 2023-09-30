@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { UserStore } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import axios from "../../resources/axios-config";
+import { User } from "../../resources/interfaces/user";
 
 const Login = () => {
     const user = UserStore((state: UserStore) => state.user);
     const logout = UserStore((state: UserStore) => state.logout);
+    const login = UserStore((state: UserStore) => state.login);
 
     const client_id = 22795;
     const redirect_uri = 'https://wysi727.com/oauth-redirect';
@@ -31,10 +33,9 @@ const Login = () => {
 
     return (
         <div className="dropdown dropdown-bottom dropdown-end">
-            <label tabIndex={0} className="m-1 normal-case btn">
-                <div>{user.name}</div>
+            <label tabIndex={0} className="cursor-pointer darkenOnHover">
                 <div className="avatar">
-                    <div className="w-8 rounded">
+                    <div className="w-10 rounded-lg">
                         <img src={user.pfp} alt="pfp" />
                     </div>
                 </div>
@@ -54,8 +55,14 @@ const Login = () => {
 
     async function isLogged() {
         try {
-            const d = await(await axios.post('/isLogged')).data;
-            console.log(d);
+            const d = (await axios.post('/isLogged')).data;
+            if (d.logged) {
+                const u: User = (await axios.post('/user', {
+                    id: d.user,
+                    mode: "default",
+                })).data;
+                login(u.id, u.username, u.avatar_url);
+            }
         } catch (err) {
             console.error(err);
         }

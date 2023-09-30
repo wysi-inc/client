@@ -416,7 +416,7 @@ const UserPage = (props: UserPageProps) => {
                     </div>}
             </div>
             <div className="grid grid-cols-5 gap-4 justify-center md:p-4">
-                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-3" ref={div1Ref}>
+                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-3" ref={div1Ref}>
                     <div className="shadow">
                         <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
                             <FaChartLine />
@@ -477,7 +477,7 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800 4">
                         <FaListUl />
                         <div>Scores</div>
@@ -510,7 +510,7 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     )}
                 </div>
-                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
                         <FaListUl />
                         <div>Beatmaps</div>
@@ -540,7 +540,7 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                     )}
                 </div>
-                <div className="flex flex-col col-span-5 drop-shadow-lg bg-accent-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
                     <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
                         <FaMedal />
                         <div>Medals</div>

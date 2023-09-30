@@ -35,7 +35,7 @@ const AlertManager = () => {
     const alerts = alertManager((state: alertManagerInterface) => state.alerts);
     return (
         <div>
-            {alerts.map(a => <Alert id={a.id} type={a.type} text={a.text} />)}
+            {alerts.map(a => <Alert key={a.id} id={a.id} type={a.type} text={a.text} />)}
         </div>
     )
 }
