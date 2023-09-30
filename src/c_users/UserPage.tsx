@@ -195,11 +195,6 @@ const UserPage = (props: UserPageProps) => {
             <></>
         )
     }
-    if (userData.is_bot) {
-        return (
-            <></>
-        )
-    }
 
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: userData.statistics.grade_counts.ssh },
@@ -502,8 +497,8 @@ const UserPage = (props: UserPageProps) => {
                             >
                                 {s.scores.map((sc: Score, ind: number) => (
                                     s.type !== 'best' ?
-                                        <ScoreCard index={ind} score={sc} /> :
-                                        ind < bestRenderIndex && <ScoreCard index={ind} score={sc} />
+                                        <ScoreCard index={ind} score={sc} key={ind} /> :
+                                        ind < bestRenderIndex && <ScoreCard index={ind} score={sc} key={ind} />
                                 )
                                 )}
                             </InfiniteScroll>
@@ -534,7 +529,7 @@ const UserPage = (props: UserPageProps) => {
                                 useWindow={false}
                             >
                                 {b.beatmaps.map((bs: BeatmapSet, ind: number) =>
-                                    <BeatmapsetCard index={ind} beatmapset={bs} />
+                                    <BeatmapsetCard key={ind} index={ind} beatmapset={bs} />
                                 )}
                             </InfiniteScroll>
                         </div>
@@ -629,13 +624,16 @@ const UserPage = (props: UserPageProps) => {
             const data = res.data;
             if (data.error === null) {
                 setUserData(null);
+                addAlert('warning', "This user doesn't exist");
                 return;
             };
             const user: User = data;
+            if (user.is_bot) {
+                addAlert('warning', 'This user is a bot, bots are not supported yet :(');
+                setUserData(null);
+                return;
+            };
             setUserData(data);
-
-            if (user.is_bot) return;
-
             let searchMode: GameModeType;
 
             if (props.userMode === "default") searchMode = user.playmode;
@@ -667,9 +665,9 @@ const UserPage = (props: UserPageProps) => {
             else if (user.graveyard_beatmapset_count > 0) beatmapsTab = 7;
             setBeatmapsTabIndex(beatmapsTab);
         } catch (err) {
+            addAlert('warning', "This user doesn't exist");
             console.error(err);
             setUserData(null);
-            addAlert('warning', 'This user doesnt exist');
         }
     }
 

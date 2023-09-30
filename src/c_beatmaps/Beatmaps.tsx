@@ -525,7 +525,7 @@ const BeatmapsPage = () => {
                 >
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                         {results.map((b: BeatmapSet, i: number) =>
-                            <BeatmapsetCard index={i} beatmapset={b} />
+                            <BeatmapsetCard key={i} index={i} beatmapset={b} />
                         )}
                     </div>
                 </InfiniteScroll>
