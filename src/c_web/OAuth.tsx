@@ -26,7 +26,9 @@ const OAuth = () => {
                 sendHome();
                 return;
             }
-            const u: User = d;
+            const u: User = d.user;
+            const t = d.jwtUser;
+            localStorage.setItem('jwt', t);
             login(u.id, u.username, u.avatar_url);
             sendHome();
         } catch (err) {

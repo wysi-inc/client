@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { UserStore } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import axios from "../../resources/axios-config";
 import { User } from "../../resources/interfaces/user";
+import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 
 const Login = () => {
     const user = UserStore((state: UserStore) => state.user);
     const logout = UserStore((state: UserStore) => state.logout);
     const login = UserStore((state: UserStore) => state.login);
+    const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const client_id = 22795;
     const redirect_uri = 'https://wysi727.com/oauth-redirect';
@@ -55,6 +57,16 @@ const Login = () => {
 
     async function isLogged() {
         try {
+            const token: string = `${localStorage.getItem('jwt')}`;
+            const payload: string = token.split('.')[1];
+            const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+            const jsonData = JSON.parse(decodedString);
+            login(jsonData.id, jsonData.name, jsonData.pfp);
+        } catch (err) {
+            console.error(err);
+            logout();
+        }
+        try {
             const d = (await axios.post('/isLogged')).data;
             if (d.logged) {
                 const u: User = (await axios.post('/user', {
@@ -64,7 +76,9 @@ const Login = () => {
                 login(u.id, u.username, u.avatar_url);
             }
         } catch (err) {
+            addAlert('error', 'Failed to validate logi');
             console.error(err);
+            logout();
         }
     }
 }
