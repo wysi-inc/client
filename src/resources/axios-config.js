@@ -1,8 +1,7 @@
 import axios from "axios";
-import env from "react-dotenv";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://api.wysi727.com/",
   /*env.ENVIRONMENT === "dev"
       ? "http://localhost:5000"
       : "https://api.wysi727.com/",*/
