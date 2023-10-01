@@ -4,38 +4,38 @@ import Tablet from "./setup_comp/Tablet";
 import { User } from "../../resources/interfaces/user";
 import { UserStore } from "../../resources/store/user";
 import { TabletInterface, KeyboardInterface } from "../u_interfaces";
-import { FaEdit, FaCheck, FaTimes } from "react-icons/fa";
+import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
 
 interface SetupPanelProps {
     user: User
 }
 
-const TABLET_INITIAL: TabletInterface = {
-    name: 'Wacom CTH-680',
-    area: {
-        w: 216,
-        h: 121.5,
-    },
-    position: {
-        x: 108,
-        y: 60.75,
-        r: 0,
-    },
-    size: {
-        w: 216,
-        h: 135,
-    },
-};
-
-const KEYBOARD_INITIAL: KeyboardInterface = {
-    name: 'Wooting 60HE',
-    layout: 'k60',
-    keys: [],
-}
-
 
 const SetupPanel = (p: SetupPanelProps) => {
     const user = UserStore((state: UserStore) => state.user);
+    const me = user.id === p.user.id;
+    const TABLET_INITIAL: TabletInterface = {
+        name: 'Wacom CTH-680',
+        area: {
+            w: 216,
+            h: 121.5,
+        },
+        position: {
+            x: 108,
+            y: 60.75,
+            r: 0,
+        },
+        size: {
+            w: 216,
+            h: 135,
+        },
+    };
+    
+    const KEYBOARD_INITIAL: KeyboardInterface = {
+        name: 'Wooting 60HE',
+        layout: 'k60',
+        keys: ['z', 'x'],
+    }
 
     const [tabsIndex, setTabsIndex] = useState<number>(1);
     const [keyboard, setKeyboard] = useState<KeyboardInterface>(KEYBOARD_INITIAL);
@@ -47,29 +47,26 @@ const SetupPanel = (p: SetupPanelProps) => {
         <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-3">
             <div className="shadow">
                 <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                    <FaDesktop/>
                     <div>Setup</div>
                 </div>
                 <div className="grid grid-cols-6 items-center bg-custom-900">
                     <div className="col-span-4 col-start-2 justify-center content-center rounded-none bg-custom-900 tabs tabs-boxed">
                         <button onClick={() => setTabsIndex(1)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 1 && 'tab-active text-base-100'}`}>
-                            <div>Keyboard</div>
+                            <div>Inputs</div>
                         </button>
                         <button onClick={() => setTabsIndex(2)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 2 && 'tab-active text-base-100'}`}>
-                            <div>Tablet</div>
+                            <div>Peripherals</div>
                         </button>
                         <button onClick={() => setTabsIndex(3)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 3 && 'tab-active text-base-100'}`}>
-                            <div>Mouse</div>
-                        </button>
-                        <button onClick={() => setTabsIndex(4)}
-                            className={`tab flex flex-row gap-2 ${tabsIndex === 4 && 'tab-active text-base-100'}`}>
-                            <div>Pc</div>
+                            <div>PC</div>
                         </button>
                     </div>
                     <div className="flex flex-row gap-2 justify-end pr-2">
-                        <div hidden={edit}>
+                        <div hidden={edit || !me}>
                             <button onClick={() => setEdit(true)} className="btn btn-warning btn-sm">
                                 <FaEdit />
                             </button>

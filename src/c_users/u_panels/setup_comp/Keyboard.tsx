@@ -15,7 +15,7 @@ const Keyboard = (p: propsInterface) => {
     }
 
     return (
-        <div className="flex flex-col gap-3 items-center">
+        <div className="flex overflow-hidden flex-col gap-3 items-center">
             <div>{p.keyboard.name}</div>
             <div className="grid justify-center items-center p-3 rounded-lg border">
                 <div className="grid justify-center items-center" style={{ maxHeight: 28.15 * 5, maxWidth: 422.24 }}>
@@ -92,6 +92,22 @@ const Keyboard = (p: propsInterface) => {
                             <Key char={'ctrl'} code={'rctrl'} keys={p.keyboard.keys} toggle={toggle} width={1.25} />
                         </div>
                     </div>
+                </div>
+            </div>
+            <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
+                <div>Model:</div>
+                <div className="join">
+                    <input onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, name: e.target.value }))} value={p.keyboard.name}
+                        type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
+                    <select className="select select-bordered join-item select-sm">
+                        <option>K2</option>
+                        <option>K3</option>
+                        <option>K4</option>
+                        <option selected>60%</option>
+                        <option>75%</option>
+                        <option>TKL</option>
+                        <option>FULL</option>
+                    </select>
                 </div>
             </div>
         </div>

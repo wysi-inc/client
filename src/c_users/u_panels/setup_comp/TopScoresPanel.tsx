@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { colors } from "../../resources/store/tools";
-import PpLine from "../u_comp/PpLine";
-import BarPieChart from "../u_comp/BarPieChart";
-import ModIcon from "../../c_scores/s_comp/ModIcon";
-import { secondsToTime } from "../../resources/functions";
-import { User } from "../../resources/interfaces/user";
-import { Score } from "../../resources/interfaces/score";
+import { useEffect, useState, useMemo } from "react";
+import { colors } from "../../../resources/store/tools";
+import PpLine from "../../u_comp/PpLine";
+import BarPieChart from "../../u_comp/BarPieChart";
+import ModIcon from "../../../c_scores/s_comp/ModIcon";
+import { secondsToTime } from "../../../resources/functions";
+import { User } from "../../../resources/interfaces/user";
+import { Score } from "../../../resources/interfaces/score";
 
 interface topScoresProps {
     data: User;
@@ -167,7 +167,7 @@ const TopScoresPanel = (props: topScoresProps) => {
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
 
     return (
-        <div className="grid grid-cols-2 gap-3 p-3">
+        <div className="grid grid-cols-2 gap-3 p-3 grow">
             <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">
                 <div>Hit Ratios</div>
                 <BarPieChart data={scoresHitsLabels} width={250} />

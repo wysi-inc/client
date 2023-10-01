@@ -1,6 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-import { colors } from '../../../resources/store/tools';
-
 interface KeyInterface {
     char: string,
     code: string,
@@ -12,8 +9,8 @@ interface KeyInterface {
 const Key = (p: KeyInterface) => {
     return (
         <button onClick={() => p.toggle(p.code)}>
-            <kbd className="kbd"
-                style={{ width: `${p.width * 2.199}rem`, backgroundColor: p.keys.includes(p.code) ? colors.ui.accent + '44' : '' }}>
+            <kbd className={`kbd ${p.keys.includes(p.code) && 'bg-opacity-50 border border-secondary bg-secondary'}`}
+                style={{ width: `${p.width * 2.199}rem` }}>
                 {p.char}
             </kbd>
         </button>
