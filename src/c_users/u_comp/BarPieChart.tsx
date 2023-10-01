@@ -1,4 +1,3 @@
-import React from "react";
 import { BarPieChartData } from "./TopScoresPanel";
 
 interface BarPieChartProps {

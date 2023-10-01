@@ -1,4 +1,3 @@
-import React from "react";
 import ReactCountryFlag from "react-country-flag";
 import Twemoji from "react-twemoji";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { Medal } from "../../resources/interfaces/medals";
 
 interface MedalProps {

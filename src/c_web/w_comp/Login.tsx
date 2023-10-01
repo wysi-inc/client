@@ -69,11 +69,12 @@ const Login = () => {
         try {
             const d = (await axios.post('/isLogged')).data;
             if (d.logged) {
-                const u: User = (await axios.post('/user', {
-                    id: d.user,
-                    mode: "default",
-                })).data;
-                login(u.id, u.username, u.avatar_url);
+                const t = d.jwtUser;
+                localStorage.setItem('jwt', t);
+                const payload: string = t.split('.')[1];
+                const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+                const jsonData = JSON.parse(decodedString);
+                login(jsonData.id, jsonData.name, jsonData.pfp);
             }
         } catch (err) {
             addAlert('error', 'Failed to validate logi');

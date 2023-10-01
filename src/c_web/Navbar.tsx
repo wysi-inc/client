@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Link } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import SearchBox from "./w_comp/SearchBox";

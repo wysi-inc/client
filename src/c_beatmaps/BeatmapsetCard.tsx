@@ -1,4 +1,3 @@
-import React from "react";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { playerStore, PlayerStoreInterface } from "../resources/store/tools";
 import DiffIcon from "./b_comp/DiffIcon";

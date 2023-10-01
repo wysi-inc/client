@@ -1,4 +1,3 @@
-import React from "react";
 import { GameModeType } from "../../resources/types";
 import { colors } from "../../resources/store/tools";
 import ModeIcon from "../../c_scores/s_comp/ModeIcon";

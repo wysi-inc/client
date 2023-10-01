@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axios from '../resources/axios-config';
 import moment from "moment";
 
@@ -166,6 +166,10 @@ const UserPage = (props: UserPageProps) => {
     const [beatmapsTabIndex, setBeatmapsTabIndex] = useState<number>(0);
 
     const div1Ref = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+
+    }, []);
 
     useEffect((): void => {
         clearData();

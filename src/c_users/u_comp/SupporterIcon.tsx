@@ -1,4 +1,3 @@
-import React from "react";
 import { ImHeart } from "react-icons/im"
 
 interface SupporterIconProps {
