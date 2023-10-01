@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { UserStore } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import axios from "../../resources/axios-config";
-import { User } from "../../resources/interfaces/user";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 
 const Login = () => {
@@ -75,9 +74,11 @@ const Login = () => {
                 const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
                 const jsonData = JSON.parse(decodedString);
                 login(jsonData.id, jsonData.name, jsonData.pfp);
+            } else {
+                logout();
             }
         } catch (err) {
-            addAlert('error', 'Failed to validate logi');
+            addAlert('error', 'Failed to validate login');
             console.error(err);
             logout();
         }

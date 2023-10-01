@@ -17,7 +17,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
     return (
-        <div className="flex grow bg-accent-900"
+        <div className="flex grow bg-custom-900"
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.beatmapset.id}/covers/cover.jpg?${props.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col gap-2 p-3 grow"
                 style={{ backdropFilter: "blur(2px)" }}>

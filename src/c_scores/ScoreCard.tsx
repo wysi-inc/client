@@ -25,7 +25,7 @@ const ScoreCard = (props: ScoreProps) => {
     }
 
     return (
-        <div className="flex grow bg-accent-900"
+        <div className="flex grow bg-custom-900"
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col gap-2 p-3 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
@@ -206,9 +206,9 @@ function useStats(score: Score) {
 
     async function getStats() {
         try {
-            const d = await (await fetch(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${score.accuracy * 100}&mods=${score.mods_id}`)).json();
-            
-            d.pp[100]?.pp && setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
+            const acc = score.accuracy * 100;
+            const d = await (await fetch(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`)).json();
+            d.pp[acc]?.pp && setStats(prev => ({ ...prev, pp: Math.round(d.pp[acc].pp) }))
             setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
             setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
 

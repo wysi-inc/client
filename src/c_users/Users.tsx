@@ -84,7 +84,7 @@ const Users = () => {
                         }}>mania</button>
                 </div>
             </div>
-            <div className="p-3 rounded-xl bg-accent-900">
+            <div className="p-3 rounded-xl bg-custom-900">
                 <table className="w-full border-separate border-spacing-y-1">
                     <thead>
                         <tr>

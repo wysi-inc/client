@@ -1,4 +1,4 @@
-import { BarPieChartData } from "./TopScoresPanel";
+import { BarPieChartData } from "../u_panels/TopScoresPanel";
 
 interface BarPieChartProps {
     data: BarPieChartData[];

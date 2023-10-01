@@ -1,0 +1,6 @@
+.input-mm::after {
+    content: 'mm' !important;
+    display: inline-block !important;
+    width: 12px;
+    height: 12px;
+}

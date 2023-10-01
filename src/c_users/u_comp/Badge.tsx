@@ -9,7 +9,6 @@ const Badge = (props: BadgePropsInterface) => {
     return (
         <div style={{ width: 86, height: 40 }} className="tooltip"
             data-tip={`${props.badge.description} - ${moment(props.badge.awarded_at).format('DD MMM YYYY')}`}>
-
             {props.badge.url ?
                 <a href={props.badge.url} target={"_blank"} rel="noreferrer">
                     <img src={props.badge.image_url}
@@ -23,8 +22,6 @@ const Badge = (props: BadgePropsInterface) => {
                     width={86}
                     height={40}
                 />}
-
-
         </div>
     )
 }

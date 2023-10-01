@@ -1,3 +1,4 @@
+import { Keyboard } from './../resources/interfaces/user';
 import { Dispatch, SetStateAction } from "react";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Score } from "../resources/interfaces/score";
@@ -53,4 +54,27 @@ export interface dataInterface {
     maps: Score[] | BeatmapSet[],
     count: number,
     setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
+}
+
+export interface TabletInterface {
+    name: string,
+    area: {
+        w: number,
+        h: number,
+    },
+    position: {
+        x: number,
+        y: number,
+        r: number,
+    },
+    size: {
+        w: number,
+        h: number
+    }
+}
+
+export interface KeyboardInterface {
+    name: string,
+    layout: 'k2' | 'k3' | 'k4' | 'k60' | 'k75' | 'ktkl' | 'kfull',
+    keys: string[],
 }

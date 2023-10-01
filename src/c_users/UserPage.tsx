@@ -23,7 +23,7 @@ import ScoreCard from "../c_scores/ScoreCard";
 import BeatmapsetCard from "../c_beatmaps/BeatmapsetCard";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { GameModeType } from "../resources/types";
-import TopScoresPanel, { BarPieChartData } from "./u_comp/TopScoresPanel";
+import TopScoresPanel, { BarPieChartData } from "./u_panels/TopScoresPanel";
 
 import { Score } from "../resources/interfaces/score";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
@@ -32,6 +32,7 @@ import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/me
 
 import { alertManager, alertManagerInterface, colors } from "../resources/store/tools";
 import { BeatmapsObj, ScoresObj, beatmapCategoryType, beatmapListItem, scoreCategoryType, scoreListItem, tabInterface } from "./u_interfaces";
+import SetupPanel from "./u_panels/SetupPanel";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -239,374 +240,373 @@ const UserPage = (props: UserPageProps) => {
         { id: 7, beatmaps: beatmaps.graveyard, len: userData.graveyard_beatmapset_count, type: 'graveyard' },
     ]
 
-    return (
-        <>
-            <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
-                <div style={{ backdropFilter: "blur(2px)" }}
-                    className="flex flex-col gap-8 p-8 rounded-none card-body">
-                    <div className="grid flex-wrap grid-cols-7 gap-4 xl:gap-8">
-                        <div className="flex flex-col col-span-9 gap-3 justify-between items-center md:col-span-2 xl:col-span-1">
-                            <div className="avatar">
-                                <div className='rounded-lg'>
-                                    <img src={userData.avatar_url}
-                                        onError={addDefaultSrc}
-                                        alt='pfp' style={{ width: '100%' }} />
-                                </div>
-                            </div>
-                            <div className="flex flex-row gap-2 items-center w-full">
-                                <div className="text-neutral-content">{userData.statistics.level.current}</div>
-                                <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
-                                <div>{userData.statistics.level.current + 1}</div>
-                            </div>
-                            <ModeSelector mode={gameMode} userId={userData.id} />
-                            <div className="text-lg text-center tooltip tooltip-bottom"
-                                data-tip={moment(userData.join_date).fromNow()}>
-                                Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
+    return (<>
+        <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
+            <div style={{ backdropFilter: "blur(2px)" }}
+                className="flex flex-col gap-8 p-8 rounded-none card-body">
+                <div className="grid flex-wrap grid-cols-7 gap-4 xl:gap-8">
+                    <div className="flex flex-col col-span-9 gap-3 justify-between items-center md:col-span-2 xl:col-span-1">
+                        <div className="avatar">
+                            <div className='rounded-lg'>
+                                <img src={userData.avatar_url}
+                                    onError={addDefaultSrc}
+                                    alt='pfp' style={{ width: '100%' }} />
                             </div>
                         </div>
-                        <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2 md:items-start">
-                            <div className="flex flex-row gap-3 items-center">
-                                <a className="text-4xl font-bold"
-                                    target="_blank" rel="noreferrer"
-                                    href={`https://osu.ppy.sh/users/${userData.id}`}>
-                                    {userData.username}
-                                </a>
-                                {userData.groups.map((group: UserGroup, index: number) =>
-                                    <GroupBadge group={group}
-                                        key={index + 1} />
-                                )}
-                                {userData.is_supporter && <SupporterIcon size={32} level={userData.support_level} />}
-                            </div>
-                            <div className="profileTitle">{userData.title}</div>
-                            <div className="flex flex-col gap-1">
-                                <div className="text-lg">Global Rank:</div>
-                                <div className="flex flex-row gap-2 items-center text-2xl">
-                                    <FaGlobeAfrica />
-                                    <div>#{userData.statistics.global_rank ? userData.statistics.global_rank.toLocaleString() : '-'}</div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="text-lg">Country Rank:</div>
-                                <div className="flex flex-row gap-2 items-center text-2xl">
-                                    <CountryShape code={userData.country.code} size={26} />
-                                    <div>#{userData.statistics.country_rank ? userData.statistics.country_rank.toLocaleString() : '-'}</div>
-                                    {userData.country.code === 'CAT' ?
-                                        <div className="tooltip tooltip-right" data-tip={userData.country.name}>
-                                            <img alt={userData.country.code} className="emoji-flag"
-                                                src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
-                                        </div> :
-                                        <CountryFlag size={24} name={userData.country.name} code={userData.country.code} />
-                                    }
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="text-lg">Performance:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl">
-                                    <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <div className="text-lg">Accuracy:</div>
-                                <div className="flex flex-row gap-2 items-center text-xl">
-                                    <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
-                                </div>
-                            </div>
+                        <div className="flex flex-row gap-2 items-center w-full">
+                            <div className="text-neutral-content">{userData.statistics.level.current}</div>
+                            <progress className="progress progress-warning" value={userData.statistics.level.progress} max="100"></progress>
+                            <div>{userData.statistics.level.current + 1}</div>
                         </div>
-                        <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2">
-                            <div><Radar data={skillsData} options={radarOptions} /></div>
-                            <div><BarPieChart data={scoresRanksLabels} width={250} /></div>
-                        </div>
-                        <div className="flex flex-col col-span-7 col-start-4 gap-3 justify-between items-end md:col-span-3 xl:col-span-2 xl:col-start-6">
-                            <div className="flex flex-col gap-1 justify-end text-end">
-                                <div className="text-lg">Ranked Score:</div>
-                                <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
-                                    data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
-                                    <FaAngleDoubleUp />
-                                    <div>
-                                        {userData.statistics.ranked_score.toLocaleString()}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 justify-end text-end">
-                                <div className="text-lg">Max Combo:</div>
-                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
-                                    <FaFireAlt />
-                                    <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 justify-end text-end">
-                                <div className="text-lg">Play Time:</div>
-                                <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
-                                    data-tip={secondsToTime(userData.statistics.play_time)}>
-                                    <FaRegClock />
-                                    <div>
-                                        {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 justify-end text-end">
-                                <div className="text-lg">Play Count:</div>
-                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
-                                    <FaUndo />
-                                    <div>{userData.statistics.play_count.toLocaleString()}</div>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-1 justify-end text-end">
-                                <div className="text-lg">Hits x Play:</div>
-                                <div className="flex flex-row gap-2 justify-end items-center text-xl">
-                                    <FaCalculator />
-                                    <div>
-                                        {Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count).toLocaleString()}
-                                    </div>
-                                </div>
-                            </div>
+                        <ModeSelector mode={gameMode} userId={userData.id} />
+                        <div className="text-lg text-center tooltip tooltip-bottom"
+                            data-tip={moment(userData.join_date).fromNow()}>
+                            Joined at {moment(userData.join_date).format("DD/MM/YYYY")}
                         </div>
                     </div>
-                    {userData.badges.length > 0 &&
-                        <div className="flex flex-row flex-wrap gap-2 items-center">
-                            {userData.badges.map((badge: UserBadge, index: number) =>
-                                <Badge badge={badge} key={index + 1} />
+                    <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2 md:items-start">
+                        <div className="flex flex-row gap-3 items-center">
+                            <a className="text-4xl font-bold"
+                                target="_blank" rel="noreferrer"
+                                href={`https://osu.ppy.sh/users/${userData.id}`}>
+                                {userData.username}
+                            </a>
+                            {userData.groups.map((group: UserGroup, index: number) =>
+                                <GroupBadge group={group}
+                                    key={index + 1} />
                             )}
-                        </div>}
-                </div>
-            </div>
-            <div className="flex flex-row flex-wrap gap-4 items-center p-4 m-0 drop-shadow-lg bg-accent-800">
-                <div className="flex flex-row gap-2 items-center">
-                    <FaUsers />
-                    <div>Followers: {userData.follower_count.toLocaleString()}</div>
-                </div>
-                {userData.discord !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaDiscord />
-                        {userData.discord}
-                    </div>}
-                {userData.twitter !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaTwitter />
-                        {userData.twitter}
-                    </div>}
-                {userData.website !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaGlobe />
-                        <Twemoji options={{ className: 'emoji' }}>
-                            {userData.website}
-                        </Twemoji>
-                    </div>}
-                {userData.discord !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaMapMarkerAlt />
-                        <Twemoji options={{ className: 'emoji' }}>
-                            {userData.location}
-                        </Twemoji>
-                    </div>}
-                {userData.interests !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaHeart />
-                        <Twemoji options={{ className: 'emoji' }}>
-                            {userData.interests}
-                        </Twemoji>
-                    </div>}
-                {userData.occupation !== null &&
-                    <div className="flex flex-row gap-2 items-center">
-                        <FaRegBuilding />
-                        <Twemoji options={{ className: 'emoji' }}>
-                            {userData.occupation}
-                        </Twemoji>
-                    </div>}
-            </div>
-            <div className="grid grid-cols-5 gap-4 justify-center md:p-4">
-                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-3" ref={div1Ref}>
-                    <div className="shadow">
-                        <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
-                            <FaChartLine />
-                            <div>History</div>
+                            {userData.is_supporter && <SupporterIcon size={32} level={userData.support_level} />}
                         </div>
-                        <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
-                            <button
-                                className={`tab flex flex-row gap-2 ${historyTabIndex === 1 && 'tab-active text-base-100'}`}
-                                onClick={() => setHistoryTabIndex(1)}>
+                        <div className="profileTitle">{userData.title}</div>
+                        <div className="flex flex-col gap-1">
+                            <div className="text-lg">Global Rank:</div>
+                            <div className="flex flex-row gap-2 items-center text-2xl">
                                 <FaGlobeAfrica />
-                                <div>Global Rank</div>
-                            </button>
-                            <button
-                                className={`tab flex flex-row gap-2 ${historyTabIndex === 2 && 'tab-active text-base-100'}`}
-                                onClick={() => setHistoryTabIndex(2)}>
-                                <CountryShape code={userData.country.code} size={18} />
-                                <div>Country Rank</div>
-                            </button>
-                            <button
-                                className={`tab flex flex-row gap-2 ${historyTabIndex === 3 && 'tab-active text-base-100'}`}
-                                onClick={() => setHistoryTabIndex(3)}>
+                                <div>#{userData.statistics.global_rank ? userData.statistics.global_rank.toLocaleString() : '-'}</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <div className="text-lg">Country Rank:</div>
+                            <div className="flex flex-row gap-2 items-center text-2xl">
+                                <CountryShape code={userData.country.code} size={26} />
+                                <div>#{userData.statistics.country_rank ? userData.statistics.country_rank.toLocaleString() : '-'}</div>
+                                {userData.country.code === 'CAT' ?
+                                    <div className="tooltip tooltip-right" data-tip={userData.country.name}>
+                                        <img alt={userData.country.code} className="emoji-flag"
+                                            src={require(`../assets/extra-flags/${userData.country.code.toLowerCase()}.png`)} />
+                                    </div> :
+                                    <CountryFlag size={24} name={userData.country.name} code={userData.country.code} />
+                                }
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <div className="text-lg">Performance:</div>
+                            <div className="flex flex-row gap-2 items-center text-xl">
+                                <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <div className="text-lg">Accuracy:</div>
+                            <div className="flex flex-row gap-2 items-center text-xl">
+                                <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col col-span-7 gap-3 justify-between items-center md:col-span-2">
+                        <div><Radar data={skillsData} options={radarOptions} /></div>
+                        <div><BarPieChart data={scoresRanksLabels} width={250} /></div>
+                    </div>
+                    <div className="flex flex-col col-span-7 col-start-4 gap-3 justify-between items-end md:col-span-3 xl:col-span-2 xl:col-start-6">
+                        <div className="flex flex-col gap-1 justify-end text-end">
+                            <div className="text-lg">Ranked Score:</div>
+                            <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
+                                data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
+                                <FaAngleDoubleUp />
+                                <div>
+                                    {userData.statistics.ranked_score.toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1 justify-end text-end">
+                            <div className="text-lg">Max Combo:</div>
+                            <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                <FaFireAlt />
+                                <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1 justify-end text-end">
+                            <div className="text-lg">Play Time:</div>
+                            <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
+                                data-tip={secondsToTime(userData.statistics.play_time)}>
                                 <FaRegClock />
-                                <div>Play Count</div>
-                            </button>
-                            <button
-                                className={`tab flex flex-row gap-2 ${historyTabIndex === 4 && 'tab-active text-base-100'}`}
-                                onClick={() => setHistoryTabIndex(4)}>
-                                <FaEye />
-                                <div>Replays Watched</div>
-                            </button>
-                        </div>
-                        <div className="flex justify-center items-center">
-                            <div className="p-4 grow" hidden={historyTabIndex !== 1}
-                                style={{ height: 250 }}>
-                                <Line data={globalHistoryData} options={lineOptionsReverse} />
-                            </div>
-                            <div className="p-4 grow" hidden={historyTabIndex !== 2}
-                                style={{ height: 250 }}>
-                                <Line data={countryHistoryData} options={lineOptionsReverse} />
-                            </div>
-                            <div className="p-4 grow" hidden={historyTabIndex !== 3}
-                                style={{ height: 250 }}>
-                                <Line data={playsHistoryData} options={lineOptions} />
-                            </div>
-                            <div className="p-4 grow" hidden={historyTabIndex !== 4}
-                                style={{ height: 250 }}>
-                                <Line data={replaysHistoryData} options={lineOptions} />
+                                <div>
+                                    {Math.round((userData.statistics.play_time / 60 / 60)).toLocaleString()}h
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="shadow">
-                        <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
-                            <FaChartPie />
-                            <div>Top Play Stats</div>
+                        <div className="flex flex-col gap-1 justify-end text-end">
+                            <div className="text-lg">Play Count:</div>
+                            <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                <FaUndo />
+                                <div>{userData.statistics.play_count.toLocaleString()}</div>
+                            </div>
                         </div>
-                        <div className="p-4">
-                            <TopScoresPanel data={userData} best={scores.best} />
+                        <div className="flex flex-col gap-1 justify-end text-end">
+                            <div className="text-lg">Hits x Play:</div>
+                            <div className="flex flex-row gap-2 justify-end items-center text-xl">
+                                <FaCalculator />
+                                <div>
+                                    {Math.round((userData.statistics.count_50 + userData.statistics.count_100 + userData.statistics.count_300) / userData.statistics.play_count).toLocaleString()}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800 4">
-                        <FaListUl />
-                        <div>Scores</div>
+                {userData.badges.length > 0 &&
+                    <div className="flex flex-row flex-wrap gap-2 items-center">
+                        {userData.badges.map((badge: UserBadge, index: number) =>
+                            <Badge badge={badge} key={index + 1} />
+                        )}
+                    </div>}
+            </div>
+        </div>
+        <div className="flex flex-row flex-wrap gap-4 items-center p-4 m-0 drop-shadow-lg bg-custom-800">
+            <div className="flex flex-row gap-2 items-center">
+                <FaUsers />
+                <div>Followers: {userData.follower_count.toLocaleString()}</div>
+            </div>
+            {userData.discord !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaDiscord />
+                    {userData.discord}
+                </div>}
+            {userData.twitter !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaTwitter />
+                    {userData.twitter}
+                </div>}
+            {userData.website !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaGlobe />
+                    <Twemoji options={{ className: 'emoji' }}>
+                        {userData.website}
+                    </Twemoji>
+                </div>}
+            {userData.discord !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaMapMarkerAlt />
+                    <Twemoji options={{ className: 'emoji' }}>
+                        {userData.location}
+                    </Twemoji>
+                </div>}
+            {userData.interests !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaHeart />
+                    <Twemoji options={{ className: 'emoji' }}>
+                        {userData.interests}
+                    </Twemoji>
+                </div>}
+            {userData.occupation !== null &&
+                <div className="flex flex-row gap-2 items-center">
+                    <FaRegBuilding />
+                    <Twemoji options={{ className: 'emoji' }}>
+                        {userData.occupation}
+                    </Twemoji>
+                </div>}
+        </div>
+        <div className="grid grid-cols-5 gap-4 justify-center md:p-4">
+            <SetupPanel user={userData}/>
+            <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-3" ref={div1Ref}>
+                <div className="shadow">
+                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                        <FaChartLine />
+                        <div>History</div>
                     </div>
-                    <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
-                        {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active text-base-100'}`}
-                                onClick={() => setScoresTabIndex(tab.num)} key={i}>
-                                {tab.icon}
-                                <div>{tab.title}</div>
-                                <div className="badge">{tab.count}</div>
-                            </button>)}
+                    <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+                        <button
+                            className={`tab flex flex-row gap-2 ${historyTabIndex === 1 && 'tab-active text-base-100'}`}
+                            onClick={() => setHistoryTabIndex(1)}>
+                            <FaGlobeAfrica />
+                            <div>Global Rank</div>
+                        </button>
+                        <button
+                            className={`tab flex flex-row gap-2 ${historyTabIndex === 2 && 'tab-active text-base-100'}`}
+                            onClick={() => setHistoryTabIndex(2)}>
+                            <CountryShape code={userData.country.code} size={18} />
+                            <div>Country Rank</div>
+                        </button>
+                        <button
+                            className={`tab flex flex-row gap-2 ${historyTabIndex === 3 && 'tab-active text-base-100'}`}
+                            onClick={() => setHistoryTabIndex(3)}>
+                            <FaRegClock />
+                            <div>Play Count</div>
+                        </button>
+                        <button
+                            className={`tab flex flex-row gap-2 ${historyTabIndex === 4 && 'tab-active text-base-100'}`}
+                            onClick={() => setHistoryTabIndex(4)}>
+                            <FaEye />
+                            <div>Replays Watched</div>
+                        </button>
                     </div>
-                    {scoresList.map((s: scoreListItem, i: number) =>
-                        <div hidden={scoresTabIndex !== s.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
-                            <InfiniteScroll
-                                pageStart={0}
-                                loadMore={() => s.type !== 'best' ? getScores(s.type, 15, s.scores.length) : setBestRenderIndex((p) => p + 15)}
-                                hasMore={s.type !== 'best' ? s.scores.length < s.len : bestRenderIndex < s.len}
-                                loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                                useWindow={false}
-                            >
-                                {s.scores.map((sc: Score, ind: number) => (
-                                    s.type !== 'best' ?
-                                        <ScoreCard index={ind} score={sc} key={ind} /> :
-                                        ind < bestRenderIndex && <ScoreCard index={ind} score={sc} key={ind} />
-                                )
-                                )}
-                            </InfiniteScroll>
+                    <div className="flex justify-center items-center">
+                        <div className="p-4 grow" hidden={historyTabIndex !== 1}
+                            style={{ height: 250 }}>
+                            <Line data={globalHistoryData} options={lineOptionsReverse} />
                         </div>
-                    )}
+                        <div className="p-4 grow" hidden={historyTabIndex !== 2}
+                            style={{ height: 250 }}>
+                            <Line data={countryHistoryData} options={lineOptionsReverse} />
+                        </div>
+                        <div className="p-4 grow" hidden={historyTabIndex !== 3}
+                            style={{ height: 250 }}>
+                            <Line data={playsHistoryData} options={lineOptions} />
+                        </div>
+                        <div className="p-4 grow" hidden={historyTabIndex !== 4}
+                            style={{ height: 250 }}>
+                            <Line data={replaysHistoryData} options={lineOptions} />
+                        </div>
+                    </div>
                 </div>
-                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
-                        <FaListUl />
-                        <div>Beatmaps</div>
+                <div className="shadow">
+                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                        <FaChartPie />
+                        <div>Top Play Stats</div>
                     </div>
-                    <div className="justify-center content-center rounded-none tabs tabs-boxed bg-accent-900">
-                        {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
-                            <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
-                                onClick={() => setBeatmapsTabIndex(tab.num)} key={i}>
-                                {tab.icon}
-                                <div>{tab.title}</div>
-                                <div className="badge">{tab.count}</div>
-                            </button>)}
-                    </div>
-                    {beatmapsList.map((b: beatmapListItem, i: number) =>
-                        <div hidden={beatmapsTabIndex !== b.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
-                            <InfiniteScroll
-                                pageStart={0}
-                                loadMore={() => getBeatmaps(b.type, 15, b.beatmaps.length)}
-                                hasMore={b.beatmaps.length < b.len}
-                                loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                                useWindow={false}
-                            >
-                                {b.beatmaps.map((bs: BeatmapSet, ind: number) =>
-                                    <BeatmapsetCard key={ind} index={ind} beatmapset={bs} />
-                                )}
-                            </InfiniteScroll>
-                        </div>
-                    )}
-                </div>
-                <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-accent-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
-                    <div className="flex flex-row gap-2 justify-center items-center p-2 bg-accent-800">
-                        <FaMedal />
-                        <div>Medals</div>
-                    </div>
-                    <div className="flex overflow-x-hidden overflow-y-scroll flex-col grow">
-                        <div className="grid grid-cols-6">
-                            <div className="col-span-5">
-                                <div className="p-2 text-center bg-accent-900">
-                                    Recent Medals
-                                </div>
-                                <div className="p-3 pt-2">
-                                    <div className="flex flex-row justify-between px-2 pb-1"
-                                        style={{ fontSize: 14, top: -8 }}>
-                                        <div>most recent</div>
-                                        <div>least recent</div>
-                                    </div>
-                                    <div className="flex flex-row gap-1">
-                                        {lastMedals.map((medal: Medal, index: number) => (
-                                            <MedalBadge thisMedal={medal} userMedals={userData.user_achievements}
-                                                key={index} />))}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="p-2 text-center bg-accent-900">
-                                    Rarest Medal
-                                </div>
-                                <div className="p-3 pt-2">
-                                    <div className="px-2 pb-1 text-center"
-                                        style={{ fontSize: 14, top: -8 }}>
-                                        Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
-                                    </div>
-                                    <div className="grid justify-center p-3">
-                                        {rarestMedal &&
-                                            <MedalBadge thisMedal={rarestMedal}
-                                                userMedals={userData.user_achievements} />}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {Object.entries(medalsByCategory).map(([category, medals]: [string, Medal[]], key: number) => (
-                            <div key={key} className="grow">
-                                <div className="flex flex-row justify-center items-center p-2 text-center bg-accent-900">
-                                    <div className="text-center">
-                                        {category}:
-                                    </div>
-                                </div>
-                                <div className="flex flex-col p-3 pt-2 grow">
-                                    <div className="px-2 pb-1 text-center"
-                                        style={{ fontSize: 14, top: -8 }}>
-                                        {(achievedMedalsCount[category] / medals.length * 100).toFixed(2)}%
-                                        ({achievedMedalsCount[category]}/{medals.length})
-                                    </div>
-                                    <div className="flex flex-row flex-wrap gap-1 justify-center grow">
-                                        {medals.map((medal: Medal, index: number) => (
-                                            <MedalBadge thisMedal={medal} userMedals={userData.user_achievements}
-                                                key={index} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="p-4">
+                        <TopScoresPanel data={userData} best={scores.best} />
                     </div>
                 </div>
             </div>
-        </>
-    )
+            <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800 4">
+                    <FaListUl />
+                    <div>Scores</div>
+                </div>
+                <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+                    {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                        <button className={`tab flex flex-row gap-2 ${scoresTabIndex === tab.num && 'tab-active text-base-100'}`}
+                            onClick={() => setScoresTabIndex(tab.num)} key={i}>
+                            {tab.icon}
+                            <div>{tab.title}</div>
+                            <div className="badge">{tab.count}</div>
+                        </button>)}
+                </div>
+                {scoresList.map((s: scoreListItem, i: number) =>
+                    <div hidden={scoresTabIndex !== s.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => s.type !== 'best' ? getScores(s.type, 15, s.scores.length) : setBestRenderIndex((p) => p + 15)}
+                            hasMore={s.type !== 'best' ? s.scores.length < s.len : bestRenderIndex < s.len}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {s.scores.map((sc: Score, ind: number) => (
+                                s.type !== 'best' ?
+                                    <ScoreCard index={ind} score={sc} key={ind} /> :
+                                    ind < bestRenderIndex && <ScoreCard index={ind} score={sc} key={ind} />
+                            )
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                )}
+            </div>
+            <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-2" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                    <FaListUl />
+                    <div>Beatmaps</div>
+                </div>
+                <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+                    {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
+                        <button className={`tab flex flex-row gap-2 ${beatmapsTabIndex === tab.num && 'tab-active'}`}
+                            onClick={() => setBeatmapsTabIndex(tab.num)} key={i}>
+                            {tab.icon}
+                            <div>{tab.title}</div>
+                            <div className="badge">{tab.count}</div>
+                        </button>)}
+                </div>
+                {beatmapsList.map((b: beatmapListItem, i: number) =>
+                    <div hidden={beatmapsTabIndex !== b.id} style={{ height: 602 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() => getBeatmaps(b.type, 15, b.beatmaps.length)}
+                            hasMore={b.beatmaps.length < b.len}
+                            loader={<div key={0} className="loading loading-dots loading-md"></div>}
+                            useWindow={false}
+                        >
+                            {b.beatmaps.map((bs: BeatmapSet, ind: number) =>
+                                <BeatmapsetCard key={ind} index={ind} beatmapset={bs} />
+                            )}
+                        </InfiniteScroll>
+                    </div>
+                )}
+            </div>
+            <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-3" style={{ height: div1Ref.current?.clientHeight }}>
+                <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                    <FaMedal />
+                    <div>Medals</div>
+                </div>
+                <div className="flex overflow-x-hidden overflow-y-scroll flex-col grow">
+                    <div className="grid grid-cols-6">
+                        <div className="col-span-5">
+                            <div className="p-2 text-center bg-custom-900">
+                                Recent Medals
+                            </div>
+                            <div className="p-3 pt-2">
+                                <div className="flex flex-row justify-between px-2 pb-1"
+                                    style={{ fontSize: 14, top: -8 }}>
+                                    <div>most recent</div>
+                                    <div>least recent</div>
+                                </div>
+                                <div className="flex flex-row gap-1">
+                                    {lastMedals.map((medal: Medal, index: number) => (
+                                        <MedalBadge thisMedal={medal} userMedals={userData.user_achievements}
+                                            key={index} />))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-span-1">
+                            <div className="p-2 text-center bg-custom-900">
+                                Rarest Medal
+                            </div>
+                            <div className="p-3 pt-2">
+                                <div className="px-2 pb-1 text-center"
+                                    style={{ fontSize: 14, top: -8 }}>
+                                    Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
+                                </div>
+                                <div className="grid justify-center p-3">
+                                    {rarestMedal &&
+                                        <MedalBadge thisMedal={rarestMedal}
+                                            userMedals={userData.user_achievements} />}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {Object.entries(medalsByCategory).map(([category, medals]: [string, Medal[]], key: number) => (
+                        <div key={key} className="grow">
+                            <div className="flex flex-row justify-center items-center p-2 text-center bg-custom-900">
+                                <div className="text-center">
+                                    {category}:
+                                </div>
+                            </div>
+                            <div className="flex flex-col p-3 pt-2 grow">
+                                <div className="px-2 pb-1 text-center"
+                                    style={{ fontSize: 14, top: -8 }}>
+                                    {(achievedMedalsCount[category] / medals.length * 100).toFixed(2)}%
+                                    ({achievedMedalsCount[category]}/{medals.length})
+                                </div>
+                                <div className="flex flex-row flex-wrap gap-1 justify-center grow">
+                                    {medals.map((medal: Medal, index: number) => (
+                                        <MedalBadge thisMedal={medal} userMedals={userData.user_achievements}
+                                            key={index} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </>)
 
     function clearData(): void {
         setUserData(null);

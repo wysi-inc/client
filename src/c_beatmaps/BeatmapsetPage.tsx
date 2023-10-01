@@ -116,13 +116,13 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
               </div>
             </div>
             {diff &&
-              <div className="flex flex-col gap-3 p-3 rounded-xl bg-accent-700">
-                <div className="flex flex-row gap-2 p-4 rounded-lg drop-shadow-md bg-accent-950">
+              <div className="flex flex-col gap-3 p-3 rounded-xl bg-custom-700">
+                <div className="flex flex-row gap-2 p-4 rounded-lg drop-shadow-md bg-custom-950">
                   <DiffIcon setId={beatmapset.id} diffId={diff.id}
                     size={24} mode={diff.mode} diff={diff.difficulty_rating} name={diff.version} />
                   <div>{diff.version}</div>
                 </div>
-                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-md bg-accent-950">
+                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-md bg-custom-950">
                   <div className="flex flex-row flex-wrap gap-8 justify-center items-center">
                     <div className="flex flex-row gap-1 items-center">
                       <FaStar />
@@ -142,30 +142,30 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
                   </div>
                   <div className="flex flex-row gap-3 items-center">
                     <div className="text-end">AR:</div>
-                    <progress className="justify-between progress progress-accent"
+                    <progress className="justify-between progress progress-custom"
                       value={stats.ar} max="11"></progress>
                     <div className="text-start">{stats.ar}</div>
                   </div>
                   <div className="flex flex-row gap-3 justify-between items-center">
                     <div className="text-end">CS:</div>
-                    <progress className="progress progress-accent"
+                    <progress className="progress progress-custom"
                       value={stats.cs} max="11"></progress>
                     <div className="text-start">{stats.cs}</div>
                   </div>
                   <div className="flex flex-row gap-3 justify-between items-center">
                     <div className="text-end">OD:</div>
-                    <progress className="progress progress-accent"
+                    <progress className="progress progress-custom"
                       value={stats.od} max="11"></progress>
                     <div className="text-start">{stats.od}</div>
                   </div>
                   <div className="flex flex-row gap-3 justify-between items-center">
                     <div className="text-end">HP:</div>
-                    <progress className="progress progress-accent"
+                    <progress className="progress progress-custom"
                       value={stats.hp} max="11"></progress>
                     <div className="text-start">{stats.hp}</div>
                   </div>
                 </div>
-                <div className="flex flex-row flex-wrap gap-2 justify-center items-center p-4 rounded-lg drop-shadow-md bg-accent-950">
+                <div className="flex flex-row flex-wrap gap-2 justify-center items-center p-4 rounded-lg drop-shadow-md bg-custom-950">
                   <button className={`${mods.length > 0 && 'fakeDisabled'} darkenOnHover`}
                     onClick={() => setMods([])}><ModIcon size={24} acronym="NM" />
                   </button>

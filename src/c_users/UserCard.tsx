@@ -14,7 +14,7 @@ interface UserCardProps {
 
 const UserCard = (props: UserCardProps) => {
     return (
-        <tr className="bg-accent-800">
+        <tr className="bg-custom-800">
             <th className="table-cell">#{props.index}</th>
             <td className="table-cell"><div className="flex justify-center items-center">
                 <CountryFlag size={24} name={props.user.user.country.name} code={props.user.user.country.code} />

@@ -22,11 +22,7 @@ export const UserStore = create<UserStore>(
         login: (id: number, name: string, pfp: string) => set({ isLogged: true, user: { id: id, name: name, pfp: pfp } }),
         logout: () => {
             set({ isLogged: false, user: { id: 0, name: '', pfp: '' } });
-            try {
-                localStorage.removeItem('jwt');
-            } catch (err) {
-                console.error(err);
-            }
+            localStorage.removeItem('jwt');
         },
     })
 )

@@ -13,7 +13,7 @@ interface ScoreProps {
 
 const BeatmapsetScoreCard = (props: ScoreProps) => {
     return (
-        <tr className="bg-accent-800">
+        <tr className="bg-custom-800">
             <th className="text-end">#{props.index}</th>
             <td>
                 <div className="flex justify-center items-center">

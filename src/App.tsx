@@ -19,8 +19,8 @@ function App() {
             <ScrollToTop />
             <Navbar />
             <AlertManager/>
-            <div className="bg-accent-950">
-                <main style={{ maxWidth: 1600 }} className="mx-auto bg-accent-600">
+            <div className="bg-custom-950">
+                <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/oauth-redirect" element={<OAuth />} />

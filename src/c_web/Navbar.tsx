@@ -9,7 +9,7 @@ const Navbar = () => {
     const logo = require('../assets/wysi727logo.svg').default;
 
     return (
-        <nav className="sticky top-0 p-0 px-2 drop-shadow-lg navbar bg-accent-900"
+        <nav className="sticky top-0 p-0 px-2 drop-shadow-lg navbar bg-custom-900"
             style={{ zIndex: 2000 }}>
             <div className="gap-2 pl-0 navbar-start">
                 <div className="lg:hidden dropdown">

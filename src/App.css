@@ -123,6 +123,7 @@ h6,
     background: #F8B500;
     background: linear-gradient(to right, #F8B500 0%, #FCCD4D 0%, #FBDF93 100%, #FCEABB 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
     font-size: 20px;
@@ -208,117 +209,6 @@ h6,
     }
 }
 
-.form-control:focus {
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
-}
-
-.modal-content {
-    border: none !important;
-    background-color: #1c1618 !important;
-}
-
-.MuiSlider-rail {
-    opacity: 1 !important;
-    background-clip: border-box !important;
-    overflow: hidden !important;
-    height: 10px !important;
-}
-
-.srSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #4290fe,
-            #4cb6ff,
-            #4fffd4,
-            #cdf458,
-            #fc9964,
-            #f64d7a,
-            #ad4dc2,
-            #4d4bc4,
-            #12106a,
-            #000000,
-            #000000) !important;
-}
-
-.hpSlider .MuiSlider-rail,
-.arSlider .MuiSlider-rail,
-.csSlider .MuiSlider-rail,
-.odSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #61de2a,
-            #fff65f,
-            #ff291e) !important;
-}
-
-.bpmSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #4290fe,
-            #ff291e) !important;
-}
-
-.lengthSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #B589D6,
-            #9969C7,
-            #804FB3,
-            #6A359C,
-            #552586) !important;
-}
-
-.yearSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #C0C0C0,
-            #98ddfc) !important;
-}
-
-.MuiSlider-rail {
-    filter: brightness(50%) !important;
-}
-
-.MuiSlider-track {
-    height: 10px !important;
-}
-
-.MuiSlider-track {
-    border: 0 !important;
-    background-color: transparent !important;
-    backdrop-filter: brightness(200%);
-    outline: solid 2px #ffffff;
-}
-
-.MuiSlider-thumb {
-    transition: .1s ease-in-out !important;
-    background-color: #ffffff00 !important;
-}
-
-
-input::after,
-input::before {
-    display: none !important;
-}
-
-.MuiSlider-thumb,
-.MuiSlider-thumb:focus,
-.MuiSlider-thumb:hover,
-.Mui-focusVisible {
-    box-shadow: none !important;
-    width: 6px !important;
-    border-radius: 6px !important;
-}
-
-.MuiSlider-thumb:active,
-.MuiSlider-thumb:hover {
-    filter: brightness(50%) !important;
-    cursor: pointer !important;
-}
-
-.MuiSlider-thumb::before,
-.MuiSlider-thumb::after,
-.Mui-active::before,
-.Mui-active::after {
-    display: none !important;
-}
-
 .fakeDisabled {
     filter: brightness(40%) !important;
 
@@ -388,4 +278,12 @@ th:last-child {
     100% {
         transform: translateX(0%);
     }
+}
+
+.c-point * {
+    cursor: pointer !important;
+}
+
+.c-normal * {
+    cursor: default !important;
 }

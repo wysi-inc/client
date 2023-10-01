@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -18,6 +18,8 @@ import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import BeatmapsetCard from "./BeatmapsetCard";
 import InfiniteScroll from "react-infinite-scroller";
 import {FaAngleUp, FaAngleDown} from "react-icons/fa";
+
+import './b_comp/Beatmaps.css';
 
 interface InitialState {
     title: string,
@@ -262,8 +264,8 @@ const BeatmapsPage = () => {
 
     return (
         <div className="p-4">
-            <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-accent-900">
-                <div className="flex flex-row justify-between items-center p-4 text-xl rounded-lg bg-accent-950">
+            <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-custom-900">
+                <div className="flex flex-row justify-between items-center p-4 text-xl rounded-lg bg-custom-950">
                     <div>Beatmap Search:</div>
                     <div className="flex flex-row gap-2 items-center">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
@@ -287,7 +289,7 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4 p-4 rounded-lg drop-shadow-lg bg-accent-950">
+                <div className="grid grid-cols-4 gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
                     <div className="col-span-4 md:col-span-2 lg:col-span-3">
                         <div className="mb-2 text-center">Title:</div>
                         <input type="text" className="w-full text-center input input-bordered"
@@ -301,7 +303,7 @@ const BeatmapsPage = () => {
                             value={query.mapper} onChange={(e) => setQuery((p) => ({...p, mapper: e.target.value}))} />
                     </div>
                 </div>
-                <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-accent-950">
+                <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">
                     <div className="grid grid-cols-7">
                         <div className="col-span-7 md:col-start-3 md:col-span-3">
                             <div className="text-center">Year:</div>
@@ -460,7 +462,7 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-1 bg-accent-950">
+                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-1 bg-custom-950">
                         <div>Mode:</div>
                         <div className="flex flex-row flex-wrap gap-3" role="group">
                             {songModes.map((m: GameModeType, i: number) =>
@@ -474,7 +476,7 @@ const BeatmapsPage = () => {
                                 </button>)}
                         </div>
                     </div>
-                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-accent-950">
+                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-custom-950">
                         <div>Status:</div>
                         <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
                             {songStatus.map((s: BeatmapsetStatusType, i: number) =>
@@ -489,12 +491,12 @@ const BeatmapsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-accent-950">
+                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
                     <div>Sort:</div>
                     <div className="flex flex-row flex-wrap gap-3">
                         {songSort.map((sor, i: number) =>
                             <button key={i}
-                                className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                                className={`btn flex flex-row gap-1 customColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
                                 onClick={() => {
                                     const s: any = query.sort[0]?.split(':')[0];
                                     const o: any = query.sort[0]?.split(':')[1];

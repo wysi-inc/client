@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { colors } from "../../resources/store/tools";
-import PpLine from "./PpLine";
-import BarPieChart from "./BarPieChart";
+import PpLine from "../u_comp/PpLine";
+import BarPieChart from "../u_comp/BarPieChart";
 import ModIcon from "../../c_scores/s_comp/ModIcon";
 import { secondsToTime } from "../../resources/functions";
 import { User } from "../../resources/interfaces/user";
