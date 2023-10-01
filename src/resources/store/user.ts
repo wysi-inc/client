@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export interface UserStore {
+export interface UserStoreInt {
     isLogged: boolean,
     user: {
         id: number,
@@ -11,7 +11,7 @@ export interface UserStore {
     logout: () => void,
 }
 
-export const UserStore = create<UserStore>(
+export const UserStore = create<UserStoreInt>(
     (set) => ({
         isLogged: false,
         user: {

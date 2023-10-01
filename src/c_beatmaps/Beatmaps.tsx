@@ -496,7 +496,7 @@ const BeatmapsPage = () => {
                     <div className="flex flex-row flex-wrap gap-3">
                         {songSort.map((sor, i: number) =>
                             <button key={i}
-                                className={`btn flex flex-row gap-1 customColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                                className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
                                 onClick={() => {
                                     const s: any = query.sort[0]?.split(':')[0];
                                     const o: any = query.sort[0]?.split(':')[1];

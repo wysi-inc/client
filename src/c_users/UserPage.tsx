@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+// eslint-disable-next-line react-hooks/exhaustive-dep
+import { useEffect, useState } from "react";
 import axios from '../resources/axios-config';
 import moment from "moment";
 
-import { Line, Radar } from "react-chartjs-2";
+import { Radar } from "react-chartjs-2";
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import 'chartjs-adapter-date-fns';
-import InfiniteScroll from 'react-infinite-scroller';
 import Twemoji from 'react-twemoji';
 
-import { FaSkull, FaRegClock, FaChartBar, FaTrophy, FaMapPin, FaStopwatch, FaUserFriends, FaCalculator, FaHourglassHalf, FaStar, FaAngleDoubleUp, FaUsers, FaTwitter, FaDiscord, FaUndo, FaMapMarkerAlt, FaHeart, FaChartLine, FaMedal, FaEye, FaGlobe, FaGlobeAfrica, FaRegBuilding, FaChartPie, FaListUl, FaFireAlt, FaChevronUp, FaQuestion } from "react-icons/fa";
+import { FaRegClock, FaCalculator, FaAngleDoubleUp, FaUsers, FaTwitter, FaDiscord, FaUndo, FaMapMarkerAlt, FaHeart, FaGlobe, FaGlobeAfrica, FaRegBuilding, FaFireAlt, FaQuestion } from "react-icons/fa";
 
 import Badge from "./u_comp/Badge";
 import GroupBadge from "./u_comp/GroupBadge";
@@ -17,26 +17,21 @@ import BarPieChart from "./u_comp/BarPieChart";
 import CountryShape from "./u_comp/CountryShape";
 import ModeSelector from "./u_comp/ModeSelector";
 import SupporterIcon from "./u_comp/SupporterIcon";
-import MedalBadge from "./u_comp/MedalBadge";
 import CountryFlag from "./u_comp/CountryFlag";
-import ScoreCard from "../c_scores/ScoreCard";
-import BeatmapsetCard from "../c_beatmaps/BeatmapsetCard";
 import { addDefaultSrc, secondsToTime } from "../resources/functions";
 import { GameModeType } from "../resources/types";
-import TopScoresPanel, { BarPieChartData } from "./u_panels/setup_comp/TopScoresPanel";
 
 import { Score } from "../resources/interfaces/score";
-import { BeatmapSet } from "../resources/interfaces/beatmapset";
-import { MonthlyData, User, UserAchievement, UserBadge, UserGroup } from "../resources/interfaces/user";
-import { Medal, MedalCategories, SortedMedals } from "../resources/interfaces/medals";
+import { User, UserBadge, UserGroup } from "../resources/interfaces/user";
 
 import { alertManager, alertManagerInterface, colors } from "../resources/store/tools";
-import { BeatmapsObj, ScoresObj, beatmapCategoryType, beatmapListItem, scoreCategoryType, scoreListItem, tabInterface } from "./u_interfaces";
+import { BeatmapsObj, ScoresObj, scoreCategoryType, } from "./u_interfaces";
 import SetupPanel from "./u_panels/SetupPanel";
 import HistoryPanel from "./u_panels/HistoryPanel";
 import MedalsPanel from "./u_panels/MedalsPanel";
 import ScoresPanel from "./u_panels/ScoresPanel";
 import BeatmapsPanel from "./u_panels/BeatmapsPanel";
+import { BarPieChartData } from "./u_panels/setup_comp/TopScoresPanel";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -70,7 +65,6 @@ const SCORES_INITIAL: ScoresObj = {
     firsts: [],
     recent: [],
 }
-
 const RADAR_CHART_INITIAL: ChartData<'radar'> = {
     labels: [],
     datasets: [
@@ -83,7 +77,6 @@ const RADAR_CHART_INITIAL: ChartData<'radar'> = {
         }
     ],
 };
-
 const radarOptions: ChartOptions<'radar'> = {
     scales: {
         r: {
@@ -110,10 +103,6 @@ const UserPage = (props: UserPageProps) => {
     const [scores, setScores] = useState<ScoresObj>(SCORES_INITIAL);
     const [beatmaps, setBeatmaps] = useState<BeatmapsObj>(BEATMAPS_INITIAL);
 
-    useEffect(() => {
-
-    }, []);
-
     useEffect((): void => {
         clearData();
         getUser();
@@ -131,7 +120,6 @@ const UserPage = (props: UserPageProps) => {
             <></>
         )
     }
-
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: userData.statistics.grade_counts.ssh },
         { label: 'X', color: colors.ranks.x, value: userData.statistics.grade_counts.ss },
@@ -142,7 +130,7 @@ const UserPage = (props: UserPageProps) => {
 
     const css = "flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-";
     const height = 700;
-    
+
     return (<>
         <div style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${userData.cover_url}) center / cover no-repeat` }}>
             <div style={{ backdropFilter: "blur(2px)" }}
@@ -336,7 +324,7 @@ const UserPage = (props: UserPageProps) => {
     </>)
 
     function clearData(): void {
-        setUserData(null);
+        setUserData(undefined);
         setGameMode('default');
         setScores(SCORES_INITIAL);
         setBeatmaps(BEATMAPS_INITIAL);

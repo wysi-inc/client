@@ -2,7 +2,7 @@ import { useState } from "react";
 import Keyboard from "./setup_comp/Keyboard";
 import Tablet from "./setup_comp/Tablet";
 import { User } from "../../resources/interfaces/user";
-import { UserStore } from "../../resources/store/user";
+import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { TabletInterface, KeyboardInterface } from "../u_interfaces";
 import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
 
@@ -12,7 +12,7 @@ interface SetupPanelProps {
 
 
 const SetupPanel = (p: SetupPanelProps) => {
-    const user = UserStore((state: UserStore) => state.user);
+    const user = UserStore((state: UserStoreInt) => state.user);
     const me = user.id === p.user.id;
     const TABLET_INITIAL: TabletInterface = {
         name: 'Wacom CTH-680',

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// eslint-disable-next-line react-hooks/exhaustive-dep
+import { useEffect, useState } from 'react';
 
 interface PageTabsProps {
     current: number;
@@ -11,7 +12,7 @@ const PageTabs = (props: PageTabsProps) => {
     const [page, setPage] = useState<number>(props.current);
     useEffect(() => {
         setPage(props.current);
-    }, [props.current])
+    }, [props.current]);
     return (
         <div className="flex flex-row gap-3 self-center">
             {props.current > props.min + 2 && <button className="font-bold btn btn-primary text-base-100" onClick={() => page && props.setNewPage(props.min)}>{props.min}</button>}

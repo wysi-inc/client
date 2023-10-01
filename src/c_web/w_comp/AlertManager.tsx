@@ -33,7 +33,7 @@ const Alert = (props: alertProps) => {
     return (
         <div className="ms-auto fadein">
             <div className='py-1 pr-1 pl-3 border-none drop-shadow-md alert text-base-100'
-                style={{ backgroundColor: getColor()}}>
+                style={{ backgroundColor: getColor() }}>
                 {getIcon()}
                 <span>{props.text}</span>
                 <button className="m-0 btn btn-ghost btn-circle btn-sm"

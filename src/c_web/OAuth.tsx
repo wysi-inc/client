@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import axios from "../resources/axios-config";
-import { UserStore } from "../resources/store/user";
+import { UserStore, UserStoreInt } from "../resources/store/user";
 import { User } from "../resources/interfaces/user";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
 import { useNavigate } from "react-router-dom";
 
 const OAuth = () => {
-    const login = UserStore((state: UserStore) => state.login);
+    const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
     const navigate = useNavigate();
 

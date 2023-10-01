@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { UserStore } from "../../resources/store/user";
+import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import axios from "../../resources/axios-config";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 
 const Login = () => {
-    const user = UserStore((state: UserStore) => state.user);
-    const logout = UserStore((state: UserStore) => state.logout);
-    const login = UserStore((state: UserStore) => state.login);
+    const user = UserStore((state: UserStoreInt) => state.user);
+    const logout = UserStore((state: UserStoreInt) => state.logout);
+    const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const client_id = 22795;
@@ -62,7 +62,6 @@ const Login = () => {
             const jsonData = JSON.parse(decodedString);
             login(jsonData.id, jsonData.name, jsonData.pfp);
         } catch (err) {
-            console.error(err);
             logout();
         }
         try {

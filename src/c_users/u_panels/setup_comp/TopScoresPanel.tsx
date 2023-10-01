@@ -45,8 +45,8 @@ const TopScoresPanel = (props: topScoresProps) => {
 
     const commonMods: string[] = useMemo(() => {
         const modsCounter: { [key: string]: number } = {};
-        props.best.map(score =>
-            score.mods.map(mod => mod ? mod : 'NM'))
+        props.best.map(score => score.mods.length > 0 ?
+            score.mods.map(mod => mod) : ['NM'])
             .forEach((ele) => {
                 if (modsCounter[ele.join('-')]) {
                     modsCounter[ele.join('-')] += 1;

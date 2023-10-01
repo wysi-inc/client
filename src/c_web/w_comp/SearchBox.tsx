@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+// eslint-disable-next-line react-hooks/exhaustive-dep
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
 import axios from "../../resources/axios-config";
 import OnlineDot from "../../c_users/u_comp/OnlineDot";
@@ -13,7 +14,6 @@ const SearchBox = () => {
 
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
-    const [searching, setSearching] = useState<boolean>(false);
 
     const debouncedValue: string = useDebounce<string>(username, 500)
 
@@ -30,9 +30,7 @@ const SearchBox = () => {
     function getUserList(): void {
         if (username === '') {
             setUserList([])
-            setSearching(false);
         } else {
-            setSearching(true)
             axios.post('/userQuery', {
                 username: username
             }).then(r => {
@@ -40,7 +38,7 @@ const SearchBox = () => {
                 setUserList(r.data.user.data);
             }).catch(e => {
                 console.error(e)
-            }).finally(() => setSearching(false))
+            }).finally();
         }
     }
     function hide() {
@@ -52,7 +50,6 @@ const SearchBox = () => {
         (document.getElementById('searchModal') as HTMLDialogElement)?.showModal();
         (document.getElementById('searchInput') as HTMLInputElement)?.focus();
         setUserList([])
-        setSearching(false);
         setUsername('');
     }
     function sendTo(userId: string): void {

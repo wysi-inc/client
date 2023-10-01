@@ -99,14 +99,14 @@ const Keyboard = (p: propsInterface) => {
                 <div className="join">
                     <input onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, name: e.target.value }))} value={p.keyboard.name}
                         type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
-                    <select className="select select-bordered join-item select-sm">
-                        <option>K2</option>
-                        <option>K3</option>
-                        <option>K4</option>
-                        <option selected>60%</option>
-                        <option>75%</option>
-                        <option>TKL</option>
-                        <option>FULL</option>
+                    <select className="select select-bordered join-item select-sm" defaultValue={'4'}>
+                        <option value="1">K2</option>
+                        <option value="2">K3</option>
+                        <option value="3">K4</option>
+                        <option value="4">60%</option>
+                        <option value="5">75%</option>
+                        <option value="6">TKL</option>
+                        <option value="7">FULL</option>
                     </select>
                 </div>
             </div>
