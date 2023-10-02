@@ -1,4 +1,3 @@
-// eslint-disable-next-line react-hooks/exhaustive-dep
 import { useEffect, useState } from 'react';
 
 interface PageTabsProps {

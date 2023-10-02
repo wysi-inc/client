@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 
 import { useParams } from "react-router-dom";
@@ -155,67 +154,25 @@ const BeatmapsPage = () => {
 
     function getUrlParams() {
         const queryParameters = new URLSearchParams(window.location.search)
-        const urlTitle = queryParameters.get('title');
-        const urlMapper = queryParameters.get('mapper');
-
-        const urlBPM0 = queryParameters.get('bpm0');
-        const urlBPM1 = queryParameters.get('bpm1');
-        const urlSR0 = queryParameters.get('sr0');
-        const urlSR1 = queryParameters.get('sr1');
-        const urlLen0 = queryParameters.get('len0');
-        const urlLen1 = queryParameters.get('len1');
-        const urlAR0 = queryParameters.get('ar0');
-        const urlAR1 = queryParameters.get('ar1');
-        const urlCS0 = queryParameters.get('cs0');
-        const urlCS1 = queryParameters.get('cs1');
-        const urlHP0 = queryParameters.get('hp0');
-        const urlHP1 = queryParameters.get('hp1');
-        const urlOD0 = queryParameters.get('od0');
-        const urlOD1 = queryParameters.get('od1');
-        const urlYear0 = queryParameters.get('year0');
-        const urlYear1 = queryParameters.get('year1');
-        const urlModes = queryParameters.getAll('modes');
-        // if (urlModes) {
-        //     if (urlModes.length > 0) setModes(urlModes as GameModeType[])
-        // }
-        // const urlStatus = queryParameters.getAll('status');
-        // if (urlStatus) {
-        //     if (urlStatus.length > 0) setStatus(urlStatus as BeatmapsetStatusType[])
-        // }
-        // const urlSort = queryParameters.getAll('sort');
-        // if (urlSort) {
-        //     if (urlSort.length > 0) setSort(urlSort);
-        // }
-        // if (urlTitle) {
-        //     setTitle(urlTitle);
-        // }
-        // if (urlMapper) {
-        //     setMapper(urlMapper);
-        // }
-        // if (urlBPM0 && urlBPM1) {
-        //     setBpm([parseInt(urlBPM0), parseInt(urlBPM1)])
-        // }
-        // if (urlSR0 && urlSR1) {
-        //     setSR([parseInt(urlSR0), parseInt(urlSR1)])
-        // }
-        // if (urlLen0 && urlLen1) {
-        //     setLength([parseInt(urlLen0), parseInt(urlLen1)])
-        // }
-        // if (urlAR0 && urlAR1) {
-        //     setAR([parseInt(urlAR0), parseInt(urlAR1)])
-        // }
-        // if (urlCS0 && urlCS1) {
-        //     setCS([parseInt(urlCS0), parseInt(urlCS1)])
-        // }
-        // if (urlOD0 && urlOD1) {
-        //     setOD([parseInt(urlOD0), parseInt(urlOD1)])
-        // }
-        // if (urlHP0 && urlHP1) {
-        //     setHP([parseInt(urlHP0), parseInt(urlHP1)])
-        // }
-        // if (urlYear0 && urlYear1) {
-        //     setYear([parseInt(urlYear0), parseInt(urlYear1)])
-        // }
+        // const urlTitle = queryParameters.get('title');
+        // const urlMapper = queryParameters.get('mapper');
+        // const urlBPM0 = queryParameters.get('bpm0');
+        // const urlBPM1 = queryParameters.get('bpm1');
+        // const urlSR0 = queryParameters.get('sr0');
+        // const urlSR1 = queryParameters.get('sr1');
+        // const urlLen0 = queryParameters.get('len0');
+        // const urlLen1 = queryParameters.get('len1');
+        // const urlAR0 = queryParameters.get('ar0');
+        // const urlAR1 = queryParameters.get('ar1');
+        // const urlCS0 = queryParameters.get('cs0');
+        // const urlCS1 = queryParameters.get('cs1');
+        // const urlHP0 = queryParameters.get('hp0');
+        // const urlHP1 = queryParameters.get('hp1');
+        // const urlOD0 = queryParameters.get('od0');
+        // const urlOD1 = queryParameters.get('od1');
+        // const urlYear0 = queryParameters.get('year0');
+        // const urlYear1 = queryParameters.get('year1');
+        // const urlModes = queryParameters.getAll('modes');
     }
 
     async function getBeatmaps() {

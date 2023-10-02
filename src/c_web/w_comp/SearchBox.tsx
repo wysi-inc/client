@@ -1,4 +1,3 @@
-// eslint-disable-next-line react-hooks/exhaustive-dep
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
 import axios from "../../resources/axios-config";
@@ -34,7 +33,6 @@ const SearchBox = () => {
             axios.post('/userQuery', {
                 username: username
             }).then(r => {
-                console.log(r.data.user.data);
                 setUserList(r.data.user.data);
             }).catch(e => {
                 console.error(e)

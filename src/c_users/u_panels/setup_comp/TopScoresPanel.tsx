@@ -166,6 +166,8 @@ const TopScoresPanel = (props: topScoresProps) => {
             .map(sc => sc.pp ? parseInt(sc.pp) : 0)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
 
+    if (props.best.length < 1) return (<div></div>);
+
     return (
         <div className="grid grid-cols-2 gap-3 p-3 grow">
             <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">

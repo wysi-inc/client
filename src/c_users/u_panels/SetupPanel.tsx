@@ -88,7 +88,7 @@ const SetupPanel = (p: SetupPanelProps) => {
                     </div>
                 </div>
                 <div className="flex justify-center items-center">
-                    <div className={`grow p-4 ${edit ? 'c-point' : 'c-normal'}`} hidden={tabsIndex !== 1}>
+                    <div className={`grow p-4 ${edit ? '':'c-normal'}`} hidden={tabsIndex !== 1}>
                         <div className="flex flex-row gap-4 justify-around items-start">
                             <Keyboard keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
                             <Tablet tablet={tablet} setTablet={setTablet} edit={edit} />

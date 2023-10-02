@@ -13,15 +13,14 @@ const TabletDisplay = (p: propsInterface) => {
         return fraction;
     }
     const ratio = calculateFraction(p.tablet.area.w, p.tablet.area.h);
+
     return (
         <div className="overflow-hidden relative rounded-lg border" style={{ width: tabletSizes.w, height: tabletSizes.h }}>
             <div className="flex absolute flex-col gap-1 justify-center items-center bg-opacity-50 border border-secondary bg-secondary"
                 style={{
-                    top: p.tablet.position.y * tabletSizes.s,
-                    left: p.tablet.position.x * tabletSizes.s,
                     width: p.tablet.area.w * tabletSizes.s,
                     height: p.tablet.area.h * tabletSizes.s,
-                    transform: `translate(-50%, -50%) rotate(${p.tablet.position.r}deg)`
+                    transform: `rotate(${p.tablet.position.r}deg)`
                 }}>
                 <div>{p.tablet.area.w} x {p.tablet.area.h} mm</div>
                 <div>{ratio}</div>

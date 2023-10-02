@@ -79,7 +79,6 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
                 type: t
             });
             const d: BeatmapSet[] = r.data;
-            console.log(d);
             if (d.length < 1) return;
             switch (t) {
                 case 'favourite': p.setBeatmaps((prev) => ({ ...prev, favourite: [...prev.favourite, ...d] })); break;
