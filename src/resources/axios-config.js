@@ -1,7 +1,8 @@
 import axios from "axios";
+import env from "react-dotenv";
 
 const instance = axios.create({
-  baseURL: "https://api.wysi727.com/",
+  baseURL: env.API_URL,
 });
 
 instance.defaults.withCredentials = true;

@@ -3,19 +3,13 @@ import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import axios from "../../resources/axios-config";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
+import env from "react-dotenv";
 
 const Login = () => {
     const user = UserStore((state: UserStoreInt) => state.user);
     const logout = UserStore((state: UserStoreInt) => state.logout);
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
-
-    const client_id = 22795;
-    const redirect_uri = 'https://wysi727.com/oauth-redirect';
-    const response_type = 'code';
-    const scope = 'identify';
-
-    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}`
 
     useEffect(() => {
         if (user.id === 0) {
@@ -25,7 +19,7 @@ const Login = () => {
 
     if (user.id === 0) {
         return (
-            <a href={encodeURI(url)}
+            <a href={encodeURI(`https://osu.ppy.sh/oauth/authorize?client_id=${env.CLIENT_ID}&redirect_uri=${env.CLIENT_REDIRECT}&response_type=code&scope=identify`)}
                 className="normal-case btn btn-primary text-base-100">
                 Login with osu!
             </a>
