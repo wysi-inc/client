@@ -11,6 +11,14 @@ const Login = () => {
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
+    const client_id = env.CLIENT_ID;
+    const redirect_uri = env.CLIENT_REDIRECT;
+    console.log(env.CLIENT_REDIRECT);
+    const response_type = 'code';
+    const scope = 'identify';
+
+    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}`
+
     useEffect(() => {
         if (user.id === 0) {
             isLogged()
@@ -19,7 +27,7 @@ const Login = () => {
 
     if (user.id === 0) {
         return (
-            <a href={encodeURI(`https://osu.ppy.sh/oauth/authorize?client_id=${env.CLIENT_ID}&redirect_uri=${env.CLIENT_REDIRECT}&response_type=code&scope=identify`)}
+            <a href={encodeURI(url)}
                 className="normal-case btn btn-primary text-base-100">
                 Login with osu!
             </a>

@@ -79,7 +79,7 @@
   },
   "react-dotenv": {
     "whitelist": [
-      "API_URL","CLIENT_ID", "CLIENT_SECRET", "CALLBACK_URL"
+      "API_URL","CLIENT_ID", "CLIENT_SECRET", "CLIENT_REDIRECT"
     ]
   }
 }
