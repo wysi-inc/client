@@ -3,9 +3,7 @@
   "name": "wysi727",
   "icons": [
     {
-      "src": "wysi727logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg"
+      "src": "wysi.ico"
     }
   ],
   "start_url": ".",
