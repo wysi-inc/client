@@ -51,36 +51,20 @@ const Login = () => {
     )
 
     async function isLogged() {
-        try {
-
-            const id = Number(localStorage.getItem('id'));
-            const name = `${localStorage.getItem('name')}`;
-            const pfp = `${localStorage.getItem('pfp')}`;
-
-            if (!id) {
-                throw new Error('No login');
-            }
-
-            login(id, name, pfp);
-        } catch (err) {
-            logout();
-        }
         const token = localStorage.getItem('jwt');
-        if (!token) return;
-        console.log('paso');
-
+        const id = Number(localStorage.getItem('id'));
+        const name = `${localStorage.getItem('name')}`;
+        const pfp = `${localStorage.getItem('pfp')}`;
+        if (!token || !id || !name || !pfp) return;
+        login(id, name, pfp);
         try {
-            const d = await fina.post("/isLogged", {
-                token
-            });
-
-            console.log(d);
-
+            const d = await fina.post("/isLogged", { token });
             if (d.logged) {
                 const { user } = d;
                 login(user.id, user.name, user.pfp);
                 fina.defaults.token = token;
             } else {
+                addAlert('error', 'Failed to validate login');
                 logout();
             }
         } catch (err) {
