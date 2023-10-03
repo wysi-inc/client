@@ -22,6 +22,8 @@ export const UserStore = create<UserStoreInt>(
         login: (id: number, name: string, pfp: string) => {
 
             localStorage.setItem('pfp', pfp);
+            localStorage.setItem('id', id.toString());
+
             localStorage.setItem('name', name);
 
             set({ isLogged: true, user: { id: id, name: name, pfp: pfp } })
@@ -29,6 +31,7 @@ export const UserStore = create<UserStoreInt>(
         logout: () => {
             set({ isLogged: false, user: { id: 0, name: '', pfp: '' } });
             localStorage.removeItem('jwt');
+            localStorage.removeItem('id');
             localStorage.removeItem('name');
             localStorage.removeItem('pfp');
         },

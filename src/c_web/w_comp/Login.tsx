@@ -52,15 +52,16 @@ const Login = () => {
 
     async function isLogged() {
         try {
-            const token: string = `${localStorage.getItem('jwt')}`;
-            const payload: string = token.split('.')[1];
-            const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-            const jsonData = JSON.parse(decodedString);
 
+            const id = Number(localStorage.getItem('id'));
             const name = `${localStorage.getItem('name')}`;
             const pfp = `${localStorage.getItem('pfp')}`;
 
-            login(jsonData.id, name, pfp);
+            if(!id){
+                throw new Error('No login');
+            }
+
+            login(id, name, pfp);
         } catch (err) {
             logout();
         }
