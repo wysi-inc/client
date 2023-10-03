@@ -6,7 +6,7 @@ import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 
 
 const Login = () => {
-    const settigs = GlobalSettings((state: GlobalSettingsInterface) => state);
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
     const user = UserStore((state: UserStoreInt) => state.user);
     const logout = UserStore((state: UserStoreInt) => state.logout);
     const login = UserStore((state: UserStoreInt) => state.login);
@@ -62,8 +62,8 @@ const Login = () => {
             logout();
         }
         try {
-            const d = await(await fetch(`${settigs.api_url}/isLogged`, {
-                method: "POST",
+            const d = await(await fetch(`${settings.api_url}/isLogged`, {
+                ...settings.fetch_settings
             })).json();
             if (d.logged) {
                 const t = d.jwtUser;
