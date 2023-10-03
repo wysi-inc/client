@@ -4,7 +4,9 @@ class Fina {
   defaults = {
     baseUrl: settings.api_url,
     baseConfig: {},
+    token: ""
   };
+
 
   constructor() {
     this.defaults.baseConfig = {
@@ -19,9 +21,19 @@ class Fina {
     this.defaults.baseUrl = baseUrl;
   }
 
-  async send(url = "", body, config, method) {
+  baseConfig(token = "") {
+    return {
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      credentials: "include",
+    };
+  }
+
+  async send(url = "", body, config, method, token = "") {
     let realUrl;
-    if (url.split("/")[0].includes(".")) {
+    if (url.split("/")[0].includes(".") || url.split("/")[0].includes("http")) {
       realUrl = url;
     } else {
       realUrl = `${this.defaults.baseUrl}${
@@ -40,7 +52,7 @@ class Fina {
     if (body) {
       return await fetch(realUrl, {
         method: method,
-        ...this.defaults.baseConfig,
+        ...baseConfig(token),
         body: JSON.stringify(body),
       });
     }
@@ -62,6 +74,19 @@ class Fina {
   }
   async delete(url, body, config) {
     return await (await this.send(url, body, config, "DELETE")).json();
+  }
+
+  async spost(url, body, config) {
+    return await (await this.send(url, body, config, "POST", this.defaults.token)).json();
+  }
+  async sget(url, body, config) {
+    return await (await this.send(url, body, config, "GET", this.defaults.token)).json();
+  }
+  async sput(url, body, config) {
+    return await (await this.send(url, body, config, "PUT", this.defaults.token)).json();
+  }
+  async sdelete(url, body, config) {
+    return await (await this.send(url, body, config, "DELETE", this.defaults.token)).json();
   }
 }
 

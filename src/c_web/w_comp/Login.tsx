@@ -67,11 +67,14 @@ const Login = () => {
         }
         const token = localStorage.getItem('jwt');
         if(!token) return;
+        console.log('paso');
 
         try {
             const d = await fina.post("/isLogged", {
                 token
             });
+
+            console.log(d);
 
             if (d.logged) {
                 const { user } = d;
