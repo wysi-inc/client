@@ -7,11 +7,9 @@ import { FaSearch } from "react-icons/fa";
 import GroupBadge from "../../c_users/u_comp/GroupBadge";
 import { UserCompact } from "../../resources/interfaces/user";
 import CountryFlag from "../../c_users/u_comp/CountryFlag";
-import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 import fina from "../../helpers/fina";
 
 const SearchBox = () => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
 

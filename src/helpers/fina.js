@@ -1,6 +1,8 @@
+import { settings } from "../env";
+
 class Fina {
   defaults = {
-    baseUrl: "",
+    baseUrl: settings.api_url,
     baseConfig: {},
   };
 

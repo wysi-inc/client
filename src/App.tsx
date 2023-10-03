@@ -13,13 +13,7 @@ import ScrollToTop from './resources/ScrollToTop';
 import AlertManager from './c_web/w_comp/AlertManager';
 import OAuth from './c_web/OAuth';
 
-import { GlobalSettings } from "./env";
-import fina from './helpers/fina';
-
 function App() {
-    const settings = GlobalSettings((state) => state);
-    fina.configure(settings.api_url);
-
     return (
         <BrowserRouter>
             <ScrollToTop />

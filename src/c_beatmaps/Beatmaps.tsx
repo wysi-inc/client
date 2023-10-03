@@ -18,7 +18,6 @@ import InfiniteScroll from "react-infinite-scroller";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 import './b_comp/Beatmaps.css';
-import { GlobalSettings, GlobalSettingsInterface } from "../env";
 import fina from "../helpers/fina";
 
 interface InitialState {
@@ -38,8 +37,6 @@ interface InitialState {
 }
 
 const BeatmapsPage = () => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
     const { urlSetId } = useParams();
     const { urlDiffId } = useParams();
 

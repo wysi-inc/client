@@ -2,12 +2,10 @@ import { useEffect } from "react";
 import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
-import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 import fina from "../../helpers/fina";
-
+import { settings } from "../../env";
 
 const Login = () => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
     const user = UserStore((state: UserStoreInt) => state.user);
     const logout = UserStore((state: UserStoreInt) => state.logout);
     const login = UserStore((state: UserStoreInt) => state.login);

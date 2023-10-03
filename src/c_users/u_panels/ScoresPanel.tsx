@@ -6,7 +6,6 @@ import InfiniteScroll from 'react-infinite-scroller';
 import ScoreCard from "../../c_scores/ScoreCard";
 import { Score } from "../../resources/interfaces/score";
 import { GameModeType } from "../../resources/types";
-import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 import fina from "../../helpers/fina";
 
 
@@ -20,9 +19,6 @@ interface ScoresPanelProps {
 }
 
 const ScoresPanel = (p: ScoresPanelProps) => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
-
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
     const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
 

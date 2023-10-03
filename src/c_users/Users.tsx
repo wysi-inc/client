@@ -8,12 +8,9 @@ import PageTabs from "../c_web/w_comp/PageTabs";
 import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
-import { GlobalSettings, GlobalSettingsInterface } from "../env";
 import fina from "../helpers/fina";
 
 const Users = () => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const { urlUser } = useParams();

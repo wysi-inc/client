@@ -11,7 +11,6 @@ import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
 import ModIcon from "../c_scores/s_comp/ModIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
-import { GlobalSettings, GlobalSettingsInterface } from "../env";
 import fina from "../helpers/fina";
 
 interface BeatmapsetPageProps {
@@ -20,8 +19,6 @@ interface BeatmapsetPageProps {
 }
 
 const BeatmapsetPage = (props: BeatmapsetPageProps) => {
-  const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
   const play = playerStore((state: PlayerStoreInterface) => state.play);
 
 

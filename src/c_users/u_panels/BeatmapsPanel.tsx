@@ -5,7 +5,6 @@ import { BeatmapSet } from "../../resources/interfaces/beatmapset";
 import BeatmapsetCard from "../../c_beatmaps/BeatmapsetCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import { Dispatch, SetStateAction, useState } from "react";
-import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 import fina from "../../helpers/fina";
 
 interface BeatmapsPanelProps {
@@ -17,8 +16,6 @@ interface BeatmapsPanelProps {
 }
 
 const BeatmapsPanel = (p: BeatmapsPanelProps) => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
 
     const beatmapsTabs: tabInterface[] = [
