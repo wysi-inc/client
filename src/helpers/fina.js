@@ -7,7 +7,6 @@ class Fina {
     token: ""
   };
 
-
   constructor() {
     this.defaults.baseConfig = {
       headers: {
@@ -52,7 +51,7 @@ class Fina {
     if (body) {
       return await fetch(realUrl, {
         method: method,
-        ...baseConfig(token),
+        ...this.baseConfig(token),
         body: JSON.stringify(body),
       });
     }
