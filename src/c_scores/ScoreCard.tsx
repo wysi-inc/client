@@ -206,7 +206,7 @@ function useStats(score: Score) {
     async function getStats() {
         try {
             const acc = score.accuracy * 100;
-            const d = await fina.get(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`);
+            const d = await fina.nget(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`);
             d.pp[acc]?.pp && setStats(prev => ({ ...prev, pp: Math.round(d.pp[acc].pp) }))
             setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
             setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))

@@ -21,7 +21,6 @@ interface BeatmapsetPageProps {
 const BeatmapsetPage = (props: BeatmapsetPageProps) => {
   const play = playerStore((state: PlayerStoreInterface) => state.play);
 
-
   const beatmapset = useSet(props.setId, props.diffId);
   const [diff, setDiff] = useState<Beatmap | undefined>();
   const scores: Score[] = useScore(diff);
@@ -38,7 +37,6 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     setDiff(beat)
     window.history.replaceState({}, '', `/beatmaps/${props.setId}/${diffId}`);
   }, [beatmapset, props.setId, props.diffId])
-
 
   if (!beatmapset) return (<></>);
 
@@ -285,7 +283,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     async function getStats() {
       if (!diff) return;
       try {
-        const d = await fina.get(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`);
+        const d = await fina.nget(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`);
         setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
         setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
         setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))

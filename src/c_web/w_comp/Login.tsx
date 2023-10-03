@@ -57,7 +57,7 @@ const Login = () => {
             const name = `${localStorage.getItem('name')}`;
             const pfp = `${localStorage.getItem('pfp')}`;
 
-            if(!id){
+            if (!id) {
                 throw new Error('No login');
             }
 
@@ -66,7 +66,7 @@ const Login = () => {
             logout();
         }
         const token = localStorage.getItem('jwt');
-        if(!token) return;
+        if (!token) return;
         console.log('paso');
 
         try {
@@ -79,6 +79,7 @@ const Login = () => {
             if (d.logged) {
                 const { user } = d;
                 login(user.id, user.name, user.pfp);
+                fina.defaults.token = token;
             } else {
                 logout();
             }
