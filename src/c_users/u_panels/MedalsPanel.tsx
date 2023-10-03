@@ -3,7 +3,7 @@ import { FaMedal } from "react-icons/fa";
 import MedalBadge from "../u_comp/MedalBadge";
 import { Medal, MedalCategories, SortedMedals } from "../../resources/interfaces/medals";
 import { User, UserAchievement } from "../../resources/interfaces/user";
-import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+import fina from "../../helpers/fina";
 
 interface MedalsPanelProps {
     user: User,
@@ -12,8 +12,6 @@ interface MedalsPanelProps {
 }
 
 const MedalsPanel = (p: MedalsPanelProps) => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
     const medals: Medal[] = useMedals();
     const medalsByCategory: SortedMedals = useMemo(() => getMedalsByCategory(medals), [medals]);
     const lastMedals: Medal[] = useMemo(() => getLastMedals(p.user.user_achievements, medals, 15), [medals]);
@@ -96,10 +94,9 @@ const MedalsPanel = (p: MedalsPanelProps) => {
         return m;
         async function getM() {
             try {
-                const r = await fetch(`${settings.api_url}/getMedals`);
-                const data: Medal[] = await r.json();
-                data.sort((a: any, b: any) => parseInt(a.MedalID) - parseInt(b.MedalID));
-                setM(data);
+                const d: Medal[]  = await fina.get('/getMedals');
+                d.sort((a: any, b: any) => parseInt(a.MedalID) - parseInt(b.MedalID));
+                setM(d);
             } catch (err) {
                 console.error(err)
             }

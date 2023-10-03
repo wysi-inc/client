@@ -12,6 +12,7 @@ import StatusBadge from "./b_comp/StatusBadge";
 import ModIcon from "../c_scores/s_comp/ModIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
 import { GlobalSettings, GlobalSettingsInterface } from "../env";
+import fina from "../helpers/fina";
 
 interface BeatmapsetPageProps {
   setId: number;
@@ -218,26 +219,22 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
 
     async function getBeatmap() {
       try {
-        const res = await fetch(`${settings.api_url}/beatmapset`, {
-          ...settings.fetch_settings,
-          body: JSON.stringify({ setId: setId })
-        });
-        const data: BeatmapSet = await res.json();
-        setBeatmapset(data);
-        if (!data) return;
-        if (data.beatmaps.length < 1) return;
+        const d = await fina.post('/beatmapset', { setId: setId });
+        setBeatmapset(d);
+        if (!d) return;
+        if (d.beatmaps.length < 1) return;
         let diffId;
         if (diffId) {
           let i = 0;
-          for (const b of data.beatmaps) {
+          for (const b of d.beatmaps) {
             if (b.id === diffId) {
               i = b.id;
               break;
             }
           }
-          diffId = data.beatmaps[i]?.id;
+          diffId = d.beatmaps[i]?.id;
         } else {
-          diffId = data.beatmaps[0].id;
+          diffId = d.beatmaps[0].id;
         }
         window.history.replaceState({}, '', `/beatmaps/${setId}/${diffId}`);
       } catch (err) {
@@ -252,21 +249,17 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     const [leaderboards, setLeaderboards] = useState<Score[]>([]);
 
     useEffect(() => {
-      getLeaderboards()
+      if (!diff) return;
+      getLeaderboards(diff)
     }, [diff])
 
-    async function getLeaderboards() {
-      if (!diff) return;
+    async function getLeaderboards(diff: Beatmap) {
       try {
-        const r = await await fetch(`${settings.api_url}/beatmapscores`, {
-          method: "POST",
-          body: JSON.stringify({
-            id: diff.id,
-            mode: diff.mode,
-          })
-        })
-        const sc: Score[] = await r.json();
-        setLeaderboards(sc);
+        const d: Score[] = await fina.post('/beatmapscores', {
+          id: diff.id,
+          mode: diff.mode,
+        });
+        setLeaderboards(d);
       } catch (err) {
         console.error(err);
       }
@@ -295,7 +288,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     async function getStats() {
       if (!diff) return;
       try {
-        const d = await (await fetch(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`)).json();
+        const d = await fina.get(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`);
         setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
         setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
         setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))

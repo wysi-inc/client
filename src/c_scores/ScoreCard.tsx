@@ -8,6 +8,7 @@ import DiffIcon from "../c_beatmaps/b_comp/DiffIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote } from "react-icons/fa";
 import { Score } from "../resources/interfaces/score";
 import { Link } from "react-router-dom";
+import fina from "../helpers/fina";
 
 interface ScoreProps {
     index: number;
@@ -205,7 +206,7 @@ function useStats(score: Score) {
     async function getStats() {
         try {
             const acc = score.accuracy * 100;
-            const d = await (await fetch(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`)).json();
+            const d = await fina.get(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`);
             d.pp[acc]?.pp && setStats(prev => ({ ...prev, pp: Math.round(d.pp[acc].pp) }))
             setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
             setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))

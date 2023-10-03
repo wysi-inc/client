@@ -8,6 +8,7 @@ import GroupBadge from "../../c_users/u_comp/GroupBadge";
 import { UserCompact } from "../../resources/interfaces/user";
 import CountryFlag from "../../c_users/u_comp/CountryFlag";
 import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+import fina from "../../helpers/fina";
 
 const SearchBox = () => {
     const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
@@ -31,11 +32,7 @@ const SearchBox = () => {
             setUserList([])
         } else {
             try {
-                const r = await fetch(`${settings.api_url}/userQuery`, {
-                    ...settings.fetch_settings,
-                    body: JSON.stringify({ username: username })
-                });
-                const d = await r.json();
+                const d = await fina.post('/userQuery', { username: username });
                 setUserList(d.user.data)
             } catch (err) {
                 console.error(err);

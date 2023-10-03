@@ -6,6 +6,7 @@ import BeatmapsetCard from "../../c_beatmaps/BeatmapsetCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import { Dispatch, SetStateAction, useState } from "react";
 import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+import fina from "../../helpers/fina";
 
 interface BeatmapsPanelProps {
     user: User,
@@ -73,16 +74,12 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
     )
     async function getBeatmaps(t: beatmapCategoryType, l: number, o: number) {
         try {
-            const r = await fetch(`${settings.api_url}/userbeatmaps`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({
-                    id: p.user.id,
-                    limit: l,
-                    offset: o,
-                    type: t,
-                })
+            const d: BeatmapSet[] = await fina.post('/userbeatmaps', {
+                id: p.user.id,
+                limit: l,
+                offset: o,
+                type: t,
             });
-            const d: BeatmapSet[] = await r.json();
             if (d.length < 1) return;
             switch (t) {
                 case 'favourite': p.setBeatmaps((prev) => ({ ...prev, favourite: [...prev.favourite, ...d] })); break;

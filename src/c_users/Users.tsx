@@ -9,6 +9,7 @@ import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
 import { GlobalSettings, GlobalSettingsInterface } from "../env";
+import fina from "../helpers/fina";
 
 const Users = () => {
     const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
@@ -118,16 +119,12 @@ const Users = () => {
             setUsers([]);
             setCategory(c)
             setMode(m);
-            const res = await fetch(`${settings.api_url}/users`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({
-                    mode: m,
-                    type: c,
-                    page: page,
-                })
+            const d = await fina.post('/users', {
+                mode: m,
+                type: c,
+                page: page,
             });
-            const data = await res.json();
-            setUsers(data.ranking);
+            setUsers(d.ranking);
         } catch (err) {
             console.error(err);
             addAlert('error', 'Error: Failed to fetch users');

@@ -1,4 +1,4 @@
-class Axios {
+class Fina {
   defaults = {
     baseUrl: "",
     baseConfig: {},
@@ -65,6 +65,6 @@ class Axios {
   }
 }
 
-const axios = new Axios();
+const fina = new Fina();
 
-export default axios;
+export default fina;

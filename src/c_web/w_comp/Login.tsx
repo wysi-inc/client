@@ -3,7 +3,7 @@ import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 import { GlobalSettings, GlobalSettingsInterface } from "../../env";
-import axios from "../../helpers/axios";
+import fina from "../../helpers/fina";
 
 
 const Login = () => {
@@ -63,8 +63,7 @@ const Login = () => {
             logout();
         }
         try {
-            const d = await axios.post("/isLogged");
-
+            const d = await fina.post("/isLogged");
             if (d.logged) {
                 const t = d.jwtUser;
                 localStorage.setItem('jwt', t);

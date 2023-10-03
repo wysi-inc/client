@@ -7,6 +7,7 @@ import ScoreCard from "../../c_scores/ScoreCard";
 import { Score } from "../../resources/interfaces/score";
 import { GameModeType } from "../../resources/types";
 import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+import fina from "../../helpers/fina";
 
 
 interface ScoresPanelProps {
@@ -75,17 +76,13 @@ const ScoresPanel = (p: ScoresPanelProps) => {
 
     async function getScores(t: scoreCategoryType, l: number, o: number) {
         try {
-            const r = await fetch(`${settings.api_url}/userscores`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({
-                    id: p.user.id,
-                    mode: p.mode,
-                    limit: l,
-                    offset: o,
-                    type: t
-                })
+            const d: Score[] = await fina.post('/userscores', {
+                id: p.user.id,
+                mode: p.mode,
+                limit: l,
+                offset: o,
+                type: t
             });
-            const d: Score[] = await r.json();
             if (d.length < 1) return;
             switch (t) {
                 case 'pinned': p.setScores((prev) => ({ ...prev, pinned: [...prev.pinned, ...d] })); break;

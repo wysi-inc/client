@@ -30,7 +30,7 @@ import MedalsPanel from "./u_panels/MedalsPanel";
 import ScoresPanel from "./u_panels/ScoresPanel";
 import BeatmapsPanel from "./u_panels/BeatmapsPanel";
 import { BarPieChartData } from "./u_panels/setup_comp/TopScoresPanel";
-import { GlobalSettings, GlobalSettingsInterface } from "../env";
+import fina from "../helpers/fina";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -94,8 +94,6 @@ const radarOptions: ChartOptions<'radar'> = {
 }
 
 const UserPage = (props: UserPageProps) => {
-    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
-
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const [userData, setUserData] = useState<User | null | undefined>(undefined);
@@ -333,14 +331,10 @@ const UserPage = (props: UserPageProps) => {
 
     async function getUser() {
         try {
-            const r = await fetch(`${settings.api_url}/user`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({
-                    id: props.userId,
-                    mode: props.userMode,
-                })
-            })
-            const d = await r.json();
+            const d = await fina.post('/user', {
+                id: props.userId,
+                mode: props.userMode,
+            });
             if (d.error === null) {
                 setUserData(null);
                 addAlert('warning', "This user doesn't exist");
@@ -371,17 +365,13 @@ const UserPage = (props: UserPageProps) => {
 
     async function getBest(id: number, m: GameModeType, t: scoreCategoryType, l: number, o: number) {
         try {
-            const r = await fetch(`${settings.api_url}/userscores`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({
-                    id: id,
-                    mode: m,
-                    limit: l,
-                    offset: o,
-                    type: t
-                })
+            const d: Score[] = await fina.post('/userscores', {
+                id: id,
+                mode: m,
+                limit: l,
+                offset: o,
+                type: t
             });
-            const d: Score[] = await r.json();
             if (d.length < 1) return;
             setScores((prev) => ({ ...prev, best: [...prev.best, ...d] }));
         } catch (err) {

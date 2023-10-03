@@ -14,11 +14,11 @@ import AlertManager from './c_web/w_comp/AlertManager';
 import OAuth from './c_web/OAuth';
 
 import { GlobalSettings } from "./env";
-import axios from './helpers/axios';
+import fina from './helpers/fina';
 
 function App() {
     const settings = GlobalSettings((state) => state);
-    axios.configure(settings.api_url);
+    fina.configure(settings.api_url);
 
     return (
         <BrowserRouter>

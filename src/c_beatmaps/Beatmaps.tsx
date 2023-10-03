@@ -15,10 +15,11 @@ import BeatmapsetPage from "./BeatmapsetPage";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import BeatmapsetCard from "./BeatmapsetCard";
 import InfiniteScroll from "react-infinite-scroller";
-import {FaAngleUp, FaAngleDown} from "react-icons/fa";
+import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 import './b_comp/Beatmaps.css';
 import { GlobalSettings, GlobalSettingsInterface } from "../env";
+import fina from "../helpers/fina";
 
 interface InitialState {
     title: string,
@@ -180,46 +181,36 @@ const BeatmapsPage = () => {
     async function getBeatmaps() {
         setResultsNum(0);
         setResults([])
-        const q = {
-            query: getQuery().q,
-            filter: getQuery().f,
-            mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
-            status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
-            limit: 50,
-            offset: 0,
-            sort: query.sort,
-        }
         try {
-            const res = await fetch(`${settings.api_url}/beatmapsets`, {
-                method: "POST",
-                body: JSON.stringify(q)
+            const d = await fina.post('/beatmapsets', {
+                query: getQuery().q,
+                filter: getQuery().f,
+                mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
+                status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
+                limit: 50,
+                offset: 0,
+                sort: query.sort,
             });
-            const data = await res.json();
-            setResultsNum(parseInt(data.total))
-            setResults(data.results)
+            setResultsNum(parseInt(d.total))
+            setResults(d.results)
         } catch (err) {
             console.error(err);
         }
     }
 
     async function getMoreBeatmaps(limit: number, offset: number) {
-        const q = {
-            query: getQuery().q,
-            filter: getQuery().f,
-            mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
-            status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
-            limit: limit,
-            offset: offset,
-            sort: query.sort,
-        }
         try {
-            const res = await fetch(`${settings.api_url}/beatmapsets`, {
-                ...settings.fetch_settings,
-                body: JSON.stringify({q})
+            const d = await fina.post('/beatmapsets', {
+                query: getQuery().q,
+                filter: getQuery().f,
+                mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameModeType) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
+                status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatusType) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
+                limit: limit,
+                offset: offset,
+                sort: query.sort,
             });
-            const data = await res.json();
-            setResultsNum(parseInt(data.total))
-            setResults([...results, ...data.results])
+            setResultsNum(parseInt(d.total))
+            setResults([...results, ...d.results])
         } catch (err) {
             console.error(err);
         }
@@ -259,13 +250,13 @@ const BeatmapsPage = () => {
                         <div className="mb-2 text-center">Title:</div>
                         <input type="text" className="w-full text-center input input-bordered"
                             placeholder="..." autoFocus={true}
-                            value={query.title} onChange={(e) => setQuery((p) => ({...p, title: e.target.value}))} />
+                            value={query.title} onChange={(e) => setQuery((p) => ({ ...p, title: e.target.value }))} />
                     </div>
                     <div className="col-span-4 md:col-span-2 lg:col-span-1">
                         <div className="mb-2 text-center">Mapper:</div>
                         <input type="text" className="w-full text-center input input-bordered"
                             placeholder="..."
-                            value={query.mapper} onChange={(e) => setQuery((p) => ({...p, mapper: e.target.value}))} />
+                            value={query.mapper} onChange={(e) => setQuery((p) => ({ ...p, mapper: e.target.value }))} />
                     </div>
                 </div>
                 <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">
@@ -467,16 +458,16 @@ const BeatmapsPage = () => {
                                     const o: any = query.sort[0]?.split(':')[1];
                                     if (s && o) {
                                         if (s === sor) {
-                                            if (o === 'asc') setQuery((p) => ({...p, sort: []}));
-                                            else setQuery((p) => ({...p, sort: [`${sor}:asc`]}));
+                                            if (o === 'asc') setQuery((p) => ({ ...p, sort: [] }));
+                                            else setQuery((p) => ({ ...p, sort: [`${sor}:asc`] }));
                                             return;
                                         }
                                     }
-                                    setQuery((p) => ({...p, sort: [`${sor}:desc`]}));
+                                    setQuery((p) => ({ ...p, sort: [`${sor}:desc`] }));
                                 }}>
                                 <div className="text-black">{sor.replace('beatmaps.', '').replace('_', ' ')}</div>
-                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'desc' && <FaAngleDown/>}
-                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'asc' && <FaAngleUp/>}
+                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'desc' && <FaAngleDown />}
+                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'asc' && <FaAngleUp />}
                             </button>
                         )}
                     </div>
