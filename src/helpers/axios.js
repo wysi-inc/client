@@ -23,9 +23,8 @@ class Axios {
     if (url.split("/")[0].includes(".")) {
       realUrl = url;
     } else {
-      realUrl = `${this.defaults.baseUrl}${
-        url.charAt(0) === "/" ? url : "/" + url
-      }`;
+      realUrl = `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url
+        }`;
     }
 
     console.log(realUrl);
