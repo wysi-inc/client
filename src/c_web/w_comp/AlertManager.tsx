@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { FaInfoCircle, FaCheckCircle, FaExclamationTriangle, FaTimesCircle, FaQuestionCircle } from "react-icons/fa";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 import { IoClose } from "react-icons/io5"

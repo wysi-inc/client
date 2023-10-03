@@ -63,7 +63,8 @@ const Login = () => {
         }
         try {
             const d = await(await fetch(`${settings.api_url}/isLogged`, {
-                ...settings.fetch_settings
+                method: 'POST',
+                credentials: "include",
             })).json();
             if (d.logged) {
                 const t = d.jwtUser;

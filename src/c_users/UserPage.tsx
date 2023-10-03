@@ -341,7 +341,6 @@ const UserPage = (props: UserPageProps) => {
                 })
             })
             const d = await r.json();
-            console.log(d)
             if (d.error === null) {
                 setUserData(null);
                 addAlert('warning', "This user doesn't exist");
