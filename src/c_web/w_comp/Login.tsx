@@ -56,19 +56,25 @@ const Login = () => {
             const payload: string = token.split('.')[1];
             const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
             const jsonData = JSON.parse(decodedString);
-            login(jsonData.id, jsonData.name, jsonData.pfp);
+
+            const name = `${localStorage.getItem('name')}`;
+            const pfp = `${localStorage.getItem('pfp')}`;
+
+            login(jsonData.id, name, pfp);
         } catch (err) {
             logout();
         }
+        const token = localStorage.getItem('jwt');
+        if(!token) return;
+
         try {
-            const d = await fina.post("/isLogged");
+            const d = await fina.post("/isLogged", {
+                token
+            });
+
             if (d.logged) {
-                const t = d.jwtUser;
-                localStorage.setItem('jwt', t);
-                const payload: string = t.split('.')[1];
-                const decodedString = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-                const jsonData = JSON.parse(decodedString);
-                login(jsonData.id, jsonData.name, jsonData.pfp);
+                const { user } = d;
+                login(user.id, user.name, user.pfp);
             } else {
                 logout();
             }

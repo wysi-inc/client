@@ -20,16 +20,14 @@ class Fina {
   }
 
   async send(url = "", body, config, method) {
-    console.log(this.defaults.baseUrl);
     let realUrl;
     if (url.split("/")[0].includes(".")) {
       realUrl = url;
     } else {
-      realUrl = `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url
-        }`;
+      realUrl = `${this.defaults.baseUrl}${
+        url.charAt(0) === "/" ? url : "/" + url
+      }`;
     }
-
-    console.log(realUrl);
 
     if (config) {
       return await fetch(realUrl, {
