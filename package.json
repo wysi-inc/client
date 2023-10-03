@@ -38,9 +38,9 @@
     "zustand": "^4.4.1"
   },
   "scripts": {
-    "start": "react-dotenv && react-scripts start",
-    "build": "react-dotenv && react-scripts build",
-    "serve": "react-dotenv && serve build"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "serve": "serve build"
   },
   "eslintConfig": {
     "extends": [
