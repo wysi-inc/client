@@ -3,6 +3,7 @@ import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+import axios from "../../helpers/axios";
 
 
 const Login = () => {
@@ -62,10 +63,8 @@ const Login = () => {
             logout();
         }
         try {
-            const d = await(await fetch(`${settings.api_url}/isLogged`, {
-                method: 'POST',
-                credentials: "include",
-            })).json();
+            const d = await axios.post("/isLogged");
+
             if (d.logged) {
                 const t = d.jwtUser;
                 localStorage.setItem('jwt', t);

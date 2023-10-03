@@ -13,7 +13,13 @@ import ScrollToTop from './resources/ScrollToTop';
 import AlertManager from './c_web/w_comp/AlertManager';
 import OAuth from './c_web/OAuth';
 
+import { GlobalSettings } from "./env";
+import axios from './helpers/axios';
+
 function App() {
+    const settings = GlobalSettings((state) => state);
+    axios.configure(settings.api_url);
+
     return (
         <BrowserRouter>
             <ScrollToTop />
