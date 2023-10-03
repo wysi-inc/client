@@ -1,23 +1,18 @@
 import { useEffect } from "react";
 import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { Link } from "react-router-dom";
-import axios from "../../resources/axios-config";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
-import env from "react-dotenv";
+import { GlobalSettings, GlobalSettingsInterface } from "../../env";
+
 
 const Login = () => {
+    const settigs = GlobalSettings((state: GlobalSettingsInterface) => state);
     const user = UserStore((state: UserStoreInt) => state.user);
     const logout = UserStore((state: UserStoreInt) => state.logout);
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
-    const client_id = env.CLIENT_ID;
-    const redirect_uri = env.CLIENT_REDIRECT;
-    console.log(env.CLIENT_REDIRECT);
-    const response_type = 'code';
-    const scope = 'identify';
-
-    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}`
+    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${settigs.client_id}&redirect_uri=${settigs.client_redirect}&response_type=code&scope=identify`
 
     useEffect(() => {
         if (user.id === 0) {
@@ -67,7 +62,9 @@ const Login = () => {
             logout();
         }
         try {
-            const d = (await axios.post('/isLogged')).data;
+            const d = await(await fetch(`${settigs.api_url}/isLogged`, {
+                method: "POST",
+            })).json();
             if (d.logged) {
                 const t = d.jwtUser;
                 localStorage.setItem('jwt', t);

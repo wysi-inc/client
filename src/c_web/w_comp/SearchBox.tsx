@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
-import axios from "../../resources/axios-config";
 import OnlineDot from "../../c_users/u_comp/OnlineDot";
 import SupporterIcon from "../../c_users/u_comp/SupporterIcon";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,9 +7,10 @@ import { FaSearch } from "react-icons/fa";
 import GroupBadge from "../../c_users/u_comp/GroupBadge";
 import { UserCompact } from "../../resources/interfaces/user";
 import CountryFlag from "../../c_users/u_comp/CountryFlag";
+import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 
 const SearchBox = () => {
-
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
 
@@ -26,17 +26,20 @@ const SearchBox = () => {
         getUserList();
     }, [debouncedValue])
 
-    function getUserList(): void {
+    async function getUserList() {
         if (username === '') {
             setUserList([])
         } else {
-            axios.post('/userQuery', {
-                username: username
-            }).then(r => {
-                setUserList(r.data.user.data);
-            }).catch(e => {
-                console.error(e)
-            }).finally();
+            try {
+                const r = await fetch(`${settings.api_url}/userQuery`, {
+                    ...settings.fetch_settings,
+                    body: JSON.stringify({ username: username })
+                });
+                const d = await r.json();
+                setUserList(d.user.data)
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
     function hide() {

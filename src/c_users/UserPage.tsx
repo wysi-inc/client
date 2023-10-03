@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from '../resources/axios-config';
 import moment from "moment";
 
 import { Radar } from "react-chartjs-2";
@@ -31,6 +30,7 @@ import MedalsPanel from "./u_panels/MedalsPanel";
 import ScoresPanel from "./u_panels/ScoresPanel";
 import BeatmapsPanel from "./u_panels/BeatmapsPanel";
 import { BarPieChartData } from "./u_panels/setup_comp/TopScoresPanel";
+import { GlobalSettings, GlobalSettingsInterface } from "../env";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -94,6 +94,8 @@ const radarOptions: ChartOptions<'radar'> = {
 }
 
 const UserPage = (props: UserPageProps) => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
+
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const [userData, setUserData] = useState<User | null | undefined>(undefined);
@@ -331,23 +333,27 @@ const UserPage = (props: UserPageProps) => {
 
     async function getUser() {
         try {
-            const res = await axios.post('/user', {
-                id: props.userId,
-                mode: props.userMode,
+            const r = await fetch(`${settings.api_url}/user`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({
+                    id: props.userId,
+                    mode: props.userMode,
+                })
             })
-            const data = res.data;
-            if (data.error === null) {
+            const d = await r.json();
+            console.log(d)
+            if (d.error === null) {
                 setUserData(null);
                 addAlert('warning', "This user doesn't exist");
                 return;
             };
-            const user: User = data;
+            const user: User = d;
             if (user.is_bot) {
                 addAlert('warning', 'This user is a bot, bots are not supported yet :(');
                 setUserData(null);
                 return;
             };
-            setUserData(data);
+            setUserData(d);
             let searchMode: GameModeType;
 
             if (props.userMode === "default") searchMode = user.playmode;
@@ -366,14 +372,17 @@ const UserPage = (props: UserPageProps) => {
 
     async function getBest(id: number, m: GameModeType, t: scoreCategoryType, l: number, o: number) {
         try {
-            const r = await axios.post('/userscores', {
-                id: id,
-                mode: m,
-                limit: l,
-                offset: o,
-                type: t
+            const r = await fetch(`${settings.api_url}/userscores`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({
+                    id: id,
+                    mode: m,
+                    limit: l,
+                    offset: o,
+                    type: t
+                })
             });
-            const d: Score[] = r.data;
+            const d: Score[] = await r.json();
             if (d.length < 1) return;
             setScores((prev) => ({ ...prev, best: [...prev.best, ...d] }));
         } catch (err) {

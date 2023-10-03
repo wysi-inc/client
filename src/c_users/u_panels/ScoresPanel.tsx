@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import ScoreCard from "../../c_scores/ScoreCard";
 import { Score } from "../../resources/interfaces/score";
 import { GameModeType } from "../../resources/types";
-import axios from "../../resources/axios-config";
+import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 
 
 interface ScoresPanelProps {
@@ -19,6 +19,8 @@ interface ScoresPanelProps {
 }
 
 const ScoresPanel = (p: ScoresPanelProps) => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
+
 
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
     const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
@@ -73,14 +75,17 @@ const ScoresPanel = (p: ScoresPanelProps) => {
 
     async function getScores(t: scoreCategoryType, l: number, o: number) {
         try {
-            const r = await axios.post('/userscores', {
-                id: p.user.id,
-                mode: p.mode,
-                limit: l,
-                offset: o,
-                type: t
+            const r = await fetch(`${settings.api_url}/userscores`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({
+                    id: p.user.id,
+                    mode: p.mode,
+                    limit: l,
+                    offset: o,
+                    type: t
+                })
             });
-            const d: Score[] = r.data;
+            const d: Score[] = await r.json();
             if (d.length < 1) return;
             switch (t) {
                 case 'pinned': p.setScores((prev) => ({ ...prev, pinned: [...prev.pinned, ...d] })); break;

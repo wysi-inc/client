@@ -4,9 +4,8 @@ import { colors, playerStore, PlayerStoreInterface } from "../resources/store/to
 import ModIcon from "./s_comp/ModIcon";
 import moment from "moment/moment";
 import StatusBadge from "../c_beatmaps/b_comp/StatusBadge";
-import axios from "../resources/axios-config";
 import DiffIcon from "../c_beatmaps/b_comp/DiffIcon";
-import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
+import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote } from "react-icons/fa";
 import { Score } from "../resources/interfaces/score";
 import { Link } from "react-router-dom";
 
@@ -44,7 +43,7 @@ const ScoreCard = (props: ScoreProps) => {
                             </div>
                             <div className="flex flex-row gap-2 items-center truncate text-light">
                                 <div className="flex justify-center w-6">
-                                    <FaMicrophoneAlt />
+                                    <FaItunesNote />
                                 </div>
                                 <div className="truncate">{props.score.beatmapset.artist}</div>
                             </div>
@@ -68,8 +67,8 @@ const ScoreCard = (props: ScoreProps) => {
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-4 items-center">
                         <div className="tooltip"
-                            data-tip={moment(props.score.created_at).fromNow()}>
-                            {moment(props.score.created_at).format('DD MMM YYYY')}
+                            data-tip={moment(props.score.created_at).format('DD MMM YYYY')}>
+                            {moment(props.score.created_at).fromNow()}
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 content-end items-center">
@@ -107,8 +106,7 @@ const ScoreCard = (props: ScoreProps) => {
                         {secondsToTime(stats.len)}
                     </div>
                     <div className="flex flex-row gap-1 items-center">
-                        <FaItunesNote />
-                        {stats.bpm}
+                        {stats.bpm}bpm
                     </div>
                     <div>CS: {stats.cs}</div>
                     <div>AR: {stats.ar}</div>

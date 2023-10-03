@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
-import axios from "../resources/axios-config";
+import { useEffect } from "react";
 import { UserStore, UserStoreInt } from "../resources/store/user";
 import { User } from "../resources/interfaces/user";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
 import { useNavigate } from "react-router-dom";
+import { GlobalSettings, GlobalSettingsInterface } from "../env";
 
 const OAuth = () => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
+
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
     const navigate = useNavigate();
@@ -20,7 +22,11 @@ const OAuth = () => {
 
     async function sendUrl(code: string) {
         try {
-            const d = (await axios.post('/login', { code: code })).data;
+            const r = await fetch(`${settings.api_url}/login`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({ code: code })
+            });
+            const d = await r.json();
             if (d.authentication) {
                 addAlert('error', 'OAuth failed :(');
                 sendHome();

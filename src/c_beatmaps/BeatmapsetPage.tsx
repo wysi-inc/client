@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-import axios from "../resources/axios-config";
 import moment from "moment";
 import { PlayerStoreInterface, playerStore } from "../resources/store/tools";
 import { addDefaultSrc, getModsInt, secondsToTime } from "../resources/functions";
@@ -13,6 +11,7 @@ import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
 import ModIcon from "../c_scores/s_comp/ModIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
+import { GlobalSettings, GlobalSettingsInterface } from "../env";
 
 interface BeatmapsetPageProps {
   setId: number;
@@ -20,8 +19,10 @@ interface BeatmapsetPageProps {
 }
 
 const BeatmapsetPage = (props: BeatmapsetPageProps) => {
+  const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
 
   const play = playerStore((state: PlayerStoreInterface) => state.play);
+
 
   const beatmapset = useSet(props.setId, props.diffId);
   const [diff, setDiff] = useState<Beatmap | undefined>();
@@ -207,107 +208,114 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
       </div>
     </>
   )
+
+  function useSet(setId: number, diffId: number | undefined) {
+    const [beatmapset, setBeatmapset] = useState<BeatmapSet | undefined>();
+
+    useEffect(() => {
+      getBeatmap();
+    }, [setId])
+
+    async function getBeatmap() {
+      try {
+        const res = await fetch(`${settings.api_url}/beatmapset`, {
+          ...settings.fetch_settings,
+          body: JSON.stringify({ setId: setId })
+        });
+        const data: BeatmapSet = await res.json();
+        setBeatmapset(data);
+        if (!data) return;
+        if (data.beatmaps.length < 1) return;
+        let diffId;
+        if (diffId) {
+          let i = 0;
+          for (const b of data.beatmaps) {
+            if (b.id === diffId) {
+              i = b.id;
+              break;
+            }
+          }
+          diffId = data.beatmaps[i]?.id;
+        } else {
+          diffId = data.beatmaps[0].id;
+        }
+        window.history.replaceState({}, '', `/beatmaps/${setId}/${diffId}`);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return beatmapset;
+  }
+
+  function useScore(diff: Beatmap | undefined) {
+
+    const [leaderboards, setLeaderboards] = useState<Score[]>([]);
+
+    useEffect(() => {
+      getLeaderboards()
+    }, [diff])
+
+    async function getLeaderboards() {
+      if (!diff) return;
+      try {
+        const r = await await fetch(`${settings.api_url}/beatmapscores`, {
+          method: "POST",
+          body: JSON.stringify({
+            id: diff.id,
+            mode: diff.mode,
+          })
+        })
+        const sc: Score[] = await r.json();
+        setLeaderboards(sc);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return leaderboards;
+  }
+
+  function useStats(diff: Beatmap | undefined, mods: string[], acc: number) {
+    const INITIAL_SET_STATS = {
+      pp: 0,
+      bpm: 0,
+      len: 0,
+      sr: 0,
+      ar: 0,
+      cs: 0,
+      od: 0,
+      hp: 0,
+    }
+
+    const [stats, setStats] = useState(INITIAL_SET_STATS);
+
+    useEffect(() => {
+      getStats();
+    }, [diff, mods])
+
+    async function getStats() {
+      if (!diff) return;
+      try {
+        const d = await (await fetch(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`)).json();
+        setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
+        setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
+        setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
+
+        setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
+        setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
+        setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
+        setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
+
+        if (mods.includes('DT')) setStats(prev => ({ ...prev, len: diff.total_length * 0.75 }));
+        else if (mods.includes('HT')) setStats(prev => ({ ...prev, len: diff.total_length * 1.5 }));
+        else setStats(prev => ({ ...prev, len: diff.total_length }));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    return stats;
+  }
 }
 
 export default BeatmapsetPage;
 
-function useSet(setId: number, diffId: number | undefined) {
-  const [beatmapset, setBeatmapset] = useState<BeatmapSet | undefined>();
-
-  useEffect(() => {
-    getBeatmap();
-  }, [setId])
-
-  async function getBeatmap() {
-    try {
-      const res = await axios.post('/beatmapset', { setId: setId });
-      const data: BeatmapSet = res.data;
-      setBeatmapset(data);
-      if (!data) return;
-      if (data.beatmaps.length < 1) return;
-      let diffId;
-      if (diffId) {
-        let i = 0;
-        for (const b of data.beatmaps) {
-          if (b.id === diffId) {
-            i = b.id;
-            break;
-          }
-        }
-        diffId = data.beatmaps[i]?.id;
-      } else {
-        diffId = data.beatmaps[0].id;
-      }
-      window.history.replaceState({}, '', `/beatmaps/${setId}/${diffId}`);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  return beatmapset;
-}
-
-function useScore(diff: Beatmap | undefined) {
-
-  const [leaderboards, setLeaderboards] = useState<Score[]>([]);
-
-  useEffect(() => {
-    getLeaderboards()
-  }, [diff])
-
-  async function getLeaderboards() {
-    if (!diff) return;
-    try {
-      const r = await axios.post('/beatmapscores', {
-        id: diff.id,
-        mode: diff.mode,
-      })
-      const sc: Score[] = r.data;
-      setLeaderboards(r.data)
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  return leaderboards;
-}
-
-function useStats(diff: Beatmap | undefined, mods: string[], acc: number) {
-  const INITIAL_SET_STATS = {
-    pp: 0,
-    bpm: 0,
-    len: 0,
-    sr: 0,
-    ar: 0,
-    cs: 0,
-    od: 0,
-    hp: 0,
-  }
-
-  const [stats, setStats] = useState(INITIAL_SET_STATS);
-
-  useEffect(() => {
-    getStats();
-  }, [diff, mods])
-
-  async function getStats() {
-    if (!diff) return;
-    try {
-      const d = await (await fetch(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`)).json();
-      setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
-      setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
-      setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
-
-      setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
-      setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
-      setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
-      setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
-
-      if (mods.includes('DT')) setStats(prev => ({ ...prev, len: diff.total_length * 0.75 }));
-      else if (mods.includes('HT')) setStats(prev => ({ ...prev, len: diff.total_length * 1.5 }));
-      else setStats(prev => ({ ...prev, len: diff.total_length }));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  return stats;
-}

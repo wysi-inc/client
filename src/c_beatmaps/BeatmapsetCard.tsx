@@ -3,7 +3,7 @@ import { playerStore, PlayerStoreInterface } from "../resources/store/tools";
 import DiffIcon from "./b_comp/DiffIcon";
 import moment from "moment";
 import StatusBadge from "./b_comp/StatusBadge";
-import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaRegClock, FaItunesNote, FaMicrophoneAlt, FaHeart } from "react-icons/fa";
+import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaRegClock, FaItunesNote, FaHeart } from "react-icons/fa";
 import { ImSpinner11 } from "react-icons/im"
 import { Beatmap, BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Link } from "react-router-dom";
@@ -36,7 +36,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             </div>
                             <div className="flex flex-row gap-2 items-center truncate text-light">
                                 <div className="flex justify-center w-6">
-                                    <FaMicrophoneAlt />
+                                    <FaItunesNote />
                                 </div>
                                 <div className="truncate">
                                     {props.beatmapset.artist}
@@ -56,16 +56,15 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             <div>{secondsToTime(props.beatmapset.beatmaps.sort((a, b) => b.total_length - a.total_length)[0].total_length)}</div>
                         </div>
                         <div className="flex flex-row gap-1 items-center">
-                            <FaItunesNote />
-                            <div>{Math.round(props.beatmapset.bpm)}</div>
+                            <div>{Math.round(props.beatmapset.bpm)} bpm</div>
                         </div>
                     </div>
                 </div>
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row gap-2 items-center">
                         <div className="toolip"
-                            beatmapset-tip={moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).fromNow()}>
-                            {moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).format('DD MMM YYYY')}
+                            beatmapset-tip={moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).format('DD MMM YYYY')}>
+                            {moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).fromNow()}
                         </div>
                     </div>
                     <div className="flex flex-row gap-4 items-center justify-content-end">

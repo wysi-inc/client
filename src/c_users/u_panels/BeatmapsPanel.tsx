@@ -4,8 +4,8 @@ import { BeatmapsObj, beatmapCategoryType, beatmapListItem, tabInterface } from 
 import { BeatmapSet } from "../../resources/interfaces/beatmapset";
 import BeatmapsetCard from "../../c_beatmaps/BeatmapsetCard";
 import InfiniteScroll from 'react-infinite-scroller';
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import axios from "../../resources/axios-config";
+import { Dispatch, SetStateAction, useState } from "react";
+import { GlobalSettings, GlobalSettingsInterface } from "../../env";
 
 interface BeatmapsPanelProps {
     user: User,
@@ -16,6 +16,7 @@ interface BeatmapsPanelProps {
 }
 
 const BeatmapsPanel = (p: BeatmapsPanelProps) => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
 
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
 
@@ -72,13 +73,16 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
     )
     async function getBeatmaps(t: beatmapCategoryType, l: number, o: number) {
         try {
-            const r = await axios.post('/userbeatmaps', {
-                id: p.user.id,
-                limit: l,
-                offset: o,
-                type: t
+            const r = await fetch(`${settings.api_url}/userbeatmaps`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({
+                    id: p.user.id,
+                    limit: l,
+                    offset: o,
+                    type: t,
+                })
             });
-            const d: BeatmapSet[] = r.data;
+            const d: BeatmapSet[] = await r.json();
             if (d.length < 1) return;
             switch (t) {
                 case 'favourite': p.setBeatmaps((prev) => ({ ...prev, favourite: [...prev.favourite, ...d] })); break;

@@ -9,7 +9,6 @@ import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
 
 import { colors } from "../resources/store/tools";
-import axios from '../resources/axios-config';
 import { secondsToTime } from "../resources/functions";
 import { BeatmapsetStatusType, GameModeType } from "../resources/types";
 import BeatmapsetPage from "./BeatmapsetPage";
@@ -19,6 +18,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import {FaAngleUp, FaAngleDown} from "react-icons/fa";
 
 import './b_comp/Beatmaps.css';
+import { GlobalSettings, GlobalSettingsInterface } from "../env";
 
 interface InitialState {
     title: string,
@@ -37,6 +37,8 @@ interface InitialState {
 }
 
 const BeatmapsPage = () => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
+
     const { urlSetId } = useParams();
     const { urlDiffId } = useParams();
 
@@ -188,8 +190,11 @@ const BeatmapsPage = () => {
             sort: query.sort,
         }
         try {
-            const res = await axios.post('/beatmapsets', q);
-            const data = res.data;
+            const res = await fetch(`${settings.api_url}/beatmapsets`, {
+                method: "POST",
+                body: JSON.stringify(q)
+            });
+            const data = await res.json();
             setResultsNum(parseInt(data.total))
             setResults(data.results)
         } catch (err) {
@@ -208,8 +213,11 @@ const BeatmapsPage = () => {
             sort: query.sort,
         }
         try {
-            const res = await axios.post('/beatmapsets', q);
-            const data = res.data;
+            const res = await fetch(`${settings.api_url}/beatmapsets`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({q})
+            });
+            const data = await res.json();
             setResultsNum(parseInt(data.total))
             setResults([...results, ...data.results])
         } catch (err) {

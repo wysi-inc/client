@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
-
 import UserPage from "./UserPage";
 import UserCard from "./UserCard";
-import axios from "../resources/axios-config";
 import { GameModeType } from "../resources/types";
 import PageTabs from "../c_web/w_comp/PageTabs";
 import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
+import { GlobalSettings, GlobalSettingsInterface } from "../env";
 
 const Users = () => {
+    const settings = GlobalSettings((state: GlobalSettingsInterface) => state);
+
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const { urlUser } = useParams();
@@ -117,15 +118,16 @@ const Users = () => {
             setUsers([]);
             setCategory(c)
             setMode(m);
-            const res = await axios.post('/users',
-                {
+            const res = await fetch(`${settings.api_url}/users`, {
+                ...settings.fetch_settings,
+                body: JSON.stringify({
                     mode: m,
                     type: c,
                     page: page,
-                }
-            );
-            const data: UserRanks[] = res.data.ranking;
-            setUsers(data);
+                })
+            });
+            const data = await res.json();
+            setUsers(data.ranking);
         } catch (err) {
             console.error(err);
             addAlert('error', 'Error: Failed to fetch users');
