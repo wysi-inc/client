@@ -12,7 +12,7 @@ const Login = () => {
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
-    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${settigs.client_id}&redirect_uri=${settigs.client_redirect}&response_type=code&scope=identify`
+    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${settings.client_id}&redirect_uri=${settings.client_redirect}&response_type=code&scope=identify`
 
     useEffect(() => {
         if (user.id === 0) {
