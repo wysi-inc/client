@@ -27,13 +27,38 @@ class Fina {
     }
   }
 
-  async send(url = "", body, config, method) {
-    let realUrl;
+  getRealUrl(url = "") {
     if (url.split("/")[0].includes(".") || url.split("/")[0].includes("http"))
-      realUrl = url;
-    else
-      realUrl = `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url
-        }`;
+      return url;
+    else return `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url}`;
+  }
+
+  async nsend(url, body, config, method) {
+    const realUrl = this.getRealUrl(url);
+
+    if (config) {
+      return await fetch(realUrl, {
+        method: method,
+        ...config,
+        body: JSON.stringify(body || {}),
+      });
+    }
+
+    if (body) {
+      return await fetch(realUrl, {
+        method: method,
+        ...this.configs.nconfig,
+        body: JSON.stringify(body),
+      });
+    }
+
+    return await fetch(realUrl, {
+      method: method,
+      ...this.configs.nconfig,
+    });
+  }
+  async send(url, body, config, method) {
+    const realUrl = this.getRealUrl(url);
 
     if (config) {
       return await fetch(realUrl, {
@@ -57,8 +82,10 @@ class Fina {
     });
   }
   async ssend(url, body, config, method) {
+    const realUrl = this.getRealUrl(url);
+
     if (config) {
-      return await fetch(url, {
+      return await fetch(realUrl, {
         method: method,
         ...config,
         body: JSON.stringify(body || {}),
@@ -66,39 +93,16 @@ class Fina {
     }
 
     if (body) {
-      return await fetch(url, {
+      return await fetch(realUrl, {
         method: method,
         ...this.configs.sconfig,
         body: JSON.stringify(body),
       });
     }
 
-    return await fetch(url, {
+    return await fetch(realUrl, {
       method: method,
       ...this.configs.sconfig,
-    });
-  }
-  async nsend(url, body, config, method) {
-
-    if (config) {
-      return await fetch(url, {
-        method: method,
-        ...config,
-        body: JSON.stringify(body || {}),
-      });
-    }
-
-    if (body) {
-      return await fetch(url, {
-        method: method,
-        ...this.configs.nconfig,
-        body: JSON.stringify(body),
-      });
-    }
-
-    return await fetch(url, {
-      method: method,
-      ...this.configs.nconfig,
     });
   }
 
