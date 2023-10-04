@@ -95,14 +95,14 @@ const TopScoresPanel = (props: topScoresProps) => {
             x50: 0,
             xMiss: 0,
         }
-        props.best.map((obj: Score) => {
-            if (obj.mode !== 'osu') scoresHits.x320 += obj.statistics?.count_geki ? obj.statistics.count_geki : 0;
-            scoresHits.x300 += obj.statistics?.count_300 ? obj.statistics.count_300 : 0;
-            if (obj.mode !== 'osu') scoresHits.x200 += obj.statistics?.count_katu ? obj.statistics.count_katu : 0;
-            scoresHits.x100 += obj.statistics?.count_100 ? obj.statistics.count_100 : 0;
-            scoresHits.x50 += obj.statistics?.count_50 ? obj.statistics.count_50 : 0;
-            scoresHits.xMiss += obj.statistics?.count_miss ? obj.statistics.count_miss : 0;
-        });
+        props.best.forEach((sc: Score) => {
+            if (sc.mode !== 'osu') scoresHits.x320 += sc.statistics?.count_geki ? sc.statistics.count_geki : 0;
+            scoresHits.x300 += sc.statistics?.count_300 ? sc.statistics.count_300 : 0;
+            if (sc.mode !== 'osu') scoresHits.x200 += sc.statistics?.count_katu ? sc.statistics.count_katu : 0;
+            scoresHits.x100 += sc.statistics?.count_100 ? sc.statistics.count_100 : 0;
+            scoresHits.x50 += sc.statistics?.count_50 ? sc.statistics.count_50 : 0;
+            scoresHits.xMiss += sc.statistics?.count_miss ? sc.statistics.count_miss : 0;
+        })
         return scoresHits;
     }
 
@@ -117,15 +117,15 @@ const TopScoresPanel = (props: topScoresProps) => {
             c: 0,
             d: 0,
         }
-        props.best.map((obj: any) => {
-            scoresRanks.xh += obj.rank === "XH" ? 1 : 0;
-            scoresRanks.x += obj.rank === "X" ? 1 : 0;
-            scoresRanks.sh += obj.rank === "SH" ? 1 : 0;
-            scoresRanks.s += obj.rank === "S" ? 1 : 0;
-            scoresRanks.a += obj.rank === "A" ? 1 : 0;
-            scoresRanks.b += obj.rank === "B" ? 1 : 0;
-            scoresRanks.c += obj.rank === "C" ? 1 : 0;
-            scoresRanks.d += obj.rank === "D" ? 1 : 0;
+        props.best.forEach((sc: Score) => {
+            scoresRanks.xh += sc.rank === "XH" ? 1 : 0;
+            scoresRanks.x += sc.rank === "X" ? 1 : 0;
+            scoresRanks.sh += sc.rank === "SH" ? 1 : 0;
+            scoresRanks.s += sc.rank === "S" ? 1 : 0;
+            scoresRanks.a += sc.rank === "A" ? 1 : 0;
+            scoresRanks.b += sc.rank === "B" ? 1 : 0;
+            scoresRanks.c += sc.rank === "C" ? 1 : 0;
+            scoresRanks.d += sc.rank === "D" ? 1 : 0;
         });
         return scoresRanks
     }

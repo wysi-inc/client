@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { PlayerStoreInterface, playerStore } from "../resources/store/tools";
@@ -18,6 +18,16 @@ interface BeatmapsetPageProps {
   diffId: number | undefined;
 }
 
+interface accInt {
+  acc: number,
+  geki: number,
+  x300: number,
+  katu: number,
+  x100: number,
+  x50: number,
+  xMiss: number,
+}
+
 const BeatmapsetPage = (props: BeatmapsetPageProps) => {
   const play = playerStore((state: PlayerStoreInterface) => state.play);
 
@@ -25,8 +35,27 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
   const [diff, setDiff] = useState<Beatmap | undefined>();
   const scores: Score[] = useScore(diff);
 
-  const [acc, setAcc] = useState<number>(100);
+  const totalNotes: number = useMemo(() => {
+    if (!diff) return 0;
+    return diff.count_circles + diff.count_sliders + diff.count_spinners;
+  }, [diff]);
+
+  const ACC_INITIAL: accInt = useMemo(() => ({
+    acc: 100,
+    geki: 0,
+    x300: totalNotes,
+    katu: 0,
+    x100: 0,
+    x50: 0,
+    xMiss: 0
+  }), [diff]);
+
+  const [acc, setAcc] = useState<accInt>(ACC_INITIAL);
+
   const [mods, setMods] = useState<string[]>([]);
+
+  function calcAcc() {
+  }
 
   const stats = useStats(diff, mods, acc);
 
@@ -262,7 +291,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     return leaderboards;
   }
 
-  function useStats(diff: Beatmap | undefined, mods: string[], acc: number) {
+  function useStats(diff: Beatmap | undefined, mods: string[], acc: accInt) {
     const INITIAL_SET_STATS = {
       pp: 0,
       bpm: 0,
@@ -283,7 +312,7 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     async function getStats() {
       if (!diff) return;
       try {
-        const d = await fina.nget(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc}&mods=${getModsInt(mods)}`);
+        const d = await fina.nget(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc.acc}&mods=${getModsInt(mods)}`);
         setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
         setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
         setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))

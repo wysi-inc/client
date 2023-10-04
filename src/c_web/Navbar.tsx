@@ -40,10 +40,12 @@ const Navbar = () => {
                 <SearchBox />
             </div>
             <div className="flex flex-row gap-2 items-center navbar-end">
-                <a target='_blank' href='' className="btn btn-ghost btn-circle">
+                <a target='_blank' rel="noreferrer"
+                    href='https://google.com' className="btn btn-ghost btn-circle">
                     <FaDiscord />
                 </a>
-                <a target='_blank' href='https://github.com/orgs/wysi-inc/repositories' className="btn btn-ghost btn-circle">
+                <a target='_blank' rel="noreferrer"
+                    href='https://github.com/orgs/wysi-inc/repositories' className="btn btn-ghost btn-circle">
                     <FaGithub />
                 </a>
                 <Login />

@@ -33,7 +33,7 @@ class Fina {
     else return `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url}`;
   }
 
-  async send(url, body, config, method) {
+  async send(url, body = undefined, config, method) {
     const realUrl = this.getRealUrl(url);
 
     if (config) {
@@ -44,7 +44,7 @@ class Fina {
       });
     }
 
-    if (body) {
+    if (body !== undefined) {
       return await fetch(realUrl, {
         method: method,
         ...this.configs.config,
@@ -60,24 +60,24 @@ class Fina {
 
   //normal fetch
   async npost(url, body, config = this.configs.nconfig) {
-    return await (await this.nsend(url, body, config, "POST")).json();
+    return await (await this.send(url, body, config, "POST")).json();
   }
-  async nget(url, body, config = this.configs.nconfig) {
-    return await (await this.nsend(url, body, config, "GET")).json();
+  async nget(url, config = this.configs.nconfig) {
+    return await (await this.send(url, undefined, config, "GET")).json();
   }
   async nput(url, body, config = this.configs.nconfig) {
-    return await (await this.nsend(url, body, config, "PUT")).json();
+    return await (await this.send(url, body, config, "PUT")).json();
   }
   async ndelete(url, body, config = this.configs.nconfig) {
-    return await (await this.nsend(url, body, config, "DELETE")).json();
+    return await (await this.send(url, body, config, "DELETE")).json();
   }
 
   //default fetch
   async post(url, body, config = this.configs.config) {
     return await (await this.send(url, body, config, "POST")).json();
   }
-  async get(url, body, config = this.configs.config) {
-    return await (await this.send(url, body, config, "GET")).json();
+  async get(url, config = this.configs.config) {
+    return await (await this.send(url, undefined, config, "GET")).json();
   }
   async put(url, body, config = this.configs.config) {
     return await (await this.send(url, body, config, "PUT")).json();
@@ -88,16 +88,16 @@ class Fina {
 
   //secure fetch
   async spost(url, body, config = this.configs.sconfig) {
-    return await (await this.ssend(url, body, config, "POST")).json();
+    return await (await this.send(url, body, config, "POST")).json();
   }
-  async sget(url, body, config = this.configs.sconfig) {
-    return await (await this.ssend(url, body, config, "GET")).json();
+  async sget(url, config = this.configs.sconfig) {
+    return await (await this.send(url, undefined, config, "GET")).json();
   }
   async sput(url, body, config = this.configs.sconfig) {
-    return await (await this.ssend(url, body, config, "PUT")).json();
+    return await (await this.send(url, body, config, "PUT")).json();
   }
   async sdelete(url, body, config = this.configs.sconfig) {
-    return await (await this.ssend(url, body, config, "DELETE")).json();
+    return await (await this.send(url, body, config, "DELETE")).json();
   }
 }
 

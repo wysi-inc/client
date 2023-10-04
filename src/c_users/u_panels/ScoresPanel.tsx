@@ -1,7 +1,7 @@
 import { FaListUl, FaMapPin, FaChartBar, FaStar, FaStopwatch } from "react-icons/fa";
 import { ScoresObj, scoreCategoryType, scoreListItem, tabInterface } from "../u_interfaces";
 import { User } from "../../resources/interfaces/user";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
 import ScoreCard from "../../c_scores/ScoreCard";
 import { Score } from "../../resources/interfaces/score";

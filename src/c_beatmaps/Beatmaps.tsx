@@ -158,7 +158,7 @@ const BeatmapsPage = () => {
     }
 
     function getUrlParams() {
-        const queryParameters = new URLSearchParams(window.location.search)
+        // const queryParameters = new URLSearchParams(window.location.search)
         // const urlTitle = queryParameters.get('title');
         // const urlMapper = queryParameters.get('mapper');
         // const urlBPM0 = queryParameters.get('bpm0');
