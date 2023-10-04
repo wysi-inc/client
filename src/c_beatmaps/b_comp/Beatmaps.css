@@ -8,14 +8,36 @@
     background-color: #1c1618 !important;
 }
 
-.MuiSlider-rail {
-    opacity: 1 !important;
-    background-clip: border-box !important;
-    overflow: hidden !important;
-    height: 10px !important;
+.multi-range-slider {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
 }
 
-.srSlider .MuiSlider-rail {
+.caption > span {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #414558  !important;
+    color: #CACCD9 !important;
+    border-radius: .5rem !important;
+    transform: translateX(calc(10px - 50%));
+}
+
+.yearSlider .bar {
+    background: linear-gradient(to right,
+            #C0C0C0,
+            #98ddfc) !important;
+}
+
+.bpmSlider .bar {
+    background: linear-gradient(to right,
+            #4290fe,
+            #ff291e) !important;
+}
+
+.srSlider .bar {
     background: linear-gradient(to right,
             #4290fe,
             #4cb6ff,
@@ -30,23 +52,7 @@
             #000000) !important;
 }
 
-.hpSlider .MuiSlider-rail,
-.arSlider .MuiSlider-rail,
-.csSlider .MuiSlider-rail,
-.odSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #61de2a,
-            #fff65f,
-            #ff291e) !important;
-}
-
-.bpmSlider .MuiSlider-rail {
-    background: linear-gradient(to right,
-            #4290fe,
-            #ff291e) !important;
-}
-
-.lengthSlider .MuiSlider-rail {
+.lenSlider .bar {
     background: linear-gradient(to right,
             #B589D6,
             #9969C7,
@@ -55,50 +61,35 @@
             #552586) !important;
 }
 
-.yearSlider .MuiSlider-rail {
+.statSlider .bar {
     background: linear-gradient(to right,
-            #C0C0C0,
-            #98ddfc) !important;
+            #61de2a,
+            #fff65f,
+            #ff291e) !important;
 }
 
-.MuiSlider-rail {
-    filter: brightness(50%) !important;
+.bar-left,
+.bar-right {
+    background: none;
+    opacity: 0;
 }
 
-.MuiSlider-track {
-    height: 10px !important;
-}
-
-.MuiSlider-track {
-    border: 0 !important;
-    background-color: transparent !important;
-    backdrop-filter: brightness(200%);
-    outline: solid 2px #ffffff;
-}
-
-.MuiSlider-thumb {
-    transition: .1s ease-in-out !important;
-    background-color: #ffffff00 !important;
-}
-
-.MuiSlider-thumb,
-.MuiSlider-thumb:focus,
-.MuiSlider-thumb:hover,
-.Mui-focusVisible {
+.thumb::before {
+    border: none !important;
+    outline: none !important;
     box-shadow: none !important;
-    width: 6px !important;
-    border-radius: 6px !important;
+    transform: translateY(3px);
 }
 
-.MuiSlider-thumb:active,
-.MuiSlider-thumb:hover {
-    filter: brightness(50%) !important;
-    cursor: pointer !important;
+.bar {
+    border-radius: 30px;
+    height: 10px;
 }
 
-.MuiSlider-thumb::before,
-.MuiSlider-thumb::after,
-.Mui-active::before,
-.Mui-active::after {
-    display: none !important;
+.bar-inner {
+    border: none !important;
+    background: transparent !important;
+    backdrop-filter: brightness(120%) !important;
+    outline: solid 2px #ffffff !important;
+    box-shadow: none !important;
 }
