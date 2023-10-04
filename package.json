@@ -8,7 +8,6 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
-    "@mui/material": "^5.14.11",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -23,6 +22,7 @@
     "chartjs-plugin-zoom": "^2.0.1",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
+    "multi-range-slider-react": "^2.0.5",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-country-flag": "^3.1.0",
@@ -74,13 +74,5 @@
     "@types/react-virtualized": "^9.21.22",
     "daisyui": "^3.7.4",
     "tailwindcss": "^3.3.3"
-  },
-  "react-dotenv": {
-    "whitelist": [
-      "API_URL",
-      "CLIENT_ID",
-      "CLIENT_SECRET",
-      "CLIENT_REDIRECT"
-    ]
   }
 }

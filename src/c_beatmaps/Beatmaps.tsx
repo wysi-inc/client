@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
 import { useDebounce } from "usehooks-ts";
 
-import { Slider } from "@mui/material";
 import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
 
@@ -17,10 +16,12 @@ import BeatmapsetCard from "./BeatmapsetCard";
 import InfiniteScroll from "react-infinite-scroller";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
+import MultiRangeSlider from "multi-range-slider-react";
+
 import './b_comp/Beatmaps.css';
 import fina from "../helpers/fina";
 
-interface InitialState {
+interface Query {
     title: string,
     mapper: string,
     year: number[],
@@ -53,7 +54,7 @@ const BeatmapsPage = () => {
 
     const songSort = ['bpm', 'favourite_count', 'last_updated', 'play_count', 'ranked_date', 'submitted_date', 'beatmaps.total_length'];
 
-    const INITIAL_QUERY: InitialState = {
+    const INITIAL_QUERY: Query = {
         title: '',
         mapper: '',
         year: [timeMin, timeMax],
@@ -77,20 +78,24 @@ const BeatmapsPage = () => {
     const [copied, setCopied] = useState<boolean>(false);
     const [cleared, setCleared] = useState<boolean>(false);
 
-    const debouncedValue = useDebounce(query, 500);
+    const debouncedValue = useDebounce<Query>(query, 1000);
+
+    useEffect(() => {
+        console.log(query)
+    }, [query]);
 
     useEffect((): void => {
         if (urlSetId === undefined) {
             getUrlParams();
             getBeatmaps();
         }
-    }, [urlSetId])
+    }, [])
 
     useEffect(() => {
         if (urlSetId === undefined) {
             getBeatmaps();
         }
-    }, [debouncedValue, urlSetId]);
+    }, [debouncedValue]);
 
 
     function clearSearch(): void {
@@ -262,16 +267,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">Year:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.year[0] < timeMax ? query.year[0] : 'now'}</div>
-                                <Slider className="yearSlider grow"
-                                    min={timeMin} max={timeMax} step={1}
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, year: [Math.min((newValue as number[])[0], p.year[1] - 1), p.year[1]] }));
-                                        } else {
-                                            setQuery((p) => ({ ...p, year: [p.year[0], Math.max((newValue as number[])[1], p.year[0] + 1)] }));
-                                        }
+                                <MultiRangeSlider
+                                    className="grow yearSlider"
+                                    min={timeMin}
+                                    max={timeMax}
+                                    step={1}
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.year[0]}
+                                    maxValue={query.year[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, year: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.year} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.year[1] < timeMax ? query.year[1] : 'now'}</div>
                             </div>
                         </div>
@@ -281,18 +290,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">BPM:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.bpm[0] < bpmLimit ? query.bpm[0] : '∞'}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow bpmSlider"
+                                    min={0}
                                     max={bpmLimit}
                                     step={5}
-                                    className="bpmSlider grow"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, bpm: [Math.min((newValue as number[])[0], p.bpm[1] - 5), p.bpm[1]] }));
-                                        } else {
-                                            setQuery((p) => ({ ...p, bpm: [p.bpm[0], Math.max((newValue as number[])[1], p.bpm[0] + 5)] }));
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.bpm[0]}
+                                    maxValue={query.bpm[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, bpm: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.bpm} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.bpm[1] < bpmLimit ? query.bpm[1] : '∞'}</div>
                             </div>
                         </div>
@@ -300,18 +311,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">Stars:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.sr[0] < srLimit ? query.sr[0] : '∞'}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow srSlider"
+                                    min={0}
                                     max={srLimit}
                                     step={0.5}
-                                    className="srSlider grow"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, sr: [Math.min((newValue as number[])[0], p.sr[1] - 0.5), p.sr[1]] }));
-                                        } else {
-                                            setQuery((p) => ({ ...p, sr: [p.sr[0], Math.max((newValue as number[])[1], p.sr[0] + 0.5)] }));
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.sr[0]}
+                                    maxValue={query.sr[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, sr: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.sr} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.sr[1] < srLimit ? query.sr[1] : '∞'}</div>
                             </div>
                         </div>
@@ -319,18 +332,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">Length:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.len[0] < lengthLimit ? secondsToTime(query.len[0]) : '∞'}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow lenSlider"
+                                    min={0}
                                     max={lengthLimit}
                                     step={15}
-                                    className="lengthSlider"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, len: [Math.min((newValue as number[])[0], p.len[1] - 30), p.len[1]] }))
-                                        } else {
-                                            setQuery((p) => ({ ...p, len: [p.len[0], Math.max((newValue as number[])[1], p.len[0] + 30)] }))
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.len[0]}
+                                    maxValue={query.len[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, len: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.len} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.len[1] < lengthLimit ? secondsToTime(query.len[1]) : '∞'}</div>
                             </div>
                         </div>
@@ -340,18 +355,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">AR:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.ar[0]}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow statSlider"
+                                    min={0}
                                     max={statLimit}
                                     step={0.5}
-                                    className="arSlider"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, ar: [Math.min((newValue as number[])[0], p.ar[1] - 1), p.ar[1]] }))
-                                        } else {
-                                            setQuery((p) => ({ ...p, ar: [p.ar[0], Math.max((newValue as number[])[1], p.ar[0] + 1)] }))
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.ar[0]}
+                                    maxValue={query.ar[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, ar: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.ar} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.ar[1]}</div>
                             </div>
                         </div>
@@ -359,18 +376,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">CS:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.cs[0]}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow statSlider"
+                                    min={0}
                                     max={statLimit}
                                     step={0.5}
-                                    className="csSlider"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, cs: [Math.min((newValue as number[])[0], p.cs[1] - 1), p.cs[1]] }))
-                                        } else {
-                                            setQuery((p) => ({ ...p, cs: [p.cs[0], Math.max((newValue as number[])[1], p.cs[0] + 1)] }))
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.cs[0]}
+                                    maxValue={query.cs[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, cs: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.cs} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.cs[1]}</div>
                             </div>
                         </div>
@@ -378,18 +397,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">OD:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.od[0]}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow statSlider"
+                                    min={0}
                                     max={statLimit}
                                     step={0.5}
-                                    className="odSlider"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, od: [Math.min((newValue as number[])[0], p.od[1] - 1), p.od[1]] }))
-                                        } else {
-                                            setQuery((p) => ({ ...p, od: [p.od[0], Math.max((newValue as number[])[1], p.od[0] + 1)] }))
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.od[0]}
+                                    maxValue={query.od[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, od: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.od} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.od[1]}</div>
                             </div>
                         </div>
@@ -397,18 +418,20 @@ const BeatmapsPage = () => {
                             <div className="text-center">HP:</div>
                             <div className="flex flex-row gap-4 justify-center items-center">
                                 <div className="w-20 text-end">{query.hp[0]}</div>
-                                <Slider min={0}
+                                <MultiRangeSlider
+                                    className="grow statSlider"
+                                    min={0}
                                     max={statLimit}
                                     step={0.5}
-                                    className="hpSlider"
-                                    onChange={(event, newValue, activeThumb) => {
-                                        if (activeThumb === 0) {
-                                            setQuery((p) => ({ ...p, hp: [Math.min((newValue as number[])[0], p.hp[1] - 1), p.hp[1]] }))
-                                        } else {
-                                            setQuery((p) => ({ ...p, hp: [p.hp[0], Math.max((newValue as number[])[1], p.hp[0] + 1)] }))
-                                        }
+                                    stepOnly={true}
+                                    ruler={false}
+                                    label={false}
+                                    minValue={query.hp[0]}
+                                    maxValue={query.hp[1]}
+                                    onChange={(e) => {
+                                        setQuery((p) => ({ ...p, hp: [e.minValue, e.maxValue] }));
                                     }}
-                                    value={query.hp} disableSwap />
+                                />
                                 <div className="w-20 text-start">{query.hp[1]}</div>
                             </div>
                         </div>
