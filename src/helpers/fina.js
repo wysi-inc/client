@@ -16,31 +16,41 @@ class Fina {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include"
+      credentials: "include",
     },
     sconfig: {
       headers: {
         "Content-Type": "application/json",
         "x-token": this.defaults.token,
       },
-      credentials: "include"
-    }
-  }
+      credentials: "include",
+    },
+  };
 
   getRealUrl(url = "") {
     if (url.split("/")[0].includes(".") || url.split("/")[0].includes("http"))
       return url;
-    else return `${this.defaults.baseUrl}${url.charAt(0) === "/" ? url : "/" + url}`;
+    else
+      return `${this.defaults.baseUrl}${
+        url.charAt(0) === "/" ? url : "/" + url
+      }`;
   }
 
   async send(url, body = undefined, config, method) {
     const realUrl = this.getRealUrl(url);
 
-    if (config) {
+    if (config && body) {
       return await fetch(realUrl, {
         method: method,
         ...config,
         body: JSON.stringify(body || {}),
+      });
+    }
+
+    if (config) {
+      return await fetch(realUrl, {
+        method: method,
+        ...config,
       });
     }
 
@@ -51,7 +61,6 @@ class Fina {
         body: JSON.stringify(body),
       });
     }
-
     return await fetch(realUrl, {
       method: method,
       ...this.configs.config,
