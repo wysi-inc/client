@@ -8,8 +8,10 @@ import GroupBadge from "../../c_users/u_comp/GroupBadge";
 import { UserCompact } from "../../resources/interfaces/user";
 import CountryFlag from "../../c_users/u_comp/CountryFlag";
 import fina from "../../helpers/fina";
+import { useTranslation } from "react-i18next";
 
 const SearchBox = () => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
 
@@ -57,14 +59,14 @@ const SearchBox = () => {
         <>
             <button className="flex flex-row gap-3 btn btn-wide" onClick={show}>
                 <FaSearch />
-                <div>Search someone</div>
+                <div>{t('nav.search')}</div>
             </button>
             <dialog id="searchModal" className="modal modal-top md:modal-middle text-base-content">
                 <div className="flex flex-col gap-3 modal-box">
                     <form method="dialog">
                         <button className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost">✕</button>
                     </form>
-                    <h3 className="text-lg font-bold">Search someone</h3>
+                    <h3 className="text-lg font-bold">{t('nav.search')}</h3>
                     <form className="w-full input-group" onSubmit={(e) => {
                         e.preventDefault();
                         sendTo(username);

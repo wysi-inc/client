@@ -13,25 +13,30 @@ import ScrollToTop from './resources/ScrollToTop';
 import AlertManager from './c_web/w_comp/AlertManager';
 import OAuth from './c_web/OAuth';
 
+import './resources/langs';
+import { Suspense } from 'react';
+
 function App() {
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            <Navbar />
-            <AlertManager/>
-            <div className="bg-custom-950">
-                <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/oauth-redirect" element={<OAuth />} />
-                        <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
-                        <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
-                    </Routes>
-                </main>
-            </div>
-            <SongPlayer />
-            <Footer />
-        </BrowserRouter>
+        <Suspense fallback={null}>
+            <BrowserRouter>
+                <ScrollToTop />
+                <Navbar />
+                <AlertManager />
+                <div className="bg-custom-950">
+                    <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/oauth-redirect" element={<OAuth />} />
+                            <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
+                            <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
+                        </Routes>
+                    </main>
+                </div>
+                <SongPlayer />
+                <Footer />
+            </BrowserRouter>
+        </Suspense>
     );
 }
 

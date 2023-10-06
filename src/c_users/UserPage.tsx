@@ -31,6 +31,7 @@ import ScoresPanel from "./u_panels/ScoresPanel";
 import BeatmapsPanel from "./u_panels/BeatmapsPanel";
 import { BarPieChartData } from "./u_panels/setup_comp/TopScoresPanel";
 import fina from "../helpers/fina";
+import { useTranslation } from "react-i18next";
 
 Chart.register(zoomPlugin, ...registerables);
 Chart.defaults.plugins.legend.display = false;
@@ -94,6 +95,8 @@ const radarOptions: ChartOptions<'radar'> = {
 }
 
 const UserPage = (props: UserPageProps) => {
+    const { t } = useTranslation();
+
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const [userData, setUserData] = useState<User | null | undefined>(undefined);
@@ -169,14 +172,14 @@ const UserPage = (props: UserPageProps) => {
                         </div>
                         <div className="profileTitle">{userData.title}</div>
                         <div className="flex flex-col gap-1">
-                            <div className="text-lg">Global Rank:</div>
+                            <div className="text-lg">{t('user.global_rank')}:</div>
                             <div className="flex flex-row gap-2 items-center text-2xl">
                                 <FaGlobeAfrica />
                                 <div>#{userData.statistics.global_rank ? userData.statistics.global_rank.toLocaleString() : '-'}</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="text-lg">Country Rank:</div>
+                            <div className="text-lg">{t('user.country_rank')}:</div>
                             <div className="flex flex-row gap-2 items-center text-2xl">
                                 <CountryShape code={userData.country.code} size={26} />
                                 <div>#{userData.statistics.country_rank ? userData.statistics.country_rank.toLocaleString() : '-'}</div>
@@ -190,13 +193,13 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="text-lg">Performance:</div>
+                            <div className="text-lg">{t('user.performance')}:</div>
                             <div className="flex flex-row gap-2 items-center text-xl">
                                 <div>{Math.round(userData.statistics.pp).toLocaleString()}pp</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="text-lg">Accuracy:</div>
+                            <div className="text-lg">{t('user.accuracy')}:</div>
                             <div className="flex flex-row gap-2 items-center text-xl">
                                 <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
                             </div>
@@ -208,7 +211,7 @@ const UserPage = (props: UserPageProps) => {
                     </div>
                     <div className="flex flex-col col-span-7 col-start-4 gap-3 justify-between items-end md:col-span-3 xl:col-span-2 xl:col-start-6">
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">Ranked Score:</div>
+                            <div className="text-lg">{t('user.ranked_score')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                 data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
                                 <FaAngleDoubleUp />
@@ -218,14 +221,14 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">Max Combo:</div>
+                            <div className="text-lg">{t('user.max_combo')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl">
                                 <FaFireAlt />
                                 <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">Play Time:</div>
+                            <div className="text-lg">{t('user.play_time')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                 data-tip={secondsToTime(userData.statistics.play_time)}>
                                 <FaRegClock />
@@ -235,14 +238,14 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">Play Count:</div>
+                            <div className="text-lg">{t('user.play_count')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl">
                                 <FaUndo />
                                 <div>{userData.statistics.play_count.toLocaleString()}</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">Hits x Play:</div>
+                            <div className="text-lg">{t('user.hits_x_play')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl">
                                 <FaCalculator />
                                 <div>
@@ -263,7 +266,7 @@ const UserPage = (props: UserPageProps) => {
         <div className="flex flex-row flex-wrap gap-4 items-center p-4 m-0 drop-shadow-lg bg-custom-800">
             <div className="flex flex-row gap-2 items-center">
                 <FaUsers />
-                <div>Followers: {userData.follower_count.toLocaleString()}</div>
+                <div>{t('user.followers')}: {userData.follower_count.toLocaleString()}</div>
             </div>
             {userData.discord !== null &&
                 <div className="flex flex-row gap-2 items-center">

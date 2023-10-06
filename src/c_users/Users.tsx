@@ -9,8 +9,11 @@ import { UserRanks } from "../resources/interfaces/user";
 import { useDebounce } from "@uidotdev/usehooks";
 import { alertManager, alertManagerInterface } from "../resources/store/tools";
 import fina from "../helpers/fina";
+import { useTranslation } from "react-i18next";
+import { modes } from "../resources/store/user";
 
 const Users = () => {
+    const { t } = useTranslation();
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const { urlUser } = useParams();
@@ -55,32 +58,23 @@ const Users = () => {
                     <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers('performance', mode);
-                        }}>Performance</button>
+                        }}>{t('user.performance')}</button>
                     <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers('score', mode);
-                        }}>Ranked Score</button>
+                        }}>{t('user.ranked_score')}</button>
                 </div>
                 <div className="flex justify-center">
                     <PageTabs setNewPage={setPage} current={page} min={1} max={200} />
                 </div>
                 <div className="justify-end join">
-                    <button className="font-bold join-item btn btn-secondary text-base-100"
-                        onClick={() => {
-                            getUsers(category, 'osu');
-                        }}>osu</button>
-                    <button className="font-bold join-item btn btn-secondary text-base-100"
-                        onClick={() => {
-                            getUsers(category, 'taiko');
-                        }}>taiko</button>
-                    <button className="font-bold join-item btn btn-secondary text-base-100"
-                        onClick={() => {
-                            getUsers(category, 'fruits');
-                        }}>fruits</button>
-                    <button className="font-bold join-item btn btn-secondary text-base-100"
-                        onClick={() => {
-                            getUsers(category, 'mania');
-                        }}>mania</button>
+                    {modes.map(m =>
+                        <button key={m}
+                            className="font-bold join-item btn btn-secondary text-base-100"
+                            onClick={() => {
+                                getUsers(category, m);
+                            }}>{m}</button>
+                    )}
                 </div>
             </div>
             <div className="p-3 rounded-xl bg-custom-900">
@@ -90,12 +84,12 @@ const Users = () => {
                             <th className="table-cell text-left"></th>
                             <th className="table-cell text-left"></th>
                             <th className="table-cell text-left"></th>
-                            <th className="table-cell text-left">PP</th>
-                            <th className="hidden text-left lg:table-cell">Acc</th>
-                            <th className="hidden text-left lg:table-cell">Play Time</th>
-                            <th className="hidden text-left lg:table-cell">Play Count</th>
-                            <th className="hidden text-left md:table-cell">Score</th>
-                            <th className="hidden text-left xl:table-cell">Grades</th>
+                            <th className="table-cell text-left">{t('user.pp')}</th>
+                            <th className="hidden text-left lg:table-cell">{t('user.acc')}</th>
+                            <th className="hidden text-left lg:table-cell">{t('user.play_time')}</th>
+                            <th className="hidden text-left lg:table-cell">{t('user.play_count')}</th>
+                            <th className="hidden text-left md:table-cell">{t('user.ranked_score')}</th>
+                            <th className="hidden text-left xl:table-cell">{t('user.grades')}</th>
                         </tr>
                     </thead>
                     <tbody className="mt-3">
@@ -124,7 +118,7 @@ const Users = () => {
             setUsers(d.ranking);
         } catch (err) {
             console.error(err);
-            addAlert('error', 'Error: Failed to fetch users');
+            addAlert('error', 'Failed to fetch users');
         }
     }
 }

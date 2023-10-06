@@ -3,9 +3,10 @@ import { HiMenu } from "react-icons/hi";
 import SearchBox from "./w_comp/SearchBox";
 import { FaGithub, FaDiscord } from 'react-icons/fa';
 import Login from './w_comp/Login';
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
-
+    const { t } = useTranslation();
     const logo = require('../assets/wysi727logo.svg').default;
 
     return (
@@ -18,9 +19,9 @@ const Navbar = () => {
                             <HiMenu />
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><Link to={'/'}>Home</Link></li>
-                            <li><Link to={'/users'}>Users</Link></li>
-                            <li><Link to={'/beatmaps'}>Beatmaps</Link></li>
+                            <li><Link to={'/'}>{t('nav.home')}</Link></li>
+                            <li><Link to={'/users'}>{t('nav.users')}</Link></li>
+                            <li><Link to={'/beatmaps'}>{t('nav.beatmaps')}</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -30,9 +31,9 @@ const Navbar = () => {
                 </Link>
                 <div className="hidden lg:flex">
                     <ul className="gap-2 menu menu-horizontal">
-                        <li><Link to={'/'} className='p-2 text-lg font-semibold capitalize'>Home</Link></li>
-                        <li><Link to={'/users'} className='p-2 text-lg font-semibold capitalize'>Users</Link></li>
-                        <li><Link to={'/beatmaps'} className='p-2 text-lg font-semibold capitalize'>Beatmaps</Link></li>
+                        <li><Link to={'/'} className='p-2 text-lg font-semibold capitalize'>{t('nav.home')}</Link></li>
+                        <li><Link to={'/users'} className='p-2 text-lg font-semibold capitalize'>{t('nav.users')}</Link></li>
+                        <li><Link to={'/beatmaps'} className='p-2 text-lg font-semibold capitalize'>{t('nav.beatmaps')}</Link></li>
                     </ul>
                 </div>
             </div>

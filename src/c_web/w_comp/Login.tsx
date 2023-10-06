@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { alertManager, alertManagerInterface } from "../../resources/store/tools";
 import fina from "../../helpers/fina";
 import { settings } from "../../env";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
+    const { t } = useTranslation();
     const user = UserStore((state: UserStoreInt) => state.user);
     const logout = UserStore((state: UserStoreInt) => state.logout);
     const login = UserStore((state: UserStoreInt) => state.login);
@@ -20,12 +22,7 @@ const Login = () => {
     }, []);
 
     if (user.id === 0) {
-        return (
-            <a href={encodeURI(url)}
-                className="normal-case btn btn-primary text-base-100">
-                Login with osu!
-            </a>
-        )
+        return <a href={encodeURI(url)} className="normal-case btn btn-primary text-base-100">{t('nav.log.login')}</a>
     }
 
     return (
@@ -39,13 +36,13 @@ const Login = () => {
             </label>
             <ul tabIndex={0} className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li><Link to={`/users/${user.id}`}>
-                    wysi!profile
+                    {t('nav.log.osu')}
                 </Link></li>
                 <li><a href={`https://osu.ppy.sh/users/${user.id}`} target="_blank" rel="noreferrer">
-                    osu!profile
+                    {t('nav.log.wysi')}
                 </a></li>
                 <hr />
-                <li><button onClick={logout}>Logout</button></li>
+                <li><button onClick={logout}>{t('nav.log.logout')}</button></li>
             </ul>
         </div>
     )

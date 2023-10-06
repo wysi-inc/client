@@ -7,6 +7,7 @@ import { MonthlyData, User } from "../../resources/interfaces/user";
 import { Line } from "react-chartjs-2";
 import TopScoresPanel from "./setup_comp/TopScoresPanel";
 import { Score } from "../../resources/interfaces/score";
+import { useTranslation } from "react-i18next";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
     labels: [],
@@ -67,6 +68,7 @@ interface HistoryPanelProps {
 }
 
 const HistoryPanel = (p: HistoryPanelProps) => {
+    const { t } = useTranslation();
     const [tabIndex, setTabIndex] = useState<number>(1);
 
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
@@ -82,7 +84,7 @@ const HistoryPanel = (p: HistoryPanelProps) => {
     }, [])
 
     return (
-        <div className={p.css} style={{height: p.height}}>
+        <div className={p.css} style={{ height: p.height }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaChartLine />
                 <div>History</div>
@@ -92,25 +94,25 @@ const HistoryPanel = (p: HistoryPanelProps) => {
                     className={`tab flex flex-row gap-2 ${tabIndex === 1 && 'tab-active text-base-100'}`}
                     onClick={() => setTabIndex(1)}>
                     <FaGlobeAfrica />
-                    <div>Global Rank</div>
+                    <div>{t('user.global_rank')}</div>
                 </button>
                 <button
                     className={`tab flex flex-row gap-2 ${tabIndex === 2 && 'tab-active text-base-100'}`}
                     onClick={() => setTabIndex(2)}>
                     <CountryShape code={p.user.country.code} size={18} />
-                    <div>Country Rank</div>
+                    <div>{t('user.country_rank')}</div>
                 </button>
                 <button
                     className={`tab flex flex-row gap-2 ${tabIndex === 3 && 'tab-active text-base-100'}`}
                     onClick={() => setTabIndex(3)}>
                     <FaRegClock />
-                    <div>Play Count</div>
+                    <div>{t('user.play_count')}</div>
                 </button>
                 <button
                     className={`tab flex flex-row gap-2 ${tabIndex === 4 && 'tab-active text-base-100'}`}
                     onClick={() => setTabIndex(4)}>
                     <FaEye />
-                    <div>Replays Watched</div>
+                    <div>{t('user.replays_watched')}</div>
                 </button>
             </div>
             <div className="flex justify-center items-center">

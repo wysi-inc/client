@@ -1,4 +1,7 @@
 import { create } from "zustand";
+import { GameModeType } from "../types";
+
+export const modes: GameModeType[] = ["osu", "taiko", "fruits", "mania"];
 
 export interface UserStoreInt {
     isLogged: boolean,
