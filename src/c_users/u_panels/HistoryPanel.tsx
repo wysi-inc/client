@@ -87,7 +87,7 @@ const HistoryPanel = (p: HistoryPanelProps) => {
         <div className={p.css} style={{ height: p.height }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaChartLine />
-                <div>History</div>
+                <div>{t('user.sections.history.title')}</div>
             </div>
             <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
                 <button
@@ -135,7 +135,7 @@ const HistoryPanel = (p: HistoryPanelProps) => {
             </div>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaChartPie />
-                <div>TopScores</div>
+                <div>{t('user.sections.scores_summary.title')}</div>
             </div>
             <TopScoresPanel data={p.user} best={p.best} />
         </div>

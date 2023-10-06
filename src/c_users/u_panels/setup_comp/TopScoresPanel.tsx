@@ -6,6 +6,7 @@ import ModIcon from "../../../c_scores/s_comp/ModIcon";
 import { secondsToTime } from "../../../resources/functions";
 import { User } from "../../../resources/interfaces/user";
 import { Score } from "../../../resources/interfaces/score";
+import { useTranslation } from "react-i18next";
 
 interface topScoresProps {
     data: User;
@@ -19,6 +20,7 @@ export interface BarPieChartData {
 }
 
 const TopScoresPanel = (props: topScoresProps) => {
+    const { t } = useTranslation();
     const [scoresHits, setScoresHits] = useState({
         x320: 0,
         x300: 0,
@@ -137,9 +139,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         return length;
     }
 
-    const lengths = props.best.map((score) => {
-        return calculateModifiedLength(score.beatmap.total_length, score.mods);
-    });
+    const lengths = props.best.map(score => calculateModifiedLength(score.beatmap.total_length, score.mods));
     const totalLength = lengths?.reduce((acc, length) => acc + length, 0);
     const averageLength = totalLength / props.best.length;
 
@@ -150,20 +150,14 @@ const TopScoresPanel = (props: topScoresProps) => {
         return bpm;
     }
 
-    const bpms = props.best.map((score) => {
-        return calculateModifiedBpm(score.beatmap.bpm, score.mods);
-    });
+    const bpms = props.best.map(score => calculateModifiedBpm(score.beatmap.bpm, score.mods));
     const totalBpm = bpms?.reduce((acc, bpm) => acc + bpm, 0);
 
     const averageBpm = Math.round(totalBpm / props.best.length);
     const averageAcc = props.data.statistics.hit_accuracy;
 
-    const averageCombo =
-        Math.round(props.best
-            .map((score) => score.max_combo)?.reduce((a, b) => a + b, 0) / props.best.length);
-    const averagePP =
-        Math.round(props.best
-            .map(sc => sc.pp ? parseInt(sc.pp) : 0)?.reduce((a, b) => a + b, 0) / props.best.length);
+    const averageCombo = Math.round(props.best.map(score => score.max_combo)?.reduce((a, b) => a + b, 0) / props.best.length);
+    const averagePP = Math.round(props.best.map(sc => sc.pp ? parseInt(sc.pp) : 0)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
 
     if (props.best.length < 1) return (<div></div>);
@@ -171,21 +165,21 @@ const TopScoresPanel = (props: topScoresProps) => {
     return (
         <div className="grid grid-cols-2 gap-3 p-3 grow">
             <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">
-                <div>Hit Ratios</div>
+                <div>{t('user.sections.scores_summary.tabs.hit_ratios')}</div>
                 <BarPieChart data={scoresHitsLabels} width={250} />
             </div>
             <div className="flex flex-col col-span-2 gap-2 items-center lg:col-span-1">
-                <div>Rank Ratios</div>
+                <div>{t('user.sections.scores_summary.tabs.grade_ratios')}</div>
                 <BarPieChart data={scoresRanksLabels} width={250} />
             </div>
             <div className="col-span-2">
                 <PpLine data={props.best} color={colors.ui.font} width={350} />
             </div>
             <div className="flex flex-col col-span-2 items-center">
-                <div>Average play:</div>
+                <div>{t('user.sections.scores_summary.tabs.average_play')}:</div>
                 <div className="flex flex-row flex-wrap gap-2 justify-center mt-2">
                     <div className="flex flex-row gap-1 items-center">
-                        <div>Mods:</div>
+                        <div>{t('score.mods')}:</div>
                         <div className="flex flex-row gap-1">
                             {commonMods.map((mod: string, index: number) =>
                                 <ModIcon acronym={mod} size={20} key={index + 1} />)}
@@ -193,7 +187,7 @@ const TopScoresPanel = (props: topScoresProps) => {
                     </div>
                     <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
-                        <div>Length:</div>
+                        <div>{t('beatmapset.length')}:</div>
                         <i className="bi bi-stopwatch"></i>
                         <div>
                             {secondsToTime(averageLength)}
@@ -201,17 +195,17 @@ const TopScoresPanel = (props: topScoresProps) => {
                     </div>
                     <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
-                        <div>BPM:</div>
+                        <div>{t('beatmapset.bpm')}:</div>
                         <div>{averageBpm}</div>
                     </div>
                     <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
-                        <div>Acc:</div>
+                        <div>{t('score.acc')}:</div>
                         <div>{averageAcc.toFixed(2)}%</div>
                     </div>
                     <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
-                        <div>Combo:</div>
+                        <div>{t('score.combo')}:</div>
                         <div>{averageCombo}x</div>
                     </div>
                     <div>|</div>
@@ -221,7 +215,7 @@ const TopScoresPanel = (props: topScoresProps) => {
                     </div>
                     <div>|</div>
                     <div className="flex flex-row gap-1 items-center">
-                        <div>Rank:</div>
+                        <div>{t('score.grade')}:</div>
                         <div style={{ color: (colors.ranks as any)[averageRank.toLowerCase()] }}>
                             {averageRank}
                         </div>

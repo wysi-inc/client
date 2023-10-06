@@ -199,7 +199,7 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="text-lg">{t('user.accuracy')}:</div>
+                            <div className="text-lg">{t('score.accuracy')}:</div>
                             <div className="flex flex-row gap-2 items-center text-xl">
                                 <div>{userData.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
                             </div>
@@ -211,7 +211,7 @@ const UserPage = (props: UserPageProps) => {
                     </div>
                     <div className="flex flex-col col-span-7 col-start-4 gap-3 justify-between items-end md:col-span-3 xl:col-span-2 xl:col-start-6">
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">{t('user.ranked_score')}:</div>
+                            <div className="text-lg">{t('score.ranked_score')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                 data-tip={`Total Score: ${userData.statistics.total_score.toLocaleString()}`}>
                                 <FaAngleDoubleUp />
@@ -221,7 +221,7 @@ const UserPage = (props: UserPageProps) => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
-                            <div className="text-lg">{t('user.max_combo')}:</div>
+                            <div className="text-lg">{t('score.max_combo')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl">
                                 <FaFireAlt />
                                 <div>{userData.statistics.maximum_combo.toLocaleString()}x</div>
