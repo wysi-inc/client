@@ -1,8 +1,10 @@
+import { Greeter } from "./w_comp/Greeter";
+
 const Home = () => {
 
     return (
         <div>
-            Home is empty for now lol
+            <Greeter />
         </div>
     )
 }
