@@ -22,7 +22,7 @@ const Login = () => {
     }, []);
 
     if (user.id === 0) {
-        return <a href={encodeURI(url)} className="normal-case btn btn-primary text-base-100">{t('nav.log.login')}</a>
+        return (<a href={encodeURI(url)} className="normal-case btn btn-primary text-base-100">{t('nav.log.login')}</a>)
     }
 
     return (

@@ -344,6 +344,7 @@ const UserPage = (props: UserPageProps) => {
                 return;
             };
             const user: User = d;
+            console.log(user);
             if (user.is_bot) {
                 addAlert('warning', 'This user is a bot, bots are not supported yet :(');
                 setUserData(null);
