@@ -28,8 +28,7 @@ const OAuth = () => {
             }
             const u: User = d.user;
             const t = d.jwtUser;
-            localStorage.setItem('jwt', t);
-            login(u.id, u.username, u.avatar_url);
+            login(u.id, u.username, u.avatar_url, t);
             sendHome();
         } catch (err) {
             console.error(err);

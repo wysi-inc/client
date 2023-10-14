@@ -36,10 +36,10 @@ const Login = () => {
             </label>
             <ul tabIndex={0} className="dropdown-content z-[10] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li><Link to={`/users/${user.id}`}>
-                    {t('nav.log.osu')}
+                    {t('nav.log.wysi')}
                 </Link></li>
                 <li><a href={`https://osu.ppy.sh/users/${user.id}`} target="_blank" rel="noreferrer">
-                    {t('nav.log.wysi')}
+                    {t('nav.log.osu')}
                 </a></li>
                 <hr />
                 <li><button onClick={logout}>{t('nav.log.logout')}</button></li>
@@ -53,13 +53,13 @@ const Login = () => {
         const name = `${localStorage.getItem('name')}`;
         const pfp = `${localStorage.getItem('pfp')}`;
         if (!token || !id || !name || !pfp) return;
-        login(id, name, pfp);
+        login(id, name, pfp, token);
         try {
             const d = await fina.post("/isLogged", { token });
             if (d.logged) {
                 const { user } = d;
-                login(user.id, user.name, user.pfp);
-                fina.defaults.token = token;
+                login(user.id, user.name, user.pfp, token);
+                fina.setToken(token);
             } else {
                 addAlert('error', 'Failed to validate login');
                 logout();

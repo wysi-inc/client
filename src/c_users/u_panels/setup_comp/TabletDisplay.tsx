@@ -14,13 +14,14 @@ const TabletDisplay = (p: propsInterface) => {
     }
     const ratio = calculateFraction(p.tablet.area.w, p.tablet.area.h);
 
+
     return (
-        <div className="overflow-hidden relative rounded-lg border" style={{ width: tabletSizes.w, height: tabletSizes.h }}>
+        <div className="overflow-hidden relative rounded-lg border" style={{ width: tabletSizes.w, height: tabletSizes.h}}>
             <div className="flex absolute flex-col gap-1 justify-center items-center bg-opacity-50 border border-secondary bg-secondary"
                 style={{
                     width: p.tablet.area.w * tabletSizes.s,
                     height: p.tablet.area.h * tabletSizes.s,
-                    transform: `rotate(${p.tablet.position.r}deg)`
+                    transform: `rotate(${p.tablet.position.r}deg) translate(${(p.tablet.position.x * tabletSizes.s) - tabletSizes.w / 2}px, ${(p.tablet.position.y * tabletSizes.s) - tabletSizes.h / 2}px)`
                 }}>
                 <div>{p.tablet.area.w} x {p.tablet.area.h} mm</div>
                 <div>{ratio}</div>
@@ -28,7 +29,7 @@ const TabletDisplay = (p: propsInterface) => {
         </div>
     )
 
-    function normalizeShape(width: number, height: number) {
+    function normalizeShape(width: number = 0, height: number = 0) {
         const aspectRatio = width / height;
 
         let newWidth = 328;

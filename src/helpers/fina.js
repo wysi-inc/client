@@ -21,7 +21,7 @@ class Fina {
     sconfig: {
       headers: {
         "Content-Type": "application/json",
-        "x-token": this.defaults.token,
+        "x-token": "",
       },
       credentials: "include",
     },
@@ -65,6 +65,11 @@ class Fina {
       method: method,
       ...this.configs.config,
     });
+  }
+
+  setToken(t){
+    this.configs.sconfig.headers["x-token"] = t;
+    this.defaults.token = t;
   }
 
   //normal fetch

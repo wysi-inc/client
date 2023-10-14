@@ -5,6 +5,7 @@ import { User } from "../../resources/interfaces/user";
 import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { TabletInterface, KeyboardInterface } from "../u_interfaces";
 import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
+import fina from "../../helpers/fina";
 
 interface SetupPanelProps {
     user: User
@@ -43,6 +44,19 @@ const SetupPanel = (p: SetupPanelProps) => {
 
     const [edit, setEdit] = useState<boolean>(false);
 
+
+    function handleSubmit() {
+        setEdit(false);
+
+        fina.sput('/setup', {
+            setup: {
+                tablet,
+                keyboard
+            }
+        })
+
+    }
+
     return (
         <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-3">
             <div className="shadow">
@@ -72,7 +86,7 @@ const SetupPanel = (p: SetupPanelProps) => {
                             </button>
                         </div>
                         <div hidden={!edit}>
-                            <button onClick={() => setEdit(false)} className="btn btn-success btn-sm">
+                            <button onClick={handleSubmit} className="btn btn-success btn-sm">
                                 <FaCheck />
                             </button>
                         </div>

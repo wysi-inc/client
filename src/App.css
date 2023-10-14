@@ -4,7 +4,6 @@
 
 * {
     box-sizing: border-box;
-    /* outline: 1px solid #ffffff; */
 }
 
 main {
@@ -28,7 +27,6 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
-/* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
     appearance: textfield;
