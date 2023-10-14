@@ -16,14 +16,12 @@ class Fina {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
     },
     sconfig: {
       headers: {
         "Content-Type": "application/json",
         "x-token": "",
       },
-      credentials: "include",
     },
   };
 
