@@ -10,7 +10,7 @@ const Key = (p: KeyInterface) => {
     return (
         <button onClick={() => p.toggle(p.code)}>
             <kbd className={`kbd ${p.keys.includes(p.code) && 'bg-opacity-50 border border-secondary bg-secondary'}`}
-                style={{ width: `${p.width * 2.199}rem` }}>
+                style={{ width: `${p.width * 2.2}rem` }}>
                 {p.char}
             </kbd>
         </button>

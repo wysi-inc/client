@@ -1,4 +1,3 @@
-import { Keyboard } from './../resources/interfaces/user';
 import { Dispatch, SetStateAction } from "react";
 import { BeatmapSet } from "../resources/interfaces/beatmapset";
 import { Score } from "../resources/interfaces/score";
@@ -75,6 +74,8 @@ export interface TabletInterface {
 
 export interface KeyboardInterface {
     name: string,
-    layout: 'k2' | 'k3' | 'k4' | 'k60' | 'k75' | 'ktkl' | 'kfull',
+    layout: KeyboardLayoutType,
     keys: string[],
 }
+
+export type KeyboardLayoutType = 'k2' | 'k3' | 'k4' | 'k60' | 'k75' | 'ktkl' | 'kfull' | '';

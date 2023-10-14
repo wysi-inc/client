@@ -317,7 +317,7 @@ const UserPage = (props: UserPageProps) => {
 
                 </div>
             </div>
-            <SetupPanel user={userData} />
+            <SetupPanel id={userData.id} setup={userData.db_info.setup} />
             <HistoryPanel user={userData} best={scores.best} height={height} css={css + 3} />
             <ScoresPanel user={userData} mode={gameMode} scores={scores} setScores={setScores} heigth={height} css={css + 2} />
             <BeatmapsPanel user={userData} beatmaps={beatmaps} setBeatmaps={setBeatmaps} height={height} css={css + 2} />

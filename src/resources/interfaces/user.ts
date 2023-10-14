@@ -1,3 +1,4 @@
+import { KeyboardInterface, TabletInterface } from "../../c_users/u_interfaces";
 import { GameModeType } from "../types";
 import { BeatmapSet } from "./beatmapset";
 
@@ -121,8 +122,8 @@ export interface UserBeatmapSets {
 export interface BeatThings {
     items: BeatmapSet[];
     count: number;
-  }
-  
+}
+
 
 export interface DBRankHistory {
     date: number;
@@ -232,28 +233,18 @@ export interface UserAchievement {
     achievement_id: number;
 }
 
-
-
 export interface DbInfo {
-    global_rank: DBRankHistory[];
-    country_rank: DBRankHistory[];
-    setup?: Setup;
     ranks: {
-        xh: number;
-        x: number;
-        sh: number;
-        s: number;
-        a: number;
-        b: number;
-        c: number;
-        d: number;
-    };
+        global_rank: DBRankHistory[];
+        country_rank: DBRankHistory[];
+    },
+    setup: Setup | null;
 }
 
 export interface Setup {
     peripherals?: Peripherals;
-    tablet?: TabletDisplayInterface;
-    keyboard?: Keyboard;
+    tablet?: TabletInterface;
+    keyboard?: KeyboardInterface;
     mouse?: Mouse;
 }
 
@@ -271,25 +262,4 @@ export interface Peripherals {
     keypad?: string;
     mousepad?: string;
     chair?: string;
-}
-
-export interface Keyboard {
-    format: string;
-    inputs: string[];
-}
-
-export interface TabletDisplayInterface {
-    area: {
-        width: number;
-        height: number;
-    };
-    position: {
-        x: number;
-        y: number;
-        rotation: number;
-    };
-    tablet: {
-        width: number;
-        height: number;
-    };
 }
