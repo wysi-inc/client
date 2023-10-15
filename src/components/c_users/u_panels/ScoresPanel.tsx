@@ -1,6 +1,6 @@
 import { FaListUl, FaMapPin, FaChartBar, FaStar, FaStopwatch } from "react-icons/fa";
 import { GameModeType, User, tabInterface } from "../../../resources/interfaces/user";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import InfiniteScroll from 'react-infinite-scroller';
 import ScoreCard from "../../c_scores/ScoreCard";
 import { Score, ScoreType, ScoresObj, scoreListItem } from "../../../resources/interfaces/score";
@@ -19,6 +19,11 @@ interface ScoresPanelProps {
 const ScoresPanel = (p: ScoresPanelProps) => {
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
     const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
+    useEffect(() => {
+        if(p.scores.best.length === 0) {
+            setBestRenderIndex(0);
+        }
+    }, [p.scores.best.length])
 
     const scoresTabs: tabInterface[] = [
         { num: 1, title: 'Pinned', icon: <FaMapPin />, count: p.user.scores_pinned_count },

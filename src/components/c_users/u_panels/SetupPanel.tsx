@@ -6,6 +6,8 @@ import { UserStore, UserStoreInt } from "../../../resources/global/user";
 import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
 import fina from "../../../helpers/fina";
 import { KeyboardInterface, TabletInterface } from "../../../resources/interfaces/setup";
+import { useWindowSize } from "@uidotdev/usehooks";
+import { useDivSize } from "../../../resources/hooks/windowHooks";
 
 interface SetupPanelProps {
     id: number,
@@ -65,10 +67,7 @@ const SetupPanel = (p: SetupPanelProps) => {
 
     }
 
-    const sizes = {
-        w: 328,
-        h: 228
-    }
+    const { divPx, divRef } = useDivSize('w', 300);
 
     return (
         <div className={p.className}>
@@ -116,9 +115,9 @@ const SetupPanel = (p: SetupPanelProps) => {
                 </div>
                 <div className="flex justify-center items-center">
                     <div className={`grow p-4 ${edit ? '' : 'c-normal'}`} hidden={tabsIndex !== 1}>
-                        <div className="flex flex-row gap-4 justify-around items-start">
-                            <Keyboard sizes={sizes} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
-                            <Tablet sizes={sizes} tablet={tablet} setTablet={setTablet} edit={edit} />
+                        <div className="flex flex-row gap-4 justify-around items-start" ref={divRef}>
+                            <Keyboard width={divPx / 2 - 30} height={228} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
+                            <Tablet width={divPx / 2 - 30} height={228} tablet={tablet} setTablet={setTablet} edit={edit} />
                         </div>
                     </div>
                     <div className="p-4 grow" hidden={tabsIndex !== 2}>

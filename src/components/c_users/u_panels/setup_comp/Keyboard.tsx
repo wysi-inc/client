@@ -6,7 +6,8 @@ interface propsInterface {
     keyboard: KeyboardInterface;
     setKeyboard: Dispatch<SetStateAction<KeyboardInterface>>;
     edit: boolean;
-    sizes: { w: number, h: number };
+    width: number,
+    height: number
 }
 
 const Keyboard = (p: propsInterface) => {
@@ -16,19 +17,19 @@ const Keyboard = (p: propsInterface) => {
     function getK(layout: KeyboardLayoutType) {
         switch (layout) {
             case 'k2':
-                return <K2 keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <K2 scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             case 'k3':
-                return <K3 keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <K3 scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             case 'k4':
-                return <K4 keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <K4 scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             case 'k60':
-                return <K60 keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <K60 scale={.7} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             case 'k75':
                 return <div></div>;
             case 'ktkl':
-                return <KTKL keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <KTKL scale={.6} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             case 'kfull':
-                return <KFULL keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                return <KFULL scale={.5} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
             default:
                 return <div></div>;
         }
@@ -41,7 +42,7 @@ const Keyboard = (p: propsInterface) => {
     return (
         <div className="flex flex-col gap-3 items-center">
             <div>{p.keyboard.name}</div>
-            <div className="flex items-center justify-center" style={{ height: p.sizes.h, width: p.sizes.w }}>
+            <div className="flex items-center justify-center" style={{ height: p.height, width: p.width }}>
                 {k}
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
@@ -67,9 +68,10 @@ const Keyboard = (p: propsInterface) => {
 }
 
 interface kProps {
-    keys: string[];
-    toggle: (key: string) => void;
-    edit: boolean;
+    keys: string[],
+    toggle: (key: string) => void,
+    edit: boolean,
+    scale: number,
 }
 
 function K2(p: kProps) {
@@ -79,7 +81,8 @@ function K2(p: kProps) {
     }
 
     return (
-        <div className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
+        <div style={{ transform: `scale(${p.scale})` }}
+            className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
             <Key char={'z'} code={'z'} keys={p.keys} toggle={toggle} width={1} />
             <Key char={'x'} code={'x'} keys={p.keys} toggle={toggle} width={1} />
         </div>
@@ -92,7 +95,8 @@ function K3(p: kProps) {
     }
 
     return (
-        <div className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
+        <div style={{ transform: `scale(${p.scale})` }}
+            className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
             <Key char={'z'} code={'z'} keys={p.keys} toggle={toggle} width={1} />
             <Key char={'x'} code={'x'} keys={p.keys} toggle={toggle} width={1} />
             <Key char={'c'} code={'c'} keys={p.keys} toggle={toggle} width={1} />
@@ -106,7 +110,8 @@ function K4(p: kProps) {
     }
 
     return (
-        <div className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
+        <div style={{ transform: `scale(${p.scale})` }}
+            className="w-fit flex flex-row gap-1 pb-12 justify-center items-center p-3 rounded-lg border">
             <Key char={'z'} code={'z'} keys={p.keys} toggle={toggle} width={1} />
             <Key char={'x'} code={'x'} keys={p.keys} toggle={toggle} width={1} />
             <Key char={'c'} code={'c'} keys={p.keys} toggle={toggle} width={1} />
@@ -121,7 +126,7 @@ function K60(p: kProps) {
     }
 
     return (
-        <div className="w-fit p-3 rounded-lg border" style={{ transform: 'scale(80%) translateY(-24px)' }}>
+        <div className="w-fit p-3 rounded-lg border" style={{ transform: `scale(${p.scale})` }}>
             <div className="flex flex-col">
                 <div className="flex flex-row items-start">
                     <Key char={'␛'} code={'esc'} keys={p.keys} toggle={toggle} width={1} />
@@ -205,7 +210,7 @@ function KTKL(p: kProps) {
     }
 
     return (
-        <div className="w-fit p-3 rounded-lg border grow" style={{ transform: `scale(.6) translateY(-24px)` }}>
+        <div className="w-fit p-3 rounded-lg border grow" style={{ transform: `scale(${p.scale})` }}>
             <div className="flex flex-row gap-3">
                 <div className="flex flex-col">
                     <div className="flex flex-row items-start mb-2">
@@ -339,7 +344,7 @@ function KFULL(p: kProps) {
     }
 
     return (
-        <div className="w-fit p-3 rounded-lg border" style={{ transform: `scale(.5) translateY(-24px)` }}>
+        <div className="w-fit p-3 rounded-lg border" style={{ transform: `scale(${p.scale})` }}>
             <div className="flex flex-row gap-3">
                 <div className="flex flex-col">
                     <div className="flex flex-row items-start mb-2">

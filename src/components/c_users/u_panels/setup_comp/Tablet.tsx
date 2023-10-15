@@ -6,7 +6,8 @@ interface tabletProps {
     tablet: TabletInterface,
     setTablet: Dispatch<SetStateAction<TabletInterface>>,
     edit: boolean,
-    sizes: { w: number, h: number };
+    width: number,
+    height: number
 }
 
 const Tablet = (p: tabletProps) => {
@@ -18,10 +19,10 @@ const Tablet = (p: tabletProps) => {
     }
 
     return (
-        <div className="w-1/2 flex overflow-hidden flex-col gap-3 items-center">
+        <div className="w-1/2 flex overflow-hidden flex-col gap-3 items-center justify-center">
             <div>{p.tablet.name}</div>
-            <div style={{ height: p.sizes.h, width: p.sizes.w }}>
-                <TabletDisplay tablet={p.tablet} sizes={p.sizes} />
+            <div style={{ height: p.height, width: p.width }} className='flex items-center justify-center'>
+                <TabletDisplay tablet={p.tablet} width={p.width} height={p.height} />
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
                 <div>Model:</div>
@@ -71,7 +72,8 @@ const Tablet = (p: tabletProps) => {
 
 interface tabletDisplayProps {
     tablet: TabletInterface;
-    sizes: { w: number, h: number };
+    width: number,
+    height: number
 }
 
 function TabletDisplay(p: tabletDisplayProps) {
@@ -103,12 +105,12 @@ function TabletDisplay(p: tabletDisplayProps) {
     function normalizeShape(width: number = 0, height: number = 0) {
         const aspectRatio = width / height;
 
-        let newWidth = p.sizes.w;
+        let newWidth = p.width;
         let newHeight = newWidth / aspectRatio;
         let scale = newHeight / height;
 
-        if (newHeight > p.sizes.h) {
-            newHeight = p.sizes.h;
+        if (newHeight > p.height) {
+            newHeight = p.height;
             newWidth = newHeight * aspectRatio;
             scale = newHeight / height;
         }

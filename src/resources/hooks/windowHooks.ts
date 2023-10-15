@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useHeight(init: number) {
-    const [px, setPx] = useState(init);
-    const ref = useRef<HTMLDivElement | null>(null);
+export function useDivSize(type: 'w' | 'h', init: number) {
+    const [divPx, setPx] = useState(init);
+    const divRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const handleResize = () => {
-            if (ref) if (ref.current)
-                setPx(ref.current?.clientHeight);
-        }
-        window.addEventListener('resize', handleResize)
-    }, []);
+        getSize();
+    }, [divRef?.current?.clientHeight]);
 
-    return { px, ref };
+    function getSize() {
+        if (divRef) if (divRef.current)
+            setPx(type === 'h' ? divRef.current?.clientHeight : divRef.current?.clientWidth);
+    }
+
+    return { divPx, divRef };
 }
