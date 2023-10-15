@@ -40,6 +40,6 @@ const UserPage = (p: UserPageProps) => {
             <MedalsPanel className={`${CSS} xl:col-span-3`} heigth={height.px} user={user} />
         </div>
     </>
-
 }
+
 export default UserPage;
