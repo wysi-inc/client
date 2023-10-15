@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import Key from "./Key";
 import { KeyboardInterface, KeyboardLayoutType } from "../../u_interfaces";
 

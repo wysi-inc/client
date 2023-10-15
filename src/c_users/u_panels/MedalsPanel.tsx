@@ -8,7 +8,7 @@ import fina from "../../helpers/fina";
 interface MedalsPanelProps {
     user: User,
     heigth: number,
-    css: string,
+    className: string,
 }
 
 const MedalsPanel = (p: MedalsPanelProps) => {
@@ -19,7 +19,7 @@ const MedalsPanel = (p: MedalsPanelProps) => {
     const achievedMedalsCount = useMemo(() => getAchievedMedalsCount(p.user.user_achievements, medalsByCategory), [medals]);
 
     return (
-        <div className={p.css} style={{ height: p.heigth }}>
+        <div className={p.className} style={{ height: p.heigth }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaMedal />
                 <div>Medals</div>

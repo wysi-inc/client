@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { Ref, useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import { FaChartLine, FaChartPie, FaEye, FaGlobeAfrica, FaRegClock } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { ChartData, ChartOptions } from 'chart.js';
 import CountryShape from "../u_comp/CountryShape";
-import { ChartData, ChartOptions } from "chart.js";
 import { colors } from "../../resources/store/tools";
 import { MonthlyData, User } from "../../resources/interfaces/user";
-import { Line } from "react-chartjs-2";
 import TopScoresPanel from "./setup_comp/TopScoresPanel";
 import { Score } from "../../resources/interfaces/score";
-import { useTranslation } from "react-i18next";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
     labels: [],
@@ -63,8 +63,8 @@ const lineOptionsReverse: ChartOptions<'line'> = {
 interface HistoryPanelProps {
     user: User,
     best: Score[],
-    height: number,
-    css: string,
+    className: string,
+    ref: Ref<HTMLDivElement>,
 }
 
 const HistoryPanel = (p: HistoryPanelProps) => {
@@ -84,7 +84,7 @@ const HistoryPanel = (p: HistoryPanelProps) => {
     }, [p.user])
 
     return (
-        <div className={p.css} style={{ height: p.height }}>
+        <div className={p.className} ref={p.ref}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaChartLine />
                 <div>{t('user.sections.history.title')}</div>

@@ -70,7 +70,7 @@ interface tabletDisplayProps {
     tablet: TabletInterface;
 }
 
-function TabletDisplay(p: tabletDisplayProps){
+function TabletDisplay(p: tabletDisplayProps) {
     const tabletSizes = normalizeShape(p.tablet.size.w, p.tablet.size.h);
     function calculateFraction(width: number, height: number) {
         const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
@@ -80,9 +80,10 @@ function TabletDisplay(p: tabletDisplayProps){
     }
     const ratio = calculateFraction(p.tablet.area.w, p.tablet.area.h);
 
-
     return (
-        <div className="overflow-hidden relative rounded-lg border" style={{ width: tabletSizes.w, height: tabletSizes.h}}>
+        <div hidden={p.tablet.size.h === 0 && p.tablet.size.w === 0}
+            className="overflow-hidden relative rounded-lg border"
+            style={{ width: tabletSizes.w, height: tabletSizes.h }}>
             <div className="flex absolute flex-col gap-1 justify-center items-center bg-opacity-50 border border-secondary bg-secondary"
                 style={{
                     width: p.tablet.area.w * tabletSizes.s,

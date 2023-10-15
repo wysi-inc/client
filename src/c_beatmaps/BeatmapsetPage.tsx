@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { PlayerStoreInterface, playerStore } from "../resources/store/tools";
@@ -53,9 +53,6 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
   const [acc, setAcc] = useState<accInt>(ACC_INITIAL);
 
   const [mods, setMods] = useState<string[]>([]);
-
-  function calcAcc() {
-  }
 
   const stats = useStats(diff, mods, acc);
 

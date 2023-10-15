@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Keyboard from "./setup_comp/Keyboard";
 import Tablet from "./setup_comp/Tablet";
-import { Setup, User } from "../../resources/interfaces/user";
+import { Setup } from "../../resources/interfaces/user";
 import { UserStore, UserStoreInt } from "../../resources/store/user";
 import { TabletInterface, KeyboardInterface } from "../u_interfaces";
 import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
@@ -9,14 +9,13 @@ import fina from "../../helpers/fina";
 
 interface SetupPanelProps {
     id: number,
-    setup: Setup | null
+    setup: Setup | null,
+    className: string;
 }
-
 
 const SetupPanel = (p: SetupPanelProps) => {
     const user = UserStore((state: UserStoreInt) => state.user);
     const me = user.id === p.id;
-
 
     const TABLET_EX: TabletInterface = {
         name: '',
@@ -70,7 +69,7 @@ const SetupPanel = (p: SetupPanelProps) => {
     }
 
     return (
-        <div className="flex overflow-hidden flex-col col-span-5 rounded-lg drop-shadow-lg bg-custom-950 xl:col-span-3">
+        <div className={p.className}>
             <div className="shadow">
                 <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                     <FaDesktop />

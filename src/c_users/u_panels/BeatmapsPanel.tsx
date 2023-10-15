@@ -12,7 +12,7 @@ interface BeatmapsPanelProps {
     beatmaps: BeatmapsObj,
     setBeatmaps: Dispatch<SetStateAction<BeatmapsObj>>,
     height: number
-    css: string,
+    className: string,
 }
 
 const BeatmapsPanel = (p: BeatmapsPanelProps) => {
@@ -38,7 +38,7 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
     ]
 
     return (
-        <div className={p.css} style={{ height: p.height }}>
+        <div className={p.className} style={{ height: p.height }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaListUl />
                 <div>Beatmaps</div>

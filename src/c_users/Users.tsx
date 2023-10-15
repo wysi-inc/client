@@ -64,7 +64,7 @@ const Users = () => {
                     <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
                             getUsers('score', mode);
-                        }}>{t('user.ranked_score')}</button>
+                        }}>{t('score.ranked_score')}</button>
                 </div>
                 <div className="flex justify-center">
                     <PageTabs setNewPage={setPage} current={page} min={1} max={200} />
@@ -86,12 +86,12 @@ const Users = () => {
                             <th className="table-cell text-left"></th>
                             <th className="table-cell text-left"></th>
                             <th className="table-cell text-left"></th>
-                            <th className="table-cell text-left">{t('user.pp')}</th>
-                            <th className="hidden text-left lg:table-cell">{t('user.acc')}</th>
+                            <th className="table-cell text-left">PP</th>
+                            <th className="hidden text-left lg:table-cell">{t('score.acc')}</th>
                             <th className="hidden text-left lg:table-cell">{t('user.play_time')}</th>
                             <th className="hidden text-left lg:table-cell">{t('user.play_count')}</th>
-                            <th className="hidden text-left md:table-cell">{t('user.ranked_score')}</th>
-                            <th className="hidden text-left xl:table-cell">{t('user.grades')}</th>
+                            <th className="hidden text-left md:table-cell">{t('score.ranked_score')}</th>
+                            <th className="hidden text-left xl:table-cell">{t('score.grades')}</th>
                         </tr>
                     </thead>
                     <tbody className="mt-3">

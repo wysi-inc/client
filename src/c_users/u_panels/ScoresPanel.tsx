@@ -15,7 +15,7 @@ interface ScoresPanelProps {
     scores: ScoresObj,
     setScores: Dispatch<SetStateAction<ScoresObj>>,
     heigth: number,
-    css: string,
+    className: string,
 }
 
 const ScoresPanel = (p: ScoresPanelProps) => {
@@ -35,7 +35,7 @@ const ScoresPanel = (p: ScoresPanelProps) => {
         { id: 4, scores: p.scores.recent, len: p.user.scores_recent_count, type: 'recent' },
     ]
     return (
-        <div className={p.css} style={{ height: p.heigth }}>
+        <div className={p.className} style={{ height: p.heigth }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800 4">
                 <FaListUl />
                 <div>Scores</div>
