@@ -19,8 +19,8 @@ const Tablet = (p: tabletProps) => {
     }
 
     return (
-        <div className="w-1/2 flex overflow-hidden flex-col gap-3 items-center justify-center">
-            <div>{p.tablet.name}</div>
+        <div className="flex overflow-hidden flex-col gap-3 items-center justify-center">
+            <div className="text-center">{p.tablet.name || 'Tablet'}</div>
             <div style={{ height: p.height, width: p.width }} className='flex items-center justify-center'>
                 <TabletDisplay tablet={p.tablet} width={p.width} height={p.height} />
             </div>
@@ -77,7 +77,7 @@ interface tabletDisplayProps {
 }
 
 function TabletDisplay(p: tabletDisplayProps) {
-    const tabletSizes = normalizeShape(p.tablet.size.w, p.tablet.size.h);
+    const tabletSizes = normalizeShape(p.tablet.size.w || 16, p.tablet.size.h || 9);
     function calculateFraction(width: number, height: number) {
         const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
         const commonDivisor = gcd(width, height);
@@ -87,8 +87,7 @@ function TabletDisplay(p: tabletDisplayProps) {
     const ratio = calculateFraction(p.tablet.area.w, p.tablet.area.h);
 
     return (
-        <div hidden={p.tablet.size.h === 0 && p.tablet.size.w === 0}
-            className="overflow-hidden relative rounded-lg border"
+        <div className="overflow-hidden relative rounded-lg border"
             style={{ width: tabletSizes.w, height: tabletSizes.h }}>
             <div className="flex absolute flex-col gap-1 justify-center items-center bg-opacity-50 border border-secondary bg-secondary"
                 style={{

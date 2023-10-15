@@ -1,4 +1,4 @@
-import { KeyboardInterface, TabletInterface } from "./setup";
+import { KeyboardInterface, MouseInterface, TabletInterface } from "./setup";
 import { BeatmapSet, BeatmapsetType } from "./beatmapset";
 import { Score, ScoreType } from "./score";
 import { Dispatch, SetStateAction } from 'react';
@@ -30,7 +30,7 @@ export interface User {
     max_friends: number;
     occupation: string;
     playmode: GameModeType;
-    playstyle: string;
+    playstyle: string[] | null;
     post_count: number;
     profile_order: string[];
     title: string;
@@ -248,11 +248,7 @@ export interface Setup {
     peripherals?: Peripherals;
     tablet?: TabletInterface;
     keyboard?: KeyboardInterface;
-    mouse?: Mouse;
-}
-
-export interface Mouse {
-    dpi?: number;
+    mouse?: MouseInterface;
 }
 
 export interface Peripherals {

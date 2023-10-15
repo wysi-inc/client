@@ -3,16 +3,19 @@ import Keyboard from "./setup_comp/Keyboard";
 import Tablet from "./setup_comp/Tablet";
 import { Setup } from "../../../resources/interfaces/user";
 import { UserStore, UserStoreInt } from "../../../resources/global/user";
-import { FaEdit, FaCheck, FaTimes, FaDesktop } from "react-icons/fa";
+import { FaEdit, FaCheck, FaTimes, FaKeyboard, FaWheelchair } from "react-icons/fa";
+import { FaComputer } from "react-icons/fa6";
 import fina from "../../../helpers/fina";
-import { KeyboardInterface, TabletInterface } from "../../../resources/interfaces/setup";
-import { useWindowSize } from "@uidotdev/usehooks";
+import { KeyboardInterface, MouseInterface, TabletInterface } from "../../../resources/interfaces/setup";
 import { useDivSize } from "../../../resources/hooks/windowHooks";
+import { BsGpuCard } from "react-icons/bs";
+import Mouse from "./setup_comp/Mouse";
 
 interface SetupPanelProps {
     id: number,
     setup: Setup | null,
     className: string;
+    playstyle: string[] | null,
 }
 
 const SetupPanel = (p: SetupPanelProps) => {
@@ -37,34 +40,38 @@ const SetupPanel = (p: SetupPanelProps) => {
     };
     const KEYBOARD_EX: KeyboardInterface = {
         name: '',
-        layout: '',
+        layout: 'k60',
         keys: [],
+    }
+    const MOUSE_EX: MouseInterface = {
+        name: "",
+        dpi: 0
     }
 
     let TABLET_INITIAL: TabletInterface = p.setup?.tablet || TABLET_EX;
-
     let KEYBOARD_INITIAL: KeyboardInterface = p.setup?.keyboard || KEYBOARD_EX;
+    let MOUSE_INITIAL: MouseInterface = p.setup?.mouse || MOUSE_EX;
 
     const [tabsIndex, setTabsIndex] = useState<number>(1);
+
     const [keyboard, setKeyboard] = useState<KeyboardInterface>(KEYBOARD_INITIAL);
+    const [mouse, setMouse] = useState<MouseInterface>(MOUSE_INITIAL);
     const [tablet, setTablet] = useState<TabletInterface>(TABLET_INITIAL);
 
     const [edit, setEdit] = useState<boolean>(false);
 
     function handleSubmit() {
         setEdit(false);
-
         fina.sput('/setup', {
             setup: {
                 tablet,
-                keyboard
+                keyboard,
+                mouse
             }
         })
-        console.log({
-            tablet,
-            keyboard
-        })
-
+        TABLET_INITIAL = tablet;
+        MOUSE_INITIAL = mouse;
+        KEYBOARD_INITIAL = keyboard;
     }
 
     const { divPx, divRef } = useDivSize('w', 300);
@@ -73,22 +80,25 @@ const SetupPanel = (p: SetupPanelProps) => {
         <div className={p.className}>
             <div className="shadow">
                 <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
-                    <FaDesktop />
+                    <FaComputer />
                     <div>Setup</div>
                 </div>
                 <div className="grid grid-cols-6 items-center bg-custom-900">
                     <div className="col-span-4 col-start-2 justify-center content-center rounded-none bg-custom-900 tabs tabs-boxed">
                         <button onClick={() => setTabsIndex(1)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 1 && 'tab-active text-base-100'}`}>
+                            <FaKeyboard />
                             <div>Inputs</div>
                         </button>
                         <button onClick={() => setTabsIndex(2)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 2 && 'tab-active text-base-100'}`}>
+                            <FaWheelchair />
                             <div>Peripherals</div>
                         </button>
                         <button onClick={() => setTabsIndex(3)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 3 && 'tab-active text-base-100'}`}>
-                            <div>PC</div>
+                            <BsGpuCard />
+                            <div>Copmuter</div>
                         </button>
                     </div>
                     <div className="flex flex-row gap-2 justify-end pr-2">
@@ -113,11 +123,12 @@ const SetupPanel = (p: SetupPanelProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-center items-center">
-                    <div className={`grow p-4 ${edit ? '' : 'c-normal'}`} hidden={tabsIndex !== 1}>
-                        <div className="flex flex-row gap-4 justify-around items-start" ref={divRef}>
-                            <Keyboard width={divPx / 2 - 30} height={228} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
-                            <Tablet width={divPx / 2 - 30} height={228} tablet={tablet} setTablet={setTablet} edit={edit} />
+                <div className={`flex items-center ${tabsIndex === 1 && p.playstyle && p.playstyle.length > 2 && 'overflow-x-scroll'}`} ref={divRef}>
+                    <div className={`grow p-4 ${edit && 'c-normal'}`} hidden={tabsIndex !== 1}>
+                        <div className="flex flex-row gap-6">
+                            {p.playstyle?.includes('keyboard') && <Keyboard width={divPx / 2 - 30} height={228} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />}
+                            {p.playstyle?.includes('tablet') && <Tablet width={divPx / 2 - 30} height={228} tablet={tablet} setTablet={setTablet} edit={edit} />}
+                            {p.playstyle?.includes('mouse') && <Mouse width={divPx / 2 - 30} height={228} mouse={mouse} setMouse={setMouse} edit={edit} />}
                         </div>
                     </div>
                     <div className="p-4 grow" hidden={tabsIndex !== 2}>

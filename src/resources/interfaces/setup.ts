@@ -22,3 +22,8 @@ export interface KeyboardInterface {
     layout: KeyboardLayoutType,
     keys: string[],
 }
+
+export interface MouseInterface {
+    name: string,
+    dpi: number
+}
