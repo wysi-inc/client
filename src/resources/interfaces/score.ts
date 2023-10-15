@@ -1,5 +1,22 @@
 import { Beatmap, BeatmapSet } from "./beatmapset";
 import { UserCompact } from "./user";
+
+export type ScoreType = 'pinned' | 'best' | 'firsts' | 'recent';
+
+export interface scoreListItem {
+  id: number,
+  scores: Score[],
+  type: ScoreType,
+  len: number,
+}
+
+export interface ScoresObj {
+  pinned: Score[];
+  best: Score[];
+  firsts: Score[];
+  recent: Score[];
+}
+
 export interface Score {
   position: number;
   mods_id: number;
@@ -24,29 +41,6 @@ export interface Score {
   beatmapset: BeatmapSet;
   user: UserCompact;
 }
-// export interface Score {
-//   accuracy: number;
-//   beatmap_id: number;
-//   ended_at: Date;
-//   max_combo: number;
-//   mods: ModsEntity[];
-//   passed: boolean;
-//   rank: string;
-//   ruleset_id: number;
-//   statistics: ScoreStatistics;
-//   total_score: number;
-//   user_id: number;
-//   best_id: number;
-//   id: number;
-//   legacy_perfect: boolean;
-//   pp: number;
-//   replay: boolean;
-//   type: string;
-//   beatmap: Beatmap;
-//   beatmapset: BeatmapSet;
-//   user: UserCompact;
-//   weight: Weight;
-// }
 
 export interface Weight {
   percentage: number;

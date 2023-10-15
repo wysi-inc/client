@@ -1,6 +1,9 @@
-import { KeyboardInterface, TabletInterface } from "../../c_users/u_interfaces";
-import { GameModeType } from "../types";
-import { BeatmapSet } from "./beatmapset";
+import { KeyboardInterface, TabletInterface } from "./setup";
+import { BeatmapSet, BeatmapsetType } from "./beatmapset";
+import { Score, ScoreType } from "./score";
+import { Dispatch, SetStateAction } from 'react';
+
+export type GameModeType = 'osu' | 'mania' | 'fruits' | 'taiko' | 'default';
 
 export interface User {
     avatar_url: string;
@@ -262,4 +265,21 @@ export interface Peripherals {
     keypad?: string;
     mousepad?: string;
     chair?: string;
+}
+
+export interface tabInterface {
+    num: number,
+    title: string,
+    icon: JSX.Element,
+    count: number,
+}
+
+export interface dataInterface {
+    num: number,
+    thing: ScoreType | BeatmapsetType,
+    group: 'scores' | 'beatmapsets',
+    tab: number,
+    maps: Score[] | BeatmapSet[],
+    count: number,
+    setMore: Dispatch<SetStateAction<Score[]>> | Dispatch<SetStateAction<BeatmapSet[]>>,
 }

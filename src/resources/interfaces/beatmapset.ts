@@ -1,4 +1,24 @@
-import { BeatmapsetStatusType, GameModeType } from "../types";
+import { GameModeType } from "./user";
+
+export type BeatmapsetType = 'favourite' | 'graveyard' | 'ranked' | 'loved' | 'guest' | 'nominated' | 'pending';
+export type BeatmapsetStatusType = | "ranked" | "approved" | "qualified" | "loved" | "pending" | "wip" | "graveyard";
+
+export interface beatmapListItem {
+    id: number,
+    beatmaps: BeatmapSet[],
+    type: BeatmapsetType,
+    len: number,
+}
+
+export interface BeatmapsObj {
+    favourite: BeatmapSet[],
+    ranked: BeatmapSet[],
+    guest: BeatmapSet[],
+    loved: BeatmapSet[],
+    nominated: BeatmapSet[],
+    pending: BeatmapSet[],
+    graveyard: BeatmapSet[],
+}
 
 export interface BeatmapSet {
     id: number;
@@ -87,7 +107,7 @@ export interface Covers {
     "list@2x": string;
     slimcover: string;
     "slimcover@2x": string;
-  }
+}
 
 export interface Description {
     description: string;
@@ -115,3 +135,53 @@ export interface Availability {
     more_information?: null;
 }
 
+export type SongLanguageType =
+    | "any"
+    | "English"
+    | "Chinese"
+    | "French"
+    | "German"
+    | "Italian"
+    | "Japanese"
+    | "Korean"
+    | "Spanish"
+    | "Swedish"
+    | "Russian"
+    | "Polish"
+    | "Instrumental"
+    | "Unspecified"
+    | "Other";
+
+export type SongGenreType =
+    | "any"
+    | "Video Game"
+    | "Anime"
+    | "Rock"
+    | "Pop"
+    | "Novelty"
+    | "Hip Hop"
+    | "Electronic"
+    | "Metal"
+    | "Classical"
+    | "Folk"
+    | "Jazz"
+    | "Unspecified"
+    | "Other";
+
+export type SongSortType =
+    | "title_desc"
+    | "title_asc"
+    | "artist_desc"
+    | "artist_asc"
+    | "difficulty_desc"
+    | "difficulty_asc"
+    | "updated_desc"
+    | "updated_asc"
+    | "ranked_desc"
+    | "ranked_asc"
+    | "rating_desc"
+    | "rating_asc"
+    | "plays_desc"
+    | "plays_asc"
+    | "favourites_desc"
+    | "favourites_asc";
