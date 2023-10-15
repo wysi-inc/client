@@ -1,5 +1,6 @@
 import { useGetUser } from "../../resources/hooks/userHooks";
 import { useHeight } from "../../resources/hooks/windowHooks";
+import { GameModeType } from "../../resources/interfaces/user";
 import SetupPanel from "./u_panels/SetupPanel";
 import HistoryPanel from "./u_panels/HistoryPanel";
 import MedalsPanel from "./u_panels/MedalsPanel";
@@ -8,7 +9,6 @@ import BeatmapsPanel from "./u_panels/BeatmapsPanel";
 import SkinPanel from "./u_panels/SkinPanel";
 import BarPanel from "./u_panels/BarPanel";
 import TopPanel from "./u_panels/TopPanel";
-import { GameModeType } from "../../resources/interfaces/user";
 
 interface UserPageProps {
     userId: string;

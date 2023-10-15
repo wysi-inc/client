@@ -46,11 +46,8 @@ const SetupPanel = (p: SetupPanelProps) => {
     const [tabsIndex, setTabsIndex] = useState<number>(1);
     const [keyboard, setKeyboard] = useState<KeyboardInterface>(KEYBOARD_INITIAL);
     const [tablet, setTablet] = useState<TabletInterface>(TABLET_INITIAL);
-    console.log(tablet);
-
 
     const [edit, setEdit] = useState<boolean>(false);
-
 
     function handleSubmit() {
         setEdit(false);
@@ -66,6 +63,11 @@ const SetupPanel = (p: SetupPanelProps) => {
             keyboard
         })
 
+    }
+
+    const sizes = {
+        w: 328,
+        h: 228
     }
 
     return (
@@ -115,8 +117,8 @@ const SetupPanel = (p: SetupPanelProps) => {
                 <div className="flex justify-center items-center">
                     <div className={`grow p-4 ${edit ? '' : 'c-normal'}`} hidden={tabsIndex !== 1}>
                         <div className="flex flex-row gap-4 justify-around items-start">
-                            <Keyboard keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
-                            <Tablet tablet={tablet} setTablet={setTablet} edit={edit} />
+                            <Keyboard sizes={sizes} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />
+                            <Tablet sizes={sizes} tablet={tablet} setTablet={setTablet} edit={edit} />
                         </div>
                     </div>
                     <div className="p-4 grow" hidden={tabsIndex !== 2}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { colors, playerStore, PlayerStoreInterface } from "../../resources/global/tools";
 import ModIcon from "./s_comp/ModIcon";
@@ -8,7 +8,7 @@ import DiffIcon from "../c_beatmaps/b_comp/DiffIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote } from "react-icons/fa";
 import { Score } from "../../resources/interfaces/score";
 import { Link } from "react-router-dom";
-import fina from "../../helpers/fina";
+import { useStats } from "../../resources/hooks/scoreHooks";
 
 interface ScoreProps {
     index: number;
@@ -18,7 +18,7 @@ interface ScoreProps {
 const ScoreCard = (props: ScoreProps) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
-    const stats = useStats(props.score);
+    const stats = useStats(props.score.beatmap, parseFloat((props.score.accuracy * 100).toFixed(2)) * 1, props.score.mods);
 
     function playSong() {
         play(props.score.beatmapset.id, props.score.beatmapset.title, props.score.beatmapset.artist);
@@ -171,60 +171,6 @@ const ScoreCard = (props: ScoreProps) => {
             </div>
         </div>
     );
-}
-
-function useStats(score: Score) {
-
-    interface INITIAL {
-        pp: number | undefined,
-        bpm: number,
-        len: number,
-        sr: number,
-        ar: number,
-        cs: number,
-        od: number,
-        hp: number,
-    }
-    
-    const INITIAL_SET_STATS: INITIAL = {
-        pp: undefined,
-        bpm: score.beatmap.bpm,
-        len: score.beatmap.total_length,
-        sr: score.beatmap.difficulty_rating,
-        ar: score.beatmap.ar,
-        cs: score.beatmap.cs,
-        od: score.beatmap.accuracy,
-        hp: score.beatmap.drain,
-    }
-
-    const [stats, setStats] = useState(INITIAL_SET_STATS);
-
-    useEffect(() => {
-        getStats();
-    }, [])
-
-    async function getStats() {
-        try {
-            const acc = score.accuracy * 100;
-            const d = await fina.nget(`https://catboy.best/api/meta/${score.beatmap.id}?misses=0&acc=${acc}&mods=${score.mods_id}`);
-            d.pp[acc]?.pp && setStats(prev => ({ ...prev, pp: Math.round(d.pp[acc].pp) }))
-            setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
-            setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
-
-            setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
-            setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
-            setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
-            setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
-
-            if (score.mods.includes('DT')) setStats(prev => ({ ...prev, len: score.beatmap.total_length * 0.75 }));
-            else if (score.mods.includes('HT')) setStats(prev => ({ ...prev, len: score.beatmap.total_length * 1.5 }));
-            else setStats(prev => ({ ...prev, len: score.beatmap.total_length }));
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    return stats;
 }
 
 export default ScoreCard;

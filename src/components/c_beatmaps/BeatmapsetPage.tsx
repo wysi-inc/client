@@ -12,6 +12,7 @@ import StatusBadge from "./b_comp/StatusBadge";
 import ModIcon from "../c_scores/s_comp/ModIcon";
 import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItunesNote, FaMicrophoneAlt } from "react-icons/fa";
 import fina from "../../helpers/fina";
+import { useStats } from "../../resources/hooks/scoreHooks";
 
 interface BeatmapsetPageProps {
   setId: number;
@@ -50,11 +51,11 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
     xMiss: 0
   }), [diff]);
 
-  const [acc, setAcc] = useState<accInt>(ACC_INITIAL);
+  const [acc, setAcc] = useState<number>(100);
 
   const [mods, setMods] = useState<string[]>([]);
 
-  const stats = useStats(diff, mods, acc);
+  const stats = useStats(diff, acc, mods);
 
   useEffect(() => {
     if (!beatmapset) return;
@@ -286,48 +287,6 @@ const BeatmapsetPage = (props: BeatmapsetPageProps) => {
       }
     }
     return leaderboards;
-  }
-
-  function useStats(diff: Beatmap | undefined, mods: string[], acc: accInt) {
-    const INITIAL_SET_STATS = {
-      pp: 0,
-      bpm: 0,
-      len: 0,
-      sr: 0,
-      ar: 0,
-      cs: 0,
-      od: 0,
-      hp: 0,
-    }
-
-    const [stats, setStats] = useState(INITIAL_SET_STATS);
-
-    useEffect(() => {
-      getStats();
-    }, [diff, mods])
-
-    async function getStats() {
-      if (!diff) return;
-      try {
-        const d = await fina.nget(`https://catboy.best/api/meta/${diff.id}?misses=0&acc=${acc.acc}&mods=${getModsInt(mods)}`);
-        setStats(prev => ({ ...prev, pp: Math.round(d.pp[100].pp) }))
-        setStats(prev => ({ ...prev, sr: d.difficulty.stars.toFixed(2) }))
-        setStats(prev => ({ ...prev, bpm: Math.round(d.map.bpm) }))
-
-        setStats(prev => ({ ...prev, ar: d.map.ar.toFixed(1) }))
-        setStats(prev => ({ ...prev, cs: d.map.cs.toFixed(1) }))
-        setStats(prev => ({ ...prev, od: d.map.od.toFixed(1) }))
-        setStats(prev => ({ ...prev, hp: d.map.hp.toFixed(1) }))
-
-        if (mods.includes('DT')) setStats(prev => ({ ...prev, len: diff.total_length * 0.75 }));
-        else if (mods.includes('HT')) setStats(prev => ({ ...prev, len: diff.total_length * 1.5 }));
-        else setStats(prev => ({ ...prev, len: diff.total_length }));
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    return stats;
   }
 }
 

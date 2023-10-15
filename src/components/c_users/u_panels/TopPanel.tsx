@@ -145,9 +145,7 @@ const TopPanel = (p : TopPanelProps) => {
                             <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                 data-tip={`Total Score: ${p.user.statistics.total_score.toLocaleString()}`}>
                                 <FaAngleDoubleUp />
-                                <div>
-                                    {p.user.statistics.ranked_score.toLocaleString()}
-                                </div>
+                                <div>{p.user.statistics.ranked_score.toLocaleString()}</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
@@ -162,9 +160,7 @@ const TopPanel = (p : TopPanelProps) => {
                             <div className="flex flex-row gap-2 justify-end items-center text-xl tooltip tooltip-left"
                                 data-tip={secondsToTime(p.user.statistics.play_time)}>
                                 <FaRegClock />
-                                <div>
-                                    {Math.round((p.user.statistics.play_time / 60 / 60)).toLocaleString()}h
-                                </div>
+                                <div>{Math.round((p.user.statistics.play_time / 60 / 60)).toLocaleString()}h</div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1 justify-end text-end">
@@ -178,9 +174,7 @@ const TopPanel = (p : TopPanelProps) => {
                             <div className="text-lg">{t('user.hits_x_play')}:</div>
                             <div className="flex flex-row gap-2 justify-end items-center text-xl">
                                 <FaCalculator />
-                                <div>p.user
-                                    {Math.round((p.user.statistics.count_50 + p.user.statistics.count_100 + p.user.statistics.count_300) / p.user.statistics.play_count).toLocaleString()}
-                                </div>
+                                <div>{Math.round((p.user.statistics.count_50 + p.user.statistics.count_100 + p.user.statistics.count_300) / p.user.statistics.play_count).toLocaleString()}x</div>
                             </div>
                         </div>
                     </div>
