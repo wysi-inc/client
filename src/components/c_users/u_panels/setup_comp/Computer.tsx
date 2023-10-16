@@ -3,6 +3,7 @@ import { BsCpu, BsDeviceHdd, BsFillLightningChargeFill, BsFillMotherboardFill, B
 import EditInput from "./EditInput";
 import { useState } from "react";
 import { ComputerInterface } from "../../../../resources/interfaces/setup";
+import { useTranslation } from "react-i18next";
 
 interface ComputerProps {
     edit: boolean,
@@ -11,38 +12,76 @@ interface ComputerProps {
 }
 
 const Computer = (p: ComputerProps) => {
-
-    const [cpu, setCpu] = useState({ icon: <BsCpu />, name: 'CPU', details: 'Ryzen 7 2700X' });
-    const [gpu, setGpu] = useState({ icon: <BsGpuCard />, name: 'GPU', details: 'Nvidia RTX 3060Ti' });
-    const [ram, setRam] = useState({ icon: <BsMemory />, name: 'RAM', details: '16Gb 3200mhz' });
-    const [ssd, setSsd] = useState({ icon: <BsDeviceHdd />, name: 'SSD', details: '1Tb NVMe SSD' });
-    const [mtb, setMtb] = useState({ icon: <BsFillMotherboardFill />, name: 'Motherboard', details: 'MSI Tomahawk Max' });
-    const [pcc, setPcc] = useState({ icon: <BsPc />, name: 'Case', details: 'NZXT h700' });
-    const [psu, setPsu] = useState({ icon: <BsFillLightningChargeFill />, name: 'PSU', details: '750W' });
+    const {t} = useTranslation();
 
     return (
-        <div>
-            <div className="grid grid-cols-4">
-                <div className="col-span-1">Component</div>
-                <div className="col-span-3">Details</div>
+        <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-3">
+                <div className="col-span-1">{t('user.sections.setup.components.component')}</div>
+                <div className="col-span-2">{t('user.sections.setup.components.details')}</div>
             </div>
             <div className="divider p-0 m-0 col-span-4"></div>
-            <div>
-                <div className="col-span-1 flex flex-row gap-2 items-center">
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
                     <BsCpu />
-                    <div>CPU</div>
+                    <div>{t('user.sections.setup.components.cpu')}</div>
                 </div>
-                <div className="col-span-3">
+                <div className="col-span-2 flex">
                     <EditInput value={p.computer.cpu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, cpu: n }))} edit={p.edit} />
                 </div>
             </div>
-            <div>
-                <div className="col-span-1 flex flex-row gap-2 items-center">
-                    <BsCpu />
-                    <div>CPU</div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsGpuCard />
+                    <div>{t('user.sections.setup.components.gpu')}</div>
                 </div>
-                <div className="col-span-3">
-                    <EditInput value={p.computer.cpu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, cpu: n }))} edit={p.edit} />
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.gpu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, gpu: n }))} edit={p.edit} />
+                </div>
+            </div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsMemory />
+                    <div>{t('user.sections.setup.components.ram')}</div>
+                </div>
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.ram} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, ram: n }))} edit={p.edit} />
+                </div>
+            </div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsDeviceHdd />
+                    <div>{t('user.sections.setup.components.storage')}</div>
+                </div>
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.storage} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, storage: n }))} edit={p.edit} />
+                </div>
+            </div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsFillMotherboardFill />
+                    <div>{t('user.sections.setup.components.motherboard')}</div>
+                </div>
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.mohterboard} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, mohterboard: n }))} edit={p.edit} />
+                </div>
+            </div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsFillLightningChargeFill />
+                    <div>{t('user.sections.setup.components.psu')}</div>
+                </div>
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.psu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, psu: n }))} edit={p.edit} />
+                </div>
+            </div>
+            <div className="grid grid-cols-3">
+                <div className="col-span-1 flex flex-row gap-3 items-center">
+                    <BsPc />
+                    <div>{t('user.sections.setup.components.case')}</div>
+                </div>
+                <div className="col-span-2 flex">
+                    <EditInput value={p.computer.case} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, case: n }))} edit={p.edit} />
                 </div>
             </div>
         </div>

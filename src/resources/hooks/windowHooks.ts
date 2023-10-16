@@ -13,5 +13,5 @@ export function useDivSize(type: 'w' | 'h', init: number) {
             setPx(type === 'h' ? divRef.current?.clientHeight : divRef.current?.clientWidth);
     }
 
-    return { divPx, divRef };
+    return {divPx, divRef};
 }

@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import ScoreCard from "../../c_scores/ScoreCard";
 import { Score, ScoreType, ScoresObj, scoreListItem } from "../../../resources/interfaces/score";
 import fina from "../../../helpers/fina";
+import { useTranslation } from "react-i18next";
 
 
 interface ScoresPanelProps {
@@ -17,6 +18,8 @@ interface ScoresPanelProps {
 }
 
 const ScoresPanel = (p: ScoresPanelProps) => {
+    const {t} = useTranslation();
+
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
     const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
     useEffect(() => {
@@ -26,10 +29,10 @@ const ScoresPanel = (p: ScoresPanelProps) => {
     }, [p.scores.best.length])
 
     const scoresTabs: tabInterface[] = [
-        { num: 1, title: 'Pinned', icon: <FaMapPin />, count: p.user.scores_pinned_count },
-        { num: 2, title: 'Best', icon: <FaChartBar />, count: p.user.scores_best_count },
-        { num: 3, title: 'Firsts', icon: <FaStar />, count: p.user.scores_first_count },
-        { num: 4, title: 'Recent', icon: <FaStopwatch />, count: p.user.scores_recent_count },
+        { num: 1, title: t('score.status.pinned'), icon: <FaMapPin />, count: p.user.scores_pinned_count },
+        { num: 2, title: t('score.status.best'), icon: <FaChartBar />, count: p.user.scores_best_count },
+        { num: 3, title: t('score.status.firsts'), icon: <FaStar />, count: p.user.scores_first_count },
+        { num: 4, title: t('score.status.recent'), icon: <FaStopwatch />, count: p.user.scores_recent_count },
     ]
     const scoresList: scoreListItem[] = [
         { id: 1, scores: p.scores.pinned, len: p.user.scores_pinned_count, type: 'pinned' },

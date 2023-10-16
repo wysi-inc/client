@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { MouseInterface } from "../../../../resources/interfaces/setup";
+import { useTranslation } from "react-i18next";
 
 interface propsInterface {
     mouse: MouseInterface;
@@ -10,6 +11,7 @@ interface propsInterface {
 }
 
 const Mouse = (p: propsInterface) => {
+    const {t} = useTranslation();
 
     function handleInput(value: string) {
         const valuef: number = Number(value || '0');
@@ -27,10 +29,10 @@ const Mouse = (p: propsInterface) => {
                 </div>
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
-                <div>Model:</div>
+                <div>{t('user.sections.setup.model')}:</div>
                 <input onChange={(e) => p.edit && p.setMouse((pr) => ({ ...pr, name: e.target.value }))} value={p.mouse.name}
                     type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
-                <div>DPI:</div>
+                <div>{t('user.sections.setup.dpi')}:</div>
                 <input onChange={(e) => p.edit && p.setMouse((pr) => ({ ...pr, dpi: handleInput(e.target.value) }))} value={p.mouse.dpi.toString()}
                     type='number' className="input input-sm input-bordered join-item input-mm" placeholder="650" />
             </div>

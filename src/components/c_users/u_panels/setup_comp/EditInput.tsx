@@ -5,7 +5,7 @@ interface EditInputProps {
 }
 
 const EditInput = (p : EditInputProps) => {
-    if (p.edit) return <input className="input input-sm input-bordered" value={p.value} onChange={(e) => p.setValue(e.target.value)} type="text"/>
+    if (p.edit) return <input className="input input-sm input-bordered grow" value={p.value} onChange={(e) => p.setValue(e.target.value)} type="text"/>
     return <div>{p.value}</div>
     
 }

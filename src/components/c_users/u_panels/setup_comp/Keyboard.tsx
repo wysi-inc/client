@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { KeyboardInterface, KeyboardLayoutType } from "../../../../resources/interfaces/setup";
 import Key from "./Key";
+import { useTranslation } from "react-i18next";
 
 interface propsInterface {
     keyboard: KeyboardInterface;
@@ -11,7 +12,7 @@ interface propsInterface {
 }
 
 const Keyboard = (p: propsInterface) => {
-
+    const {t} = useTranslation();
     const KeyboardDisplay = useMemo(() => getK(p.keyboard.layout), [p.keyboard]);
 
     return (
@@ -21,20 +22,20 @@ const Keyboard = (p: propsInterface) => {
                 {KeyboardDisplay}
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
-                <div>Model:</div>
+                <div>{t('user.sections.setup.model')}:</div>
                 <div className="join">
                     <input onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, name: e.target.value }))} value={p.keyboard.name}
                         type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
                     <select className="select select-bordered join-item select-sm" value={p.keyboard.layout}
                         onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, layout: e.target.value as KeyboardLayoutType }))}
                     >
-                        <option value={"k2" as KeyboardLayoutType}>2 Keys</option>
-                        <option value={"k3" as KeyboardLayoutType}>3 Keys</option>
-                        <option value={"k4" as KeyboardLayoutType}>4 Keys</option>
-                        <option value={"k60" as KeyboardLayoutType}>60%</option>
-                        <option value={"k75" as KeyboardLayoutType}>75%</option>
-                        <option value={"ktkl" as KeyboardLayoutType}>TKL</option>
-                        <option value={"kfull" as KeyboardLayoutType}>FULL</option>
+                        <option value={"k2" as KeyboardLayoutType}>{t('user.sections.setup.layout.k2')}</option>
+                        <option value={"k3" as KeyboardLayoutType}>{t('user.sections.setup.layout.k3')}</option>
+                        <option value={"k4" as KeyboardLayoutType}>{t('user.sections.setup.layout.k4')}</option>
+                        <option value={"k60" as KeyboardLayoutType}>{t('user.sections.setup.layout.k60')}</option>
+                        <option value={"k75" as KeyboardLayoutType}>{t('user.sections.setup.layout.k75')}</option>
+                        <option value={"ktkl" as KeyboardLayoutType}>{t('user.sections.setup.layout.ktkl')}</option>
+                        <option value={"kfull" as KeyboardLayoutType}>{t('user.sections.setup.layout.kfull')}</option>
                     </select>
                 </div>
             </div>
@@ -415,7 +416,6 @@ function KTKL(p: kProps) {
                         <Key char={'⌘'} code={'rwin'} keys={p.keys} toggle={toggle} width={1.25} />
                         <Key char={'fn'} code={'fn'} keys={p.keys} toggle={toggle} width={1.25} />
                         <Key char={'ctrl'} code={'rctrl'} keys={p.keys} toggle={toggle} width={1.25} />
-                        <Key char={'pdw'} code={'pdw'} keys={p.keys} toggle={toggle} width={1} />
                     </div>
                 </div>
                 <div className="flex flex-col">

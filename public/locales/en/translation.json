@@ -16,8 +16,34 @@
             "setup": {
                 "title": "Setup",
                 "tabs": {
+                    "inputs" : "Inputs",
                     "peripherals": "Peripherals",
                     "computer": "Computer"
+                },
+                "components" : {
+                    "component" : "Component",
+                    "details" : "Details",
+                    "cpu" : "CPU",
+                    "gpu" : "GPU",
+                    "ram" : "RAM",
+                    "storage" : "Storage",
+                    "motherboard" : "Motherboard",
+                    "psu" : "Power Supply",
+                    "case" : "Case"
+                },
+                "model" : "Model",
+                "size" : "Size",
+                "area" : "Area",
+                "position" : "Position",
+                "dpi" : "DPI",
+                "layout" : {
+                    "k2" : "2 Keys",
+                    "k3" : "3 Keys",
+                    "k4" : "4 Keys",
+                    "k60" : "60%",
+                    "k75" : "75%",
+                    "ktkl" : "TKL",
+                    "kfull" : "FULL" 
                 }
             },
             "history": {
@@ -47,9 +73,16 @@
         "play_count": "Play Count",
         "replays_watched": "Replays Watched",
         "hits_x_play": "Hits x Play",
-        "followers": "Followers"
+        "followers": "Followers",
+        "online": "Online"
     },
     "score": {
+        "status": {
+            "pinned": "Pinned",
+            "best": "Best",
+            "firsts": "Firsts",
+            "recent": "Recent"
+        },
         "mods": "Mods",
         "max_combo": "Max Combo",
         "combo": "Combo",
@@ -81,7 +114,6 @@
             "user_doesnt_exist": "This user doesn't exist",
             "user_is_bot": "This user is a bot, bots are not supported yet :(",
             "users_fail": "Failed to fetch users"
-        },
-        "beatmaps": {}
+        }
     }
 }

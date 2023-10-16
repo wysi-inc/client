@@ -34,7 +34,11 @@ const UserCard = (props: UserCardProps) => {
                 <div>{props.user.grade_counts.s.toLocaleString()}</div>
                 <div>{props.user.grade_counts.a.toLocaleString()}</div>
             </div></td>
-            <td className="table-cell"><OnlineDot isOnline={props.user.user.is_online} size={24} /></td>
+            <td className="table-cell">
+                <div className='flex justify-end pe-2'>
+                    <OnlineDot isOnline={props.user.user.is_online} size={24} />
+                </div>
+            </td>
         </tr>
     )
 }
