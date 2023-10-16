@@ -10,6 +10,7 @@ import { KeyboardInterface, MouseInterface, TabletInterface } from "../../../res
 import { useDivSize } from "../../../resources/hooks/windowHooks";
 import { BsGpuCard } from "react-icons/bs";
 import Mouse from "./setup_comp/Mouse";
+import Computer from "./setup_comp/Computer";
 
 interface SetupPanelProps {
     id: number,
@@ -98,7 +99,7 @@ const SetupPanel = (p: SetupPanelProps) => {
                         <button onClick={() => setTabsIndex(3)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 3 && 'tab-active text-base-100'}`}>
                             <BsGpuCard />
-                            <div>Copmuter</div>
+                            <div>Computer</div>
                         </button>
                     </div>
                     <div className="flex flex-row gap-2 justify-end pr-2">
@@ -135,10 +136,7 @@ const SetupPanel = (p: SetupPanelProps) => {
 
                     </div>
                     <div className="p-4 grow" hidden={tabsIndex !== 3}>
-
-                    </div>
-                    <div className="p-4 grow" hidden={tabsIndex !== 4}>
-
+                        <Computer/>
                     </div>
                 </div>
             </div>
