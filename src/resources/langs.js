@@ -4,6 +4,7 @@ import Backend from 'i18next-xhr-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 const fallbackLng = ['en'];
+const availableLanguages = ['en', 'es', 'ca']
 
 i18n.use(Backend)
     .use(LanguageDetector)
@@ -14,6 +15,7 @@ i18n.use(Backend)
             checkWhitelist: true
         },
         debug: false,
+        whitelist: availableLanguages,
         interpolation: {
             escapeValue: false
         }

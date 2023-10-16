@@ -42,14 +42,14 @@ const Navbar = () => {
             <div className="navbar-center">
                 <SearchBox />
             </div>
-            <div className="flex flex-row gap-2 items-center navbar-end">
-                <LanguagesSelect/>
+            <div className="flex flex-row gap-4 items-center navbar-end">
+            <LanguagesSelect />
                 <a target='_blank' rel="noreferrer"
-                    href='https://google.com' className="btn btn-ghost btn-circle">
+                    href='https://google.com' className="btn btn-ghost btn-circle btn-sm">
                     <FaDiscord />
                 </a>
-                <a target='_blank' rel="noreferrer"
-                    href='https://github.com/orgs/wysi-inc/repositories' className="btn btn-ghost btn-circle">
+                <a target='_blank' rel="noreferrer" className="btn btn-ghost btn-circle btn-sm"
+                    href='https://github.com/orgs/wysi-inc/repositories'>
                     <FaGithub />
                 </a>
                 <Login />

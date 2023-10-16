@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { BsCpu, BsDeviceHdd, BsFillLightningChargeFill, BsFillMotherboardFill, BsGpuCard, BsMemory, BsPc } from "react-icons/bs";
 import EditInput from "./EditInput";
-import { useState } from "react";
 import { ComputerInterface } from "../../../../resources/interfaces/setup";
 import { useTranslation } from "react-i18next";
 

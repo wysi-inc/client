@@ -17,7 +17,7 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
             <th className="text-end">#{props.index}</th>
             <td>
                 <div className="flex justify-center items-center">
-                    <CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} />
+                    <CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} position="t" />
                 </div>
             </td>
             <td>

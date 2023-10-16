@@ -14,7 +14,6 @@ const SearchBox = () => {
     const { t } = useTranslation();
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
-
     const debouncedValue: string = useDebounce<string>(username, 500)
 
     const navigate = useNavigate();
@@ -91,7 +90,7 @@ const SearchBox = () => {
                                     <div className="flex flex-row gap-2 items-center">
                                         <img src={user.avatar_url} height={40} width={40} alt="pfp"
                                             className="rounded" />
-                                        <CountryFlag size={24} code={user.country?.code} name={user.country?.name} />
+                                        <CountryFlag size={24} code={user.country_code} name={''} position="t" />
                                         <div>{user.username}</div>
                                         {user.profile_colour &&
                                             <GroupBadge group={{

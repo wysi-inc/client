@@ -113,13 +113,7 @@ const TopPanel = (p : TopPanelProps) => {
                             <div className="flex flex-row gap-2 items-center text-2xl">
                                 <CountryShape code={p.user.country.code} size={26} />
                                 <div>#{p.user.statistics.country_rank ? p.user.statistics.country_rank.toLocaleString() : '-'}</div>
-                                {p.user.country.code === 'CAT' ?
-                                    <div className="tooltip tooltip-right" data-tip={p.user.country.name}>
-                                        <img alt={p.user.country.code} className="emoji-flag"
-                                            src={require(`../../../assets/extra-flags/${p.user.country.code.toLowerCase()}.png`)} />
-                                    </div> :
-                                    <CountryFlag size={24} name={p.user.country.name} code={p.user.country.code} />
-                                }
+                                <CountryFlag size={24} name={p.user.country.name} code={p.user.country.code} position="r" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
