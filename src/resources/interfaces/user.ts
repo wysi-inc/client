@@ -1,4 +1,4 @@
-import { KeyboardInterface, MouseInterface, TabletInterface } from "./setup";
+import { ComputerInterface, KeyboardInterface, MouseInterface, TabletInterface } from "./setup";
 import { BeatmapSet, BeatmapsetType } from "./beatmapset";
 import { Score, ScoreType } from "./score";
 import { Dispatch, SetStateAction } from 'react';
@@ -249,6 +249,7 @@ export interface Setup {
     tablet?: TabletInterface;
     keyboard?: KeyboardInterface;
     mouse?: MouseInterface;
+    computer?: ComputerInterface;
 }
 
 export interface Peripherals {

@@ -27,3 +27,13 @@ export interface MouseInterface {
     name: string,
     dpi: number
 }
+
+export interface ComputerInterface {
+    cpu: string,
+    gpu: string,
+    ram: string,
+    psu: string,
+    storage: string,
+    mohterboard: string,
+    case: string,
+}

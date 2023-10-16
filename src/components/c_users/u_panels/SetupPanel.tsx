@@ -6,7 +6,7 @@ import { UserStore, UserStoreInt } from "../../../resources/global/user";
 import { FaEdit, FaCheck, FaTimes, FaKeyboard, FaWheelchair } from "react-icons/fa";
 import { FaComputer } from "react-icons/fa6";
 import fina from "../../../helpers/fina";
-import { KeyboardInterface, MouseInterface, TabletInterface } from "../../../resources/interfaces/setup";
+import { ComputerInterface, KeyboardInterface, MouseInterface, TabletInterface } from "../../../resources/interfaces/setup";
 import { useDivSize } from "../../../resources/hooks/windowHooks";
 import { BsGpuCard } from "react-icons/bs";
 import Mouse from "./setup_comp/Mouse";
@@ -48,10 +48,20 @@ const SetupPanel = (p: SetupPanelProps) => {
         name: "",
         dpi: 0
     }
+    const COMPUTER_EX: ComputerInterface = {
+        cpu: "",
+        gpu: "",
+        ram: "",
+        psu: "",
+        storage: "",
+        mohterboard: "",
+        case: "",
+    }
 
     let TABLET_INITIAL: TabletInterface = p.setup?.tablet || TABLET_EX;
     let KEYBOARD_INITIAL: KeyboardInterface = p.setup?.keyboard || KEYBOARD_EX;
     let MOUSE_INITIAL: MouseInterface = p.setup?.mouse || MOUSE_EX;
+    let COMPUTER_INITIAL: ComputerInterface = p.setup?.computer || COMPUTER_EX
 
     const [tabsIndex, setTabsIndex] = useState<number>(1);
 
@@ -136,7 +146,7 @@ const SetupPanel = (p: SetupPanelProps) => {
 
                     </div>
                     <div className="p-4 grow" hidden={tabsIndex !== 3}>
-                        <Computer/>
+                        <Computer edit={edit} />
                     </div>
                 </div>
             </div>

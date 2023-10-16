@@ -1,13 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
-
 interface EditInputProps {
     edit: boolean,
     value: string,
-    setValue: Dispatch<SetStateAction<string>>,
+    setValue: (newVal: string) => void,
 }
 
 const EditInput = (p : EditInputProps) => {
-    if (p.edit) return <input value={p.value} onChange={(e) => p.setValue(e.target.value)} type="text"/>
+    if (p.edit) return <input className="input input-sm input-bordered" value={p.value} onChange={(e) => p.setValue(e.target.value)} type="text"/>
     return <div>{p.value}</div>
     
 }
