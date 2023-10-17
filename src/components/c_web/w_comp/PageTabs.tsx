@@ -17,6 +17,7 @@ const PageTabs = (props: PageTabsProps) => {
     useEffect(() => {
         setPage(props.current);
     }, [props.current]);
+    
     return (
         <div className="flex flex-row gap-3 self-center">
             {props.current > props.min + 2 && <button className="font-bold btn btn-primary text-base-100" onClick={() => page && props.setNewPage(props.min)}>{props.min}</button>}

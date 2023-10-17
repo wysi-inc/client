@@ -7,7 +7,7 @@ import { FaEdit, FaCheck, FaTimes, FaKeyboard, FaWheelchair } from "react-icons/
 import { FaComputer } from "react-icons/fa6";
 import fina from "../../../helpers/fina";
 import { ComputerInterface, KeyboardInterface, MouseInterface, TabletInterface } from "../../../resources/interfaces/setup";
-import { useDivSize } from "../../../resources/hooks/windowHooks";
+import { useDivSize } from "../../../resources/hooks/globalHooks";
 import { BsGpuCard } from "react-icons/bs";
 import Mouse from "./setup_comp/Mouse";
 import Computer from "./setup_comp/Computer";

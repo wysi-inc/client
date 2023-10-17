@@ -1,0 +1,14 @@
+{
+    "nav": {
+        "home": "Inicio",
+        "users": "Usuarios",
+        "beatmaps": "Beatmaps",
+        "search": "Busca alguien",
+        "log": {
+            "login": "Registrate con osu!",
+            "logout": "Salir",
+            "osu": "perfil de osu!",
+            "wysi": "perfil de wysi"
+        }
+    }
+}

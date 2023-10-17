@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
+import { useCountTranslatedKeys, useGetColor } from '../../../resources/hooks/globalHooks';
 
 interface propsInterface {
     flag: string,
@@ -12,24 +13,11 @@ const LanguageButton = (p: propsInterface) => {
 
     const { i18n } = useTranslation();
 
-    function getColor(number: number) {
-        let color = '';
-        if (number < 50) {
-            color = '#f8745455'; // Pastel Red
-        } else if (number < 75) {
-            color = '#faf56a55'; // Pastel Orange
-        } else {
-            color = '#b3ff6655'; // Pastel Green
-        }
-        return color;
-    }
-
-    const percentage = countTranslatedKeys();
-    
-    const lineHeight = 3;
+    const percentage = useCountTranslatedKeys(p.code);
+    const color = useGetColor(percentage);
 
     return (
-        <div className="rounded-lg"
+        <div className="rounded-lg overflow-hidden"
             style={{
                 outline: '1px solid #ffffff22',
                 width: 150
@@ -42,27 +30,14 @@ const LanguageButton = (p: propsInterface) => {
             <div className="flex flex-row gap-1">
                 <div className="grow">
                     <div style={{
-                        height: lineHeight,
-                        backgroundColor: getColor(percentage),
+                        height: 3,
+                        backgroundColor: color,
                         width: `${percentage}%`
                     }}></div>
                 </div>
             </div>
         </div>
     )
-
-    function countTranslatedKeys() {
-        if (p.code === 'en') return 100;
-        const enLang = i18n.getDataByLanguage('en');
-        if (!enLang) return 0;
-        const curr = i18n.getDataByLanguage(p.code);
-        const en = Object.keys(enLang);
-        const translatedKeys = en.filter((key) => {
-            if (!en || !curr) return false;
-            return enLang[key] !== curr[key];
-        });
-        const completionPercentage = (translatedKeys.length / en.length) * 100;
-        return completionPercentage;
-    };
 }
+
 export default LanguageButton;

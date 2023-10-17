@@ -1,5 +1,5 @@
 import { useGetUser } from "../../resources/hooks/userHooks";
-import { useDivSize } from "../../resources/hooks/windowHooks";
+import { useDivSize } from "../../resources/hooks/globalHooks";
 import { GameModeType } from "../../resources/interfaces/user";
 import SetupPanel from "./u_panels/SetupPanel";
 import HistoryPanel from "./u_panels/HistoryPanel";
