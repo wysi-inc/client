@@ -3,14 +3,16 @@ import LanguageButton from "./LanguageButton";
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
 
 const LanguagesSelect = () => {
-    
-    const { i18n } = useTranslation();
 
-    const nameGenerator = new Intl.DisplayNames(i18n.language, { type: 'language' });
-    const displayName = nameGenerator.of(i18n.language);
+    const { t, i18n } = useTranslation();
+
+    const lang = i18n.language.split('-')[0];
+    const nameGenerator = new Intl.DisplayNames(lang, { type: 'language' });
+    const displayName = nameGenerator.of(lang);
 
     function currentCode() {
-        switch (i18n.language) {
+        console.log(lang);
+        switch (lang) {
             case 'ca':
                 return 'cat';
             case 'en':
@@ -20,7 +22,7 @@ const LanguagesSelect = () => {
             case 'et':
                 return 'ee';
             default:
-                return i18n.language;
+                return lang;
         }
     }
 
@@ -57,8 +59,9 @@ const LanguagesSelect = () => {
                     <LanguageButton flag='tw' code='tw' name='chineseT' nativeName='繁體中文' />
                     <LanguageButton flag='eo' code='eo' name='esperanto' nativeName='Esperanto' />
                 </div>
-                <a href="https://crowdin.com/project/wysi727" target="_blank" className="btn btn-info grow">
-                    help
+                <a href="https://crowdin.com/project/wysi727"
+                    target="_blank" rel="noreferrer" className="btn btn-info grow">
+                    {t('nav.help')}
                 </a>
             </div>
         </div>
