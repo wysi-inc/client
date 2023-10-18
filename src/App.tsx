@@ -14,7 +14,7 @@ import OAuth from './components/c_web/OAuth';
 import { Chart, registerables } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import './resources/langs';
-import { Suspense } from 'react';
+import { StrictMode, Suspense } from 'react';
 import { colors } from './resources/global/tools';
 import 'chartjs-adapter-moment';
 
@@ -32,25 +32,27 @@ Chart.defaults.borderColor = colors.ui.font + '22';
 
 function App() {
     return (
-        <Suspense fallback={null}>
-            <BrowserRouter>
-                <ScrollToTop />
-                <Navbar />
-                <AlertManager />
-                <div className="bg-custom-950">
-                    <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/oauth-redirect" element={<OAuth />} />
-                            <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
-                            <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
-                        </Routes>
-                    </main>
-                </div>
-                <SongPlayer />
-                <Footer />
-            </BrowserRouter>
-        </Suspense>
+        <StrictMode>
+            <Suspense fallback={null}>
+                <BrowserRouter>
+                    <ScrollToTop />
+                    <Navbar />
+                    <AlertManager />
+                    <div className="bg-custom-950">
+                        <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/oauth-redirect" element={<OAuth />} />
+                                <Route path="/users/:urlUser?/:urlMode?" element={<Users />} />
+                                <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
+                            </Routes>
+                        </main>
+                    </div>
+                    <SongPlayer />
+                    <Footer />
+                </BrowserRouter>
+            </Suspense>
+        </StrictMode>
     );
 }
 
