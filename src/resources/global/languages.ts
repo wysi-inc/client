@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import fina from "../../helpers/fina";
+
 interface LanguageInterface {
     code: string,
     name: string,
@@ -187,8 +190,8 @@ const languages: LanguageInterface[] = [
     { code: "xh", name: "Xhosa", nativeName: "isiXhosa" },
     { code: "yi", name: "Yiddish", nativeName: "ייִדיש" },
     { code: "yo", name: "Yoruba", nativeName: "Yorùbá" },
-    { code: "za", name: "Zhuang, Chuang", nativeName: "Saɯ cueŋƅ, Saw cuengh" }, 
-    { code: "mine", name: "Minecraft", nativeName: "ᒲ╎リᒷᓵ∷ᔑ⎓ℸ ̣"}
+    { code: "za", name: "Zhuang, Chuang", nativeName: "Saɯ cueŋƅ, Saw cuengh" },
+    { code: "min", name: "Minecraft", nativeName: "ᒲ╎リᒷᓵ∷ᔑ⎓ℸ ̣" }
 ]
 
 export function getLang(code: string) {
@@ -204,7 +207,7 @@ function getLangName(code: string) {
     const name = language.name;
     const n = language.nativeName.split(',')[0];
     const nativeName = n.charAt(0).toUpperCase() + n.slice(1);
-    return {name, nativeName}
+    return { name, nativeName }
 }
 
 function getLangFlag(l: string): string {
@@ -239,3 +242,29 @@ function getLangFlag(l: string): string {
             return l;
     }
 }
+
+export function useCountTranslatedKeys(code: string): number {
+
+    const [count, setCount] = useState<number>(0);
+
+    useEffect(() => {
+        getCount(code);
+    }, [code]);
+
+    async function getCount(code: string) {
+        if (code === 'en') {
+            setCount(100);
+            console.log(code, 100);
+            return;
+        }
+        try {
+            const res = await fina.post('/langProgress', {code});
+            const progress = res.data[0].data.translationProgress;
+            if (typeof progress === "number") setCount(progress);
+            else setCount(0);
+        } catch (err) {
+            setCount(0);
+        }
+    }
+    return count;
+};

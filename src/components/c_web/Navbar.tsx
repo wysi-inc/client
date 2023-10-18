@@ -4,7 +4,6 @@ import SearchBox from "./w_comp/SearchBox";
 import { FaGithub, FaDiscord } from 'react-icons/fa';
 import Login from './w_comp/Login';
 import { useTranslation } from "react-i18next";
-import Languages from "./w_comp/Languages";
 import LanguagesSelect from "./w_comp/LanguagesSelect";
 
 const Navbar = () => {

@@ -28,7 +28,7 @@ const LanguagesSelect = () => {
                     <CountryFlag size={24} name={nativeName} code={flag} position='l' />
                 </button>
             </label>
-            <div tabIndex={0} className="dropdown-content z-[10] menu p-2 gap-2 shadow bg-base-100 rounded-box w-max">
+            <div tabIndex={0} className="dropdown-content z-[10] menu p-2 gap-2 shadow-lg bg-custom-950 rounded-box w-max">
                 <div className="grid grid-cols-2 gap-2">
                     {availableLanguages.map((lang) => 
                         <LanguageButton code={lang} key={lang}/>

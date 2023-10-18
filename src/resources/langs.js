@@ -7,7 +7,7 @@ const fallbackLng = ['en'];
 export const availableLanguages = [
     'af', 'ca', 'de', 'en', 'es', 'et', 'gl', 'it', 'lv', 'hu', 
     'nl', 'no', 'pl', 'pt', 'pt-br', 'ru', 'fi', 'sr', 'tr', 'ja', 
-    'zh', 'zh-hant', 'eo', 'mine'
+    'zh', 'zh-hant', 'eo', 'min'
 ];
 
 i18n.use(Backend)
