@@ -11,22 +11,12 @@ const LanguagesSelect = () => {
     const [code, flag, name, nativeName] = getLang(i18n.language);
     const [clicked, setClicked] = useState<boolean>(false);
 
-    function handleClick() {
-        if (clicked) return;
-        const start = i18n.language;
-        availableLanguages.forEach((l) => {
-            //i18n.changeLanguage(l);
-        });
-        i18n.changeLanguage(start);
-        setClicked(true);
-    }
-
     return (
         <div className="dropdown dropdown-end">
             <label tabIndex={0} className='cursor-pointer'>
-                <button style={{ height: 32 }} onClick={handleClick}>
+                <div style={{ height: 32 }}>
                     <CountryFlag size={24} name={nativeName} code={flag} position='l' />
-                </button>
+                </div>
             </label>
             <div tabIndex={0} className="dropdown-content z-[10] menu p-2 gap-2 shadow-lg bg-custom-950 rounded-box w-max">
                 <div className="grid grid-cols-2 gap-2">

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import ReactCountryFlag from "react-country-flag";
 import Twemoji from "react-twemoji";
 
@@ -10,13 +11,15 @@ interface CountryFlagProps {
 
 const CountryFlag = (p: CountryFlagProps) => {
 
+    const flag = useMemo(() => p.code ? getFlag(p.code) : '', [p.code]);
+
     if (p.code === undefined) return (<div>??</div>);
     if (p.code.toLocaleLowerCase() === 'xx') return (<div>??</div>);
-    
+
     return (
         <div className={`m-0 p-0 ${p.name && 'tooltip'} ${p.position === 't' ? 'tooltip-top' : p.position === 'b' ? 'tooltip-bottom' : p.position === 'l' ? 'tooltip-left' : p.position === 'r' ? 'tooltip-right' : ''}`}
             data-tip={p.name}>
-            {getFlag(p.code)}
+            {flag}
         </div>
     )
 
@@ -34,7 +37,7 @@ const CountryFlag = (p: CountryFlagProps) => {
 function extraFlag(code: string) {
     try {
         const svgFile = require(`../../../assets/extra-flags/${code.toLowerCase()}.png`);
-        return <img alt={code} className="emoji-flag m-0 p-0" src={svgFile} />
+        return(<img alt={code} className="emoji-flag m-0 p-0" src={svgFile} />)
     } catch (err) {
         return <div>??</div>
     }
