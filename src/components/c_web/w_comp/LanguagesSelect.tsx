@@ -2,13 +2,12 @@ import { useTranslation } from 'react-i18next';
 import LanguageButton from "./LanguageButton";
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
 import { getLang } from '../../../resources/global/languages';
-import { useMemo } from 'react';
+import { availableLanguages } from '../../../resources/langs';
 
 const LanguagesSelect = () => {
 
     const { t, i18n } = useTranslation();
     const [code, flag, name, nativeName] = getLang(i18n.language);
-    const languages : string[] = useMemo(() => (i18n.options as any)['whitelist'] ? (i18n.options as any)['whitelist'] : [], []);
 
     return (
         <div className="dropdown dropdown-end">
@@ -19,7 +18,7 @@ const LanguagesSelect = () => {
             </label>
             <div tabIndex={0} className="dropdown-content z-[10] menu p-2 gap-2 shadow bg-base-100 rounded-box w-max">
                 <div className="grid grid-cols-2 gap-2">
-                    {languages.map((lang) => 
+                    {availableLanguages.map((lang) => 
                         <LanguageButton code={lang} key={lang}/>
                     )}
                     {/* <LanguageButton flag='za'   code='za' name='afrikaans'  nativeName='Afrikaans' />
