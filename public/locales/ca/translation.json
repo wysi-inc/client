@@ -4,6 +4,7 @@
         "users": "Usuaris",
         "beatmaps": "Beatmaps",
         "search": "Busca algú",
+        "help": "Help translate the site!",
         "log": {
             "login": "Registra't amb osu!",
             "logout": "Logout",
@@ -16,34 +17,34 @@
             "setup": {
                 "title": "Setup",
                 "tabs": {
-                    "inputs" : "Inputs",
+                    "inputs": "Inputs",
                     "peripherals": "Periferics",
                     "computer": "Ordinador"
                 },
-                "components" : {
-                    "component" : "Component",
-                    "details" : "Detalls",
-                    "cpu" : "CPU",
-                    "gpu" : "GPU",
-                    "ram" : "RAM",
-                    "storage" : "Enmagatzematge",
-                    "motherboard" : "Placa Base",
-                    "psu" : "Font d'alimentació",
-                    "case" : "Caixa"
+                "components": {
+                    "component": "Component",
+                    "details": "Detalls",
+                    "cpu": "CPU",
+                    "gpu": "GPU",
+                    "ram": "RAM",
+                    "storage": "Enmagatzematge",
+                    "motherboard": "Placa Base",
+                    "psu": "Font d'alimentació",
+                    "case": "Caixa"
                 },
-                "model" : "Model",
-                "size" : "Tamany",
-                "area" : "Area",
-                "position" : "Posició",
-                "dpi" : "DPI",
-                "layout" : {
-                    "k2" : "2 Tecles",
-                    "k3" : "3 Tecles",
-                    "k4" : "4 Tecles",
-                    "k60" : "60%",
-                    "k75" : "75%",
-                    "ktkl" : "TKL",
-                    "kfull" : "FULL" 
+                "model": "Model",
+                "size": "Tamany",
+                "area": "Area",
+                "position": "Posició",
+                "dpi": "DPI",
+                "layout": {
+                    "k2": "2 Tecles",
+                    "k3": "3 Tecles",
+                    "k4": "4 Tecles",
+                    "k60": "60%",
+                    "k75": "75%",
+                    "ktkl": "TKL",
+                    "kfull": "FULL"
                 }
             },
             "history": {
