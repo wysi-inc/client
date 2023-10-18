@@ -1,120 +1,120 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "home": "Главная",
+        "users": "Пользователи",
+        "beatmaps": "Бит-карты",
+        "search": "Найти кого-то",
+        "help": "Помогите перевести сайт!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "Войти с помощью osu!",
+            "logout": "Выйти",
+            "osu": "osu! профиль",
+            "wysi": "wysi! профиль"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Настройка",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "Вводы",
+                    "peripherals": "Периферия",
+                    "computer": "Компьютер"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
-                    "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "component": "Компонент",
+                    "details": "Детали",
+                    "cpu": "Процессор",
+                    "gpu": "Графический процессор",
+                    "ram": "Оперативная память",
+                    "storage": "Хранилище",
+                    "motherboard": "Материнская плата",
+                    "psu": "Источник питания",
+                    "case": "Случай"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
-                "dpi": "DPI",
+                "model": "Модель",
+                "size": "Размер",
+                "area": "Зона",
+                "position": "Позиция",
+                "dpi": "Количество пикселей на дюйм",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 Ключа",
+                    "k3": "3 Ключа",
+                    "k4": "4 Ключа",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "kfull": "ПОЛНОЕ"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "История"
             },
-            "scores": "Scores",
+            "scores": "Очки",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "Бит-карты"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Медали"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Итог очков",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "Соотношение попаданий",
+                    "grade_ratios": "Коэффициенты оценки",
+                    "average_play": "Среднее время игры"
                 }
             }
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
+        "performance": "Показатели",
+        "total_score": "Итого",
+        "global_rank": "Глобальный ранг",
+        "country_rank": "Рейтинг в стране",
+        "play_time": "Время в игре",
+        "play_count": "Количество игр",
+        "replays_watched": "Просмотренные",
         "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "followers": "Подписчики",
+        "online": "Онлайн"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
-            "best": "Best",
-            "firsts": "Firsts",
-            "recent": "Recent"
+            "pinned": "Закреплено",
+            "best": "Лучший",
+            "firsts": "Первый",
+            "recent": "Последний"
         },
-        "mods": "Mods",
-        "max_combo": "Max Combo",
-        "combo": "Combo",
-        "grade": "Grade",
-        "grades": "Grades",
-        "acc": "Acc",
-        "accuracy": "Accuracy",
-        "score": "Score",
-        "ranked_score": "Ranked Score"
+        "mods": "Моды",
+        "max_combo": "Максимальное комбо",
+        "combo": "Комбо",
+        "grade": "Оценка",
+        "grades": "Оценки",
+        "acc": "Акк",
+        "accuracy": "Точность",
+        "score": "Очки",
+        "ranked_score": "Рейтинговые очки"
     },
     "beatmapset": {
         "status": {
-            "favourite": "Favourite",
-            "ranked": "Ranked",
-            "guest": "Guest",
-            "loved": "Loved",
-            "nominated": "Nominated",
-            "pending": "Pending",
-            "graveyard": "Graveyard"
+            "favourite": "Избранное",
+            "ranked": "Рейтинговая",
+            "guest": "Гость",
+            "loved": "Любимый",
+            "nominated": "Номинированный",
+            "pending": "Ожидание",
+            "graveyard": "Кладбище"
         },
-        "length": "Length",
-        "bpm": "BPM"
+        "length": "Длительность",
+        "bpm": "УД/МИН"
     },
     "footer": {
-        "rights": "All rights reserved to this silly monkey"
+        "rights": "Все права защищены этой глупой обезьяне"
     },
     "alerts": {
         "user": {
-            "user_doesnt_exist": "This user doesn't exist",
-            "user_is_bot": "This user is a bot, bots are not supported yet :(",
-            "users_fail": "Failed to fetch users"
+            "user_doesnt_exist": "Такого пользователя не существует",
+            "user_is_bot": "Этот пользователь является ботом, боты еще не поддерживаются :(",
+            "users_fail": "Не удалось получить пользователей"
         }
     }
 }
