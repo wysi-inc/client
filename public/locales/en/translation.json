@@ -17,34 +17,34 @@
             "setup": {
                 "title": "Setup",
                 "tabs": {
-                    "inputs" : "Inputs",
+                    "inputs": "Inputs",
                     "peripherals": "Peripherals",
                     "computer": "Computer"
                 },
-                "components" : {
-                    "component" : "Component",
-                    "details" : "Details",
-                    "cpu" : "CPU",
-                    "gpu" : "GPU",
-                    "ram" : "RAM",
-                    "storage" : "Storage",
-                    "motherboard" : "Motherboard",
-                    "psu" : "Power Supply",
-                    "case" : "Case"
+                "components": {
+                    "component": "Component",
+                    "details": "Details",
+                    "cpu": "CPU",
+                    "gpu": "GPU",
+                    "ram": "RAM",
+                    "storage": "Storage",
+                    "motherboard": "Motherboard",
+                    "psu": "Power Supply",
+                    "case": "Case"
                 },
-                "model" : "Model",
-                "size" : "Size",
-                "area" : "Area",
-                "position" : "Position",
-                "dpi" : "DPI",
-                "layout" : {
-                    "k2" : "2 Keys",
-                    "k3" : "3 Keys",
-                    "k4" : "4 Keys",
-                    "k60" : "60%",
-                    "k75" : "75%",
-                    "ktkl" : "TKL",
-                    "kfull" : "FULL" 
+                "model": "Model",
+                "size": "Size",
+                "area": "Area",
+                "position": "Position",
+                "dpi": "DPI",
+                "layout": {
+                    "k2": "2 Keys",
+                    "k3": "3 Keys",
+                    "k4": "4 Keys",
+                    "k60": "60%",
+                    "k75": "75%",
+                    "ktkl": "TKL",
+                    "kfull": "FULL"
                 }
             },
             "history": {
