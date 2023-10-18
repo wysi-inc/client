@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
-import { useCountTranslatedKeys, useGetColor } from '../../../resources/hooks/globalHooks';
+import { useCountTranslatedKeys } from '../../../resources/hooks/globalHooks';
 import { getLang } from '../../../resources/global/languages';
+import { useEffect, useMemo } from 'react';
 
 interface propsInterface {
     code: string,
@@ -12,9 +13,22 @@ const LanguageButton = (p: propsInterface) => {
     const { i18n } = useTranslation();
 
     const percentage = useCountTranslatedKeys(p.code);
-    const color = useGetColor(percentage);
-
+    const color = useMemo(() => {
+        let col;
+        if (percentage < 50) {
+            col = '#f87454'; // Pastel Red
+        } else if (percentage < 75) {
+            col = '#faf56a'; // Pastel Orange
+        } else {
+            col = '#b3ff66'; // Pastel Green
+        }
+        return col;
+    }, [percentage]);
     const [code, flag, name, nativeName] = getLang(p.code);
+
+    useEffect(() => {
+        console.log(name, percentage, color)
+    }, [name, percentage, color]);
 
     return (
         <div className="rounded-lg overflow-hidden"
@@ -28,7 +42,7 @@ const LanguageButton = (p: propsInterface) => {
                 <div>{nativeName}</div>
             </button>
             <div className="flex flex-row gap-1">
-                <div className="grow">
+                <div className="grow" style={{backgroundColor: '#000000', overflow: 'hidden'}}>
                     <div style={{
                         height: 3,
                         backgroundColor: color,

@@ -21,7 +21,7 @@ const CountryFlag = (p: CountryFlagProps) => {
     )
 
     function getFlag(code: string) {
-        const special = ['cat', 'gal', 'eo'];
+        const special = ['cat', 'gal', 'eo', 'mine'];
         if (special.includes(code.toLocaleLowerCase())) return extraFlag(code);
         else return (
             <Twemoji options={{ className: 'emoji-flag m-0 p-0', noWrapper: true }}>

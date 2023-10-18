@@ -17,17 +17,21 @@ export function useDivSize(type: 'w' | 'h', init: number) {
     return { divPx, divRef };
 }
 
-export function useCountTranslatedKeys(code: string) {
+export function useCountTranslatedKeys(code: string) : number {
     const { i18n } = useTranslation();
 
     const [percentage, setPercentage] = useState<number>(0);
 
     useEffect(() => {
         getPercentage();
-    }, [code]);
+        console.log(percentage)
+    }, [code, i18n]);
 
     function getPercentage() {
-        if (code === 'en') return 100;
+        if (code.split('-')[0] === 'en') {
+            setPercentage(100);
+            return;
+        };
         const enLang = i18n.getDataByLanguage('en');
         if (!enLang) return 0;
         const currLang = i18n.getDataByLanguage(code);
@@ -53,19 +57,3 @@ export function useCountTranslatedKeys(code: string) {
 
     return percentage;
 };
-
-export function useGetColor(number: number) {
-    const [color, setColor] = useState<string>('');
-    useEffect(() => {
-        let col;
-        if (number < 50) {
-            col = '#f8745455'; // Pastel Red
-        } else if (number < 75) {
-            col = '#faf56a55'; // Pastel Orange
-        } else {
-            col = '#b3ff6655'; // Pastel Green
-        }
-        setColor(col);
-    }, [number]);
-    return color;
-}

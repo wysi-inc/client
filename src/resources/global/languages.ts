@@ -187,7 +187,8 @@ const languages: LanguageInterface[] = [
     { code: "xh", name: "Xhosa", nativeName: "isiXhosa" },
     { code: "yi", name: "Yiddish", nativeName: "ייִדיש" },
     { code: "yo", name: "Yoruba", nativeName: "Yorùbá" },
-    { code: "za", name: "Zhuang, Chuang", nativeName: "Saɯ cueŋƅ, Saw cuengh" }
+    { code: "za", name: "Zhuang, Chuang", nativeName: "Saɯ cueŋƅ, Saw cuengh" }, 
+    { code: "mine", name: "Minecraft", nativeName: "ᒲ╎リᒷᓵ∷ᔑ⎓ℸ ̣"}
 ]
 
 export function getLang(code: string) {
