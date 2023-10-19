@@ -102,7 +102,8 @@
             "loved": "Loved",
             "nominated": "Nominated",
             "pending": "Pending",
-            "graveyard": "Graveyard"
+            "graveyard": "Graveyard",
+            "wip": "In Progress"
         },
         "length": "Length",
         "bpm": "BPM"

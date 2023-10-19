@@ -102,7 +102,8 @@
             "loved": "Любимый",
             "nominated": "Номинированный",
             "pending": "Ожидание",
-            "graveyard": "Кладбище"
+            "graveyard": "Кладбище",
+            "wip": "In Progress"
         },
         "length": "Длительность",
         "bpm": "УД/МИН"
