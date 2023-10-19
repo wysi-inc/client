@@ -23,27 +23,29 @@ const SearchBox = () => {
 
     const navigate = useNavigate();
 
-    useEffect((): any => getUserList(), [debouncedValue])
+    useEffect(() => {
+        getUserList();
+    }, [debouncedValue])
 
     async function getUserList() {
         if (username === '') {
-            setUserList([])
-        } else {
-            try {
-                const d = await fina.post('/userQuery', { username: username });
-                setUserList(d.user.data)
-            } catch (err) {
-                console.error(err);
-            }
+            setUserList([]);
+            return;
+        }
+        try {
+            const d = await fina.post('/userQuery', { username: username });
+            setUserList(d.user.data)
+        } catch (err) {
+            console.error(err);
         }
     }
 
     function show(): void {
         if (!modal) return;
         if (!modal.current) return;
+        modal.current.showModal();
         if (!input) return;
         if (!input.current) return;
-        modal.current.showModal();
         input.current.focus();
         setUserList([]);
         setUsername('');
