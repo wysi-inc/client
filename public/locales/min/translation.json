@@ -1,120 +1,120 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "home": "⍑𝙹ᒲᒷ",
+        "users": "⚍ᓭᒷ∷ᓭ",
+        "beatmaps": "ʖᒷᔑℸ ̣ ᒲᔑ!¡ᓭ",
+        "search": "ᓭᒷᔑ∷ᓵ⍑ ᓭ𝙹ᒲᒷ𝙹リᒷ",
+        "help": "⍑ᒷꖎ!¡ ℸ ̣ ∷ᔑリᓭꖎᔑℸ ̣ ᒷ ℸ ̣ ⍑ᒷ ᓭ╎ℸ ̣ ᒷ!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "ꖎ𝙹⊣╎リ  ∴╎ℸ ̣ ⍑  𝙹ᓭ⚍",
+            "logout": "ꖎ𝙹⊣𝙹⚍ℸ ̣",
+            "osu": "𝙹ᓭ⚍!!¡∷𝙹⎓╎ꖎᒷ",
+            "wysi": "∴||ᓭ╎!!¡∷𝙹⎓╎ꖎᒷ"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "ᓭᒷℸ ̣ ⚍!¡",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "╎リ!¡⚍ℸ ̣ ᓭ",
+                    "peripherals": "!¡ᒷ∷╎!¡⍑ᒷ∷ᔑꖎᓭ",
+                    "computer": "ᓵ𝙹ᒲ!¡⚍ℸ ̣ ᒷ∷"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
-                    "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "component": "ᓵ𝙹ᒲ!¡𝙹リᒷリℸ ̣ ",
+                    "details": "↸ᒷℸ ̣ ᔑ╎ꖎᓭ",
+                    "cpu": "ᓵ!¡⚍",
+                    "gpu": "⊣!¡⚍",
+                    "ram": "∷ᔑᒲ",
+                    "storage": "ᓭℸ ̣ 𝙹∷ᔑ⊣ᒷ",
+                    "motherboard": "ᒲ𝙹ℸ ̣ ⍑ᒷ∷ʖ𝙹ᔑ∷↸",
+                    "psu": "!¡𝙹∴ᒷ∷  ᓭ⚍!¡!¡ꖎ||",
+                    "case": "ᓵᔑᓭᒷ"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
-                "dpi": "DPI",
+                "model": "ᒲ𝙹↸ᒷꖎ",
+                "size": "ᓭ╎⨅ᒷ",
+                "area": "ᔑ∷ᒷᔑ",
+                "position": "!¡𝙹ᓭ╎ℸ ̣ ╎𝙹リ",
+                "dpi": "↸!¡╎",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 ꖌᒷ||ᓭ",
+                    "k3": "3 ꖌᒷ||ᓭ",
+                    "k4": "4 ꖌᒷ||ᓭ",
                     "k60": "60%",
                     "k75": "75%",
-                    "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "ktkl": "ℸ ̣ ꖌꖎ",
+                    "kfull": "⎓⚍ꖎꖎ"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "⍑╎ᓭℸ ̣ 𝙹∷||"
             },
-            "scores": "Scores",
+            "scores": "ᓭᓵ𝙹∷ᒷᓭ",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "ʖᒷᔑℸ ̣ ᒲᔑ!¡ᓭ"
             },
             "medals": {
-                "title": "Medals"
+                "title": "ᒲᒷ↸ᔑꖎᓭ"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "ᓭᓵ𝙹∷ᒷᓭ  ᓭ⚍ᒲᒲᔑ∷||",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "⍑╎ℸ ̣   ∷ᔑℸ ̣ ╎𝙹ᓭ",
+                    "grade_ratios": "⊣∷ᔑ↸ᒷ  ∷ᔑℸ ̣ ╎𝙹ᓭ",
+                    "average_play": "ᔑ⍊ᒷ∷ᔑ⊣ᒷ  !¡ꖎᔑ||"
                 }
             }
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
-        "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "performance": "!¡ᒷ∷⎓𝙹∷ᒲᔑリᓵᒷ",
+        "total_score": "ℸ ̣ 𝙹ℸ ̣ ᔑꖎ  ᓭᓵ𝙹∷ᒷ",
+        "global_rank": "⊣ꖎ𝙹ʖᔑꖎ  ∷ᔑリꖌ",
+        "country_rank": "ᓵ𝙹⚍リℸ ̣ ∷||  ∷ᔑリꖌ",
+        "play_time": "!¡ꖎᔑ||  ℸ ̣ ╎ᒲᒷ",
+        "play_count": "!¡ꖎᔑ||  ᓵ𝙹⚍リℸ ̣",
+        "replays_watched": "∷ᒷ!¡ꖎᔑ||ᓭ  ∴ᔑℸ ̣ ᓵ⍑ᒷ↸",
+        "hits_x_play": "⍑╎ℸ ̣ ᓭ   ̇/  !¡ꖎᔑ||",
+        "followers": "⎓𝙹ꖎꖎ𝙹∴ᒷ∷ᓭ",
+        "online": "𝙹リꖎ╎リᒷ"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
-            "best": "Best",
-            "firsts": "Firsts",
-            "recent": "Recent"
+            "pinned": "!¡╎リリᒷ↸",
+            "best": "ʖᒷᓭℸ ̣",
+            "firsts": "⎓╎∷ᓭℸ ̣ ᓭ",
+            "recent": "∷ᒷᓵᒷリℸ ̣"
         },
-        "mods": "Mods",
-        "max_combo": "Max Combo",
-        "combo": "Combo",
-        "grade": "Grade",
-        "grades": "Grades",
-        "acc": "Acc",
-        "accuracy": "Accuracy",
-        "score": "Score",
-        "ranked_score": "Ranked Score"
+        "mods": "ᒲ𝙹↸ᓭ",
+        "max_combo": "ᒲᔑ ̇/  ᓵ𝙹ᒲʖ𝙹",
+        "combo": "ᓵ𝙹ᒲʖ𝙹",
+        "grade": "⊣∷ᔑ↸ᒷ",
+        "grades": "⊣∷ᔑ↸ᒷᓭ",
+        "acc": "ᔑᓵᓵ",
+        "accuracy": "ᔑᓵᓵ⚍∷ᔑᓵ||",
+        "score": "ᓭᓵ𝙹∷ᒷ",
+        "ranked_score": "∷ᔑリꖌᒷ↸  ᓭᓵ𝙹∷ᒷ"
     },
     "beatmapset": {
         "status": {
-            "favourite": "Favourite",
-            "ranked": "Ranked",
-            "guest": "Guest",
-            "loved": "Loved",
-            "nominated": "Nominated",
-            "pending": "Pending",
-            "graveyard": "Graveyard"
+            "favourite": "⎓ᔑ⍊𝙹⚍∷╎ℸ ̣ ᒷ",
+            "ranked": "∷ᔑリꖌᒷ↸",
+            "guest": "⊣⚍ᒷᓭℸ ̣",
+            "loved": "ꖎ𝙹⍊ᒷ↸",
+            "nominated": "リ𝙹ᒲ╎リᔑℸ ̣ ᒷ↸",
+            "pending": "!¡ᒷリ↸╎リ⊣",
+            "graveyard": "⊣∷ᔑ⍊ᒷ||ᔑ∷↸"
         },
-        "length": "Length",
-        "bpm": "BPM"
+        "length": "ꖎᒷリ⊣ℸ ̣ ⍑",
+        "bpm": "ʖ!¡ᒲ"
     },
     "footer": {
-        "rights": "All rights reserved to this silly monkey"
+        "rights": "ᔑꖎꖎ  ∷╎⊣⍑ℸ ̣ ᓭ  ∷ᒷᓭᒷ∷⍊ᒷ↸  ℸ ̣ 𝙹  ℸ ̣ ⍑╎ᓭ  ᓭ╎ꖎꖎ||  ᒲ𝙹リꖌᒷ||"
     },
     "alerts": {
         "user": {
-            "user_doesnt_exist": "This user doesn't exist",
-            "user_is_bot": "This user is a bot, bots are not supported yet :(",
-            "users_fail": "Failed to fetch users"
+            "user_doesnt_exist": "ℸ ̣ ⍑╎ᓭ  ⚍ᓭᒷ∷  ↸𝙹ᒷᓭリ'ℸ ̣   ᒷ ̇/╎ᓭℸ ̣",
+            "user_is_bot": "ℸ ̣ ⍑╎ᓭ  ⚍ᓭᒷ∷  ╎ᓭ  ᔑ  ʖ𝙹ℸ ̣ ,  ʖ𝙹ℸ ̣ ᓭ  ᔑ∷ᒷ  リ𝙹ℸ ̣   ᓭ⚍!¡!¡𝙹∷ℸ ̣ ᒷ↸  ||ᒷℸ ̣   :(",
+            "users_fail": "⎓ᔑ╎ꖎᒷ↸  ℸ ̣ 𝙹  ⎓ᒷℸ ̣ ᓵ⍑  ⚍ᓭᒷ∷ᓭ"
         }
     }
 }
