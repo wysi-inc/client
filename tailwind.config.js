@@ -1,11 +1,16 @@
 /** @type {import('tailwindcss').Config} */
+// specefies the configuration object
 module.exports = {
   content: [
     "*.{js,ts,jsx,tsx}",
   ],
+
+  // Defines the content that Tailwind CSS will process
   theme: {
     extend: {
       colors: {
+
+        // extend default color palette with custom color shades
         'custom': {
           '50': '#f6f7f9',
           '100': '#ededf1',
@@ -25,10 +30,14 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+
+  // specifies source files that need to be processed
   daisyui: {
     themes: [
       {
         wysi: {
+
+          // custom 'wysi', defined for DaisyUI theme with various color settings
           ...require("daisyui/src/theming/themes")["[data-theme=dracula]"],
           'text': '#ffffff',
           'primary-content': '#ffffff',
@@ -39,6 +48,8 @@ module.exports = {
       },
     ],
   },
+
+  // DaisyUI plugin for tailwind css
   plugins: [require("daisyui")],
 }
 
