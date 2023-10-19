@@ -18,29 +18,29 @@
                 "title": "Setup",
                 "tabs": {
                     "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "peripherals": "Periféricos",
+                    "computer": "Ordenador"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
+                    "component": "Componente",
+                    "details": "Detalles",
                     "cpu": "CPU",
                     "gpu": "GPU",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "Almacenamiento",
+                    "motherboard": "Placa base",
+                    "psu": "Fuente de alimentación",
+                    "case": "Caja"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
+                "model": "Modelo",
+                "size": "Tamaño",
+                "area": "Área",
+                "position": "Posición",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 Teclas",
+                    "k3": "3 Teclas",
+                    "k4": "4 Teclas",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
@@ -48,73 +48,73 @@
                 }
             },
             "history": {
-                "title": "History"
+                "title": "Historial"
             },
-            "scores": "Scores",
+            "scores": "Puntuaciones",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "Mapas"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Medallas"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Resumen de puntuaciones",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "Proporción de aciertos",
+                    "grade_ratios": "Proporción de Notas",
+                    "average_play": "Partida Promedia"
                 }
             }
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
-        "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "performance": "Rendimiento",
+        "total_score": "Puntuación total",
+        "global_rank": "Posición global",
+        "country_rank": "Posición nacional",
+        "play_time": "Tiempo jugado",
+        "play_count": "Número de Jugadas",
+        "replays_watched": "Repeticiones Vistas",
+        "hits_x_play": "Clics x Partida",
+        "followers": "Seguidores",
+        "online": "En línea"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
-            "best": "Best",
-            "firsts": "Firsts",
-            "recent": "Recent"
+            "pinned": "Fijadas",
+            "best": "Mejores",
+            "firsts": "Primeras",
+            "recent": "Recientes"
         },
         "mods": "Mods",
-        "max_combo": "Max Combo",
+        "max_combo": "Combo máximo",
         "combo": "Combo",
-        "grade": "Grade",
-        "grades": "Grades",
+        "grade": "Nota",
+        "grades": "Notas",
         "acc": "Acc",
-        "accuracy": "Accuracy",
-        "score": "Score",
-        "ranked_score": "Ranked Score"
+        "accuracy": "Precisión",
+        "score": "Puntuación",
+        "ranked_score": "Puntuación Rankeada"
     },
     "beatmapset": {
         "status": {
-            "favourite": "Favourite",
-            "ranked": "Ranked",
-            "guest": "Guest",
-            "loved": "Loved",
-            "nominated": "Nominated",
-            "pending": "Pending",
-            "graveyard": "Graveyard"
+            "favourite": "Favoritos",
+            "ranked": "Clasificados",
+            "guest": "Colaborador",
+            "loved": "Amados",
+            "nominated": "Nominados",
+            "pending": "Pendientes",
+            "graveyard": "Abandonados"
         },
-        "length": "Length",
+        "length": "Duración",
         "bpm": "BPM"
     },
     "footer": {
-        "rights": "All rights reserved to this silly monkey"
+        "rights": "Todos los derechos reservados a este estúpido mono"
     },
     "alerts": {
         "user": {
-            "user_doesnt_exist": "This user doesn't exist",
-            "user_is_bot": "This user is a bot, bots are not supported yet :(",
-            "users_fail": "Failed to fetch users"
+            "user_doesnt_exist": "Este usuario no existe",
+            "user_is_bot": "Este usuario es un bot, los bots no están soportados aún :(",
+            "users_fail": "No se pudo obtener los usuarios"
         }
     }
 }
