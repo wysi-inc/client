@@ -269,8 +269,8 @@ export function useCountTranslatedKeys(): [number, (code: string) => number] {
     async function getCount() {
         try {
             const res = await fina.get('/langProgress');
+            if (!res.ok) return;
             setData(res.languages);
-            console.log(res.languages);
         } catch (err) {
             console.error(err);
             setData([]);
