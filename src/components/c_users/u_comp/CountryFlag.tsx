@@ -11,10 +11,9 @@ interface CountryFlagProps {
 
 const CountryFlag = (p: CountryFlagProps) => {
 
-    const flag = useMemo(() => p.code ? getFlag(p.code) : '', [p.code]);
+    const flag = useMemo(() => p.code ? getFlag(p.code) : '??', [p.code]);
 
-    if (p.code === undefined) return (<div>??</div>);
-    if (p.code.toLocaleLowerCase() === 'xx') return (<div>??</div>);
+    if (!p.code || p.code.toLocaleLowerCase() === 'xx') return (<div>??</div>);
 
     return (
         <div className={`m-0 p-0 ${p.name && 'tooltip'} ${p.position === 't' ? 'tooltip-top' : p.position === 'b' ? 'tooltip-bottom' : p.position === 'l' ? 'tooltip-left' : p.position === 'r' ? 'tooltip-right' : ''}`}
