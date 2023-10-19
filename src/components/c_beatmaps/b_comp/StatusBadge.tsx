@@ -12,7 +12,7 @@ const StatusBadge = (p: StatusBadgeProps) => {
             backgroundColor: (colors.beatmap as any)[p.status],
             color: "#000000"
         }} className="px-2 font-semibold rounded-full">
-            {t(`beatmapset.status.${p.status}`)}
+            {t(`beatmapset.status.${p.status}`).toLowerCase()}
         </div>
     )
 }

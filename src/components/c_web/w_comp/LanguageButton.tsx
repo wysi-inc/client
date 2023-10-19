@@ -1,17 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
-import { useCountTranslatedKeys, getLang } from '../../../resources/global/languages';
+import { getLang } from '../../../resources/global/languages';
 import { useMemo } from 'react';
 
 interface propsInterface {
     code: string,
+    getProgress: (code: string) => number,
+    data: number,
 }
 
 const LanguageButton = (p: propsInterface) => {
 
     const { i18n } = useTranslation();
 
-    const percentage = useCountTranslatedKeys(p.code);
+    const percentage = useMemo(() => {
+        const progress = p.getProgress(p.code);
+        return progress;
+    }, [p.code, p.data]);
+
     const color = useMemo(() => {
         let col;
         if (percentage < 50) {
@@ -23,7 +29,8 @@ const LanguageButton = (p: propsInterface) => {
         }
         return col;
     }, [percentage]);
-    const [code, flag, name, nativeName] = getLang(p.code);
+
+    const [code, flag, , nativeName] = getLang(p.code);
 
     return (
         <div className="rounded-lg overflow-hidden"

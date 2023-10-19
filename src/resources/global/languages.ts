@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import fina from "../../helpers/fina";
+import { LanguageProgress } from "../interfaces/general";
 
-interface LanguageInterface {
+interface LanguageName {
     code: string,
     name: string,
     nativeName: string,
 }
-const languages: LanguageInterface[] = [
+
+const languages: LanguageName[] = [
     { code: "ab", name: "Abkhaz", nativeName: "аҧсуа" },
     { code: "aa", name: "Afar", nativeName: "Afaraf" },
     { code: "af", name: "Afrikaans", nativeName: "Afrikaans" },
@@ -210,18 +212,18 @@ function getLangName(code: string) {
     return { name, nativeName }
 }
 
-function getLangFlag(l: string): string {
-    if (l.split('-').length > 1) {
-        switch (l) {
+function getLangFlag(code: string): string {
+    if (code.split('-').length > 1) {
+        switch (code) {
             case 'pt-br':
                 return 'br';
             case 'zh-hant':
                 return 'tw';
             default:
-                return l;
+                return code;
         }
     }
-    switch (l) {
+    switch (code.split('-')[0]) {
         case 'ca':
             return 'cat';
         case 'en':
@@ -238,33 +240,51 @@ function getLangFlag(l: string): string {
             return 'cn';
         case 'af':
             return 'za';
+        case 'es':
+            return 'es';
         default:
-            return l;
+            return code;
     }
 }
 
-export function useCountTranslatedKeys(code: string): number {
+function getLangCode(code: string): string {
+    switch (code.split('-')[0]) {
+        case 'es':
+            return 'es-ES';
+        case 'min':
+            return 'mine';
+        default:
+            return code;
+    }
+}
 
-    const [count, setCount] = useState<number>(0);
+export function useCountTranslatedKeys(): [number, (code: string) => number] {
+
+    const [data, setData] = useState<LanguageProgress[]>([]);
 
     useEffect(() => {
-        getCount(code);
-    }, [code]);
+        getCount();
+    }, []);
 
-    async function getCount(code: string) {
-        if (code === 'en') {
-            setCount(100);
-            console.log(code, 100);
-            return;
-        }
+    async function getCount() {
         try {
-            const res = await fina.post('/langProgress', {code});
-            const progress = res.data[0].data.translationProgress;
-            if (typeof progress === "number") setCount(progress);
-            else setCount(0);
+            const res = await fina.get('/langProgress');
+            setData(res.languages);
+            console.log(res.languages);
         } catch (err) {
-            setCount(0);
+            console.error(err);
+            setData([]);
         }
     }
-    return count;
+
+    function getProgress(code: string) {
+        if (code === 'en') return 100;
+        if (!data) return 0;
+        const newCode = getLangCode(code);
+        const language = data.find((lang) => lang.id === newCode);
+        if (!language) return 0;
+        return language.progress;
+    }
+
+    return [data.length, getProgress];
 };

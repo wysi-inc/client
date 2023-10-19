@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { colors, playerStore, PlayerStoreInterface } from "../../resources/global/tools";
 import ModIcon from "./s_comp/ModIcon";

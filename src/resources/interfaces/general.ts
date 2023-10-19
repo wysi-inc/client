@@ -52,3 +52,9 @@ export interface ColorsInterface {
   };
   difficulty: string[];
 }
+
+export interface LanguageProgress {
+    id: string,
+    name: string,
+    progress: number
+}

@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import LanguageButton from "./LanguageButton";
 import CountryFlag from '../../c_users/u_comp/CountryFlag';
-import { getLang } from '../../../resources/global/languages';
+import { getLang, useCountTranslatedKeys } from '../../../resources/global/languages';
 import { availableLanguages } from '../../../resources/langs';
-import { useState } from 'react';
 
 const LanguagesSelect = () => {
 
     const { t, i18n } = useTranslation();
-    const [code, flag, name, nativeName] = getLang(i18n.language);
-    const [clicked, setClicked] = useState<boolean>(false);
+    const [, flag, , nativeName] = getLang(i18n.language.split('-')[0]);
+
+    const [data, getProgress] = useCountTranslatedKeys();
 
     return (
         <div className="dropdown dropdown-end">
@@ -20,8 +20,8 @@ const LanguagesSelect = () => {
             </label>
             <div tabIndex={0} className="dropdown-content z-[10] menu p-2 gap-2 shadow-lg bg-custom-950 rounded-box w-max">
                 <div className="grid grid-cols-2 gap-2">
-                    {availableLanguages.map((lang) => 
-                        <LanguageButton code={lang} key={lang}/>
+                    {availableLanguages.map((lang) =>
+                        <LanguageButton code={lang} getProgress={getProgress} data={data} key={lang} />
                     )}
                 </div>
                 <a href="https://crowdin.com/project/wysi"

@@ -1,10 +1,11 @@
-import { FaChevronUp, FaHeart, FaHourglassHalf, FaListUl, FaSkull, FaStar, FaTrophy, FaUserFriends } from "react-icons/fa";
+import { FaAngleDoubleUp, FaHeart, FaHourglassHalf, FaListUl, FaSkull, FaStar, FaTrophy, FaUserFriends } from "react-icons/fa";
 import { User, tabInterface } from "../../../resources/interfaces/user";
 import { BeatmapSet, BeatmapsObj, BeatmapsetType, beatmapListItem } from "../../../resources/interfaces/beatmapset";
 import BeatmapsetCard from "../../c_beatmaps/BeatmapsetCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import { Dispatch, SetStateAction, useState } from "react";
 import fina from "../../../helpers/fina";
+import { useTranslation } from "react-i18next";
 
 interface BeatmapsPanelProps {
     user: User,
@@ -15,16 +16,18 @@ interface BeatmapsPanelProps {
 }
 
 const BeatmapsPanel = (p: BeatmapsPanelProps) => {
+    const { t } = useTranslation();
+
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
 
     const beatmapsTabs: tabInterface[] = [
-        { num: 1, title: 'Favourites', icon: <FaStar />, count: p.user.favourite_beatmapset_count, },
-        { num: 2, title: 'Ranked', icon: <FaChevronUp />, count: p.user.ranked_and_approved_beatmapset_count },
-        { num: 3, title: 'Guest', icon: <FaUserFriends />, count: p.user.guest_beatmapset_count },
-        { num: 4, title: 'Loved', icon: <FaHeart />, count: p.user.loved_beatmapset_count },
-        { num: 5, title: 'Nominated', icon: <FaTrophy />, count: p.user.nominated_beatmapset_count },
-        { num: 6, title: 'Pending', icon: <FaHourglassHalf />, count: p.user.pending_beatmapset_count },
-        { num: 7, title: 'Graveyard', icon: <FaSkull />, count: p.user.graveyard_beatmapset_count },
+        { num: 1, title: t('beatmapset.status.favourite'), icon: <FaStar />, count: p.user.favourite_beatmapset_count, },
+        { num: 2, title: t('beatmapset.status.ranked'), icon: <FaAngleDoubleUp />, count: p.user.ranked_and_approved_beatmapset_count },
+        { num: 3, title: t('beatmapset.status.guest'), icon: <FaUserFriends />, count: p.user.guest_beatmapset_count },
+        { num: 4, title: t('beatmapset.status.loved'), icon: <FaHeart />, count: p.user.loved_beatmapset_count },
+        { num: 5, title: t('beatmapset.status.nominated'), icon: <FaTrophy />, count: p.user.nominated_beatmapset_count },
+        { num: 6, title: t('beatmapset.status.pending'), icon: <FaHourglassHalf />, count: p.user.pending_beatmapset_count },
+        { num: 7, title: t('beatmapset.status.graveyard'), icon: <FaSkull />, count: p.user.graveyard_beatmapset_count },
     ]
     const beatmapsList: beatmapListItem[] = [
         { id: 1, beatmaps: p.beatmaps.favourite, len: p.user.favourite_beatmapset_count, type: 'favourite' },
@@ -40,7 +43,7 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
         <div className={p.className} style={{ height: p.height }}>
             <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
                 <FaListUl />
-                <div>Beatmaps</div>
+                <div>{t('user.sections.beatmaps.title')}</div>
             </div>
             <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
                 {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&

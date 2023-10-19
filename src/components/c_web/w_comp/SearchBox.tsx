@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDebounce } from 'usehooks-ts'
 import OnlineDot from "../../c_users/u_comp/OnlineDot";
 import SupporterIcon from "../../c_users/u_comp/SupporterIcon";
@@ -11,20 +11,19 @@ import fina from "../../../helpers/fina";
 import { useTranslation } from "react-i18next";
 
 const SearchBox = () => {
+
     const { t } = useTranslation();
+
     const [username, setUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserCompact[]>([]);
     const debouncedValue: string = useDebounce<string>(username, 500)
 
+    const modal = useRef<HTMLDialogElement>(null);
+    const input = useRef<HTMLInputElement>(null);
+
     const navigate = useNavigate();
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        setUsername(event.target.value);
-    }
-
-    useEffect((): void => {
-        getUserList();
-    }, [debouncedValue])
+    useEffect((): any => getUserList(), [debouncedValue])
 
     async function getUserList() {
         if (username === '') {
@@ -38,20 +37,31 @@ const SearchBox = () => {
             }
         }
     }
-    function hide() {
-        (document.getElementById('searchModal') as HTMLDialogElement)?.close();
+
+    function show(): void {
+        if (!modal) return;
+        if (!modal.current) return;
+        if (!input) return;
+        if (!input.current) return;
+        modal.current.showModal();
+        input.current.focus();
+        setUserList([]);
         setUsername('');
-        setUserList([])
     }
-    function show() {
-        (document.getElementById('searchModal') as HTMLDialogElement)?.showModal();
-        (document.getElementById('searchInput') as HTMLInputElement)?.focus();
-        setUserList([])
-        setUsername('');
+
+    function hide(): void {
+        if (!modal) return;
+        if (!modal.current) return;
+        modal.current.close();
     }
+
     function sendTo(userId: string): void {
-        navigate(`/users/${userId}`)
+        navigate(`/users/${userId}`);
         hide();
+    }
+
+    function handleChange(event: ChangeEvent<HTMLInputElement>): void {
+        setUsername(event.target.value);
     }
 
     return (
@@ -60,7 +70,7 @@ const SearchBox = () => {
                 <FaSearch />
                 <div>{t('nav.search')}</div>
             </button>
-            <dialog id="searchModal" className="modal modal-top md:modal-middle text-base-content">
+            <dialog className="modal modal-top md:modal-middle text-base-content" ref={modal}>
                 <div className="flex flex-col gap-3 modal-box">
                     <form method="dialog">
                         <button className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost">✕</button>
@@ -75,8 +85,8 @@ const SearchBox = () => {
                                 <FaSearch />
                             </button>
                             <input className="input input-bordered join-item grow"
-                                id="searchInput"
                                 placeholder="Username..." autoFocus={true}
+                                value={username} ref={input}
                                 onChange={handleChange} />
                         </div>
                     </form>

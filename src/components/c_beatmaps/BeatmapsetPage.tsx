@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { PlayerStoreInterface, playerStore } from "../../resources/global/tools";
-import { addDefaultSrc, getModsInt, secondsToTime } from "../../resources/global/functions";
+import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { Beatmap, BeatmapSet } from "../../resources/interfaces/beatmapset";
 import { Score } from "../../resources/interfaces/score";
 

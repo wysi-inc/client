@@ -10,7 +10,6 @@ interface PageTabsProps {
 
 const PageTabs = (props: PageTabsProps) => {
     const [page, setPage] = useState<number>(props.current);
-    const [edit, setEdit] = useState<boolean>(false);
 
     const input = useRef<HTMLInputElement | null>(null);
 
