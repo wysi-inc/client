@@ -3,13 +3,13 @@
         "home": "Αρχική Σελίδα",
         "users": "Χρήστες",
         "beatmaps": "Beatmaps",
-        "search": "Αναζήτηση κάποιου",
+        "search": "Αναζήτηση Χρήστη",
         "help": "Βοηθήστε στη μετάφραση της ιστοσελίδας!",
         "log": {
             "login": "Σύνδεση με osu!",
             "logout": "Έξοδος",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "osu": "Osu!Προφίλ",
+            "wysi": "wysi!Προφίλ"
         }
     },
     "user": {
@@ -17,16 +17,16 @@
             "setup": {
                 "title": "Εγκατάσταση",
                 "tabs": {
-                    "inputs": "Είσοδος",
+                    "inputs": "Εισαγωγές",
                     "peripherals": "Περιφερειακά",
                     "computer": "Υπολογιστής"
                 },
                 "components": {
                     "component": "Εξαρτήματα",
                     "details": "Λεπτομέρειες",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
-                    "ram": "RAM",
+                    "cpu": "Επεξεργαστής",
+                    "gpu": "Επεξεργαστής γραφικών",
+                    "ram": "Μνήμη",
                     "storage": "Αποθηκευτικός χώρος",
                     "motherboard": "Μητρική Κάρτα",
                     "psu": "Τροφοδοτικό",
@@ -89,8 +89,8 @@
         "combo": "Combo",
         "grade": "Βαθμίδα",
         "grades": "Βαθμοί",
-        "acc": "Acc",
-        "accuracy": "Accuracy",
+        "acc": "Ακρίβεια",
+        "accuracy": "Ακρίβεια",
         "score": "Βαθμολογία",
         "ranked_score": "Σκορ Κατάταξης"
     },
