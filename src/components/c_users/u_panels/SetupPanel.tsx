@@ -57,7 +57,7 @@ const SetupPanel = (p: SetupPanelProps) => {
         ram: "",
         psu: "",
         storage: "",
-        mohterboard: "",
+        motherboard: "",
         case: "",
     }
 

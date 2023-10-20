@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { useDebounce } from "usehooks-ts";
 import { useParams } from "react-router-dom";
@@ -218,6 +218,10 @@ const BeatmapsPage = () => {
 
     if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} diffId={parseInt(urlDiffId ? urlDiffId : "")} />);
 
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        setQuery((p) => ({ ...p, [e.target.name]: e.target.value }))
+    }
+
     return (
         <div className="p-4">
             <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-custom-900">
@@ -249,14 +253,14 @@ const BeatmapsPage = () => {
                     <div className="col-span-4 md:col-span-2 lg:col-span-3">
                         <div className="mb-2 text-center">Title:</div>
                         <input type="text" className="w-full text-center input input-bordered"
-                            placeholder="..." autoFocus={true}
-                            value={query.title} onChange={(e) => setQuery((p) => ({ ...p, title: e.target.value }))} />
+                            placeholder="..." autoFocus={true} name="title"
+                            value={query.title} onChange={handleChange} />
                     </div>
                     <div className="col-span-4 md:col-span-2 lg:col-span-1">
                         <div className="mb-2 text-center">Mapper:</div>
                         <input type="text" className="w-full text-center input input-bordered"
-                            placeholder="..."
-                            value={query.mapper} onChange={(e) => setQuery((p) => ({ ...p, mapper: e.target.value }))} />
+                            placeholder="..." name="mapper"
+                            value={query.mapper} onChange={handleChange} />
                     </div>
                 </div>
                 <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">

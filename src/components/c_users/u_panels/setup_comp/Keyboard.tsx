@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
 import { KeyboardInterface, KeyboardLayoutType } from "../../../../resources/interfaces/setup";
 import Key from "./Key";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,12 @@ const Keyboard = (p: propsInterface) => {
     const {t} = useTranslation();
     const KeyboardDisplay = useMemo(() => getK(p.keyboard.layout), [p.keyboard]);
 
+    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+        if (!p.edit) return;
+        if (e.target.name === "name") p.setKeyboard((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        else p.setKeyboard((prev) => ({ ...prev, [e.target.name]: e.target.value as KeyboardLayoutType }))
+    }
+
     return (
         <div className="flex flex-col items-center gap-3">
             <div className="text-center">{p.keyboard.name || 'Keyboard'}</div>
@@ -24,10 +30,10 @@ const Keyboard = (p: propsInterface) => {
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
                 <div>{t('user.sections.setup.model')}:</div>
                 <div className="join">
-                    <input onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, name: e.target.value }))} value={p.keyboard.name}
-                        type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
+                    <input onChange={handleChange} name="name" value={p.keyboard.name}
+                        type='text' className="input input-sm input-bordered join-item input-mm" placeholder="keyboard" />
                     <select className="select select-bordered join-item select-sm" value={p.keyboard.layout}
-                        onChange={(e) => p.edit && p.setKeyboard((pr) => ({ ...pr, layout: e.target.value as KeyboardLayoutType }))}
+                        onChange={handleChange} name="layout"
                     >
                         <option value={"k2" as KeyboardLayoutType}>{t('user.sections.setup.layout.k2')}</option>
                         <option value={"k3" as KeyboardLayoutType}>{t('user.sections.setup.layout.k3')}</option>

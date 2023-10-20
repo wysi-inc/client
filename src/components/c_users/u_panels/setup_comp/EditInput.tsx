@@ -1,11 +1,14 @@
+import { ChangeEvent } from "react";
+
 interface EditInputProps {
     edit: boolean,
     value: string,
-    setValue: (newVal: string) => void,
+    name: string,
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void,
 }
 
 const EditInput = (p : EditInputProps) => {
-    if (p.edit) return <input className="input input-sm input-bordered grow" value={p.value} onChange={(e) => p.setValue(e.target.value)} type="text"/>
+    if (p.edit) return <input className="input input-sm input-bordered grow" name={p.name} value={p.value} onChange={p.onChange} type="text"/>
     return <div>{p.value}</div>
     
 }

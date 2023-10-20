@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { BsCpu, BsDeviceHdd, BsFillLightningChargeFill, BsFillMotherboardFill, BsGpuCard, BsMemory, BsPc } from "react-icons/bs";
 import EditInput from "./EditInput";
 import { ComputerInterface } from "../../../../resources/interfaces/setup";
@@ -13,6 +13,11 @@ interface ComputerProps {
 const Computer = (p: ComputerProps) => {
     const {t} = useTranslation();
 
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (!p.edit) return;
+        p.setComputer((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }
+
     return (
         <div className="flex flex-col gap-2">
             <div className="grid grid-cols-3">
@@ -26,7 +31,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.cpu')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.cpu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, cpu: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.cpu} onChange={handleChange} name="cpu" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -35,7 +40,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.gpu')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.gpu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, gpu: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.gpu} onChange={handleChange} name="gpu" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -44,7 +49,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.ram')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.ram} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, ram: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.ram} onChange={handleChange} name="ram" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -53,7 +58,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.storage')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.storage} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, storage: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.storage} onChange={handleChange} name="storage" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -62,7 +67,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.motherboard')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.mohterboard} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, mohterboard: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.motherboard} onChange={handleChange} name="motherboard" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -71,7 +76,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.psu')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.psu} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, psu: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.psu} onChange={handleChange} name="psu" edit={p.edit} />
                 </div>
             </div>
             <div className="grid grid-cols-3">
@@ -80,7 +85,7 @@ const Computer = (p: ComputerProps) => {
                     <div>{t('user.sections.setup.components.case')}</div>
                 </div>
                 <div className="flex col-span-2">
-                    <EditInput value={p.computer.case} setValue={(n: string) => p.setComputer((prev) => ({ ...prev, case: n }))} edit={p.edit} />
+                    <EditInput value={p.computer.case} onChange={handleChange} name="case" edit={p.edit} />
                 </div>
             </div>
         </div>

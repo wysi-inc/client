@@ -34,6 +34,6 @@ export interface ComputerInterface {
     ram: string,
     psu: string,
     storage: string,
-    mohterboard: string,
+    motherboard: string,
     case: string,
 }

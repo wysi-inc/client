@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { TabletInterface } from '../../../../resources/interfaces/setup';
 import './Tablet.css';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +12,24 @@ interface tabletProps {
 }
 
 const Tablet = (p: tabletProps) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const inputWidth = 64;
 
     function handleInput(value: string) {
         const valuef: number = Number(value || '0');
         return valuef;
+    }
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        if (!p.edit) return;
+        if (e.target.name === "name") p.setTablet((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        else {
+            const name: any = e.target.name.split('-');
+            p.setTablet((prev) => {
+                console.log(prev);
+                return { ...prev, [name[0]]: { ...(prev as any)[name[0]], [name[1]]: handleInput(e.target.value) } }
+            });
+        }
     }
 
     return (
@@ -28,35 +40,35 @@ const Tablet = (p: tabletProps) => {
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
                 <div>{t('user.sections.setup.model')}:</div>
-                <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, name: e.target.value }))} value={p.tablet.name}
+                <input onChange={handleChange} name="name" value={p.tablet.name}
                     type='text' className="input input-sm input-bordered join-item input-mm" placeholder="model" />
                 <div>{t('user.sections.setup.size')}:</div>
                 <div className="join">
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, size: { w: handleInput(e.target.value), h: pr.size.h } }))}
+                    <input onChange={handleChange} name="size-w"
                         style={{ width: inputWidth }} value={p.tablet.size.w.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="width" />
                     <div className="join-item input input-sm input-bordered">x</div>
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, size: { w: pr.size.w, h: handleInput(e.target.value) } }))}
+                    <input onChange={handleChange} name="size-h"
                         style={{ width: inputWidth }} value={p.tablet.size.h.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="heigth" />
                     <div className="join-item input input-sm input-bordered">mm</div>
                 </div>
                 <div>{t('user.sections.setup.area')}:</div>
                 <div className="join">
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, area: { w: handleInput(e.target.value), h: pr.area.h } }))}
+                    <input onChange={handleChange} name="area-w"
                         style={{ width: inputWidth }} value={p.tablet.area.w.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="width" />
                     <div className="join-item input input-sm input-bordered">x</div>
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, area: { w: pr.area.w, h: handleInput(e.target.value) } }))}
+                    <input onChange={handleChange} name="area-h"
                         style={{ width: inputWidth }} value={p.tablet.area.h.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="heigth" />
                     <div className="join-item input input-sm input-bordered">mm</div>
                 </div>
                 <div>{t('user.sections.setup.position')}:</div>
                 <div className="join">
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, position: { x: handleInput(e.target.value), y: pr.position.y, r: pr.position.r } }))}
+                    <input onChange={handleChange} name="position-x"
                         style={{ width: inputWidth }} value={p.tablet.position.x.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="x" />
                     <div className="join-item input input-sm input-bordered">x</div>
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, position: { x: pr.position.x, y: handleInput(e.target.value), r: pr.position.r } }))}
+                    <input onChange={handleChange} name="position-y"
                         style={{ width: inputWidth }} value={p.tablet.position.y.toString()} type='number' className="input input-sm input-bordered join-item input-mm" placeholder="y" />
                     <div className="join-item input input-sm input-bordered">mm</div>
-                    <input onChange={(e) => p.edit && p.setTablet((pr) => ({ ...pr, position: { x: pr.position.x, y: pr.position.y, r: handleInput(e.target.value) } }))}
+                    <input onChange={handleChange} name="position-r"
                         style={{ width: inputWidth }} value={p.tablet.position.r.toString()} type='number' className="input input-sm input-bordered join-item input-dg" placeholder="rotation" />
                     <div className="join-item input input-sm input-bordered">deg</div>
                 </div>
