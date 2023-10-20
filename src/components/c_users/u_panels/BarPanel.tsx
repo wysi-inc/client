@@ -8,10 +8,10 @@ interface BarPanelProps {
 }
 
 const BarPanel = (p: BarPanelProps) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
-        <>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row flex-wrap items-center gap-4 p-4 m-0 shadow-lg bg-custom-800">
+            <div className="flex flex-row items-center gap-2">
                 <FaUsers />
                 <div>{t('user.followers')}: {p.user.follower_count.toLocaleString()}</div>
             </div>
@@ -53,7 +53,7 @@ const BarPanel = (p: BarPanelProps) => {
                         {p.user.occupation}
                     </Twemoji>
                 </div>}
-        </>
+        </div>
     )
 }
 export default BarPanel;

@@ -144,7 +144,7 @@ const HistoryPanel = forwardRef((p: HistoryPanelProps, ref: Ref<HTMLDivElement>)
             }],
         })
     }
-    C
+    
     function getCountryData(user: User) {
         if (!user?.db_info.ranks.country_rank) return;
         setCountryHistoryData({

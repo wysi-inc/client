@@ -1,24 +1,27 @@
+import { StrictMode, Suspense } from 'react';
+
+import zoomPlugin from 'chartjs-plugin-zoom';
+import { Chart, LineController, LineElement, Legend, PointElement, Tooltip, RadialLinearScale, LinearScale, TimeScale} from 'chart.js';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
+import Home from './components/c_web/Home';
+import OAuth from './components/c_web/OAuth';
 import Navbar from "./components/c_web/Navbar";
 import Footer from './components/c_web/Footer';
-import Home from './components/c_web/Home';
 import Users from './components/c_users/Users';
+import { colors } from './resources/global/tools';
 import Beatmaps from "./components/c_beatmaps/Beatmaps";
 import SongPlayer from "./components/c_web/w_comp/SongPlayer";
-import './App.css';
-import './assets/ibm-plex.css';
 import ScrollToTop from './components/c_web/w_comp/ScrollToTop';
 import AlertManager from './components/c_web/w_comp/AlertManager';
-import OAuth from './components/c_web/OAuth';
-import { Chart, registerables } from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import './resources/langs';
-import { StrictMode, Suspense } from 'react';
-import { colors } from './resources/global/tools';
-import 'chartjs-adapter-moment';
 
-Chart.register(zoomPlugin, ...registerables);
+import 'chartjs-adapter-moment';
+import './fonts/css/ibm-plex.css';
+import './assets/fonts/fonts.css';
+import './App.css';
+import './resources/langs';
+
+Chart.register(zoomPlugin, LineController, LineElement, Legend, PointElement,Tooltip, RadialLinearScale, LinearScale, TimeScale);
 Chart.defaults.plugins.legend.display = false;
 Chart.defaults.animation = false;
 Chart.defaults.elements.point.radius = 2;

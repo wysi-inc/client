@@ -8,19 +8,20 @@ export const Greeter = () => {
 
     function blink() {
         setCursor((prev: string) => prev === "|" ? "" : "|");
-    };
+    }
 
     useEffect(() => {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             write(getGreeting()[index], setGreeting).then((value) => {
                 setIndex(val => val >= 4 ? 0 : val + 1);
                 setTimeout(() => {
                     erase(value, setGreeting).then(() => {
                         setRepeat(val => !val);
                     });
-                }, 1000)
+                }, 1000);
             });
-        }, 1000)
+        }, 1000);
+        return () => clearTimeout(timeout);
     }, [repeat]);
 
     useEffect(() => {
@@ -37,31 +38,29 @@ export const Greeter = () => {
 
     function getGreeting() {
         const userName: string = localStorage.getItem("name") || "";
-    
         const date: Date = new Date();
         const hours: number = date.getHours();
-        let greeting: Array<string> = [];
+        let greetings: Array<string> = [];
         if (hours < 12) {
-            greeting = ["Good morning", "Buenos dias", "Bon dia", "Bonjour", "おはよう"];
+            greetings = ["Good morning", "Buenos dias", "Bon dia", "Bonjour", "おはよう"];
         } else if (hours < 18) {
-            greeting = ["Good afternoon", "Buenas tardes", "Bona tarda", "Bonsoir", "こんにちは"];
+            greetings = ["Good afternoon", "Buenas tardes", "Bona tarda", "Bonsoir", "こんにちは"];
         } else {
-            greeting = ["Good night", "Buenas noches", "Bona nit", "bonne nuit", "こんばんは"];
+            greetings = ["Good night", "Buenas noches", "Bona nit", "Bonne nuit", "こんばんは"];
         }
         if (userName) {
-            return greeting.map((greet: string) =>
-                `${greet}${', ' + userName}!`
+            return greetings.map((greeting: string) =>
+                `${greeting}${', ' + userName}!`
             );
         } else {
-            return greeting.map((greet: string) =>
-                `${greet}!`
+            return greetings.map((greeting: string) =>
+                `${greeting}!`
             );
         }
-    };
+    }
     
     async function write (text: string, setGreeting: Function): Promise<string> {
         return new Promise(resolve => {
-            // funcion que recibe un texto y lo escribe letra por letra
             let index = 0;
             const interval = setInterval(() => {
                 const char = text.charAt(index);
@@ -74,7 +73,7 @@ export const Greeter = () => {
                 }
             }, 100);
         });
-    };
+    }
     
     // funcion que borra el texto letra por letra
     async function erase (text: string, setGreeting: Function) {
@@ -90,5 +89,5 @@ export const Greeter = () => {
                 }
             }, 100);
         });
-    };
+    }
 }

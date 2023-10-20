@@ -1,12 +1,14 @@
+import moment from "moment";
+import { Link } from "react-router-dom";
+
+import { ImSpinner11 } from "react-icons/im"
+import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaHeart, FaItunesNote, FaRegClock } from "react-icons/fa";
+
+import DiffIcon from "./b_comp/DiffIcon";
+import StatusBadge from "./b_comp/StatusBadge";
+import { Beatmap, BeatmapSet } from "../../resources/interfaces/beatmapset";
 import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { playerStore, PlayerStoreInterface } from "../../resources/global/tools";
-import DiffIcon from "./b_comp/DiffIcon";
-import moment from "moment";
-import StatusBadge from "./b_comp/StatusBadge";
-import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaRegClock, FaItunesNote, FaHeart } from "react-icons/fa";
-import { ImSpinner11 } from "react-icons/im"
-import { Beatmap, BeatmapSet } from "../../resources/interfaces/beatmapset";
-import { Link } from "react-router-dom";
 
 interface BeatmapsetCardProps {
     index: number,
@@ -27,8 +29,8 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ height: 80, width: 60, objectFit: 'cover' }} />
-                        <div className="flex flex-col gap-1 grow">
-                            <div className="truncate">
+                        <div className="flex flex-col gap-1" style={{width: 220}}>
+                            <div className="grow">
                                 <Link to={`/beatmaps/${props.beatmapset.id}`}
                                     className="truncate text-light h5 text-decoration-none">
                                     {props.beatmapset.title}

@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
-
 import { useDebounce } from "usehooks-ts";
+import { useParams } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroller";
+import MultiRangeSlider from "multi-range-slider-react";
 
 import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
-import { colors } from "../../resources/global/tools";
-import { secondsToTime } from "../../resources/global/functions";
+import fina from "../../helpers/fina";
 import BeatmapsetPage from "./BeatmapsetPage";
-import { BeatmapSet, BeatmapsetStatusType } from "../../resources/interfaces/beatmapset";
 import BeatmapsetCard from "./BeatmapsetCard";
-import InfiniteScroll from "react-infinite-scroller";
-import { FaAngleUp, FaAngleDown } from "react-icons/fa";
-
-import MultiRangeSlider from "multi-range-slider-react";
+import { colors } from "../../resources/global/tools";
+import { GameModeType } from "../../resources/interfaces/user";
+import { secondsToTime } from "../../resources/global/functions";
+import { BeatmapSet, BeatmapsetStatusType } from "../../resources/interfaces/beatmapset";
 
 import './b_comp/Beatmaps.css';
-import fina from "../../helpers/fina";
-import { GameModeType } from "../../resources/interfaces/user";
 
 interface Query {
     title: string,

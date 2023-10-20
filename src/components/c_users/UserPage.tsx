@@ -28,14 +28,12 @@ const UserPage = (p: UserPageProps) => {
 
     return <>
         <TopPanel user={user} mode={mode} />
-        <div className="flex flex-row flex-wrap items-center gap-4 p-4 m-0 drop-shadow-lg bg-custom-800">
-            <BarPanel user={user} />
-        </div>
+        <BarPanel user={user} />
         <div className="grid grid-cols-5 gap-4 p-4">
             <HistoryPanel className={`${CSS} xl:col-span-3`} ref={divRef} user={user} best={scores.best} />
             <ScoresPanel className={`${CSS} xl:col-span-2`} heigth={divPx} user={user} mode={mode} scores={scores} setScores={setScores} />
             <SkinPanel className={`${CSS} xl:col-span-2`} />
-            <SetupPanel className={`${CSS} xl:col-span-3`} id={user.id} setup={user.db_info.setup} playstyle={user.playstyle}/>
+            <SetupPanel className={`${CSS} xl:col-span-3`} id={user.id} setup={user.db_info.setup} playstyle={user.playstyle} />
             <MedalsPanel className={`${CSS} xl:col-span-3`} heigth={divPx} user={user} />
             <BeatmapsPanel className={`${CSS} xl:col-span-2`} height={divPx} user={user} beatmaps={beatmaps} setBeatmaps={setBeatmaps} />
         </div>

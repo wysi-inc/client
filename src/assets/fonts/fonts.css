@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "IBMPlexSans";
+    src: url('./ibm/IBMPlexSans-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansJP";
+    src: url('./ibm/IBMPlexSansJP-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansArabic";
+    src: url('./ibm/IBMPlexSansArabic-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansDevanagari";
+    src: url('./ibm/IBMPlexSansDevanagari-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansHebrew";
+    src: url('./ibm/IBMPlexSansHebrew-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansKR";
+    src: url('./ibm/IBMPlexSansKR-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "IBMPlexSansThai";
+    src: url('./ibm/IBMPlexSansThai-Medium.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+* {
+    font-family: "IBMPlexSans",
+    "IBMPlexSansJP",
+    "IBMPlexSansArabic",
+    "IBMPlexSansDevanagari",
+    "IBMPlexSansHebrew",
+    "IBMPlexSansKR", "IBMPlexSansThai",
+    sans-serif !important;
+    font-weight: normal !important;
+    border-collapse: separate !important;
+}
