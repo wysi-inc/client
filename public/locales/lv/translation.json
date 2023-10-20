@@ -1,121 +1,121 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "home": "Sākums",
+        "users": "Lietotāji",
+        "beatmaps": "Bītmapes",
+        "search": "Meklēt kādu",
+        "help": "Palīdziet tulkot vietni!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "Piesakieties ar osu!",
+            "logout": "Iziet",
+            "osu": "osu!profils",
+            "wysi": "wysi!profils"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Uzstādījumi",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "Inputi",
+                    "peripherals": "Perifērijas ierīces",
+                    "computer": "Dators"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
+                    "component": "Komponents",
+                    "details": "Informācija",
+                    "cpu": "Procesors",
+                    "gpu": "Video karte",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "Atmiņa",
+                    "motherboard": "Mātesplatē",
+                    "psu": "Barošanas avots",
+                    "case": "Korpuss"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
+                "model": "Modelis",
+                "size": "Izmērs",
+                "area": "Laukums",
+                "position": "Pozīcija",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 Pogas",
+                    "k3": "3 Pogas",
+                    "k4": "4 Pogas",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "kfull": "PILNS"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "Vēsture"
             },
-            "scores": "Scores",
+            "scores": "Rezultāti",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "Bītmapes"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Medaļas"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Rezultātu kopsavilkums",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "Hit attiecība",
+                    "grade_ratios": "Grade attiecība",
+                    "average_play": "Vidēja Play"
                 }
             }
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
-        "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "performance": "Veiktspēja",
+        "total_score": "Kopējie Punkti",
+        "global_rank": "Globālais rangs",
+        "country_rank": "Valsts rangs",
+        "play_time": "Spēļu laiks",
+        "play_count": "Spēļu skaits",
+        "replays_watched": "Atkārtojumi Apskatīti",
+        "hits_x_play": "Hiti katrai rezultātai",
+        "followers": "Sekotāji",
+        "online": "Onlaina"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
-            "best": "Best",
-            "firsts": "Firsts",
-            "recent": "Recent"
+            "pinned": "Piesprausts",
+            "best": "Labākais",
+            "firsts": "Pirmie",
+            "recent": "Nesenie"
         },
-        "mods": "Mods",
-        "max_combo": "Max Combo",
-        "combo": "Combo",
-        "grade": "Grade",
-        "grades": "Grades",
+        "mods": "Modi",
+        "max_combo": "Maksimalais kombo",
+        "combo": "Kombo",
+        "grade": "Novērtējums",
+        "grades": "Novērtējumi",
         "acc": "Acc",
-        "accuracy": "Accuracy",
-        "score": "Score",
-        "ranked_score": "Ranked Score"
+        "accuracy": "Precizitāte",
+        "score": "Punkti",
+        "ranked_score": "Ranked punkti"
     },
     "beatmapset": {
         "status": {
-            "favourite": "Favourite",
-            "ranked": "Ranked",
-            "guest": "Guest",
-            "loved": "Loved",
-            "nominated": "Nominated",
-            "pending": "Pending",
-            "graveyard": "Graveyard",
-            "wip": "In Progress"
+            "favourite": "Mīļākie",
+            "ranked": "Rankots",
+            "guest": "Viesis",
+            "loved": "Mīlēts",
+            "nominated": "Nominēts",
+            "pending": "Neizšķirts",
+            "graveyard": "Pamesta",
+            "wip": "Notiek process"
         },
-        "length": "Length",
+        "length": "Garums",
         "bpm": "BPM"
     },
     "footer": {
-        "rights": "All rights reserved to this silly monkey"
+        "rights": "Visas tiesības paturētas šim muļķīgajam mērkaķim"
     },
     "alerts": {
         "user": {
-            "user_doesnt_exist": "This user doesn't exist",
-            "user_is_bot": "This user is a bot, bots are not supported yet :(",
-            "users_fail": "Failed to fetch users"
+            "user_doesnt_exist": "Šis lietotājs neeksistē",
+            "user_is_bot": "Šis lietotājs ir bots, roboti vēl netiek atbalstīti :(",
+            "users_fail": "\nNeizdevās atrast lietotājus"
         }
     }
 }
