@@ -1,13 +1,13 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
+        "home": "Αρχική Σελίδα",
+        "users": "Χρήστες",
         "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "search": "Αναζήτηση κάποιου",
+        "help": "Βοηθήστε στη μετάφραση της ιστοσελίδας!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
+            "login": "Σύνδεση με osu!",
+            "logout": "Έξοδος",
             "osu": "osu!profile",
             "wysi": "wysi!profile"
         }
@@ -15,50 +15,50 @@
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Εγκατάσταση",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "Είσοδος",
+                    "peripherals": "Περιφερειακά",
+                    "computer": "Υπολογιστής"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
+                    "component": "Εξαρτήματα",
+                    "details": "Λεπτομέρειες",
                     "cpu": "CPU",
                     "gpu": "GPU",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "Αποθηκευτικός χώρος",
+                    "motherboard": "Μητρική Κάρτα",
+                    "psu": "Τροφοδοτικό",
+                    "case": "Κουτί"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
+                "model": "Μοντέλο",
+                "size": "Μέγεθος",
+                "area": "Περιοχή",
+                "position": "Θέση",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 Πλήκτρα",
+                    "k3": "3 Πλήκτρα",
+                    "k4": "4 Πλήκτρα",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "kfull": "ΠΛΗΡΕΣ"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "Ιστορικό"
             },
-            "scores": "Scores",
+            "scores": "Σκορ",
             "beatmaps": {
                 "title": "Beatmaps"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Μετάλλια"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Σύνοψη Βαθμολογιών",
                 "tabs": {
                     "hit_ratios": "Hit Ratios",
                     "grade_ratios": "Grade Ratios",
