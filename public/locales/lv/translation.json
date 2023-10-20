@@ -1,61 +1,61 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "home": "Sākums",
+        "users": "Lietotāji",
+        "beatmaps": "Bītmapes",
+        "search": "Meklēt kādu",
+        "help": "Palīdziet tulkot vietni!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "Piesakieties ar osu!",
+            "logout": "Iziet",
+            "osu": "osu!profils",
+            "wysi": "wysi!profils"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Uzstādījumi",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "Inputi",
+                    "peripherals": "Perifērijas ierīces",
+                    "computer": "Dators"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
+                    "component": "Komponents",
+                    "details": "Informācija",
+                    "cpu": "Procesors",
+                    "gpu": "Video karte",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "Atmiņa",
+                    "motherboard": "Mātesplatē",
+                    "psu": "Barošanas avots",
+                    "case": "Korpuss"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
+                "model": "Modelis",
+                "size": "Izmērs",
+                "area": "Laukums",
+                "position": "Pozīcija",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 Pogas",
+                    "k3": "3 Pogas",
+                    "k4": "4 Pogas",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "kfull": "PILNS"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "Vēsture"
             },
-            "scores": "Scores",
+            "scores": "Rezultāti",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "Bītmapes"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Medaļas"
             },
             "scores_summary": {
                 "title": "Scores Summary",
