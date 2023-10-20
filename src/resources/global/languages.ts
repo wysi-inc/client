@@ -242,6 +242,8 @@ function getLangFlag(code: string): string {
             return 'za';
         case 'es':
             return 'es';
+        case 'el':
+            return 'gr';
         default:
             return code;
     }
@@ -258,7 +260,7 @@ function getLangCode(code: string): string {
     }
 }
 
-export function useCountTranslatedKeys(): [number, (code: string) => number] {
+export function useCountTranslatedKeys(): [number, (code: string) => { progress: number, approval: number }] {
 
     const [data, setData] = useState<LanguageProgress[]>([]);
 
@@ -270,6 +272,7 @@ export function useCountTranslatedKeys(): [number, (code: string) => number] {
         try {
             const res = await fina.get('/langProgress');
             if (!res.ok) return;
+            console.log(res.languages);
             setData(res.languages);
         } catch (err) {
             console.error(err);
@@ -277,13 +280,13 @@ export function useCountTranslatedKeys(): [number, (code: string) => number] {
         }
     }
 
-    function getProgress(code: string) {
-        if (code === 'en') return 100;
-        if (!data) return 0;
+    function getProgress(code: string): { progress: number, approval: number } {
+        if (code === 'en') return { progress: 100, approval: 100 };
+        if (!data) return { progress: 0, approval: 0 };
         const newCode = getLangCode(code);
         const language = data.find((lang) => lang.id === newCode);
-        if (!language) return 0;
-        return language.progress;
+        if (!language) return { progress: 0, approval: 0 };
+        return { progress: language.progress, approval: language.approval };
     }
 
     return [data.length, getProgress];

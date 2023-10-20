@@ -54,7 +54,8 @@ export interface ColorsInterface {
 }
 
 export interface LanguageProgress {
-    id: string,
-    name: string,
-    progress: number
+  id: string,
+  name: string,
+  progress: number,
+  approval: number,
 }

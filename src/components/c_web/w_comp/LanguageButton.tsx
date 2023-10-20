@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 interface propsInterface {
     code: string,
-    getProgress: (code: string) => number,
+    getProgress: (code: string) => { progress: number, approval: number },
     data: number,
 }
 
@@ -18,25 +18,13 @@ const LanguageButton = (p: propsInterface) => {
         return progress;
     }, [p.code, p.data]);
 
-    const color = useMemo(() => {
-        let col;
-        if (percentage < 50) {
-            col = '#f87454'; // Pastel Red
-        } else if (percentage < 75) {
-            col = '#faf56a'; // Pastel Orange
-        } else {
-            col = '#b3ff66'; // Pastel Green
-        }
-        return col;
-    }, [percentage]);
-
     const [code, flag, , nativeName] = getLang(p.code);
 
     return (
-        <div className="rounded-lg overflow-hidden"
+        <div className="overflow-hidden rounded-lg"
             style={{ outline: '1px solid #ffffff22' }}>
             <button onClick={() => i18n.changeLanguage(code)}
-                className="flex flex-row items-center gap-2 w-full justify-start p-1 px-2">
+                className="flex flex-row items-center justify-start w-full gap-2 p-1 px-2">
                 <CountryFlag code={flag} name={undefined} size={24} position='t' />
                 <div>{nativeName}</div>
             </button>
@@ -44,8 +32,14 @@ const LanguageButton = (p: propsInterface) => {
                 <div className="grow" style={{ backgroundColor: '#000000', overflow: 'hidden' }}>
                     <div style={{
                         height: 3,
-                        backgroundColor: color,
-                        width: `${percentage}%`
+                        backgroundColor: '#A7C7E7',
+                        width: `${percentage.progress}%`
+                    }}></div>
+                    <div style={{
+                        height: 3,
+                        marginTop: -3,
+                        backgroundColor: '#b3ff66',
+                        width: `${percentage.approval}%`
                     }}></div>
                 </div>
             </div>

@@ -16,7 +16,6 @@ import ScrollToTop from './components/c_web/w_comp/ScrollToTop';
 import AlertManager from './components/c_web/w_comp/AlertManager';
 
 import 'chartjs-adapter-moment';
-import './fonts/css/ibm-plex.css';
 import './assets/fonts/fonts.css';
 import './App.css';
 import './resources/langs';
