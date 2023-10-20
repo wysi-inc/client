@@ -58,22 +58,22 @@
                 "title": "Medaļas"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Rezultātu kopsavilkums",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "Hit attiecība",
+                    "grade_ratios": "Grade attiecība",
+                    "average_play": "Vidēja Play"
                 }
             }
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
-        "hits_x_play": "Hits x Play",
+        "performance": "Veiktspēja",
+        "total_score": "Kopējie Punkti",
+        "global_rank": "Globālais rangs",
+        "country_rank": "Valsts rangs",
+        "play_time": "Spēļu laiks",
+        "play_count": "Spēļu skaits",
+        "replays_watched": "Atkārtojumi Apskatīti",
+        "hits_x_play": "Hiti katrai rezultātai",
         "followers": "Followers",
         "online": "Online"
     },
