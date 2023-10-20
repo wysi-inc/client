@@ -48,12 +48,12 @@ export interface Weight {
 }
 
 export interface ScoreStatistics {
-  count_geki: number;
-  count_300: number;
-  count_katu: number;
-  count_100: number;
-  count_50: number;
-  count_miss: number;
+  count_geki?: number;
+  count_300?: number;
+  count_katu?: number;
+  count_100?: number;
+  count_50?: number;
+  count_miss?: number;
 }
 
 export interface ModsEntity {

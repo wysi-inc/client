@@ -22,7 +22,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
             <div className="flex flex-col gap-2 p-3 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
                 <div className="grid grid-cols-5 gap-3">
-                    <div className="flex flex-row col-span-4 gap-3 items-center">
+                    <div className="flex flex-row items-center col-span-4 gap-3">
                         <img src={`https://assets.ppy.sh/beatmaps/${props.beatmapset.id}/covers/list.jpg?${props.beatmapset.id}`}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
@@ -34,7 +34,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                                     {props.beatmapset.title}
                                 </Link>
                             </div>
-                            <div className="flex flex-row gap-2 items-center truncate text-light">
+                            <div className="flex flex-row items-center gap-2 truncate text-light">
                                 <div className="flex justify-center w-6">
                                     <FaItunesNote />
                                 </div>
@@ -42,7 +42,7 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                                     {props.beatmapset.artist}
                                 </div>
                             </div>
-                            <div className="flex flex-row gap-2 items-center truncate text-light">
+                            <div className="flex flex-row items-center gap-2 truncate text-light">
                                 <img src={`https://a.ppy.sh/${props.beatmapset.user_id}`} className="w-6 h-6 rounded-md" alt="img" loading="lazy" />
                                 <Link to={`/users/${props.beatmapset.user_id}`} className="inline-block">
                                     {props.beatmapset.creator}
@@ -50,29 +50,29 @@ const BeatmapsetCard = (props: BeatmapsetCardProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col col-span-1 gap-2 items-end">
-                        <div className="flex flex-row gap-1 items-center">
+                    <div className="flex flex-col items-end col-span-1 gap-2">
+                        <div className="flex flex-row items-center gap-1">
                             <FaRegClock />
                             <div>{secondsToTime(props.beatmapset.beatmaps.sort((a, b) => b.total_length - a.total_length)[0].total_length)}</div>
                         </div>
-                        <div className="flex flex-row gap-1 items-center">
+                        <div className="flex flex-row items-center gap-1">
                             <div>{Math.round(props.beatmapset.bpm)} bpm</div>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row justify-between items-center">
-                    <div className="flex flex-row gap-2 items-center">
+                <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center gap-2">
                         <div className="toolip"
                             beatmapset-tip={moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).format('DD MMM YYYY')}>
                             {moment(typeof props.beatmapset.submitted_date === "number" ? props.beatmapset.submitted_date * 1000 : props.beatmapset.submitted_date).fromNow()}
                         </div>
                     </div>
-                    <div className="flex flex-row gap-4 items-center justify-content-end">
-                        <div className="flex flex-row gap-2 items-center">
+                    <div className="flex flex-row items-center gap-4 justify-content-end">
+                        <div className="flex flex-row items-center gap-2">
                             <ImSpinner11 />
                             <div>{props.beatmapset.play_count.toLocaleString()}</div>
                         </div>
-                        <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-row items-center gap-2">
                             <FaHeart />
                             <div>{props.beatmapset.favourite_count.toLocaleString()}</div>
                         </div>

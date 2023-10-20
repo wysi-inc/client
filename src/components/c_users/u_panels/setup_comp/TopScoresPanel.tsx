@@ -21,6 +21,7 @@ export interface BarPieChartData {
 
 const TopScoresPanel = (props: topScoresProps) => {
     const { t } = useTranslation();
+
     const [scoresHits, setScoresHits] = useState({
         x320: 0,
         x300: 0,
@@ -29,6 +30,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         x50: 0,
         xMiss: 0,
     })
+
     const [scoresRanks, setScoresRanks] = useState({
         xh: 0,
         x: 0,
@@ -69,6 +71,8 @@ const TopScoresPanel = (props: topScoresProps) => {
         return formattedMods;
     }, [props.best]);
 
+    if (props.best.length < 1) return (<div></div>);
+
     const scoresHitsLabels: BarPieChartData[] = [
         { label: '320', color: colors.judgements.x320, value: scoresHits.x320 },
         { label: '300', color: colors.judgements.x300, value: scoresHits.x300 },
@@ -77,6 +81,7 @@ const TopScoresPanel = (props: topScoresProps) => {
         { label: '50', color: colors.judgements.x50, value: scoresHits.x50 },
         { label: 'Miss', color: colors.judgements.xMiss, value: scoresHits.xMiss },
     ];
+
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: scoresRanks.xh },
         { label: 'X', color: colors.ranks.x, value: scoresRanks.x },
@@ -98,12 +103,15 @@ const TopScoresPanel = (props: topScoresProps) => {
             xMiss: 0,
         }
         props.best.forEach((sc: Score) => {
-            if (sc.mode !== 'osu') scoresHits.x320 += sc.statistics?.count_geki ? sc.statistics.count_geki : 0;
-            scoresHits.x300 += sc.statistics?.count_300 ? sc.statistics.count_300 : 0;
-            if (sc.mode !== 'osu') scoresHits.x200 += sc.statistics?.count_katu ? sc.statistics.count_katu : 0;
-            scoresHits.x100 += sc.statistics?.count_100 ? sc.statistics.count_100 : 0;
-            scoresHits.x50 += sc.statistics?.count_50 ? sc.statistics.count_50 : 0;
-            scoresHits.xMiss += sc.statistics?.count_miss ? sc.statistics.count_miss : 0;
+            const statistics = sc.statistics;
+            if (sc.mode !== "osu") {
+                scoresHits.x320 += statistics.count_geki || 0;
+                scoresHits.x200 += statistics.count_katu || 0;
+            }
+            scoresHits.x300 += statistics.count_300 || 0;
+            scoresHits.x100 += statistics.count_100 || 0;
+            scoresHits.x50 += statistics.count_50 || 0;
+            scoresHits.xMiss += statistics.count_miss || 0;
         })
         return scoresHits;
     }
@@ -159,8 +167,6 @@ const TopScoresPanel = (props: topScoresProps) => {
     const averageCombo = Math.round(props.best.map(score => score.max_combo)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averagePP = Math.round(props.best.map(sc => sc.pp ? parseInt(sc.pp) : 0)?.reduce((a, b) => a + b, 0) / props.best.length);
     const averageRank = [...scoresRanksLabels].sort((a, b) => a.value - b.value).reverse()[0].label;
-
-    if (props.best.length < 1) return (<div></div>);
 
     return (
         <div className="grid grid-cols-2 gap-3 p-3 grow">

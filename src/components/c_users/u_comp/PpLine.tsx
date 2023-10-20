@@ -12,9 +12,9 @@ const PpLine = (props: PpLineProps) => {
     const allPPs: number[] = props.data.map((score) => score.pp ? Math.round(parseInt(score.pp)) : 0);
     const [hoverScore, setHoverScore] = useState<string>('');
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center justify-center">
             <div>Top {props.data.length} plays</div>
-            <div className="flex flex-row gap-2 justify-center items-center mt-2">
+            <div className="flex flex-row items-center justify-center gap-2 mt-2">
                 <div>{allPPs[0]}pp</div>
                 <div style={{ height: 8 }} className="flex flex-row rounded-full">
                     {allPPs.map((num, index) =>
@@ -26,7 +26,7 @@ const PpLine = (props: PpLineProps) => {
                 </div>
                 <div>{allPPs[allPPs.length - 1]}pp</div>
             </div>
-            <div className="flex flex-row gap-2 justify-center items-center">
+            <div className="flex flex-row items-center justify-center gap-2">
                 <div style={{
                     height: 10,
                     borderLeft: `2px solid ${props.color}`

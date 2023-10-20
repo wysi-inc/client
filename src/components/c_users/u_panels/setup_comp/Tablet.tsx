@@ -21,7 +21,7 @@ const Tablet = (p: tabletProps) => {
     }
 
     return (
-        <div className="flex overflow-hidden flex-col gap-3 items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-3 overflow-hidden">
             <div className="text-center">{p.tablet.name || 'Tablet'}</div>
             <div style={{ height: p.height, width: p.width }} className='flex items-center justify-center'>
                 <TabletDisplay tablet={p.tablet} width={p.width} height={p.height} />
@@ -82,9 +82,9 @@ function TabletDisplay(p: tabletDisplayProps) {
     const ratio = calculateFraction(p.tablet.area.w, p.tablet.area.h);
 
     return (
-        <div className="overflow-hidden relative rounded-lg border"
+        <div className="relative overflow-hidden border rounded-lg"
             style={{ width: tabletSizes.w, height: tabletSizes.h, transform: 'scale(.8)' }}>
-            <div className="flex absolute flex-col gap-1 justify-center items-center bg-opacity-50 border border-secondary bg-secondary"
+            <div className="absolute flex flex-col items-center justify-center gap-1 bg-opacity-50 border border-secondary bg-secondary"
                 style={{
                     width: p.tablet.area.w * tabletSizes.s,
                     height: p.tablet.area.h * tabletSizes.s,

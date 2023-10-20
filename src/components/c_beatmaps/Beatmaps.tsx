@@ -223,9 +223,9 @@ const BeatmapsPage = () => {
     return (
         <div className="p-4">
             <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-custom-900">
-                <div className="flex flex-row justify-between items-center p-4 text-xl rounded-lg bg-custom-950">
+                <div className="flex flex-row items-center justify-between p-4 text-xl rounded-lg bg-custom-950">
                     <div>Beatmap Search:</div>
-                    <div className="flex flex-row gap-2 items-center">
+                    <div className="flex flex-row items-center gap-2">
                         <div className="h5">{resultsNum.toLocaleString()} results</div>
                         <div className="tooltip" data-tip="Clear">
                             <button className="text-lg btn btn-error"
@@ -265,7 +265,7 @@ const BeatmapsPage = () => {
                     <div className="grid grid-cols-7">
                         <div className="col-span-7 md:col-start-3 md:col-span-3">
                             <div className="text-center">Year:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.year[0] < timeMax ? query.year[0] : 'now'}</div>
                                 <MultiRangeSlider
                                     className="grow yearSlider"
@@ -288,7 +288,7 @@ const BeatmapsPage = () => {
                     <div className="grid grid-cols-12 gap-3">
                         <div className="col-span-12 md:col-span-4">
                             <div className="text-center">BPM:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.bpm[0] < bpmLimit ? query.bpm[0] : '∞'}</div>
                                 <MultiRangeSlider
                                     className="grow bpmSlider"
@@ -309,7 +309,7 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-span-12 md:col-span-4">
                             <div className="text-center">Stars:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.sr[0] < srLimit ? query.sr[0] : '∞'}</div>
                                 <MultiRangeSlider
                                     className="grow srSlider"
@@ -330,7 +330,7 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-span-12 md:col-span-4">
                             <div className="text-center">Length:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.len[0] < lengthLimit ? secondsToTime(query.len[0]) : '∞'}</div>
                                 <MultiRangeSlider
                                     className="grow lenSlider"
@@ -353,7 +353,7 @@ const BeatmapsPage = () => {
                     <div className="grid grid-cols-12 gap-3">
                         <div className="col-span-6 md:col-span-3">
                             <div className="text-center">AR:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.ar[0]}</div>
                                 <MultiRangeSlider
                                     className="grow statSlider"
@@ -374,7 +374,7 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-span-6 md:col-span-3">
                             <div className="text-center">CS:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.cs[0]}</div>
                                 <MultiRangeSlider
                                     className="grow statSlider"
@@ -395,7 +395,7 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-span-6 md:col-span-3">
                             <div className="text-center">OD:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.od[0]}</div>
                                 <MultiRangeSlider
                                     className="grow statSlider"
@@ -416,7 +416,7 @@ const BeatmapsPage = () => {
                         </div>
                         <div className="col-span-6 md:col-span-3">
                             <div className="text-center">HP:</div>
-                            <div className="flex flex-row gap-4 justify-center items-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.hp[0]}</div>
                                 <MultiRangeSlider
                                     className="grow statSlider"
@@ -454,7 +454,7 @@ const BeatmapsPage = () => {
                     </div>
                     <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-custom-950">
                         <div>Status:</div>
-                        <div className="flex flex-row flex-wrap gap-3 items-center" role="group">
+                        <div className="flex flex-row flex-wrap items-center gap-3" role="group">
                             {songStatus.map((s: BeatmapsetStatusType, i: number) =>
                                 <button type="button" key={i}
                                     className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!query.status.includes(s) && 'fakeDisabled'}`}

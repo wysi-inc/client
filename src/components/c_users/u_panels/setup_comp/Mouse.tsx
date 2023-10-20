@@ -19,13 +19,13 @@ const Mouse = (p: propsInterface) => {
     }
 
     return (
-        <div className="flex overflow-hidden flex-col gap-3 items-center justify-center" style={{width: p.width}}>
+        <div className="flex flex-col items-center justify-center gap-3 overflow-hidden" style={{width: p.width}}>
             <div className="text-center">{p.mouse.name || 'Mouse'}</div>
             <div style={{ height: p.height }} className='flex flex-col items-center justify-center'>
-                <div className="border flex flex-col justify-start items-center rounded-t-3xl overflow-hidden" style={{ width: 100, height: 150, borderBottomRightRadius: 100, borderBottomLeftRadius: 100 }}>
+                <div className="flex flex-col items-center justify-start overflow-hidden border rounded-t-3xl" style={{ width: 100, height: 150, borderBottomRightRadius: 100, borderBottomLeftRadius: 100 }}>
                     <div className="border" style={{ height: 50 }}></div>
-                    <div className="border w-full"></div>
-                    <div className="grow flex items-center justify-center">{p.mouse.dpi || '?'} dpi</div>
+                    <div className="w-full border"></div>
+                    <div className="flex items-center justify-center grow">{p.mouse.dpi || '?'} dpi</div>
                 </div>
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>

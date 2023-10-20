@@ -107,12 +107,12 @@ const SetupPanel = (p: SetupPanelProps) => {
     return (
         <div className={p.className}>
             <div className="shadow">
-                <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                     <FaComputer />
                     <div>{t('user.sections.setup.title')}</div>
                 </div>
-                <div className="grid grid-cols-6 items-center bg-custom-900">
-                    <div className="col-span-4 col-start-2 justify-center content-center rounded-none bg-custom-900 tabs tabs-boxed">
+                <div className="grid items-center grid-cols-6 bg-custom-900">
+                    <div className="content-center justify-center col-span-4 col-start-2 rounded-none bg-custom-900 tabs tabs-boxed">
                         <button onClick={() => setTabsIndex(1)}
                             className={`tab flex flex-row gap-2 ${tabsIndex === 1 && 'tab-active text-base-100'}`}>
                             <FaKeyboard />
@@ -129,7 +129,7 @@ const SetupPanel = (p: SetupPanelProps) => {
                             <div>{t('user.sections.setup.tabs.computer')}</div>
                         </button>
                     </div>
-                    <div className="flex flex-row gap-2 justify-end pr-2">
+                    <div className="flex flex-row justify-end gap-2 pr-2">
                         <div hidden={edit || !me}>
                             <button onClick={handleEdit} className="btn btn-warning btn-sm">
                                 <FaEdit />

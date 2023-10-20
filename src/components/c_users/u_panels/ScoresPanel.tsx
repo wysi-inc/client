@@ -6,6 +6,7 @@ import ScoreCard from "../../c_scores/ScoreCard";
 import { Score, ScoreType, ScoresObj, scoreListItem } from "../../../resources/interfaces/score";
 import fina from "../../../helpers/fina";
 import { useTranslation } from "react-i18next";
+import TitleBar from "./TitleBar";
 
 
 interface ScoresPanelProps {
@@ -18,12 +19,12 @@ interface ScoresPanelProps {
 }
 
 const ScoresPanel = (p: ScoresPanelProps) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
     const [bestRenderIndex, setBestRenderIndex] = useState<number>(0);
     useEffect(() => {
-        if(p.scores.best.length === 0) {
+        if (p.scores.best.length === 0) {
             setBestRenderIndex(0);
         }
     }, [p.scores.best.length])
@@ -42,11 +43,8 @@ const ScoresPanel = (p: ScoresPanelProps) => {
     ]
     return (
         <div className={p.className} style={{ height: p.heigth }}>
-            <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800 4">
-                <FaListUl />
-                <div>Scores</div>
-            </div>
-            <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+            <TitleBar title={t('user.sections.scores')} icon={<FaListUl />} />
+            <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 {scoresTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
                     <button className={`tab flex flex-row gap-2 ${tabIndex === tab.num && 'tab-active text-base-100'}`}
                         onClick={() => setTabIndex(tab.num)} key={i}>

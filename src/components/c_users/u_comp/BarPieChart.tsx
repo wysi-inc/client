@@ -9,10 +9,10 @@ const BarPieChart = (props: BarPieChartProps) => {
     const total: number = props.data.map((obj: BarPieChartData) => obj.value).reduce((acc: number, curr: number) => acc + curr, 0);
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-3 justify-between grow">
+            <div className="flex flex-row justify-between gap-3 grow">
                 {props.data.map((obj: BarPieChartData, index: number) =>
                     obj.value > 0 &&
-                    <div className="flex flex-col justify-center items-center" key={index}>
+                    <div className="flex flex-col items-center justify-center" key={index}>
                         <div className="font-bold" style={{ color: obj.color }}>{obj.label}</div>
                         <div>{obj.value.toLocaleString()}</div>
                     </div>

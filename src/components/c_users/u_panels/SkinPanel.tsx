@@ -7,7 +7,7 @@ interface SkinProps {
 const SkinPanel = (p : SkinProps) => {
     return (
         <div className={p.className}>
-                <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+                <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                     <FaPaintBrush />
                     <div>Skin</div>
                 </div>

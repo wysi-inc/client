@@ -1,6 +1,6 @@
 import { Ref, useEffect, useState, forwardRef } from "react";
 import { Line } from "react-chartjs-2";
-import { FaChartLine, FaChartPie, FaEye, FaGlobeAfrica, FaRegClock } from "react-icons/fa";
+import { FaChartLine, FaChartPie, FaEye, FaGlobeAfrica, FaInfoCircle, FaRegClock } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { ChartData, ChartOptions } from 'chart.js';
 import CountryShape from "../u_comp/CountryShape";
@@ -8,6 +8,7 @@ import { colors } from "../../../resources/global/tools";
 import { MonthlyData, User } from "../../../resources/interfaces/user";
 import TopScoresPanel from "./setup_comp/TopScoresPanel";
 import { Score } from "../../../resources/interfaces/score";
+import TitleBar from "./TitleBar";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
     labels: [],
@@ -84,11 +85,8 @@ const HistoryPanel = forwardRef((p: HistoryPanelProps, ref: Ref<HTMLDivElement>)
 
     return (
         <div className={p.className} ref={ref}>
-            <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
-                <FaChartLine />
-                <div>{t('user.sections.history.title')}</div>
-            </div>
-            <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+            <TitleBar title={t('user.sections.history.title')} icon={<FaChartLine />} />
+            <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 <button
                     className={`tab flex flex-row gap-2 ${tabIndex === 1 && 'tab-active text-base-100'}`}
                     onClick={() => setTabIndex(1)}>
@@ -114,24 +112,21 @@ const HistoryPanel = forwardRef((p: HistoryPanelProps, ref: Ref<HTMLDivElement>)
                     <div>{t('user.replays_watched')}</div>
                 </button>
             </div>
-            <div className="flex justify-center items-center" style={{ height: 250 }}>
-                <div className="p-4 grow w-full h-full" hidden={tabIndex !== 1}>
+            <div className="flex items-center justify-center" style={{ height: 250 }}>
+                <div className="w-full h-full p-4 grow" hidden={tabIndex !== 1}>
                     <Line data={globalHistoryData} options={lineOptionsReverse} />
                 </div>
-                <div className="p-4 grow w-full h-full" hidden={tabIndex !== 2}>
+                <div className="w-full h-full p-4 grow" hidden={tabIndex !== 2}>
                     <Line data={countryHistoryData} options={lineOptionsReverse} />
                 </div>
-                <div className="p-4 grow w-full h-full" hidden={tabIndex !== 3}>
+                <div className="w-full h-full p-4 grow" hidden={tabIndex !== 3}>
                     <Line data={playsHistoryData} options={lineOptions} />
                 </div>
-                <div className="p-4 grow w-full h-full" hidden={tabIndex !== 4}>
+                <div className="w-full h-full p-4 grow" hidden={tabIndex !== 4}>
                     <Line data={replaysHistoryData} options={lineOptions} />
                 </div>
             </div>
-            <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
-                <FaChartPie />
-                <div>{t('user.sections.scores_summary.title')}</div>
-            </div>
+            <TitleBar title={t('user.sections.scores_summary.title')} icon={<FaChartPie />} info="this is a summary of the user's top plays" />
             <TopScoresPanel data={p.user} best={p.best} />
         </div>
     )
@@ -149,7 +144,7 @@ const HistoryPanel = forwardRef((p: HistoryPanelProps, ref: Ref<HTMLDivElement>)
             }],
         })
     }
-
+    C
     function getCountryData(user: User) {
         if (!user?.db_info.ranks.country_rank) return;
         setCountryHistoryData({
@@ -162,7 +157,7 @@ const HistoryPanel = forwardRef((p: HistoryPanelProps, ref: Ref<HTMLDivElement>)
                 tension: 0.1,
             }],
         })
-    }
+    } 
 
     function getPlaysData(user: User) {
         if (!user?.monthly_playcounts) return;

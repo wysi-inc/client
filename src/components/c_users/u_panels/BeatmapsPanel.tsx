@@ -41,11 +41,11 @@ const BeatmapsPanel = (p: BeatmapsPanelProps) => {
 
     return (
         <div className={p.className} style={{ height: p.height }}>
-            <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+            <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                 <FaListUl />
                 <div>{t('user.sections.beatmaps.title')}</div>
             </div>
-            <div className="justify-center content-center rounded-none tabs tabs-boxed bg-custom-900">
+            <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 {beatmapsTabs.map((tab: tabInterface, i: number) => tab.count > 0 &&
                     <button className={`tab flex flex-row gap-2 ${tabIndex === tab.num && 'tab-active'}`}
                         onClick={() => setTabIndex(tab.num)} key={i}>

@@ -15,10 +15,10 @@ const UserCard = (props: UserCardProps) => {
     return (
         <tr className="bg-custom-800">
             <th className="table-cell">#{props.index}</th>
-            <td className="table-cell"><div className="flex justify-center items-center">
+            <td className="table-cell"><div className="flex items-center justify-center">
                 <CountryFlag size={24} name={props.user.user.country.name} code={props.user.user.country.code} position='t'/>
             </div></td>
-            <td className="table-cell"><Link to={`/users/${props.user.user.id}/${props.mode}`} className="flex flex-row gap-2 items-center">
+            <td className="table-cell"><Link to={`/users/${props.user.user.id}/${props.mode}`} className="flex flex-row items-center gap-2">
                 <img className="rounded-md" src={props.user.user.avatar_url} style={{ height: 24, width: 24 }} onError={addDefaultSrc} alt="pfp" />
                 {props.user.user.username}
             </Link></td>

@@ -36,7 +36,7 @@ const CountryFlag = (p: CountryFlagProps) => {
 function extraFlag(code: string) {
     try {
         const svgFile = require(`../../../assets/extra-flags/${code.toLowerCase()}.png`);
-        return(<img alt={code} className="emoji-flag m-0 p-0" src={svgFile} />)
+        return(<img alt={code} className="p-0 m-0 emoji-flag" src={svgFile} />)
     } catch (err) {
         return <div>??</div>
     }

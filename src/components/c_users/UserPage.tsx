@@ -28,7 +28,7 @@ const UserPage = (p: UserPageProps) => {
 
     return <>
         <TopPanel user={user} mode={mode} />
-        <div className="flex flex-row flex-wrap gap-4 items-center p-4 m-0 drop-shadow-lg bg-custom-800">
+        <div className="flex flex-row flex-wrap items-center gap-4 p-4 m-0 drop-shadow-lg bg-custom-800">
             <BarPanel user={user} />
         </div>
         <div className="grid grid-cols-5 gap-4 p-4">

@@ -16,12 +16,12 @@ const BeatmapsetScoreCard = (props: ScoreProps) => {
         <tr className="bg-custom-800">
             <th className="text-end">#{props.index}</th>
             <td>
-                <div className="flex justify-center items-center">
+                <div className="flex items-center justify-center">
                     <CountryFlag size={24} name={props.score.user.country.name} code={props.score.user.country.code} position="t" />
                 </div>
             </td>
             <td>
-                <Link to={`/users/${props.score.user.id}`} className="flex flex-row gap-2 items-center">
+                <Link to={`/users/${props.score.user.id}`} className="flex flex-row items-center gap-2">
                     <img className="rounded-md" src={props.score.user.avatar_url} style={{ height: 24, width: 24 }} onError={addDefaultSrc} alt="pfp" />
                     {props.score.user.username}
                 </Link>

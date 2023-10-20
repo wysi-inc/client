@@ -20,11 +20,11 @@ const MedalsPanel = (p: MedalsPanelProps) => {
 
     return (
         <div className={p.className} style={{ height: p.heigth }}>
-            <div className="flex flex-row gap-2 justify-center items-center p-2 bg-custom-800">
+            <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                 <FaMedal />
                 <div>Medals</div>
             </div>
-            <div className="flex overflow-x-hidden overflow-y-scroll flex-col grow">
+            <div className="flex flex-col overflow-x-hidden overflow-y-scroll grow">
                 <div className="grid grid-cols-6">
                     <div className="col-span-5">
                         <div className="p-2 text-center bg-custom-900">
@@ -62,7 +62,7 @@ const MedalsPanel = (p: MedalsPanelProps) => {
                 </div>
                 {Object.entries(medalsByCategory).map(([category, medals]: [string, Medal[]], key: number) => (
                     <div key={key} className="grow">
-                        <div className="flex flex-row justify-center items-center p-2 text-center bg-custom-900">
+                        <div className="flex flex-row items-center justify-center p-2 text-center bg-custom-900">
                             <div className="text-center">
                                 {category}:
                             </div>
@@ -73,7 +73,7 @@ const MedalsPanel = (p: MedalsPanelProps) => {
                                 {(achievedMedalsCount[category] / medals.length * 100).toFixed(2)}%
                                 ({achievedMedalsCount[category]}/{medals.length})
                             </div>
-                            <div className="flex flex-row flex-wrap gap-1 justify-center grow">
+                            <div className="flex flex-row flex-wrap justify-center gap-1 grow">
                                 {medals.map((medal: Medal, index: number) => (
                                     <MedalBadge thisMedal={medal} userMedals={p.user.user_achievements}
                                         key={index} />

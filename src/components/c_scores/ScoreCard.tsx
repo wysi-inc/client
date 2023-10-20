@@ -28,7 +28,7 @@ const ScoreCard = (props: ScoreProps) => {
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col gap-2 p-3 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
-                <div className="flex flex-row gap-3 justify-between items-center">
+                <div className="flex flex-row items-center justify-between gap-3">
                     <div className="flex flex-row gap-3 grow">
                         <img src={`https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/list.jpg?${props.score.beatmapset.id}`}
                             onError={addDefaultSrc}
@@ -41,13 +41,13 @@ const ScoreCard = (props: ScoreProps) => {
                                     {props.score.beatmapset.title}
                                 </Link>
                             </div>
-                            <div className="flex flex-row gap-2 items-center truncate text-light">
+                            <div className="flex flex-row items-center gap-2 truncate text-light">
                                 <div className="flex justify-center w-6">
                                     <FaItunesNote />
                                 </div>
                                 <div className="truncate">{props.score.beatmapset.artist}</div>
                             </div>
-                            <div className="flex flex-row gap-2 items-center truncate text-light">
+                            <div className="flex flex-row items-center gap-2 truncate text-light">
                                 <img src={`https://a.ppy.sh/${props.score.beatmapset.user_id}`} className="w-6 h-6 rounded-md" alt="img" loading="lazy" onError={addDefaultSrc} />
                                 <Link to={`/users/${props.score.beatmapset.user_id}`} className="inline-block">
                                     {props.score.beatmapset.creator}
@@ -64,14 +64,14 @@ const ScoreCard = (props: ScoreProps) => {
                         <div className="text-end">{props.score.rank}</div>
                     </div>
                 </div>
-                <div className="flex flex-row justify-between items-center">
-                    <div className="flex flex-row gap-4 items-center">
+                <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center gap-4">
                         <div className="tooltip"
                             data-tip={moment(props.score.created_at).format('DD MMM YYYY')}>
                             {moment(props.score.created_at).fromNow()}
                         </div>
                     </div>
-                    <div className="flex flex-row gap-2 content-end items-center">
+                    <div className="flex flex-row items-center content-end gap-2">
                         <div className="p-1">
                             #{props.index + 1}
                         </div>
@@ -95,17 +95,17 @@ const ScoreCard = (props: ScoreProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row flex-wrap gap-4 items-center"
+                <div className="flex flex-row flex-wrap items-center gap-4"
                     style={{ fontSize: 14 }}>
-                    <div className="flex flex-row gap-1 items-center">
+                    <div className="flex flex-row items-center gap-1">
                         <FaStar />
                         {stats.sr}
                     </div>
-                    <div className="flex flex-row gap-1 items-center">
+                    <div className="flex flex-row items-center gap-1">
                         <FaRegClock />
                         {secondsToTime(stats.len)}
                     </div>
-                    <div className="flex flex-row gap-1 items-center">
+                    <div className="flex flex-row items-center gap-1">
                         {stats.bpm}bpm
                     </div>
                     <div>CS: {stats.cs}</div>
@@ -113,7 +113,7 @@ const ScoreCard = (props: ScoreProps) => {
                     <div>OD: {stats.od}</div>
                     <div>HP: {stats.hp}</div>
                 </div>
-                <div className="flex flex-row justify-between items-center"
+                <div className="flex flex-row items-center justify-between"
                     style={{ fontSize: 16 }}>
                     <div className="flex flex-row gap-4">
                         <div>{(props.score.accuracy * 100).toFixed(2)}%</div>
@@ -147,15 +147,15 @@ const ScoreCard = (props: ScoreProps) => {
                             </div>}
                     </div>
                 </div>
-                <div className="flex flex-row justify-between items-center p-2 rounded-lg"
+                <div className="flex flex-row items-center justify-between p-2 rounded-lg"
                     style={{ backgroundColor: '#ffffff22' }}>
-                    <div className="flex flex-row gap-2 items-center">
+                    <div className="flex flex-row items-center gap-2">
                         <StatusBadge status={props.score.beatmapset.status} />
                         <DiffIcon diffId={props.score.beatmap.id} setId={props.score.beatmapset.id}
                             diff={props.score.beatmap.difficulty_rating} size={24}
                             mode={props.score.beatmap.mode} name={props.score.beatmap.version} />
                     </div>
-                    <div className="flex flex-row gap-1 items-center fw-bold justify-content-end">
+                    <div className="flex flex-row items-center gap-1 fw-bold justify-content-end">
                         <div className="flex flex-row gap-2 me-2">
                             {props.score.mods?.map((mod: string, i: number) =>
                                 <ModIcon acronym={mod} size={24} key={i} />
