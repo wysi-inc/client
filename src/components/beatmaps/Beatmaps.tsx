@@ -288,7 +288,7 @@ const BeatmapsPage = () => {
                 <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">
                     <div className="grid grid-cols-7">
                         <div className="col-span-7 md:col-start-3 md:col-span-3">
-                            <Slider
+                            {/* <Slider
                                 min={timeMin}
                                 max={timeMax}
                                 step={1}
@@ -299,8 +299,8 @@ const BeatmapsPage = () => {
                                 code={"year"}
                                 CSS_CLASS={"yearSlider"}
                                 maxTxt={"now"}
-                            />
-                            {/* <div className="text-center">Year:</div>
+                            /> */}
+                            <div className="text-center">Year:</div>
                             <div className="flex flex-row items-center justify-center gap-4">
                                 <div className="w-20 text-end">{query.year[0] < timeMax ? query.year[0] : 'now'}</div>
                                 <MultiRangeSlider
@@ -316,7 +316,7 @@ const BeatmapsPage = () => {
                                     onChange={(e) => handleSliderChange(e, "year")}
                                 />
                                 <div className="w-20 text-start">{query.year[1] < timeMax ? query.year[1] : 'now'}</div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                     <div className="grid grid-cols-12 gap-3">
