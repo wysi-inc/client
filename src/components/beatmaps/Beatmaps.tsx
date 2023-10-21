@@ -3,19 +3,17 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "usehooks-ts";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroller";
-import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
 
 import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
-import Slider from "./b_comp/Slider";
+import MultiSlider from "./b_comp/MultiSlider";
 import fina from "../../helpers/fina";
 import BeatmapsetPage from "./BeatmapsetPage";
 import BeatmapsetCard from "./BeatmapsetCard";
 import { colors } from "../../resources/global/tools";
 import { GameMode, GameModes } from "../../resources/types/general";
-import { secondsToTime } from "../../resources/global/functions";
 import { Beatmapset, BeatmapsetStatus, BeatmapsetStatuses } from "../../resources/types/beatmapset";
 
 import './b_comp/Beatmaps.css';
@@ -75,10 +73,6 @@ const BeatmapsPage = () => {
     const [cleared, setCleared] = useState<boolean>(false);
 
     const debouncedValue = useDebounce<Query>(query, 1000);
-
-    useEffect(() => {
-        console.log(query)
-    }, [query]);
 
     useEffect((): void => {
         if (urlSetId === undefined) {
@@ -220,8 +214,8 @@ const BeatmapsPage = () => {
         setQuery((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
 
-    function handleSliderChange(e: ChangeResult, name: string) {
-        setQuery((prev) => ({ ...prev, [name]: [e.minValue, e.maxValue] }));
+    function handleSliderChange(min: number, max: number, name: string) {
+        setQuery((prev) => ({ ...prev, [name]: [min, max] }));
     }
 
     function handleToggleChange(value: string, name: "modes" | "status") {
@@ -286,174 +280,118 @@ const BeatmapsPage = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">
+                    <div className="grid grid-cols-12 gap-3">
+                        <div className="col-span-12 md:col-span-4">
+                            <MultiSlider
+                                min={0}
+                                max={bpmLimit}
+                                step={5}
+                                minValue={query.bpm[0]}
+                                maxValue={query.bpm[1]}
+                                onChange={handleSliderChange}
+                                title={"BPM"}
+                                name={"bpm"}
+                                CSS_CLASS={"bpmSlider"}
+                                maxTxt={"∞"}
+                            />
+                        </div>
+                        <div className="col-span-12 md:col-span-4">
+                            <MultiSlider
+                                min={0}
+                                max={srLimit}
+                                step={0.5}
+                                minValue={query.sr[0]}
+                                maxValue={query.sr[1]}
+                                onChange={handleSliderChange}
+                                title={"Stars"}
+                                name={"sr"}
+                                CSS_CLASS={"srSlider"}
+                                maxTxt={"∞"}
+                            />
+                        </div>
+                        <div className="col-span-12 md:col-span-4">
+                            <MultiSlider
+                                min={0}
+                                max={lengthLimit}
+                                step={15}
+                                minValue={query.len[0]}
+                                maxValue={query.len[1]}
+                                onChange={handleSliderChange}
+                                title={"Length"}
+                                name={"len"}
+                                CSS_CLASS={"lenSlider"}
+                                maxTxt={"∞"}
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-12 gap-3">
+                        <div className="col-span-6 md:col-span-3">
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.ar[0]}
+                                maxValue={query.ar[1]}
+                                onChange={handleSliderChange}
+                                title={"AR"}
+                                name={"ar"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                        </div>
+                        <div className="col-span-6 md:col-span-3">
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.cs[0]}
+                                maxValue={query.cs[1]}
+                                onChange={handleSliderChange}
+                                title={"CS"}
+                                name={"cs"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                        </div>
+                        <div className="col-span-6 md:col-span-3">
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.od[0]}
+                                maxValue={query.od[1]}
+                                onChange={handleSliderChange}
+                                title={"OD"}
+                                name={"od"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                        </div>
+                        <div className="col-span-6 md:col-span-3">
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.hp[0]}
+                                maxValue={query.hp[1]}
+                                onChange={handleSliderChange}
+                                title={"HP"}
+                                name={"hp"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                        </div>
+                    </div>
                     <div className="grid grid-cols-7">
                         <div className="col-span-7 md:col-start-3 md:col-span-3">
-                            {/* <Slider
+                            <MultiSlider
                                 min={timeMin}
                                 max={timeMax}
                                 step={1}
                                 minValue={query.year[0]}
                                 maxValue={query.year[1]}
-                                handleChange={handleSliderChange}
-                                name={"Year"}
-                                code={"year"}
+                                onChange={handleSliderChange}
+                                title={"Year"}
+                                name={"year"}
                                 CSS_CLASS={"yearSlider"}
                                 maxTxt={"now"}
-                            /> */}
-                            <div className="text-center">Year:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.year[0] < timeMax ? query.year[0] : 'now'}</div>
-                                <MultiRangeSlider
-                                    className="grow yearSlider"
-                                    min={timeMin}
-                                    max={timeMax}
-                                    step={1}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.year[0]}
-                                    maxValue={query.year[1]}
-                                    onChange={(e) => handleSliderChange(e, "year")}
-                                />
-                                <div className="w-20 text-start">{query.year[1] < timeMax ? query.year[1] : 'now'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-12 md:col-span-4">
-                            <div className="text-center">BPM:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.bpm[0] < bpmLimit ? query.bpm[0] : '∞'}</div>
-                                <MultiRangeSlider
-                                    className="grow bpmSlider"
-                                    min={0}
-                                    max={bpmLimit}
-                                    step={5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.bpm[0]}
-                                    maxValue={query.bpm[1]}
-                                    onChange={(e) => handleSliderChange(e, "bpm")}
-                                />
-                                <div className="w-20 text-start">{query.bpm[1] < bpmLimit ? query.bpm[1] : '∞'}</div>
-                            </div>
-                        </div>
-                        <div className="col-span-12 md:col-span-4">
-                            <div className="text-center">Stars:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.sr[0] < srLimit ? query.sr[0] : '∞'}</div>
-                                <MultiRangeSlider
-                                    className="grow srSlider"
-                                    min={0}
-                                    max={srLimit}
-                                    step={0.5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.sr[0]}
-                                    maxValue={query.sr[1]}
-                                    onChange={(e) => handleSliderChange(e, "sr")}
-                                />
-                                <div className="w-20 text-start">{query.sr[1] < srLimit ? query.sr[1] : '∞'}</div>
-                            </div>
-                        </div>
-                        <div className="col-span-12 md:col-span-4">
-                            <div className="text-center">Length:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.len[0] < lengthLimit ? secondsToTime(query.len[0]) : '∞'}</div>
-                                <MultiRangeSlider
-                                    className="grow lenSlider"
-                                    min={0}
-                                    max={lengthLimit}
-                                    step={15}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.len[0]}
-                                    maxValue={query.len[1]}
-                                    onChange={(e) => handleSliderChange(e, "len")}
-                                />
-                                <div className="w-20 text-start">{query.len[1] < lengthLimit ? secondsToTime(query.len[1]) : '∞'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-6 md:col-span-3">
-                            <div className="text-center">AR:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.ar[0]}</div>
-                                <MultiRangeSlider
-                                    className="grow statSlider"
-                                    min={0}
-                                    max={statLimit}
-                                    step={0.5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.ar[0]}
-                                    maxValue={query.ar[1]}
-                                    onChange={(e) => handleSliderChange(e, "ar")}
-                                />
-                                <div className="w-20 text-start">{query.ar[1]}</div>
-                            </div>
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <div className="text-center">CS:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.cs[0]}</div>
-                                <MultiRangeSlider
-                                    className="grow statSlider"
-                                    min={0}
-                                    max={statLimit}
-                                    step={0.5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.cs[0]}
-                                    maxValue={query.cs[1]}
-                                    onChange={(e) => handleSliderChange(e, "cs")}
-                                />
-                                <div className="w-20 text-start">{query.cs[1]}</div>
-                            </div>
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <div className="text-center">OD:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.od[0]}</div>
-                                <MultiRangeSlider
-                                    className="grow statSlider"
-                                    min={0}
-                                    max={statLimit}
-                                    step={0.5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.od[0]}
-                                    maxValue={query.od[1]}
-                                    onChange={(e) => handleSliderChange(e, "od")}
-                                />
-                                <div className="w-20 text-start">{query.od[1]}</div>
-                            </div>
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <div className="text-center">HP:</div>
-                            <div className="flex flex-row items-center justify-center gap-4">
-                                <div className="w-20 text-end">{query.hp[0]}</div>
-                                <MultiRangeSlider
-                                    className="grow statSlider"
-                                    min={0}
-                                    max={statLimit}
-                                    step={0.5}
-                                    stepOnly={true}
-                                    ruler={false}
-                                    label={false}
-                                    minValue={query.hp[0]}
-                                    maxValue={query.hp[1]}
-                                    onChange={(e) => handleSliderChange(e, "hp")}
-                                />
-                                <div className="w-20 text-start">{query.hp[1]}</div>
-                            </div>
+                            />
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,56 @@
+.yearSlider {
+  background: linear-gradient(to right, #c0c0c0, #98ddfc) !important;
+}
+
+.bpmSlider {
+  background: linear-gradient(to right, #4290fe, #ff291e) !important;
+}
+
+.srSlider {
+  background: linear-gradient(
+    to right,
+    #4290fe,
+    #4cb6ff,
+    #4fffd4,
+    #cdf458,
+    #fc9964,
+    #f64d7a,
+    #ad4dc2,
+    #4d4bc4,
+    #12106a,
+    #000000,
+    #000000
+  ) !important;
+}
+
+.lenSlider {
+  background: linear-gradient(
+    to right,
+    #b589d6,
+    #9969c7,
+    #804fb3,
+    #6a359c,
+    #552586
+  ) !important;
+}
+
+.statSlider {
+  background: linear-gradient(to right, #61de2a, #fff65f, #ff291e) !important;
+}
+
+.bar {
+  height: 20px;
+  border: 2px solid #ffffff;
+  outline: 1000px solid #00000088;
+}
+
+.slider {
+  background-color: transparent;
+}
+
+.thumb {
+  height: 20px;
+  width: 20px;
+  cursor: grab;
+  opacity: 0;
+}
