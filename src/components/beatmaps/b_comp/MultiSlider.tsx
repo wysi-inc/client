@@ -1,9 +1,9 @@
 import { useState } from "react";
 
+import { secondsToTime } from "../../../resources/global/functions";
 import ReactSlider from "react-slider";
 
 import './MultiSlider.css';
-import { secondsToTime } from "../../../resources/global/functions";
 
 interface Props {
     min: number;

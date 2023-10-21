@@ -5,13 +5,10 @@ export function useDivSize(type: 'w' | 'h', init: number) {
     const divRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        getSize();
+        if (!divRef) return; 
+        if (!divRef?.current) return;
+        setPx(type === 'h' ? divRef.current.clientHeight : divRef.current.clientWidth);
     }, [divRef?.current?.clientHeight]);
-
-    function getSize() {
-        if (divRef) if (divRef.current)
-            setPx(type === 'h' ? divRef.current?.clientHeight : divRef.current?.clientWidth);
-    }
 
     return { divPx, divRef };
 }

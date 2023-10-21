@@ -6,7 +6,9 @@ import { GameMode } from "../types/general";
 import { BeatmapsObj } from "../types/beatmapset";
 import { Score, ScoresObj, ScoreCategory } from "../types/score";
 import { alertManager, alertManagerInterface } from "../global/tools";
-export function useGetUser(id: string, m: GameMode) {
+
+export function useGetUser(id: string | undefined, m: string | undefined) {
+
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const BEATMAPS_INITIAL: BeatmapsObj = {
@@ -32,6 +34,7 @@ export function useGetUser(id: string, m: GameMode) {
 
     useEffect(() => {
         clearData();
+        if (!id) return;
         getUser();
     }, [id, m]);
 

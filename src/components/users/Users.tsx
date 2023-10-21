@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { useDebounce } from "@uidotdev/usehooks";
-
-import UserPage from "./UserPage";
 import UserCard from "./UserCard";
 import fina from "../../helpers/fina";
 import PageTabs from "../../web/w_comp/PageTabs";
@@ -13,16 +9,12 @@ import { modes } from "../../resources/global/user";
 import { UserRanks } from "../../resources/types/user";
 import { GameMode } from "../../resources/types/general";
 import { alertManager, alertManagerInterface } from "../../resources/global/tools";
+import { useQuery } from "react-query";
 
 const Users = () => {
+
     const { t } = useTranslation();
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
-
-    const { urlUser } = useParams();
-    const { urlMode } = useParams();
-
-    const [userId, setUserId] = useState<undefined | string>();
-    const [userMode, setUserMode] = useState<undefined | GameMode>();
 
     const [users, setUsers] = useState<UserRanks[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -30,28 +22,26 @@ const Users = () => {
     const [category, setCategory] = useState<'performance' | 'score'>('performance');
     const [mode, setMode] = useState<GameMode>('osu');
 
-    const debouncedValue = useDebounce(page, 500);
-
-    useEffect(() => {
-        setUsers([]);
-    }, [page])
-
-    useEffect((): void => {
-        setActualPage(page);
-        if (urlUser === undefined) {
-            setUserId(undefined);
-            setUserMode(undefined);
-            getUsers(category, mode);
-        } else {
-            const checkedMode: GameMode = urlMode?.toLowerCase() as GameMode;
-            setUserMode(checkedMode ? checkedMode : 'default');
-            setUserId(urlUser);
-        }
-    }, [urlUser, urlMode, debouncedValue]);
-
-    if (userId && userMode) return (<UserPage userId={userId} userMode={userMode} />);
-
     if (!users) return (<></>);
+
+    async function getUsers(c: 'score' | 'performance', m: GameMode) {
+        try {
+            setUsers([]);
+            setCategory(c)
+            setMode(m);
+            const d = await fina.post('/users', {
+                mode: m,
+                type: c,
+                page: page,
+            });
+            const users: UserRanks[] = d.ranking;
+            if (!users) return;
+            return d.ranking;
+        } catch (err) {
+            console.error(err);
+            addAlert('error', 'Failed to fetch users');
+        }
+    }
 
     return (
         <div className="flex flex-col gap-3 p-3">
@@ -107,22 +97,5 @@ const Users = () => {
             {users.length > 0 && <PageTabs setNewPage={setPage} current={page} min={1} max={200} />}
         </div>
     );
-
-    async function getUsers(c: 'score' | 'performance', m: GameMode) {
-        try {
-            setUsers([]);
-            setCategory(c)
-            setMode(m);
-            const d = await fina.post('/users', {
-                mode: m,
-                type: c,
-                page: page,
-            });
-            setUsers(d.ranking);
-        } catch (err) {
-            console.error(err);
-            addAlert('error', 'Failed to fetch users');
-        }
-    }
 }
 export default Users;

@@ -6,10 +6,9 @@ export type BeatmapsetStatus = "ranked" | "approved" | "qualified" | "loved" | "
 export const BeatmapsetStatuses: BeatmapsetStatus[] = ["ranked", "approved", "qualified", "loved", "pending", "wip", "graveyard"]
 
 export type BeatmapsetListItem = {
-    id: number,
-    beatmaps: Beatmapset[],
-    type: BeatmapsetCategory,
-    len: number,
+    tabId: number,
+    limit: number,
+    category: BeatmapsetCategory,
 }
 
 export type BeatmapsObj = {

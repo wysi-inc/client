@@ -8,13 +8,14 @@ import { FaHeadphonesAlt, FaDownload, FaFileDownload, FaStar, FaRegClock, FaItun
 import { Score } from "../../resources/types/score";
 import { Link } from "react-router-dom";
 import { useStats } from "../../resources/hooks/scoreHooks";
+import { Ref, forwardRef } from "react";
 
 interface Props {
     index: number;
     score: Score;
 }
 
-const ScoreCard = (props: Props) => {
+const ScoreCard = forwardRef((props: Props, ref?: Ref<HTMLDivElement>) => {
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
     const stats = useStats(props.score.beatmap, parseFloat((props.score.accuracy * 100).toFixed(2)) * 1, props.score.mods);
@@ -24,7 +25,7 @@ const ScoreCard = (props: Props) => {
     }
 
     return (
-        <div className="flex grow bg-custom-900"
+        <div className="flex grow bg-custom-900" ref={ref}
             style={{ background: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(https://assets.ppy.sh/beatmaps/${props.score.beatmapset.id}/covers/cover.jpg?${props.score.beatmapset.id}) center / cover no-repeat` }}>
             <div className="flex flex-col gap-2 p-3 grow"
                 style={{ backdropFilter: "blur(2px)" }}>
@@ -170,6 +171,6 @@ const ScoreCard = (props: Props) => {
             </div>
         </div>
     );
-}
+})
 
 export default ScoreCard;

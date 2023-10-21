@@ -1,19 +1,15 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
-import InfiniteScroll from 'react-infinite-scroller';
 
 import { FaAngleDoubleUp, FaHeart, FaHourglassHalf, FaListUl, FaSkull, FaStar, FaTrophy, FaUserFriends } from "react-icons/fa";
 
-import fina from "../../../helpers/fina";
 import { MapTab, User } from "../../../resources/types/user";
-import BeatmapsetCard from "../../beatmaps/BeatmapsetCard";
-import { Beatmapset, BeatmapsetCategory, BeatmapsetListItem, BeatmapsObj } from "../../../resources/types/beatmapset";
+import { BeatmapsetListItem } from "../../../resources/types/beatmapset";
+import UserMapsList from "./setup_comp/UserMapsList";
 
 interface Props {
     user: User,
-    beatmaps: BeatmapsObj,
-    setBeatmaps: Dispatch<SetStateAction<BeatmapsObj>>,
     height: number
     className: string,
 }
@@ -24,22 +20,23 @@ const BeatmapsPanel = (p: Props) => {
     const [tabIndex, setTabIndex] = useState<number>(getTabIndex());
 
     const beatmapsTabs: MapTab[] = [
-        { num: 1, title: t('beatmapset.status.favourite'), icon: <FaStar />, count: p.user.favourite_beatmapset_count, },
-        { num: 2, title: t('beatmapset.status.ranked'), icon: <FaAngleDoubleUp />, count: p.user.ranked_and_approved_beatmapset_count },
-        { num: 3, title: t('beatmapset.status.guest'), icon: <FaUserFriends />, count: p.user.guest_beatmapset_count },
-        { num: 4, title: t('beatmapset.status.loved'), icon: <FaHeart />, count: p.user.loved_beatmapset_count },
-        { num: 5, title: t('beatmapset.status.nominated'), icon: <FaTrophy />, count: p.user.nominated_beatmapset_count },
-        { num: 6, title: t('beatmapset.status.pending'), icon: <FaHourglassHalf />, count: p.user.pending_beatmapset_count },
-        { num: 7, title: t('beatmapset.status.graveyard'), icon: <FaSkull />, count: p.user.graveyard_beatmapset_count },
+        { tabId: 1, title: t('beatmapset.status.favourite'), icon: <FaStar />, count: p.user.favourite_beatmapset_count, },
+        { tabId: 2, title: t('beatmapset.status.ranked'), icon: <FaAngleDoubleUp />, count: p.user.ranked_and_approved_beatmapset_count },
+        { tabId: 3, title: t('beatmapset.status.guest'), icon: <FaUserFriends />, count: p.user.guest_beatmapset_count },
+        { tabId: 4, title: t('beatmapset.status.loved'), icon: <FaHeart />, count: p.user.loved_beatmapset_count },
+        { tabId: 5, title: t('beatmapset.status.nominated'), icon: <FaTrophy />, count: p.user.nominated_beatmapset_count },
+        { tabId: 6, title: t('beatmapset.status.pending'), icon: <FaHourglassHalf />, count: p.user.pending_beatmapset_count },
+        { tabId: 7, title: t('beatmapset.status.graveyard'), icon: <FaSkull />, count: p.user.graveyard_beatmapset_count },
     ]
+
     const beatmapsList: BeatmapsetListItem[] = [
-        { id: 1, beatmaps: p.beatmaps.favourite, len: p.user.favourite_beatmapset_count, type: 'favourite' },
-        { id: 2, beatmaps: p.beatmaps.ranked, len: p.user.ranked_beatmapset_count, type: 'ranked' },
-        { id: 3, beatmaps: p.beatmaps.guest, len: p.user.guest_beatmapset_count, type: 'guest' },
-        { id: 4, beatmaps: p.beatmaps.loved, len: p.user.loved_beatmapset_count, type: 'loved' },
-        { id: 5, beatmaps: p.beatmaps.nominated, len: p.user.nominated_beatmapset_count, type: 'nominated' },
-        { id: 6, beatmaps: p.beatmaps.pending, len: p.user.pending_beatmapset_count, type: 'pending' },
-        { id: 7, beatmaps: p.beatmaps.graveyard, len: p.user.graveyard_beatmapset_count, type: 'graveyard' },
+        { tabId: 1, limit: p.user.favourite_beatmapset_count, category: 'favourite' },
+        { tabId: 2, limit: p.user.ranked_beatmapset_count, category: 'ranked' },
+        { tabId: 3, limit: p.user.guest_beatmapset_count, category: 'guest' },
+        { tabId: 4, limit: p.user.loved_beatmapset_count, category: 'loved' },
+        { tabId: 5, limit: p.user.nominated_beatmapset_count, category: 'nominated' },
+        { tabId: 6, limit: p.user.pending_beatmapset_count, category: 'pending' },
+        { tabId: 7, limit: p.user.graveyard_beatmapset_count, category: 'graveyard' },
     ]
 
     return (
@@ -50,53 +47,21 @@ const BeatmapsPanel = (p: Props) => {
             </div>
             <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 {beatmapsTabs.map((tab: MapTab, i: number) => tab.count > 0 &&
-                    <button className={`tab flex flex-row gap-2 ${tabIndex === tab.num && 'tab-active'}`}
-                        onClick={() => setTabIndex(tab.num)} key={i}>
+                    <button className={`tab flex flex-row gap-2 ${tabIndex === tab.tabId && 'tab-active'}`}
+                        onClick={() => setTabIndex(tab.tabId)} key={i}>
                         {tab.icon}
                         <div>{tab.title}</div>
                         <div className="badge">{tab.count}</div>
                     </button>)}
             </div>
             {beatmapsList.map((b: BeatmapsetListItem, i: number) =>
-                <div hidden={tabIndex !== b.id} style={{ height: 620 }} className="overflow-x-hidden overflow-y-scroll" key={i}>
-                    <InfiniteScroll
-                        pageStart={0}
-                        loadMore={() => getBeatmaps(b.type, 15, b.beatmaps.length)}
-                        hasMore={b.beatmaps.length < b.len}
-                        loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                        useWindow={false}
-                    >
-                        {b.beatmaps.map((bs: Beatmapset, ind: number) =>
-                            <BeatmapsetCard key={ind} index={ind} beatmapset={bs} />
-                        )}
-                    </InfiniteScroll>
+                <div hidden={tabIndex !== b.tabId} className="overflow-x-hidden overflow-y-scroll grow" key={i}>
+                    <UserMapsList section="beatmapsets" playmode={"osu"} limit={b.limit} category={b.category} userId={p.user.id} /> 
                 </div>
             )}
         </div>
     )
-    async function getBeatmaps(t: BeatmapsetCategory, l: number, o: number) {
-        try {
-            const d: Beatmapset[] = await fina.post('/userbeatmaps', {
-                id: p.user.id,
-                limit: l,
-                offset: o,
-                type: t,
-            });
-            if (d.length < 1) return;
-            switch (t) {
-                case 'favourite': p.setBeatmaps((prev) => ({ ...prev, favourite: [...prev.favourite, ...d] })); break;
-                case 'ranked': p.setBeatmaps((prev) => ({ ...prev, ranked: [...prev.ranked, ...d] })); break;
-                case 'guest': p.setBeatmaps((prev) => ({ ...prev, guest: [...prev.guest, ...d] })); break;
-                case 'loved': p.setBeatmaps((prev) => ({ ...prev, loved: [...prev.loved, ...d] })); break;
-                case 'nominated': p.setBeatmaps((prev) => ({ ...prev, nominated: [...prev.loved, ...d] })); break;
-                case 'pending': p.setBeatmaps((prev) => ({ ...prev, pending: [...prev.pending, ...d] })); break;
-                case 'graveyard': p.setBeatmaps((prev) => ({ ...prev, graveyard: [...prev.graveyard, ...d] })); break;
-                default: break;
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
+
     function getTabIndex() {
         let beatmapsTab: number = 0;
         if (p.user.favourite_beatmapset_count > 0) beatmapsTab = 1;

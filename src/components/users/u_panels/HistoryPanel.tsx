@@ -12,6 +12,9 @@ import { Score } from "../../../resources/types/score";
 import { colors } from "../../../resources/global/tools";
 import TopScoresPanel from "./setup_comp/TopScoresPanel";
 import { MonthlyData, User } from "../../../resources/types/user";
+import { useQuery } from "react-query";
+import Loading from "../../../web/w_comp/Loading";
+import fina from "../../../helpers/fina";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
     labels: [],
@@ -66,13 +69,14 @@ const lineOptionsReverse: ChartOptions<'line'> = {
 
 interface Props {
     user: User,
-    best: Score[],
     className: string,
 }
 
 const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
     const { t } = useTranslation();
     const [tabIndex, setTabIndex] = useState<number>(1);
+
+    const { data: bestData, status: bestStatus } = useQuery(['bestData'], getBest);
 
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
     const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
@@ -85,6 +89,17 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
         getPlaysData(p.user);
         getReplaysData(p.user);
     }, [p.user])
+
+    const topScores = () => {
+        switch (bestStatus) {
+            case "error":
+                return <div>error</div>;
+            case "success":
+                return <TopScoresPanel data={p.user} best={bestData} />;
+            default:
+                return <Loading />;
+        }
+    }
 
     return (
         <div className={p.className} ref={ref}>
@@ -130,7 +145,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
                 </div>
             </div>
             <TitleBar title={t('user.sections.scores_summary.title')} icon={<FaChartPie />} info="this is a summary of the user's top plays" />
-            <TopScoresPanel data={p.user} best={p.best} />
+            {topScores()}
         </div>
     )
 
@@ -147,7 +162,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
             }],
         })
     }
-    
+
     function getCountryData(user: User) {
         if (!user?.db_info.ranks.country_rank) return;
         setCountryHistoryData({
@@ -160,7 +175,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
                 tension: 0.1,
             }],
         })
-    } 
+    }
 
     function getPlaysData(user: User) {
         if (!user?.monthly_playcounts) return;
@@ -188,6 +203,16 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
                 tension: 0.1,
             }],
         })
+    }
+
+    function getBest() {
+        return fina.post('/userscores', {
+            id: p.user.id,
+            playmode: p.user.playmode,
+            limit: 100,
+            offset: 0,
+            type: 'best'
+        });
     }
 })
 

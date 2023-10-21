@@ -5,10 +5,9 @@ export type ScoreCategory = 'pinned' | 'best' | 'firsts' | 'recent';
 export const ScoreCategories: ScoreCategory[] = ['pinned', 'best', 'firsts', 'recent'];
 
 export type ScoreListItem = {
-  id: number,
-  scores: Score[],
-  type: ScoreCategory,
-  len: number,
+  tabId: number,
+  limit: number,
+  category: ScoreCategory,
 }
 
 export type ScoresObj = {

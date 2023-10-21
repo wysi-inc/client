@@ -264,14 +264,14 @@ export type Peripherals = {
 }
 
 export type MapTab = {
-    num: number,
+    tabId: number,
     title: string,
     icon: JSX.Element,
     count: number,
 }
 
 export type Map = {
-    num: number,
+    tabId: number,
     thing: ScoreCategory | BeatmapsetCategory,
     group: 'scores' | 'beatmapsets',
     tab: number,
