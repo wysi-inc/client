@@ -4,16 +4,16 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import { Chart, LineController, LineElement, Legend, PointElement, Tooltip, RadialLinearScale, LinearScale, TimeScale} from 'chart.js';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Home from './components/c_web/Home';
-import OAuth from './components/c_web/OAuth';
-import Navbar from "./components/c_web/Navbar";
-import Footer from './components/c_web/Footer';
-import Users from './components/c_users/Users';
+import Home from './web/Home';
+import OAuth from './web/OAuth';
+import Navbar from "./web/Navbar";
+import Footer from './web/Footer';
+import Users from './components/users/Users';
 import { colors } from './resources/global/tools';
-import Beatmaps from "./components/c_beatmaps/Beatmaps";
-import SongPlayer from "./components/c_web/w_comp/SongPlayer";
-import ScrollToTop from './components/c_web/w_comp/ScrollToTop';
-import AlertManager from './components/c_web/w_comp/AlertManager';
+import Beatmaps from "./components/beatmaps/Beatmaps";
+import SongPlayer from "./web/w_comp/SongPlayer";
+import ScrollToTop from './web/w_comp/ScrollToTop';
+import AlertManager from './web/w_comp/AlertManager';
 
 import 'chartjs-adapter-moment';
 import './assets/fonts/fonts.css';

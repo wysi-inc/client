@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Beatmap } from "../interfaces/beatmapset";
+import { Beatmap } from "../types/beatmapset";
 import fina from "../../helpers/fina";
 import { getModsInt } from "../global/functions";
 

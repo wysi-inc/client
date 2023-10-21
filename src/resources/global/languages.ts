@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import fina from "../../helpers/fina";
-import { LanguageProgress } from "../interfaces/general";
+import { LanguageProgress } from "../types/general";
 
 interface LanguageName {
     code: string,

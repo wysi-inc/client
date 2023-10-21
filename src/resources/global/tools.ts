@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { ColorsInterface } from "../interfaces/general";
-import { alertProps, alertType } from "../../components/c_web/w_comp/AlertManager";
+import { ColorsInterface } from "../types/general";
+import { alertProps, alertType } from "../../web/w_comp/AlertManager";
 
 export const colors: ColorsInterface = {
     ui: {

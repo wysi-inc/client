@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import fina from "../../helpers/fina";
-import { alertManager, alertManagerInterface } from "../global/tools";
-import { GameModeType, User } from "../interfaces/user";
-import { Score, ScoreType, ScoresObj } from "../interfaces/score";
-import { BeatmapsObj } from "../interfaces/beatmapset";
 
-export function useGetUser(id: string, m: GameModeType) {
+import { User } from "../types/user";
+import fina from "../../helpers/fina";
+import { GameMode } from "../types/general";
+import { BeatmapsObj } from "../types/beatmapset";
+import { Score, ScoresObj, ScoreCategory } from "../types/score";
+import { alertManager, alertManagerInterface } from "../global/tools";
+export function useGetUser(id: string, m: GameMode) {
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
     const BEATMAPS_INITIAL: BeatmapsObj = {
@@ -25,7 +26,7 @@ export function useGetUser(id: string, m: GameModeType) {
     }
 
     const [user, setUser] = useState<User | null | undefined>(undefined);
-    const [mode, setMode] = useState<GameModeType>('osu');
+    const [mode, setMode] = useState<GameMode>('osu');
     const [scores, setScores] = useState<ScoresObj>(SCORES_INITIAL);
     const [beatmaps, setBeatmaps] = useState<BeatmapsObj>(BEATMAPS_INITIAL);
 
@@ -59,7 +60,7 @@ export function useGetUser(id: string, m: GameModeType) {
                 return;
             };
             setUser(d);
-            let searchMode: GameModeType;
+            let searchMode: GameMode;
 
             if (mode === "default") searchMode = user.playmode;
             else searchMode = mode;
@@ -75,7 +76,7 @@ export function useGetUser(id: string, m: GameModeType) {
         }
     }
 
-    async function getBest(id: number, m: GameModeType, t: ScoreType, l: number, o: number) {
+    async function getBest(id: number, m: GameMode, t: ScoreCategory, l: number, o: number) {
         try {
             const d: Score[] = await fina.post('/userscores', {
                 id: id,

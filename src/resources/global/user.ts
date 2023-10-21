@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import fina from "../../helpers/fina";
-import { GameModeType } from "../interfaces/user";
+import { GameMode } from "../types/general";
 
-export const modes: GameModeType[] = ["osu", "taiko", "fruits", "mania"];
+export const modes: GameMode[] = ["osu", "taiko", "fruits", "mania"];
 
 export interface UserStoreInt {
     isLogged: boolean,
