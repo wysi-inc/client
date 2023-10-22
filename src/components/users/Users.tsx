@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
@@ -10,37 +10,33 @@ import { UserRanks } from "../../resources/types/user";
 import { GameMode } from "../../resources/types/general";
 import { alertManager, alertManagerInterface } from "../../resources/global/tools";
 import { useQuery } from "react-query";
+import Loading from "../../web/w_comp/Loading";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useUpdateEffect } from "usehooks-ts";
 
 const Users = () => {
 
     const { t } = useTranslation();
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
-    const [users, setUsers] = useState<UserRanks[]>([]);
     const [page, setPage] = useState<number>(1);
     const [actualPage, setActualPage] = useState<number>(1);
-    const [category, setCategory] = useState<'performance' | 'score'>('performance');
+
+    const debounce = useDebounce(page, 1000);
+
+    useUpdateEffect(() => {
+        setActualPage(page);
+    }, [debounce])
+
+    const [section, setSection] = useState<'performance' | 'score'>('performance');
     const [mode, setMode] = useState<GameMode>('osu');
 
-    if (!users) return (<></>);
+    const { data: usersData, status: usersStatus } = useQuery(['rankings', actualPage, section, mode], getUsers);
+    const users: UserRanks[] = (usersData as any)?.ranking;
 
-    async function getUsers(c: 'score' | 'performance', m: GameMode) {
-        try {
-            setUsers([]);
-            setCategory(c)
-            setMode(m);
-            const d = await fina.post('/users', {
-                mode: m,
-                type: c,
-                page: page,
-            });
-            const users: UserRanks[] = d.ranking;
-            if (!users) return;
-            return d.ranking;
-        } catch (err) {
-            console.error(err);
-            addAlert('error', 'Failed to fetch users');
-        }
+    if (usersStatus === 'error') {
+        addAlert('error', t('alerts.users_fail'));
+        return <div></div>;
     }
 
     return (
@@ -49,11 +45,11 @@ const Users = () => {
                 <div className="justify-start join">
                     <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
-                            getUsers('performance', mode);
+                            setSection('performance');
                         }}>{t('user.performance')}</button>
                     <button className="font-bold join-item btn btn-secondary text-base-100"
                         onClick={() => {
-                            getUsers('score', mode);
+                            setSection('score');
                         }}>{t('score.ranked_score')}</button>
                 </div>
                 <div className="flex justify-center">
@@ -63,9 +59,9 @@ const Users = () => {
                     {modes.map(m =>
                         <button key={m}
                             className="font-bold join-item btn btn-secondary text-base-100"
-                            onClick={() => {
-                                getUsers(category, m);
-                            }}>{m}</button>
+                            onClick={() => setMode(m)}>
+                            {m}
+                        </button>
                     )}
                 </div>
             </div>
@@ -86,16 +82,23 @@ const Users = () => {
                         </tr>
                     </thead>
                     <tbody className="mt-3">
-                        {users.length > 0 ?
+                        {usersStatus === 'loading' || !users ? <Loading /> :
                             users.map((user, index) =>
-                                <UserCard mode={mode} user={user} category={category} index={index + (50 * (actualPage - 1) + 1)} key={index} />
-                            ) :
-                            <tr className="loading loading-dots loading-md"></tr>}
+                                <UserCard mode={mode} user={user} section={section} index={index + (50 * (actualPage - 1) + 1)} key={index} />
+                            )}
                     </tbody>
                 </table>
             </div>
-            {users.length > 0 && <PageTabs setNewPage={setPage} current={page} min={1} max={200} />}
+            {usersStatus === 'success' || users ? <PageTabs setNewPage={setPage} current={page} min={1} max={200} /> : ''}
         </div>
     );
+
+    function getUsers() {
+        return fina.post('/users', {
+            mode: mode,
+            type: section,
+            page: page,
+        });
+    }
 }
 export default Users;

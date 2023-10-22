@@ -8,7 +8,7 @@ import { GameMode } from '../../resources/types/general';
 interface Props {
     user: UserRanks;
     index: number;
-    category: string;
+    section: string;
     mode: GameMode;
 }
 
