@@ -56,7 +56,7 @@ const BeatmapsPanel = (p: Props) => {
             </div>
             {beatmapsList.map((b: BeatmapsetListItem, i: number) =>
                 <div hidden={tabIndex !== b.tabId} className="overflow-x-hidden overflow-y-scroll grow" key={i}>
-                    <UserMapsList section="beatmapsets" playmode={"osu"} limit={b.limit} category={b.category} userId={p.user.id} /> 
+                    <UserMapsList section="beatmapsets" mode={"osu"} limit={b.limit} category={b.category} userId={p.user.id} /> 
                 </div>
             )}
         </div>

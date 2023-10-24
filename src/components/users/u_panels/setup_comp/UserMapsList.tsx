@@ -15,7 +15,7 @@ interface Props {
     limit: number,
     userId: number,
     section: "scores" | "beatmapsets",
-    playmode: GameMode,
+    mode: GameMode,
 }
 
 const UserMapsList = (p: Props) => {
@@ -24,7 +24,7 @@ const UserMapsList = (p: Props) => {
     const { ref, inView } = useInView();
 
     const { data, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage } =
-        useInfiniteQuery(p.category, ({ pageParam = 0 }) => getMaps(pageParam), {
+        useInfiniteQuery([p.category, p.mode], ({ pageParam = 0 }) => getMaps(pageParam), {
             getNextPageParam: (lastPage, allPages) => {
                 const nextPage = lastPage.length === LIMIT ? allPages.length + 1 : undefined;
                 return nextPage;
@@ -64,7 +64,7 @@ const UserMapsList = (p: Props) => {
         }
         return fina.post('/userscores', {
             id: p.userId,
-            playmode: p.playmode,
+            mode: p.mode,
             limit: LIMIT,
             offset: page * LIMIT,
             type: p.category

@@ -20,3 +20,7 @@ export function getModsInt(ms: string[] | undefined) {
     const mods = ms?.map(m => m === 'NC' ? 64 : (modsInt as any)[m]);
     return mods !== undefined ? mods.length > 0 ? mods.reduce((a, b) => a + b) : mods[0] : '0';
 }
+
+export function isNumeric(str: string) {
+    return !isNaN(Number(str));
+}

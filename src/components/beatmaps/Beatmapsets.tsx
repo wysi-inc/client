@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
 import { useDebounce } from "usehooks-ts";
-import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroller";
 
 import { BsCheckLg } from "react-icons/bs";
@@ -10,7 +9,6 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 import MultiSlider from "./b_comp/MultiSlider";
 import fina from "../../helpers/fina";
-import BeatmapsetPage from "./BeatmapsetPage";
 import BeatmapsetCard from "./BeatmapsetCard";
 import { colors } from "../../resources/global/tools";
 import { GameMode, GameModes } from "../../resources/types/general";
@@ -34,9 +32,7 @@ interface Query {
     status: BeatmapsetStatus[],
 }
 
-const BeatmapsPage = () => {
-    const { urlSetId } = useParams();
-    const { urlDiffId } = useParams();
+const Beatmapsets = () => {
 
     const bpmLimit = 300;
     const srLimit = 10;
@@ -74,17 +70,9 @@ const BeatmapsPage = () => {
 
     const debouncedValue = useDebounce<Query>(query, 1000);
 
-    useEffect((): void => {
-        if (urlSetId === undefined) {
-            getUrlParams();
-            getBeatmaps();
-        }
-    }, [])
-
     useEffect(() => {
-        if (urlSetId === undefined) {
-            getBeatmaps();
-        }
+
+        getBeatmaps();
     }, [debouncedValue]);
 
 
@@ -174,11 +162,12 @@ const BeatmapsPage = () => {
         setResultsNum(0);
         setResults([])
         try {
+            const q = getQuery();
             const d = await fina.post('/beatmapsets', {
-                query: getQuery().q,
-                filter: getQuery().f,
-                mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameMode) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
-                status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatus) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
+                query: q.q,
+                filter: q.f,
+                mode: getModesInts(),
+                status: getStatusesInts(),
                 limit: 50,
                 offset: 0,
                 sort: query.sort,
@@ -187,6 +176,48 @@ const BeatmapsPage = () => {
             setResults(d.results)
         } catch (err) {
             console.error(err);
+        }
+
+        function getModesInts(): number[] {
+            if (query.modes.length > 1) return [-1];
+            return query.modes.map((m: GameMode) => {
+                switch (m) {
+                    case "osu":
+                        return 0;
+                    case "taiko":
+                        return 1
+                    case "fruits":
+                        return 2
+                    case "mania":
+                        return 3
+                    default:
+                        return -1;
+                }
+            });
+        }
+
+        function getStatusesInts() {
+            if (query.status.length < 1) return [-3];
+            return query.status.map((s: BeatmapsetStatus) => {
+                switch (s) {
+                    case "ranked":
+                        return 1;
+                    case "approved":
+                        return 2
+                    case "qualified":
+                        return 3
+                    case "loved":
+                        return 4
+                    case "pending":
+                        return 0;
+                    case "wip":
+                        return -1;
+                    case "graveyard":
+                        return -2;
+                    default:
+                        return -1;
+                }
+            });
         }
     }
 
@@ -208,8 +239,6 @@ const BeatmapsPage = () => {
         }
     }
 
-    if (urlSetId) return (<BeatmapsetPage setId={parseInt(urlSetId)} diffId={parseInt(urlDiffId ? urlDiffId : "")} />);
-
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setQuery((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
@@ -222,7 +251,19 @@ const BeatmapsPage = () => {
         let val = '';
         if (name === "modes") val = value as GameMode;
         if (name === "status") val = value as BeatmapsetStatus;
-        setQuery((prev) => ({ ...prev, [name]: ((prev as any)[name] as any).includes(val) ? ((prev as any)[name] as any).filter((v: any) => v !== val) : [...((prev as any)[name] as any), val] }));
+        setQuery((prev) => {
+            const currentArray = (prev as any)[name] as any;
+            const isValueInArray = currentArray.includes(val);
+            let updatedArray;
+
+            if (isValueInArray) {
+                updatedArray = currentArray.filter((v: any) => v !== val);
+            } else {
+                updatedArray = [...currentArray, val];
+            }
+
+            return { ...prev, [name]: updatedArray };
+        });
     }
 
     function handleToggleSort(sor: string) {
@@ -456,4 +497,4 @@ const BeatmapsPage = () => {
 
 }
 
-export default BeatmapsPage;
+export default Beatmapsets;

@@ -15,6 +15,7 @@ import { MonthlyData, User } from "../../../resources/types/user";
 import { useQuery } from "react-query";
 import Loading from "../../../web/w_comp/Loading";
 import fina from "../../../helpers/fina";
+import { GameMode } from "../../../resources/types/general";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
     labels: [],
@@ -69,6 +70,7 @@ const lineOptionsReverse: ChartOptions<'line'> = {
 
 interface Props {
     user: User,
+    mode: GameMode,
     className: string,
 }
 
@@ -76,7 +78,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
     const { t } = useTranslation();
     const [tabIndex, setTabIndex] = useState<number>(1);
 
-    const { data: bestData, status: bestStatus } = useQuery(['bestData'], getBest);
+    const { data: bestData, status: bestStatus } = useQuery(['bestData', p.user.id, p.mode], getBest);
 
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
     const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
@@ -208,7 +210,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
     function getBest() {
         return fina.post('/userscores', {
             id: p.user.id,
-            playmode: p.user.playmode,
+            mode: p.mode,
             limit: 100,
             offset: 0,
             type: 'best'

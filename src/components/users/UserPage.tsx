@@ -22,9 +22,7 @@ const UserPage = () => {
     const { urlUser } = useParams();
     const { urlMode } = useParams();
 
-    const { data: userData, status: userStatus } = useQuery('user', getUser);
-
-    const mode = urlMode as GameMode;
+    const { data: userData, status: userStatus } = useQuery(['user', urlUser, urlMode], getUser);
 
     function getUser() {
         return fina.post('/user', { id: urlUser, mode: urlMode });
@@ -40,14 +38,17 @@ const UserPage = () => {
     }
 
     const user: User = userData as any;
+    const mode : GameMode = (urlMode as GameMode) ? urlMode as GameMode :  user.playmode;
+
+    window.history.replaceState({}, '', `/users/${user.id}/${mode}`);
     
     const CSS = "bg-custom-950 overflow-hidden rounded-lg drop-shadow-lg flex flex-col col-span-5";
 
     return <>
-        <TopPanel user={user} mode={user.playmode} />
+        <TopPanel user={user} mode={mode} />
         <BarPanel user={user} />
         <div className="grid grid-cols-5 gap-4 p-4">
-            <HistoryPanel className={`${CSS} xl:col-span-3`} ref={divRef} user={user} />
+            <HistoryPanel className={`${CSS} xl:col-span-3`} ref={divRef} user={user} mode={mode} />
             <ScoresPanel className={`${CSS} xl:col-span-2`} heigth={divPx} user={user} mode={mode} />
             <SkinPanel className={`${CSS} xl:col-span-2`} />
             <SetupPanel className={`${CSS} xl:col-span-3`} id={user.id} setup={user.db_info.setup} playstyle={user.playstyle} />

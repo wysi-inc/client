@@ -10,7 +10,7 @@ import Navbar from "./web/Navbar";
 import Footer from './web/Footer';
 import Users from './components/users/Users';
 import { colors } from './resources/global/tools';
-import Beatmaps from "./components/beatmaps/Beatmaps";
+import Beatmaps from "./components/beatmaps/Beatmapsets";
 import SongPlayer from "./web/w_comp/SongPlayer";
 import ScrollToTop from './web/w_comp/ScrollToTop';
 import AlertManager from './web/w_comp/AlertManager';
@@ -20,8 +20,8 @@ import './assets/fonts/fonts.css';
 import './App.css';
 import './resources/langs';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import UserPage from './components/users/UserPage';
+import BeatmapsetPage from './components/beatmaps/BeatmapsetPage';
 
 Chart.register(zoomPlugin, LineController, LineElement, Legend, PointElement, Tooltip, RadialLinearScale, LinearScale, TimeScale);
 Chart.defaults.plugins.legend.display = false;
@@ -37,11 +37,11 @@ Chart.defaults.borderColor = colors.ui.font + '22';
 
 const queryClient = new QueryClient({
     defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false, // default: true
-      },
-    },
-  });
+        queries: {
+            refetchOnWindowFocus: false, // default: true
+        }
+    }
+});
 
 function App() {
     return (
@@ -59,7 +59,8 @@ function App() {
                                     <Route path="/oauth-redirect" element={<OAuth />} />
                                     <Route path="/users" element={<Users />} />
                                     <Route path="/users/:urlUser/:urlMode?" element={<UserPage />} />
-                                    <Route path="/beatmaps/:urlSetId?/:urlDiffId?" element={<Beatmaps />} />
+                                    <Route path="/beatmaps/" element={<Beatmaps />} />
+                                    <Route path="/beatmaps/:urlSetId/:urlDiffId?" element={<BeatmapsetPage/>}/>
                                 </Routes>
                             </main>
                         </div>

@@ -47,7 +47,7 @@ const ScoresPanel = (p: ScoresPanelProps) => {
             </div>
             {scoresList.map((s: ScoreListItem, i: number) =>
                 <div hidden={tabIndex !== s.tabId} className="overflow-x-hidden overflow-y-scroll grow" key={i}>
-                <UserMapsList section="scores" playmode={p.mode} limit={s.limit} category={s.category} userId={p.user.id} /> 
+                <UserMapsList section="scores" mode={p.mode} limit={s.limit} category={s.category} userId={p.user.id} /> 
             </div>
             )}
         </div>
