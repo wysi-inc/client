@@ -103,7 +103,8 @@
             "nominated": "Номинированный",
             "pending": "Ожидание",
             "graveyard": "Кладбище",
-            "wip": "In Progress"
+            "wip": "In Progress",
+            "approved": "Approved"
         },
         "length": "Длительность",
         "bpm": "УД/МИН"
