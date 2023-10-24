@@ -103,7 +103,8 @@
             "nominated": "Nominēts",
             "pending": "Neizšķirts",
             "graveyard": "Pamesta",
-            "wip": "Notiek process"
+            "wip": "Notiek process",
+            "approved": "Approved"
         },
         "length": "Garums",
         "bpm": "BPM"
