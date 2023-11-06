@@ -135,6 +135,14 @@ export type Availability = {
     more_information?: null;
 }
 
+export type BeatmapPlays = {
+    beatmap_id: number;
+    count: number;
+    beatmap: Beatmap;
+    beatmapset: Beatmapset;
+}
+  
+
 export type SongLanguageType =
     | "any"
     | "English"

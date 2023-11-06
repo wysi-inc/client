@@ -34,7 +34,7 @@ const ScoresPanel = (p: ScoresPanelProps) => {
     ]
 
     return (
-        <div className={p.className} style={{ height: p.heigth }}>
+        <div className={p.className}>
             <TitleBar title={t('user.sections.scores')} icon={<FaListUl />} />
             <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 {scoresTabs.map((tab: MapTab, i: number) => tab.count > 0 &&
@@ -46,7 +46,7 @@ const ScoresPanel = (p: ScoresPanelProps) => {
                     </button>)}
             </div>
             {scoresList.map((s: ScoreListItem, i: number) =>
-                <div hidden={tabIndex !== s.tabId} className="overflow-x-hidden overflow-y-scroll grow" key={i}>
+                <div hidden={tabIndex !== s.tabId} className="grow" key={i}>
                 <UserMapsList section="scores" mode={p.mode} limit={s.limit} category={s.category} userId={p.user.id} /> 
             </div>
             )}

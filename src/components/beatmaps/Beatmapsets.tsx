@@ -163,7 +163,7 @@ const Beatmapsets = () => {
         setResults([])
         try {
             const q = getQuery();
-            const d = await fina.post('/beatmapsets', {
+            const d = await fina.post('/beatmapet/search', {
                 query: q.q,
                 filter: q.f,
                 mode: getModesInts(),

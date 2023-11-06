@@ -94,7 +94,7 @@ const Users = () => {
     );
 
     function getUsers() {
-        return fina.post('/users', {
+        return fina.post('/user/list', {
             mode: mode,
             type: section,
             page: page,

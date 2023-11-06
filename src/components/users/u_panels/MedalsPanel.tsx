@@ -21,7 +21,7 @@ const MedalsPanel = (p: Props) => {
     const achievedMedalsCount = useMemo(() => getAchievedMedalsCount(p.user.user_achievements, medalsByCategory), [medals]);
 
     return (
-        <div className={p.className} style={{ height: p.heigth }}>
+        <div className={p.className}>
             <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                 <FaMedal />
                 <div>Medals</div>
@@ -96,7 +96,7 @@ const MedalsPanel = (p: Props) => {
         return m;
         async function getM() {
             try {
-                const d: Medal[]  = await fina.get('/getMedals');
+                const d: Medal[]  = await fina.get('/medals');
                 d.sort((a: any, b: any) => parseInt(a.MedalID) - parseInt(b.MedalID));
                 setM(d);
             } catch (err) {

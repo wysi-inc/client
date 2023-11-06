@@ -17,7 +17,7 @@ import { UserStore, UserStoreInt } from "../../../resources/global/user";
 import { Computer, Keyboard, Mouse, Tablet } from "../../../resources/types/setup";
 
 interface Props {
-    id: number,
+    userId: number,
     setup: Setup | null,
     className: string;
     playstyle: string[] | null,
@@ -27,7 +27,7 @@ const SetupPanel = (p: Props) => {
     const {t} = useTranslation();
 
     const user = UserStore((state: UserStoreInt) => state.user);
-    const me = user.id === p.id;
+    const me = user.id === p.userId;
 
     const TABLET_EX: Tablet = {
         name: '',
@@ -90,7 +90,7 @@ const SetupPanel = (p: Props) => {
     }
 
     function handleSubmit() {
-        fina.sput('/setup', {
+        fina.sput('/user/setup', {
             setup: {
                 tablet,
                 keyboard,

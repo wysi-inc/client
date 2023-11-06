@@ -33,7 +33,7 @@ const SearchBox = () => {
             return;
         }
         try {
-            const d = await fina.post('/userQuery', { username: username });
+            const d = await fina.post('/user/search', { username: username });
             setUserList(d.user.data)
         } catch (err) {
             console.error(err);

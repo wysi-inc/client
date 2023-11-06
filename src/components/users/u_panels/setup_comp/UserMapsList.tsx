@@ -1,6 +1,4 @@
-import { useUpdateEffect } from "usehooks-ts";
 import { useInfiniteQuery } from "react-query";
-import { useInView } from "react-intersection-observer";
 
 import fina from "../../../../helpers/fina";
 import ScoreCard from "../../../scores/ScoreCard";
@@ -9,6 +7,7 @@ import BeatmapsetCard from "../../../beatmaps/BeatmapsetCard";
 import { GameMode } from "../../../../resources/types/general";
 import { Score, ScoreCategory } from "../../../../resources/types/score";
 import { Beatmapset, BeatmapsetCategory } from "../../../../resources/types/beatmapset";
+import { MdExpandMore } from "react-icons/md";
 
 interface Props {
     category: ScoreCategory | BeatmapsetCategory,
@@ -21,53 +20,46 @@ interface Props {
 const UserMapsList = (p: Props) => {
     const LIMIT = 15;
 
-    const { ref, inView } = useInView();
-
     const { data, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage } =
-        useInfiniteQuery([p.category, p.mode], ({ pageParam = 0 }) => getMaps(pageParam), {
+        useInfiniteQuery([`${p.category}Data`, p.userId, p.mode], ({ pageParam = 0 }) => getMaps(pageParam), {
             getNextPageParam: (lastPage, allPages) => {
-                const nextPage = lastPage.length === LIMIT ? allPages.length + 1 : undefined;
+                const nextPage = lastPage.length === LIMIT ? allPages.length : undefined;
                 return nextPage;
             },
         });
 
-    useUpdateEffect(() => {
-        if (inView && hasNextPage) {
-            fetchNextPage();
-        }
-    }, [inView, fetchNextPage, hasNextPage]);
+    if (!isSuccess) return <Loading />;
+    if (!data?.pages) return <Loading />;
 
-    if (!isSuccess) return <Loading/>;
-    if (!data?.pages) return <Loading/>;
-
-    return (<>
-        {data.pages.map((page, i) =>
-            p.section === "scores" ?
-                page.map((score: Score, j: number) =>
-                    <ScoreCard key={`${i}${j}`} index={j} score={score} ref={page.length === j + 1 && data.pages.length === i + 1 ? ref : undefined} />
-                ) :
-                page.map((beatmapset: Beatmapset, j: number) =>
-                    <BeatmapsetCard key={`${i}${j}`} index={j} beatmapset={beatmapset} ref={page.length === j + 1 && data.pages.length === i + 1 ? ref : undefined} />
-                ))
-        }
-        {isFetchingNextPage && <Loading />}
-    </>);
+    return (
+        <div className="flex flex-col gap-4 p-3 bg-custom-950">
+            {data.pages.map((page, i) =>
+                p.section === "scores" ?
+                    page.map((score: Score, j: number) =>
+                        <ScoreCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} score={score} />
+                    ) :
+                    page.map((beatmapset: Beatmapset, j: number) =>
+                        <BeatmapsetCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmapset={beatmapset} />
+                    ))
+            }
+            {hasNextPage &&
+                <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
+                    <MdExpandMore/>
+                    {isFetchingNextPage ? <Loading /> : 'Load More' }
+                    <MdExpandMore/>
+                </button>
+            }
+            
+        </div>
+    );
 
     function getMaps(page: number) {
-        if (p.section === "beatmapsets") {
-            return fina.post('/userbeatmaps', {
-                id: p.userId,
-                limit: LIMIT,
-                offset: page * LIMIT,
-                type: p.category,
-            });
-        }
-        return fina.post('/userscores', {
+        return fina.post(`/user/${p.section}`, {
             id: p.userId,
             mode: p.mode,
             limit: LIMIT,
             offset: page * LIMIT,
-            type: p.category
+            type: p.category,
         });
     }
 

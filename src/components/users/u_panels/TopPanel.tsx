@@ -16,7 +16,7 @@ import CountryShape from "../u_comp/CountryShape";
 import SupporterIcon from "../u_comp/SupporterIcon";
 import { colors } from "../../../resources/global/tools";
 import { GameMode } from "../../../resources/types/general";
-import { BarPieChartData } from "./setup_comp/TopScoresPanel";
+import { BarPieChartData } from "./ScoresSumary";
 import { User, UserBadge, UserGroup } from "../../../resources/types/user";
 import { addDefaultSrc, secondsToTime } from "../../../resources/global/functions";
 

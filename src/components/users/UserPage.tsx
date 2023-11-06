@@ -15,6 +15,8 @@ import { User } from "../../resources/types/user";
 import { Score } from "../../resources/types/score";
 import { GameMode } from "../../resources/types/general";
 import Loading from "../../web/w_comp/Loading";
+import MostPlayed from "./u_panels/MostPlayed";
+import ScoresSumary from "./u_panels/ScoresSumary";
 
 const UserPage = () => {
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
@@ -42,18 +44,20 @@ const UserPage = () => {
 
     window.history.replaceState({}, '', `/users/${user.id}/${mode}`);
     
-    const CSS = "bg-custom-950 overflow-hidden rounded-lg drop-shadow-lg flex flex-col col-span-5";
+    const CSS = "bg-custom-950 overflow-hidden rounded-lg drop-shadow-lg flex flex-col";
 
     return <>
         <TopPanel user={user} mode={mode} />
         <BarPanel user={user} />
-        <div className="grid grid-cols-5 gap-4 p-4">
-            <HistoryPanel className={`${CSS} xl:col-span-3`} ref={divRef} user={user} mode={mode} />
-            <ScoresPanel className={`${CSS} xl:col-span-2`} heigth={divPx} user={user} mode={mode} />
-            <SkinPanel className={`${CSS} xl:col-span-2`} />
-            <SetupPanel className={`${CSS} xl:col-span-3`} id={user.id} setup={user.db_info.setup} playstyle={user.playstyle} />
-            <MedalsPanel className={`${CSS} xl:col-span-3`} heigth={divPx} user={user} />
-            <BeatmapsPanel className={`${CSS} xl:col-span-2`} height={divPx} user={user} />
+        <div className="flex flex-col gap-4 p-4">
+            <HistoryPanel className={CSS} ref={divRef} user={user} mode={mode} />
+            <ScoresSumary className={CSS} userId={user.id} mode={mode} />
+            <ScoresPanel className={CSS} heigth={divPx} user={user} mode={mode} />
+            <SkinPanel className={CSS} />
+            <SetupPanel className={CSS} userId={user.id} setup={user.db_info.setup} playstyle={user.playstyle} />
+            <MedalsPanel className={CSS} heigth={divPx} user={user} />
+            <BeatmapsPanel className={CSS} height={divPx} user={user} />
+            <MostPlayed className={CSS} heigth={divPx} userId={user.id} />
         </div>
     </>
 }

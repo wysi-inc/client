@@ -4,17 +4,14 @@ import { Line } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
 import { ChartData, ChartOptions } from 'chart.js';
 
-import { FaChartLine, FaChartPie, FaEye, FaGlobeAfrica, FaRegClock } from "react-icons/fa";
+import { FaChartLine, FaEye, FaGlobeAfrica, FaRegClock } from "react-icons/fa";
 
 import TitleBar from "./TitleBar";
 import CountryShape from "../u_comp/CountryShape";
-import { Score } from "../../../resources/types/score";
 import { colors } from "../../../resources/global/tools";
-import TopScoresPanel from "./setup_comp/TopScoresPanel";
+import TopScoresPanel from "./ScoresSumary";
 import { MonthlyData, User } from "../../../resources/types/user";
-import { useQuery } from "react-query";
 import Loading from "../../../web/w_comp/Loading";
-import fina from "../../../helpers/fina";
 import { GameMode } from "../../../resources/types/general";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
@@ -78,8 +75,6 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
     const { t } = useTranslation();
     const [tabIndex, setTabIndex] = useState<number>(1);
 
-    const { data: bestData, status: bestStatus } = useQuery(['bestData', p.user.id, p.mode], getBest);
-
     const [globalHistoryData, setGlobalHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
     const [countryHistoryData, setCountryHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
     const [playsHistoryData, setPlaysHistoryData] = useState<ChartData<'line'>>(LINE_CHART_INITIAL);
@@ -91,17 +86,6 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
         getPlaysData(p.user);
         getReplaysData(p.user);
     }, [p.user])
-
-    const topScores = () => {
-        switch (bestStatus) {
-            case "error":
-                return <div>error</div>;
-            case "success":
-                return <TopScoresPanel data={p.user} best={bestData} />;
-            default:
-                return <Loading />;
-        }
-    }
 
     return (
         <div className={p.className} ref={ref}>
@@ -146,8 +130,6 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
                     <Line data={replaysHistoryData} options={lineOptions} />
                 </div>
             </div>
-            <TitleBar title={t('user.sections.scores_summary.title')} icon={<FaChartPie />} info="this is a summary of the user's top plays" />
-            {topScores()}
         </div>
     )
 
@@ -207,15 +189,6 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
         })
     }
 
-    function getBest() {
-        return fina.post('/userscores', {
-            id: p.user.id,
-            mode: p.mode,
-            limit: 100,
-            offset: 0,
-            type: 'best'
-        });
-    }
 })
 
 export default HistoryPanel;

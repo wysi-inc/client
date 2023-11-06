@@ -38,7 +38,7 @@ Chart.defaults.borderColor = colors.ui.font + '22';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            refetchOnWindowFocus: false, // default: true
+            refetchOnWindowFocus: false,
         }
     }
 });
@@ -53,7 +53,7 @@ function App() {
                         <Navbar />
                         <AlertManager />
                         <div className="bg-custom-950">
-                            <main style={{ maxWidth: 1600 }} className="mx-auto bg-custom-600">
+                            <main style={{ maxWidth: 1000 }} className="mx-auto bg-custom-600">
                                 <Routes>
                                     <Route path="/" element={<Home />} />
                                     <Route path="/oauth-redirect" element={<OAuth />} />
