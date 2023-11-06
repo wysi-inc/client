@@ -64,7 +64,8 @@
                     "grade_ratios": "Grade Ratios",
                     "average_play": "Average Play"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Performance",
         "total_score": "Total Score",
