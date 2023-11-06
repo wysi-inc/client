@@ -64,7 +64,8 @@
                     "grade_ratios": "Αναλογίες Βαθμού",
                     "average_play": "Μέσος Όρος Παιχνιδιού"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Επίδοση",
         "total_score": "Συνολική Βαθμολογία",
