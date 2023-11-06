@@ -64,7 +64,8 @@
                     "grade_ratios": "Grade attiecība",
                     "average_play": "Vidēja Play"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Veiktspēja",
         "total_score": "Kopējie Punkti",
