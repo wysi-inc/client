@@ -64,7 +64,8 @@
                     "grade_ratios": "Proporció de notes",
                     "average_play": "Partida promitja"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Rendiment",
         "total_score": "Puntuació Total",
