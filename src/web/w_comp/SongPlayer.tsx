@@ -31,35 +31,33 @@ const SongPlayer = () => {
     }
 
     return (
-        <div className="sticky bottom-0 player" hidden={!show}>
-            <div className="overflow-hidden shadow-lg bg rounded-top">
-                <div className="flex flex-row items-center py-2 titleBox justify-content-between">
-                    <div className="flex flex-row items-center gap-3 px-3">
-                        <div className="spin">
-                            <BsDisc />
-                        </div>
-                        <div className="truncate d-inline-block" style={{ width: 400 }}>
-                            {artist} - {title}
-                        </div>
+        <div className="sticky bottom-0 inset-x-0 mx-auto player bg-custom-800 shadow-lg rounded-t-lg overflow-hidden" hidden={!show}>
+            <div className="flex flex-row items-center py-2 titleBox justify-content-between">
+                <div className="flex flex-row items-center gap-3 px-3">
+                    <div className="spin">
+                        <BsDisc />
                     </div>
-                    <button className="btn btn-ghost btn-circle btn-sm" onClick={stop}>
-                        <MdClose />
-                    </button>
+                    <div className="truncate d-inline-block" style={{ width: 400 }}>
+                        {artist} - {title}
+                    </div>
                 </div>
-                <ReactAudioPlayer
-                    src={mp3}
-                    volume={volume / 100}
-                    showFilledVolume={true}
-                    showSkipControls={false}
-                    showJumpControls={false}
-                    hasDefaultKeyBindings={false}
-                    layout={'horizontal-reverse'}
-                    autoPlay={true}
-                    autoPlayAfterSrcChange={true}
-                    onPlay={start}
-                    onEnded={stop}
-                />
+                <button className="btn btn-ghost btn-circle btn-sm" onClick={stop}>
+                    <MdClose />
+                </button>
             </div>
+            <ReactAudioPlayer
+                src={mp3}
+                volume={volume / 100}
+                showFilledVolume={true}
+                showSkipControls={false}
+                showJumpControls={false}
+                hasDefaultKeyBindings={false}
+                layout={'horizontal-reverse'}
+                autoPlay={true}
+                autoPlayAfterSrcChange={true}
+                onPlay={start}
+                onEnded={stop}
+            />
         </div>
     )
 }
