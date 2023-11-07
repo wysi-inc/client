@@ -1,7 +1,6 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 import { useDebounce } from "usehooks-ts";
-import InfiniteScroll from "react-infinite-scroller";
 
 import { BsCheckLg } from "react-icons/bs";
 import { BiCopy, BiSolidEraser } from "react-icons/bi";
@@ -15,6 +14,10 @@ import { GameMode, GameModes } from "../../resources/types/general";
 import { Beatmapset, BeatmapsetStatus, BeatmapsetStatuses } from "../../resources/types/beatmapset";
 
 import './b_comp/Beatmaps.css';
+import { MdExpandMore } from "react-icons/md";
+import { useInfiniteQuery } from "react-query";
+import Loading from "../../web/w_comp/Loading";
+import BeatmapsList from "./b_comp/BeatmapsList";
 
 interface Query {
     title: string,
@@ -33,6 +36,8 @@ interface Query {
 }
 
 const Beatmapsets = () => {
+
+    const LIMIT = 50;
 
     const bpmLimit = 300;
     const srLimit = 10;
@@ -68,216 +73,15 @@ const Beatmapsets = () => {
     const [copied, setCopied] = useState<boolean>(false);
     const [cleared, setCleared] = useState<boolean>(false);
 
-    const debouncedValue = useDebounce<Query>(query, 1000);
+    const debounce = useDebounce<Query>(query, 1000);
 
-    useEffect(() => {
-
-        getBeatmaps();
-    }, [debouncedValue]);
-
-
-    function clearSearch(): void {
-        setQuery(INITIAL_QUERY);
-        setTimeout(() => setCleared(false), 400)
-    }
-
-    function setURL(): void {
-        let url = '';
-        if (query.title !== '') url += `title=${query.title}&`;
-        if (query.mapper !== '') url += `mapper=${query.mapper}&`;
-
-        url += `bpm0=${query.bpm[0]}&bpm1=${query.bpm[1]}&`;
-        url += `sr0=${query.sr[0]}&sr1=${query.sr[1]}&`;
-        url += `len0=${query.len[0]}&len1=${query.len[1]}&`;
-        url += `year0=${query.year[0]}&year1=${query.year[1]}&`;
-
-        url += `ar0=${query.ar[0]}&ar1=${query.ar[1]}&`;
-        url += `cs0=${query.cs[0]}&cs1=${query.cs[1]}&`;
-        url += `hp0=${query.hp[0]}&hp1=${query.hp[1]}&`;
-        url += `od0=${query.od[0]}&od1=${query.od[1]}&`;
-
-        url += `sort=${query.sort}&`;
-        for (let i = 0; i < query.status.length; i++) {
-            url += `status=${query.status[i]}&`
-        }
-        for (let i = 0; i < query.modes.length; i++) {
-            url += `modes=${query.modes[i]}&`
-        }
-        navigator.clipboard.writeText(`${window.location.host}/beatmaps?${url}`);
-        setTimeout(() => setCopied(false), 400)
-    }
-
-    function getQuery(): { q: string, f: string } {
-        let f: string[] = [];
-
-        if (query.mapper !== '') f.push(`creator=${query.mapper}`);
-
-        if (query.bpm[0] < bpmLimit) f.push(`bpm>=${query.bpm[0]}`);
-        if (query.bpm[1] < bpmLimit) f.push(`bpm<=${query.bpm[1]}`);
-        if (query.sr[0] < srLimit) f.push(`beatmaps.difficulty_rating>=${query.sr[0]}`);
-        if (query.sr[0] < srLimit) f.push(`beatmaps.difficulty_rating<=${query.sr[1]}`);
-        if (query.len[0] < lengthLimit) f.push(`beatmaps.total_length>=${query.len[0]}`);
-        if (query.len[1] < lengthLimit) f.push(`beatmaps.total_length<=${query.len[1]}`);
-
-        if (query.ar[0] < statLimit) f.push(`beatmaps.ar>=${query.ar[0]}`);
-        if (query.ar[1] < statLimit) f.push(`beatmaps.ar<=${query.ar[1]}`);
-        if (query.cs[0] < statLimit) f.push(`beatmaps.cs>=${query.cs[0]}`);
-        if (query.cs[1] < statLimit) f.push(`beatmaps.cs<=${query.cs[1]}`);
-        if (query.hp[0] < statLimit) f.push(`beatmaps.drain>=${query.hp[0]}`);
-        if (query.hp[1] < statLimit) f.push(`beatmaps.drain<=${query.hp[1]}`);
-        if (query.od[0] < statLimit) f.push(`beatmaps.accuracy>=${query.od[0]}`);
-        if (query.od[1] < statLimit) f.push(`beatmaps.accuracy<=${query.od[1]}`);
-
-        if (query.year[0] > timeMin && query.year[0] < timeMax) f.push(`submitted_date>=${new Date(`${query.year[0]}-01-01`).getTime() / 1000}`)
-        if (query.year[1] > timeMin && query.year[1] < timeMax) f.push(`submitted_date<${new Date(`${query.year[1]}-01-01`).getTime() / 1000}`)
-
-        const filters: string = f.join(' AND ')
-        return { q: query.title, f: filters };
-    }
-
-    function getUrlParams() {
-        // const queryParameters = new URLSearchParams(window.location.search)
-        // const urlTitle = queryParameters.get('title');
-        // const urlMapper = queryParameters.get('mapper');
-        // const urlBPM0 = queryParameters.get('bpm0');
-        // const urlBPM1 = queryParameters.get('bpm1');
-        // const urlSR0 = queryParameters.get('sr0');
-        // const urlSR1 = queryParameters.get('sr1');
-        // const urlLen0 = queryParameters.get('len0');
-        // const urlLen1 = queryParameters.get('len1');
-        // const urlAR0 = queryParameters.get('ar0');
-        // const urlAR1 = queryParameters.get('ar1');
-        // const urlCS0 = queryParameters.get('cs0');
-        // const urlCS1 = queryParameters.get('cs1');
-        // const urlHP0 = queryParameters.get('hp0');
-        // const urlHP1 = queryParameters.get('hp1');
-        // const urlOD0 = queryParameters.get('od0');
-        // const urlOD1 = queryParameters.get('od1');
-        // const urlYear0 = queryParameters.get('year0');
-        // const urlYear1 = queryParameters.get('year1');
-        // const urlModes = queryParameters.getAll('modes');
-    }
-
-    async function getBeatmaps() {
-        setResultsNum(0);
-        setResults([])
-        try {
-            const q = getQuery();
-            const d = await fina.post('/beatmapset/search', {
-                query: q.q,
-                filter: q.f,
-                mode: getModesInts(),
-                status: getStatusesInts(),
-                limit: 50,
-                offset: 0,
-                sort: query.sort,
-            });
-            setResultsNum(parseInt(d.total))
-            setResults(d.results)
-        } catch (err) {
-            console.error(err);
-        }
-
-        function getModesInts(): number[] {
-            if (query.modes.length > 1) return [-1];
-            return query.modes.map((m: GameMode) => {
-                switch (m) {
-                    case "osu":
-                        return 0;
-                    case "taiko":
-                        return 1
-                    case "fruits":
-                        return 2
-                    case "mania":
-                        return 3
-                    default:
-                        return -1;
-                }
-            });
-        }
-
-        function getStatusesInts() {
-            if (query.status.length < 1) return [-3];
-            return query.status.map((s: BeatmapsetStatus) => {
-                switch (s) {
-                    case "ranked":
-                        return 1;
-                    case "approved":
-                        return 2
-                    case "qualified":
-                        return 3
-                    case "loved":
-                        return 4
-                    case "pending":
-                        return 0;
-                    case "wip":
-                        return -1;
-                    case "graveyard":
-                        return -2;
-                    default:
-                        return -1;
-                }
-            });
-        }
-    }
-
-    async function getMoreBeatmaps(limit: number, offset: number) {
-        try {
-            const d = await fina.post('/beatmapsets', {
-                query: getQuery().q,
-                filter: getQuery().f,
-                mode: query.modes.length < 1 ? [-1] : query.modes.map((m: GameMode) => m === 'osu' ? 0 : m === 'taiko' ? 1 : m === 'fruits' ? 2 : m === "mania" ? 3 : -1),
-                status: query.status.length < 1 ? [-3] : query.status.map((m: BeatmapsetStatus) => m === 'ranked' ? 1 : m === 'approved' ? 2 : m === 'qualified' ? 3 : m === "loved" ? 4 : m === "pending" ? 0 : m === "wip" ? -1 : m === "graveyard" ? -2 : -3),
-                limit: limit,
-                offset: offset,
-                sort: query.sort,
-            });
-            setResultsNum(parseInt(d.total))
-            setResults([...results, ...d.results])
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        setQuery((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-    }
-
-    function handleSliderChange(min: number, max: number, name: string) {
-        setQuery((prev) => ({ ...prev, [name]: [min, max] }));
-    }
-
-    function handleToggleChange(value: string, name: "modes" | "status") {
-        let val = '';
-        if (name === "modes") val = value as GameMode;
-        if (name === "status") val = value as BeatmapsetStatus;
-        setQuery((prev) => {
-            const currentArray = (prev as any)[name] as any;
-            const isValueInArray = currentArray.includes(val);
-            let updatedArray;
-
-            if (isValueInArray) {
-                updatedArray = currentArray.filter((v: any) => v !== val);
-            } else {
-                updatedArray = [...currentArray, val];
+    const { data, isSuccess, status, hasNextPage, fetchNextPage, isFetchingNextPage } =
+        useInfiniteQuery(['beatmaps', debounce], ({ pageParam = 0 }) => getBeatmaps(pageParam), {
+            getNextPageParam: (lastPage, allPages) => {
+                const nextPage = lastPage.length === LIMIT ? allPages.length : undefined;
+                return nextPage;
             }
-
-            return { ...prev, [name]: updatedArray };
         });
-    }
-
-    function handleToggleSort(sor: string) {
-        const s: any = query.sort[0]?.split(':')[0];
-        const o: any = query.sort[0]?.split(':')[1];
-        if (s && o) {
-            if (s === sor) {
-                if (o === 'asc') setQuery((p) => ({ ...p, sort: [] }));
-                else setQuery((p) => ({ ...p, sort: [`${sor}:asc`] }));
-                return;
-            }
-        }
-        setQuery((p) => ({ ...p, sort: [`${sor}:desc`] }))
-    }
 
     return (
         <div className="p-4">
@@ -291,6 +95,7 @@ const Beatmapsets = () => {
                                 onClick={() => {
                                     setCleared(true);
                                     clearSearch();
+                                    setTimeout(() => setCleared(false), 400)
                                 }}>
                                 {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
                             </button>
@@ -299,7 +104,7 @@ const Beatmapsets = () => {
                             <button className="text-lg btn btn-success"
                                 onClick={() => {
                                     setCopied(true);
-                                    setURL();
+                                    setTimeout(() => setCopied(false), 400)
                                 }}>
                                 {!copied ? <BiCopy /> : <BsCheckLg />}
                             </button>
@@ -320,120 +125,102 @@ const Beatmapsets = () => {
                             value={query.mapper} onChange={handleChange} />
                     </div>
                 </div>
-                <div className="flex flex-col gap-3 p-4 rounded-lg drop-shadow-lg bg-custom-950">
-                    <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-12 md:col-span-4">
-                            <MultiSlider
-                                min={0}
-                                max={bpmLimit}
-                                step={5}
-                                minValue={query.bpm[0]}
-                                maxValue={query.bpm[1]}
-                                onChange={handleSliderChange}
-                                title={"BPM"}
-                                name={"bpm"}
-                                CSS_CLASS={"bpmSlider"}
-                                maxTxt={"∞"}
-                            />
-                        </div>
-                        <div className="col-span-12 md:col-span-4">
-                            <MultiSlider
-                                min={0}
-                                max={srLimit}
-                                step={0.5}
-                                minValue={query.sr[0]}
-                                maxValue={query.sr[1]}
-                                onChange={handleSliderChange}
-                                title={"Stars"}
-                                name={"sr"}
-                                CSS_CLASS={"srSlider"}
-                                maxTxt={"∞"}
-                            />
-                        </div>
-                        <div className="col-span-12 md:col-span-4">
-                            <MultiSlider
-                                min={0}
-                                max={lengthLimit}
-                                step={15}
-                                minValue={query.len[0]}
-                                maxValue={query.len[1]}
-                                onChange={handleSliderChange}
-                                title={"Length"}
-                                name={"len"}
-                                CSS_CLASS={"lenSlider"}
-                                maxTxt={"∞"}
-                            />
-                        </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 rounded-lg bg-custom-950 p-4 pb-6">
+                    <div className="flex flex-col gap-2">
+                        <MultiSlider
+                            min={0}
+                            max={srLimit}
+                            step={0.5}
+                            minValue={query.sr[0]}
+                            maxValue={query.sr[1]}
+                            onChange={handleSliderChange}
+                            title={"Stars"}
+                            name={"sr"}
+                            CSS_CLASS={"srSlider"}
+                            maxTxt={"∞"}
+                        />
+                        <MultiSlider
+                            min={0}
+                            max={bpmLimit}
+                            step={5}
+                            minValue={query.bpm[0]}
+                            maxValue={query.bpm[1]}
+                            onChange={handleSliderChange}
+                            title={"BPM"}
+                            name={"bpm"}
+                            CSS_CLASS={"bpmSlider"}
+                            maxTxt={"∞"}
+                        />
+                        <MultiSlider
+                            min={0}
+                            max={lengthLimit}
+                            step={15}
+                            minValue={query.len[0]}
+                            maxValue={query.len[1]}
+                            onChange={handleSliderChange}
+                            title={"Length"}
+                            name={"len"}
+                            CSS_CLASS={"lenSlider"}
+                            maxTxt={"∞"}
+                        />
+                        <MultiSlider
+                            min={timeMin}
+                            max={timeMax}
+                            step={1}
+                            minValue={query.year[0]}
+                            maxValue={query.year[1]}
+                            onChange={handleSliderChange}
+                            title={"Year"}
+                            name={"year"}
+                            CSS_CLASS={"yearSlider"}
+                            maxTxt={"now"}
+                        />
                     </div>
-                    <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-6 md:col-span-3">
-                            <MultiSlider
-                                min={0}
-                                max={statLimit}
-                                step={0.5}
-                                minValue={query.ar[0]}
-                                maxValue={query.ar[1]}
-                                onChange={handleSliderChange}
-                                title={"AR"}
-                                name={"ar"}
-                                CSS_CLASS={"statSlider"}
-                            />
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <MultiSlider
-                                min={0}
-                                max={statLimit}
-                                step={0.5}
-                                minValue={query.cs[0]}
-                                maxValue={query.cs[1]}
-                                onChange={handleSliderChange}
-                                title={"CS"}
-                                name={"cs"}
-                                CSS_CLASS={"statSlider"}
-                            />
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <MultiSlider
-                                min={0}
-                                max={statLimit}
-                                step={0.5}
-                                minValue={query.od[0]}
-                                maxValue={query.od[1]}
-                                onChange={handleSliderChange}
-                                title={"OD"}
-                                name={"od"}
-                                CSS_CLASS={"statSlider"}
-                            />
-                        </div>
-                        <div className="col-span-6 md:col-span-3">
-                            <MultiSlider
-                                min={0}
-                                max={statLimit}
-                                step={0.5}
-                                minValue={query.hp[0]}
-                                maxValue={query.hp[1]}
-                                onChange={handleSliderChange}
-                                title={"HP"}
-                                name={"hp"}
-                                CSS_CLASS={"statSlider"}
-                            />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-7">
-                        <div className="col-span-7 md:col-start-3 md:col-span-3">
-                            <MultiSlider
-                                min={timeMin}
-                                max={timeMax}
-                                step={1}
-                                minValue={query.year[0]}
-                                maxValue={query.year[1]}
-                                onChange={handleSliderChange}
-                                title={"Year"}
-                                name={"year"}
-                                CSS_CLASS={"yearSlider"}
-                                maxTxt={"now"}
-                            />
-                        </div>
+                    <div className="flex flex-col gap-2">
+                        <MultiSlider
+                            min={0}
+                            max={statLimit}
+                            step={0.5}
+                            minValue={query.ar[0]}
+                            maxValue={query.ar[1]}
+                            onChange={handleSliderChange}
+                            title={"AR"}
+                            name={"ar"}
+                            CSS_CLASS={"statSlider"}
+                        />
+                        <MultiSlider
+                            min={0}
+                            max={statLimit}
+                            step={0.5}
+                            minValue={query.cs[0]}
+                            maxValue={query.cs[1]}
+                            onChange={handleSliderChange}
+                            title={"CS"}
+                            name={"cs"}
+                            CSS_CLASS={"statSlider"}
+                        />
+                        <MultiSlider
+                            min={0}
+                            max={statLimit}
+                            step={0.5}
+                            minValue={query.od[0]}
+                            maxValue={query.od[1]}
+                            onChange={handleSliderChange}
+                            title={"OD"}
+                            name={"od"}
+                            CSS_CLASS={"statSlider"}
+                        />
+                        <MultiSlider
+                            min={0}
+                            max={statLimit}
+                            step={0.5}
+                            minValue={query.hp[0]}
+                            maxValue={query.hp[1]}
+                            onChange={handleSliderChange}
+                            title={"HP"}
+                            name={"hp"}
+                            CSS_CLASS={"statSlider"}
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
@@ -477,23 +264,138 @@ const Beatmapsets = () => {
                     </div>
                 </div>
             </div>
-            <div style={{ height: 1000 }} className="overflow-x-hidden overflow-y-scroll">
-                <InfiniteScroll
-                    pageStart={0}
-                    loadMore={() => getMoreBeatmaps(15, results.length)}
-                    hasMore={results.length < resultsNum}
-                    loader={<div key={0} className="loading loading-dots loading-md"></div>}
-                    useWindow={false}
-                >
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                        {results?.map((b: Beatmapset, i: number) =>
-                            <BeatmapsetCard key={i} index={i} beatmapset={b} />
-                        )}
-                    </div>
-                </InfiniteScroll>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <BeatmapsList data={data} isSuccess limit={LIMIT} status={status} />
+                <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
+                    <MdExpandMore />
+                    {isFetchingNextPage ? <Loading /> : 'Load More'}
+                    <MdExpandMore />
+                </button>
             </div>
         </div>
     )
+
+    function clearSearch(): void {
+        setQuery(INITIAL_QUERY);
+    }
+
+    function getBeatmaps(page: number) {
+        const { title, filter, mode, status, sort } = getQuery();
+        const offset = page * LIMIT;
+        const limit = LIMIT;
+        const url = `https://catboy.best/api/v2/search?q=${title}${filter.length > 0 ? `[${filter}]` : ""}${sort.length > 0 ? `&sort=${sort.join("&sort=")}` : ""}&m=${mode.join("&m=")}&status=${status.join("&status=")}&limit=${limit}&offset=${offset}`;
+        return fina.nget(url);
+    }
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        setQuery((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    }
+
+    function handleSliderChange(min: number, max: number, name: string) {
+        setQuery((prev) => ({ ...prev, [name]: [min, max] }));
+    }
+
+    function handleToggleChange(value: string, name: "modes" | "status") {
+        let val = '';
+        if (name === "modes") val = value as GameMode;
+        if (name === "status") val = value as BeatmapsetStatus;
+        setQuery((prev) => {
+            const currentArray = (prev as any)[name] as any;
+            const isValueInArray = currentArray.includes(val);
+            let updatedArray;
+
+            if (isValueInArray) {
+                updatedArray = currentArray.filter((v: any) => v !== val);
+            } else {
+                updatedArray = [...currentArray, val];
+            }
+
+            return { ...prev, [name]: updatedArray };
+        });
+    }
+
+    function handleToggleSort(sor: string) {
+        const s: any = query.sort[0]?.split(':')[0];
+        const o: any = query.sort[0]?.split(':')[1];
+        if (s && o) {
+            if (s === sor) {
+                if (o === 'asc') setQuery((p) => ({ ...p, sort: [] }));
+                else setQuery((p) => ({ ...p, sort: [`${sor}:asc`] }));
+                return;
+            }
+        }
+        setQuery((p) => ({ ...p, sort: [`${sor}:desc`] }))
+    }
+
+    function getQuery(): { title: string, filter: string, mode: number[], status: number[], sort: string[] } {
+        let filters: string[] = [];
+
+        if (query.mapper !== '') filters.push(`creator=${query.mapper}`);
+
+        if (query.bpm[0] < bpmLimit) filters.push(`bpm>=${query.bpm[0]}`);
+        if (query.bpm[1] < bpmLimit) filters.push(`bpm<=${query.bpm[1]}`);
+        if (query.sr[0] < srLimit) filters.push(`beatmaps.difficulty_rating>=${query.sr[0]}`);
+        if (query.sr[0] < srLimit) filters.push(`beatmaps.difficulty_rating<=${query.sr[1]}`);
+        if (query.len[0] < lengthLimit) filters.push(`beatmaps.total_length>=${query.len[0]}`);
+        if (query.len[1] < lengthLimit) filters.push(`beatmaps.total_length<=${query.len[1]}`);
+
+        if (query.ar[0] < statLimit) filters.push(`beatmaps.ar>=${query.ar[0]}`);
+        if (query.ar[1] < statLimit) filters.push(`beatmaps.ar<=${query.ar[1]}`);
+        if (query.cs[0] < statLimit) filters.push(`beatmaps.cs>=${query.cs[0]}`);
+        if (query.cs[1] < statLimit) filters.push(`beatmaps.cs<=${query.cs[1]}`);
+        if (query.hp[0] < statLimit) filters.push(`beatmaps.drain>=${query.hp[0]}`);
+        if (query.hp[1] < statLimit) filters.push(`beatmaps.drain<=${query.hp[1]}`);
+        if (query.od[0] < statLimit) filters.push(`beatmaps.accuracy>=${query.od[0]}`);
+        if (query.od[1] < statLimit) filters.push(`beatmaps.accuracy<=${query.od[1]}`);
+
+        if (query.year[0] > timeMin && query.year[0] < timeMax) filters.push(`submitted_date>=${new Date(`${query.year[0]}-01-01`).getTime() / 1000}`)
+        if (query.year[1] > timeMin && query.year[1] < timeMax) filters.push(`submitted_date<${new Date(`${query.year[1]}-01-01`).getTime() / 1000}`)
+
+
+        let mode = [];
+        if (query.modes.length > 1) mode = [-1];
+        else mode = query.modes.map((m: GameMode) => {
+            switch (m) {
+                case "osu":
+                    return 0;
+                case "taiko":
+                    return 1
+                case "fruits":
+                    return 2
+                case "mania":
+                    return 3
+                default:
+                    return -1;
+            }
+        });
+
+        let status = [];
+
+        if (query.status.length < 1) status = [-3];
+        else status = query.status.map((s: BeatmapsetStatus) => {
+            switch (s) {
+                case "ranked":
+                    return 1;
+                case "approved":
+                    return 2
+                case "qualified":
+                    return 3
+                case "loved":
+                    return 4
+                case "pending":
+                    return 0;
+                case "wip":
+                    return -1;
+                case "graveyard":
+                    return -2;
+                default:
+                    return -1;
+            }
+        });
+
+
+        return { title: query.title, filter: filters.join(' AND '), mode, status, sort: query.sort };
+    }
 
 }
 

@@ -38,7 +38,7 @@ const MultiSlider = (p: Props) => {
         return secondsToTime(values[1]);
     }
 
-    return (<>
+    return (<div>
         <div className="text-center">{p.title}:</div>
         <div className="flex flex-row items-center justify-center gap-4">
             <div className="w-14 text-end">{getFirstNum()}</div>
@@ -69,7 +69,7 @@ const MultiSlider = (p: Props) => {
                 {getLastNum()}
             </div>
         </div>
-    </>);
+    </div>);
 
 }
 

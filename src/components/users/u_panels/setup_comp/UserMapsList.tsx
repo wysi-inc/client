@@ -36,12 +36,12 @@ const UserMapsList = (p: Props) => {
 
     return (
         <div className="flex flex-col gap-4 p-3 bg-custom-950">
-            {data.pages.map((page, i) =>
+            {data?.pages?.map((page, i) =>
                 p.section === "scores" ?
-                    page.map((score: Score, j: number) =>
+                    page?.map((score: Score, j: number) =>
                         <ScoreCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} score={score} />
                     ) :
-                    page.map((beatmapset: Beatmapset, j: number) =>
+                    page?.map((beatmapset: Beatmapset, j: number) =>
                         <BeatmapsetCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmapset={beatmapset} />
                     ))
             }
