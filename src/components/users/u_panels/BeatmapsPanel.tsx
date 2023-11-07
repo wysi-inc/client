@@ -40,7 +40,7 @@ const BeatmapsPanel = (p: Props) => {
     ]
 
     return (
-        <div className={p.className} style={{ height: p.height }}>
+        <div className={p.className}>
             <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
                 <FaListUl />
                 <div>{t('user.sections.beatmaps.title')}</div>
@@ -55,7 +55,7 @@ const BeatmapsPanel = (p: Props) => {
                     </button>)}
             </div>
             {beatmapsList.map((b: BeatmapsetListItem, i: number) =>
-                <div hidden={tabIndex !== b.tabId} className="overflow-x-hidden overflow-y-scroll grow" key={i}>
+                <div hidden={tabIndex !== b.tabId} className="grow" key={i}>
                     <UserMapsList section="beatmapsets" mode={"osu"} limit={b.limit} category={b.category} userId={p.user.id} /> 
                 </div>
             )}

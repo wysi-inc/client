@@ -163,7 +163,7 @@ const Beatmapsets = () => {
         setResults([])
         try {
             const q = getQuery();
-            const d = await fina.post('/beatmapet/search', {
+            const d = await fina.post('/beatmapset/search', {
                 query: q.q,
                 filter: q.f,
                 mode: getModesInts(),
@@ -485,7 +485,7 @@ const Beatmapsets = () => {
                     loader={<div key={0} className="loading loading-dots loading-md"></div>}
                     useWindow={false}
                 >
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         {results?.map((b: Beatmapset, i: number) =>
                             <BeatmapsetCard key={i} index={i} beatmapset={b} />
                         )}

@@ -26,7 +26,7 @@ const MedalsPanel = (p: Props) => {
                 <FaMedal />
                 <div>Medals</div>
             </div>
-            <div className="flex flex-col overflow-x-hidden overflow-y-scroll grow">
+            <div className="flex flex-col grow">
                 <div className="grid grid-cols-6">
                     <div className="col-span-5">
                         <div className="p-2 text-center bg-custom-900">

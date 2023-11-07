@@ -20,16 +20,19 @@ interface Props {
 const UserMapsList = (p: Props) => {
     const LIMIT = 15;
 
-    const { data, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    const { data, isSuccess, status, hasNextPage, fetchNextPage, isFetchingNextPage } =
         useInfiniteQuery([`${p.category}Data`, p.userId, p.mode], ({ pageParam = 0 }) => getMaps(pageParam), {
             getNextPageParam: (lastPage, allPages) => {
                 const nextPage = lastPage.length === LIMIT ? allPages.length : undefined;
                 return nextPage;
-            },
+            }
         });
 
+    if (status === 'error') return <div></div>;
     if (!isSuccess) return <Loading />;
+    if (!data) return <Loading/>;
     if (!data?.pages) return <Loading />;
+    if (data?.pages[0].length < 1) return <Loading/>;
 
     return (
         <div className="flex flex-col gap-4 p-3 bg-custom-950">
