@@ -35,7 +35,7 @@ const UserMapsList = (p: Props) => {
     if (data?.pages[0].length < 1) return <Loading/>;
 
     return (
-        <div className="flex flex-col gap-4 p-3 bg-custom-950">
+        <div className="flex flex-col gap-4 p-3">
             {data?.pages?.map((page, i) =>
                 p.section === "scores" ?
                     page?.map((score: Score, j: number) =>

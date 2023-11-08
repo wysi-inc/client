@@ -85,192 +85,194 @@ const Beatmapsets = () => {
 
     return (
         <div className="p-4">
-            <div className="flex flex-col gap-3 p-4 mb-3 rounded-lg drop-shadow-lg bg-custom-900">
-                <div className="flex flex-row items-center justify-between p-4 text-xl rounded-lg bg-custom-950">
-                    <div>Beatmap Search:</div>
-                    <div className="flex flex-row items-center gap-2">
-                        <div className="h5">{resultsNum.toLocaleString()} results</div>
-                        <div className="tooltip" data-tip="Clear">
-                            <button className="text-lg btn btn-error"
-                                onClick={() => {
-                                    setCleared(true);
-                                    clearSearch();
-                                    setTimeout(() => setCleared(false), 400)
-                                }}>
-                                {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
-                            </button>
-                        </div>
-                        <div className="tooltip" data-tip="Copy">
-                            <button className="text-lg btn btn-success"
-                                onClick={() => {
-                                    setCopied(true);
-                                    setTimeout(() => setCopied(false), 400)
-                                }}>
-                                {!copied ? <BiCopy /> : <BsCheckLg />}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="grid grid-cols-4 gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
-                    <div className="col-span-4 md:col-span-2 lg:col-span-3">
-                        <div className="mb-2 text-center">Title:</div>
-                        <input type="text" className="w-full text-center input input-bordered"
-                            placeholder="..." autoFocus={true} name="title"
-                            value={query.title} onChange={handleChange} />
-                    </div>
-                    <div className="col-span-4 md:col-span-2 lg:col-span-1">
-                        <div className="mb-2 text-center">Mapper:</div>
-                        <input type="text" className="w-full text-center input input-bordered"
-                            placeholder="..." name="mapper"
-                            value={query.mapper} onChange={handleChange} />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 rounded-lg bg-custom-950 p-4 pb-6">
-                    <div className="flex flex-col gap-2">
-                        <MultiSlider
-                            min={0}
-                            max={srLimit}
-                            step={0.5}
-                            minValue={query.sr[0]}
-                            maxValue={query.sr[1]}
-                            onChange={handleSliderChange}
-                            title={"Stars"}
-                            name={"sr"}
-                            CSS_CLASS={"srSlider"}
-                            maxTxt={"∞"}
-                        />
-                        <MultiSlider
-                            min={0}
-                            max={bpmLimit}
-                            step={5}
-                            minValue={query.bpm[0]}
-                            maxValue={query.bpm[1]}
-                            onChange={handleSliderChange}
-                            title={"BPM"}
-                            name={"bpm"}
-                            CSS_CLASS={"bpmSlider"}
-                            maxTxt={"∞"}
-                        />
-                        <MultiSlider
-                            min={0}
-                            max={lengthLimit}
-                            step={15}
-                            minValue={query.len[0]}
-                            maxValue={query.len[1]}
-                            onChange={handleSliderChange}
-                            title={"Length"}
-                            name={"len"}
-                            CSS_CLASS={"lenSlider"}
-                            maxTxt={"∞"}
-                        />
-                        <MultiSlider
-                            min={timeMin}
-                            max={timeMax}
-                            step={1}
-                            minValue={query.year[0]}
-                            maxValue={query.year[1]}
-                            onChange={handleSliderChange}
-                            title={"Year"}
-                            name={"year"}
-                            CSS_CLASS={"yearSlider"}
-                            maxTxt={"now"}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <MultiSlider
-                            min={0}
-                            max={statLimit}
-                            step={0.5}
-                            minValue={query.ar[0]}
-                            maxValue={query.ar[1]}
-                            onChange={handleSliderChange}
-                            title={"AR"}
-                            name={"ar"}
-                            CSS_CLASS={"statSlider"}
-                        />
-                        <MultiSlider
-                            min={0}
-                            max={statLimit}
-                            step={0.5}
-                            minValue={query.cs[0]}
-                            maxValue={query.cs[1]}
-                            onChange={handleSliderChange}
-                            title={"CS"}
-                            name={"cs"}
-                            CSS_CLASS={"statSlider"}
-                        />
-                        <MultiSlider
-                            min={0}
-                            max={statLimit}
-                            step={0.5}
-                            minValue={query.od[0]}
-                            maxValue={query.od[1]}
-                            onChange={handleSliderChange}
-                            title={"OD"}
-                            name={"od"}
-                            CSS_CLASS={"statSlider"}
-                        />
-                        <MultiSlider
-                            min={0}
-                            max={statLimit}
-                            step={0.5}
-                            minValue={query.hp[0]}
-                            maxValue={query.hp[1]}
-                            onChange={handleSliderChange}
-                            title={"HP"}
-                            name={"hp"}
-                            CSS_CLASS={"statSlider"}
-                        />
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-1 bg-custom-950">
-                        <div>Mode:</div>
-                        <div className="flex flex-row flex-wrap gap-3" role="group">
-                            {GameModes.map((m: GameMode, i: number) =>
-                                <button type="button" key={i}
-                                    className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!query.modes.includes(m) && 'fakeDisabled'}`}
-                                    onClick={() => handleToggleChange(m, "modes")}
-                                    style={{ backgroundColor: (colors.modes as any)[m] }}>
-                                    {m.toLowerCase()}
-                                </button>)}
+            <div className="bg-custom-950 rounded-lg">
+                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-900">
+                    <div className="flex flex-row items-center justify-between p-4 text-xl rounded-lg bg-custom-950">
+                        <div>Beatmap Search:</div>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="h5">{resultsNum.toLocaleString()} results</div>
+                            <div className="tooltip" data-tip="Clear">
+                                <button className="text-lg btn btn-error"
+                                    onClick={() => {
+                                        setCleared(true);
+                                        clearSearch();
+                                        setTimeout(() => setCleared(false), 400)
+                                    }}>
+                                    {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
+                                </button>
+                            </div>
+                            <div className="tooltip" data-tip="Copy">
+                                <button className="text-lg btn btn-success"
+                                    onClick={() => {
+                                        setCopied(true);
+                                        setTimeout(() => setCopied(false), 400)
+                                    }}>
+                                    {!copied ? <BiCopy /> : <BsCheckLg />}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-custom-950">
-                        <div>Status:</div>
-                        <div className="flex flex-row flex-wrap items-center gap-3" role="group">
-                            {BeatmapsetStatuses.map((s: BeatmapsetStatus, i: number) =>
-                                <button type="button" key={i}
-                                    className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!query.status.includes(s) && 'fakeDisabled'}`}
-                                    onClick={() => handleToggleChange(s, "status")}
-                                    style={{ backgroundColor: (colors.beatmap as any)[s] }}>
-                                    {s.toLowerCase()}
-                                </button>)}
+                    <div className="grid grid-cols-4 gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
+                        <div className="col-span-4 md:col-span-2 lg:col-span-3">
+                            <div className="mb-2 text-center">Title:</div>
+                            <input type="text" className="w-full text-center input input-bordered"
+                                placeholder="..." autoFocus={true} name="title"
+                                value={query.title} onChange={handleChange} />
+                        </div>
+                        <div className="col-span-4 md:col-span-2 lg:col-span-1">
+                            <div className="mb-2 text-center">Mapper:</div>
+                            <input type="text" className="w-full text-center input input-bordered"
+                                placeholder="..." name="mapper"
+                                value={query.mapper} onChange={handleChange} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 rounded-lg bg-custom-950 p-4 pb-6">
+                        <div className="flex flex-col gap-2">
+                            <MultiSlider
+                                min={0}
+                                max={srLimit}
+                                step={0.5}
+                                minValue={query.sr[0]}
+                                maxValue={query.sr[1]}
+                                onChange={handleSliderChange}
+                                title={"Stars"}
+                                name={"sr"}
+                                CSS_CLASS={"srSlider"}
+                                maxTxt={"∞"}
+                            />
+                            <MultiSlider
+                                min={0}
+                                max={bpmLimit}
+                                step={5}
+                                minValue={query.bpm[0]}
+                                maxValue={query.bpm[1]}
+                                onChange={handleSliderChange}
+                                title={"BPM"}
+                                name={"bpm"}
+                                CSS_CLASS={"bpmSlider"}
+                                maxTxt={"∞"}
+                            />
+                            <MultiSlider
+                                min={0}
+                                max={lengthLimit}
+                                step={15}
+                                minValue={query.len[0]}
+                                maxValue={query.len[1]}
+                                onChange={handleSliderChange}
+                                title={"Length"}
+                                name={"len"}
+                                CSS_CLASS={"lenSlider"}
+                                maxTxt={"∞"}
+                            />
+                            <MultiSlider
+                                min={timeMin}
+                                max={timeMax}
+                                step={1}
+                                minValue={query.year[0]}
+                                maxValue={query.year[1]}
+                                onChange={handleSliderChange}
+                                title={"Year"}
+                                name={"year"}
+                                CSS_CLASS={"yearSlider"}
+                                maxTxt={"now"}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.ar[0]}
+                                maxValue={query.ar[1]}
+                                onChange={handleSliderChange}
+                                title={"AR"}
+                                name={"ar"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.cs[0]}
+                                maxValue={query.cs[1]}
+                                onChange={handleSliderChange}
+                                title={"CS"}
+                                name={"cs"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.od[0]}
+                                maxValue={query.od[1]}
+                                onChange={handleSliderChange}
+                                title={"OD"}
+                                name={"od"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                            <MultiSlider
+                                min={0}
+                                max={statLimit}
+                                step={0.5}
+                                minValue={query.hp[0]}
+                                maxValue={query.hp[1]}
+                                onChange={handleSliderChange}
+                                title={"HP"}
+                                name={"hp"}
+                                CSS_CLASS={"statSlider"}
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-1 bg-custom-950">
+                            <div>Mode:</div>
+                            <div className="flex flex-row flex-wrap gap-3" role="group">
+                                {GameModes.map((m: GameMode, i: number) =>
+                                    <button type="button" key={i}
+                                        className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!query.modes.includes(m) && 'fakeDisabled'}`}
+                                        onClick={() => handleToggleChange(m, "modes")}
+                                        style={{ backgroundColor: (colors.modes as any)[m] }}>
+                                        {m.toLowerCase()}
+                                    </button>)}
+                            </div>
+                        </div>
+                        <div className="flex flex-col col-span-3 gap-4 p-4 rounded-lg drop-shadow-lg md:col-span-2 bg-custom-950">
+                            <div>Status:</div>
+                            <div className="flex flex-row flex-wrap items-center gap-3" role="group">
+                                {BeatmapsetStatuses.map((s: BeatmapsetStatus, i: number) =>
+                                    <button type="button" key={i}
+                                        className={`btn text-black fw-bold  darkenOnHover rounded-lg ${!query.status.includes(s) && 'fakeDisabled'}`}
+                                        onClick={() => handleToggleChange(s, "status")}
+                                        style={{ backgroundColor: (colors.beatmap as any)[s] }}>
+                                        {s.toLowerCase()}
+                                    </button>)}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
+                        <div>Sort:</div>
+                        <div className="flex flex-row flex-wrap gap-3">
+                            {songSort.map((sor: string, i: number) =>
+                                <button key={i}
+                                    className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
+                                    onClick={() => handleToggleSort(sor)}>
+                                    <div className="text-black">{sor.replace('beatmaps.', '').replace('_', ' ')}</div>
+                                    {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'desc' && <FaAngleDown />}
+                                    {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'asc' && <FaAngleUp />}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-950">
-                    <div>Sort:</div>
-                    <div className="flex flex-row flex-wrap gap-3">
-                        {songSort.map((sor: string, i: number) =>
-                            <button key={i}
-                                className={`btn flex flex-row gap-1 accentColor text-black fw-bold darkenOnHover rounded-lg ${query.sort[0]?.split(':')[0] !== sor && 'fakeDisabled'}`}
-                                onClick={() => handleToggleSort(sor)}>
-                                <div className="text-black">{sor.replace('beatmaps.', '').replace('_', ' ')}</div>
-                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'desc' && <FaAngleDown />}
-                                {query.sort[0]?.split(':')[0] === sor && query.sort[0]?.split(':')[1] === 'asc' && <FaAngleUp />}
-                            </button>
-                        )}
-                    </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 bg-custom-950 rounded-lg">
+                    <BeatmapsList data={data} isSuccess limit={LIMIT} status={status} />
+                    <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
+                        <MdExpandMore />
+                        {isFetchingNextPage ? <Loading /> : 'Load More'}
+                        <MdExpandMore />
+                    </button>
                 </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <BeatmapsList data={data} isSuccess limit={LIMIT} status={status} />
-                <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
-                    <MdExpandMore />
-                    {isFetchingNextPage ? <Loading /> : 'Load More'}
-                    <MdExpandMore />
-                </button>
             </div>
         </div>
     )

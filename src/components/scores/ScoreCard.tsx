@@ -24,8 +24,8 @@ const ScoreCard = (p: Props) => {
     const coverImg = `https://assets.ppy.sh/beatmaps/${b.id}/covers/cover.jpg?${b.id}`;
 
     return (
-        <div className=" bg-custom-900 rounded-lg flex flex-row gap-3 p-3">
-            <div className="bg-custom-600 flex flex-col justify-between items-center rounded-lg p-1">
+        <div className="bg-custom-600 rounded-lg flex flex-row card">
+            <div className="flex-col justify-between items-center rounded-lg p-1 card_controls">
                 <div>
                     #{p.index + 1}
                 </div>
@@ -46,7 +46,7 @@ const ScoreCard = (p: Props) => {
                     </button>
                 </a>
             </div>
-            <div className="flex flex-col grow gap-3">
+            <div className="bg-custom-900 flex flex-col rounded-lg grow gap-3 p-3">
                 <div className="flex flex-row items-center justify-between gap-3">
                     <div className="flex flex-row gap-3 grow">
                         <img src={listImg}

@@ -15,6 +15,7 @@ import { Setup } from "../../../resources/types/user";
 import { useDivSize } from "../../../resources/hooks/globalHooks";
 import { UserStore, UserStoreInt } from "../../../resources/global/user";
 import { Computer, Keyboard, Mouse, Tablet } from "../../../resources/types/setup";
+import TitleBar from "./TitleBar";
 
 interface Props {
     userId: number,
@@ -110,10 +111,7 @@ const SetupPanel = (p: Props) => {
     return (
         <div className={p.className}>
             <div className="shadow">
-                <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
-                    <FaComputer />
-                    <div>{t('user.sections.setup.title')}</div>
-                </div>
+                <TitleBar title={t('user.sections.setup.title')} icon={<FaComputer />} />
                 <div className="grid items-center grid-cols-6 bg-custom-900">
                     <div className="content-center justify-center col-span-4 col-start-2 rounded-none bg-custom-900 tabs tabs-boxed">
                         <button onClick={() => setTabsIndex(1)}

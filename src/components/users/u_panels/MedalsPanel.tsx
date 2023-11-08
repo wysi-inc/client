@@ -6,6 +6,8 @@ import fina from "../../../helpers/fina";
 import MedalBadge from "../u_comp/MedalBadge";
 import { User, UserAchievement } from "../../../resources/types/user";
 import { Medal, MedalCategories, SortedMedals } from "../../../resources/types/medals";
+import TitleBar from "./TitleBar";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     user: User,
@@ -14,6 +16,9 @@ interface Props {
 }
 
 const MedalsPanel = (p: Props) => {
+
+    const {t} = useTranslation();
+
     const medals: Medal[] = useMedals();
     const medalsByCategory: SortedMedals = useMemo(() => getMedalsByCategory(medals), [medals]);
     const lastMedals: Medal[] = useMemo(() => getLastMedals(p.user.user_achievements, medals, 15), [medals]);
@@ -22,10 +27,7 @@ const MedalsPanel = (p: Props) => {
 
     return (
         <div className={p.className}>
-            <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
-                <FaMedal />
-                <div>Medals</div>
-            </div>
+            <TitleBar title={t('user.sections.medals.title')} icon={<FaMedal />} />
             <div className="flex flex-col grow">
                 <div className="grid grid-cols-6">
                     <div className="col-span-5">

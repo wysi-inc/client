@@ -1,20 +1,18 @@
 import { FaPaintBrush } from "react-icons/fa";
+import TitleBar from "./TitleBar";
 
 interface Props {
     className: string
 }
 
-const SkinPanel = (p : Props) => {
+const SkinPanel = (p: Props) => {
     return (
         <div className={p.className}>
-                <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
-                    <FaPaintBrush />
-                    <div>Skin</div>
-                </div>
-                <div className="flex flex-col gap-3 p-3">
+            <TitleBar title={'Skin'} icon={<FaPaintBrush />} />
+            <div className="flex flex-col gap-3 p-3">
 
-                </div>
             </div>
+        </div>
     )
 }
 

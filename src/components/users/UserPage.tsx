@@ -44,7 +44,7 @@ const UserPage = () => {
 
     window.history.replaceState({}, '', `/users/${user.id}/${mode}`);
     
-    const CSS = "bg-custom-950 overflow-hidden rounded-lg drop-shadow-lg flex flex-col";
+    const CSS = "bg-custom-950 rounded-lg drop-shadow-lg flex flex-col";
 
     return <>
         <TopPanel user={user} mode={mode} />

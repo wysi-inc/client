@@ -17,6 +17,7 @@ interface Props {
 }
 
 const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
+    
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
     const id = p.beatmapset.id;
@@ -28,8 +29,8 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
     const b = p.beatmapset;
 
     return (
-        <div className=" bg-custom-900 rounded-lg flex flex-row gap-3 p-3">
-            <div className="bg-custom-600 flex flex-col justify-between items-center rounded-lg p-1">
+        <div className="bg-custom-600 rounded-lg flex flex-row card">
+            <div className="flex-col justify-between items-center rounded-lg p-1 card_controls">
                 <div>
                     #{p.index + 1}
                 </div>
@@ -50,7 +51,7 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                     </button>
                 </a>
             </div>
-            <div className="flex flex-col grow gap-3">
+            <div className="bg-custom-900 flex flex-col rounded-lg grow gap-3 p-3">
                 <div className="flex flex-row items-center justify-between gap-3">
                     <div className="flex flex-row gap-3 grow">
                         <img src={listImg}
@@ -59,13 +60,11 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                             style={{ width: 120, height: 84, objectFit: 'cover' }} />
                         <div className="flex flex-col gap-2 grow">
                             <div className="flex flex-row gap-2 items-center justify-between">
-                                <div className="flex flex-row flex-wrap gap-2 items-center border-b">
-                                    <Link to={`/beatmaps/${b.id}`}
-                                        className="text-xl text-decoration-none">
-                                        {b.title}
-                                    </Link>
-                                    <div className="text-sm">by {b.artist}</div>
-                                </div>
+                                <Link to={`/beatmaps/${b.id}`}
+                                    className="text-xl text-decoration-none">
+                                    {b.title} <br/> <small>by {b.artist}</small>
+                                </Link>
+                                <div className="text-sm"></div>
                             </div>
                             <Link to={`/users/${b.user_id}`} className="inline-block text-sm">
                                 Mapper: {b.creator}

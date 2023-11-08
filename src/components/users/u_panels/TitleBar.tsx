@@ -8,7 +8,7 @@ interface Props {
 
 const TitleBar = (p: Props) => {
     return (
-        <div className="grid items-center grid-cols-3 p-2 px-3 bg-custom-800">
+        <div className="grid items-center grid-cols-3 p-2 px-3 bg-custom-800 rounded-t-lg">
             <div></div>
             <div className="flex flex-row items-center justify-center gap-2">
                 {p.icon}

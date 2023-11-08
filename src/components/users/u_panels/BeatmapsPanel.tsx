@@ -7,6 +7,7 @@ import { FaAngleDoubleUp, FaHeart, FaHourglassHalf, FaListUl, FaSkull, FaStar, F
 import { MapTab, User } from "../../../resources/types/user";
 import { BeatmapsetListItem } from "../../../resources/types/beatmapset";
 import UserMapsList from "./setup_comp/UserMapsList";
+import TitleBar from "./TitleBar";
 
 interface Props {
     user: User,
@@ -41,10 +42,7 @@ const BeatmapsPanel = (p: Props) => {
 
     return (
         <div className={p.className}>
-            <div className="flex flex-row items-center justify-center gap-2 p-2 bg-custom-800">
-                <FaListUl />
-                <div>{t('user.sections.beatmaps.title')}</div>
-            </div>
+            <TitleBar title={t('user.sections.beatmaps.title')} icon={<FaListUl />} />
             <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 {beatmapsTabs.map((tab: MapTab, i: number) => tab.count > 0 &&
                     <button className={`tab flex flex-row gap-2 ${tabIndex === tab.tabId && 'tab-active'}`}

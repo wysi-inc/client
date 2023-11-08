@@ -269,6 +269,7 @@ th:last-child {
     0% {
         transform: translateX(150%);
     }
+
     100% {
         transform: translateX(0%);
     }
@@ -280,4 +281,12 @@ th:last-child {
 
 .c-normal * {
     cursor: default !important;
+}
+
+.card_controls {
+    display: none;
+}
+
+.card:hover .card_controls {
+    display: flex;
 }
