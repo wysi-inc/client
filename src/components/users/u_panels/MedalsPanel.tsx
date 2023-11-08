@@ -56,7 +56,7 @@ const MedalsPanel = (p: Props) => {
                                 style={{ fontSize: 14, top: -8 }}>
                                 Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
                             </div>
-                            <div className="grid justify-center p-3">
+                            <div className="grid justify-center">
                                 {rarestMedal &&
                                     <MedalBadge thisMedal={rarestMedal}
                                         userMedals={p.user.user_achievements} />}

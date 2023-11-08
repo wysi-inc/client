@@ -78,6 +78,7 @@ export interface PlayerStoreInterface {
     muted: boolean;
     play: (id: number, title: string, artist: string) => void;
     pause: () => void;
+    end: () => void;
 }
 
 export const playerStore = create<PlayerStoreInterface>(
@@ -92,7 +93,10 @@ export const playerStore = create<PlayerStoreInterface>(
             set({ playing: true, mp3: `https://catboy.best/preview/audio/${id}?set=1`, title: title, artist: artist })
         },
         pause: () => {
-            set({ playing: false, mp3: '' })
+            set({ playing: false })
+        },
+        end: () => {
+            set({ playing: false, mp3: '', title: '', artist: '' })
         }
     })
 )

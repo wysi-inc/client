@@ -29,39 +29,18 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
     const b = p.beatmapset;
 
     return (
-        <div className="bg-custom-600 rounded-lg flex flex-row card">
-            <div className="flex-col justify-between items-center rounded-lg p-1 card_controls">
-                <div>
-                    #{p.index + 1}
-                </div>
-                <button className="btn btn-ghost btn-circle btn-sm"
-                    onClick={() => play(b.id, b.title, b.artist)}>
-                    <FaHeadphonesAlt />
-                </button>
-                <a href={`https://catboy.best/d/${b.id}`}
-                    className="tooltip" data-tip="download">
-                    <button className="btn btn-ghost btn-circle btn-sm">
-                        <FaDownload />
-                    </button>
-                </a>
-                <a href={`osu://b/${b.beatmaps[0].id}`}
-                    className="tooltip" data-tip="osu!direct">
-                    <button className="btn btn-ghost btn-circle btn-sm">
-                        <FaFileDownload />
-                    </button>
-                </a>
-            </div>
-            <div className="bg-custom-900 flex flex-col rounded-lg grow gap-3 p-3">
+        <div className="card flex flex-row rounded-lg bg-custom-600">
+            <div className="flex grow flex-col gap-3 rounded-lg bg-custom-900 p-3">
                 <div className="flex flex-row items-center justify-between gap-3">
-                    <div className="flex flex-row gap-3 grow">
+                    <div className="flex grow flex-row gap-3">
                         <img src={listImg}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ width: 120, height: 84, objectFit: 'cover' }} />
-                        <div className="flex flex-col gap-2 grow">
-                            <div className="flex flex-row gap-2 items-center justify-between">
+                        <div className="flex grow flex-col gap-2">
+                            <div className="flex flex-row items-center justify-between gap-2">
                                 <Link to={`/beatmaps/${b.id}`}
-                                    className="text-xl text-decoration-none">
+                                    className="text-decoration-none text-xl">
                                     {b.title} <br/> <small>by {b.artist}</small>
                                 </Link>
                                 <div className="text-sm"></div>
@@ -76,7 +55,7 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                     </div>
 
                 </div>
-                <div className="flex flex-row flex-wrap justify-start items-center gap-2">
+                <div className="flex flex-row flex-wrap items-center justify-start gap-2">
                     <StatusBadge status={b.status} />
                     {p.beatmapset.beatmaps
                         .sort((a, b) => a.mode === b.mode ?
@@ -89,6 +68,29 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                                 mode={beatmap.mode} name={beatmap.version} />
                         )}
                 </div>
+            </div>
+            <div className="card_controls flex-col items-center justify-between rounded-lg p-1">
+                <div>
+                    #{p.index + 1}
+                </div>
+                <div className="tooltip" data-tip="listen">
+                <button className="btn btn-circle btn-ghost btn-sm"
+                    onClick={() => play(b.id, b.title, b.artist)}>
+                    <FaHeadphonesAlt />
+                </button>
+                </div>
+                <a href={`https://catboy.best/d/${b.id}`}
+                    className="tooltip" data-tip="download">
+                    <button className="btn btn-circle btn-ghost btn-sm">
+                        <FaDownload />
+                    </button>
+                </a>
+                <a href={`osu://b/${b.beatmaps[0].id}`}
+                    className="tooltip" data-tip="osu!direct">
+                    <button className="btn btn-circle btn-ghost btn-sm">
+                        <FaFileDownload />
+                    </button>
+                </a>
             </div>
         </div>
     )

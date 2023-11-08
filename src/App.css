@@ -285,8 +285,10 @@ th:last-child {
 
 .card_controls {
     display: none;
+    transition: 1s ease-in-out display;
 }
 
 .card:hover .card_controls {
     display: flex;
+    transition: 1s ease-in-out display;
 }

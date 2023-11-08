@@ -24,40 +24,19 @@ const ScoreCard = (p: Props) => {
     const coverImg = `https://assets.ppy.sh/beatmaps/${b.id}/covers/cover.jpg?${b.id}`;
 
     return (
-        <div className="bg-custom-600 rounded-lg flex flex-row card">
-            <div className="flex-col justify-between items-center rounded-lg p-1 card_controls">
-                <div>
-                    #{p.index + 1}
-                </div>
-                <button className="btn btn-ghost btn-circle btn-sm"
-                    onClick={() => play(b.id, b.title, b.artist)}>
-                    <FaHeadphonesAlt />
-                </button>
-                <a href={`https://catboy.best/d/${b.id}`}
-                    className="tooltip" data-tip="download">
-                    <button className="btn btn-ghost btn-circle btn-sm">
-                        <FaDownload />
-                    </button>
-                </a>
-                <a href={`osu://b/${p.score.beatmap.id}`}
-                    className="tooltip" data-tip="osu!direct">
-                    <button className="btn btn-ghost btn-circle btn-sm">
-                        <FaFileDownload />
-                    </button>
-                </a>
-            </div>
-            <div className="bg-custom-900 flex flex-col rounded-lg grow gap-3 p-3">
+        <div className="card flex flex-row rounded-lg bg-custom-600">
+                        <div className="flex grow flex-col gap-3 rounded-lg bg-custom-900 p-3">
                 <div className="flex flex-row items-center justify-between gap-3">
-                    <div className="flex flex-row gap-3 grow">
+                    <div className="flex grow flex-row gap-3">
                         <img src={listImg}
                             onError={addDefaultSrc}
                             alt="cover" className="rounded-lg" loading="lazy"
                             style={{ width: 120, height: 84, objectFit: 'cover' }} />
-                        <div className="flex flex-col gap-2 grow">
-                            <div className="flex flex-row gap-2 items-center justify-between">
-                                <div className="flex flex-row flex-wrap gap-2 items-center border-b">
+                        <div className="flex grow flex-col gap-2">
+                            <div className="flex flex-row items-center justify-between gap-2">
+                                <div className="flex flex-row flex-wrap items-center gap-2 border-b">
                                     <Link to={`/beatmaps/${b.id}/${p.score.beatmap.id}`}
-                                        className="text-xl text-decoration-none">
+                                        className="text-decoration-none text-xl">
                                         {b.title}
                                     </Link>
                                     <div className="text-sm">by {b.artist}</div>
@@ -77,11 +56,11 @@ const ScoreCard = (p: Props) => {
                         height: 64,
                         marginTop: -32,
                         color: (colors.ranks as any)[p.score.rank.toLowerCase()]
-                    }} className="col-span-1 font-semibold me-2">
+                    }} className="col-span-1 me-2 font-semibold">
                         <div className="text-end">{p.score.rank}</div>
                     </div>
                 </div>
-                <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row flex-wrap items-center gap-4"
                         style={{ fontSize: 14 }}>
                         <div className="flex flex-row items-center gap-1">
@@ -134,8 +113,8 @@ const ScoreCard = (p: Props) => {
                                 {p.score.statistics.count_miss}
                             </div>}
                     </div>
-                    <div className="flex flex-row gap-2 align-items-end">
-                        <div className="flex flex-row gap-2 me-2">
+                    <div className="align-items-end flex flex-row gap-2">
+                        <div className="me-2 flex flex-row gap-2">
                             {p.score.mods?.map((mod: string, i: number) =>
                                 <ModIcon acronym={mod} size={24} key={i} />
                             )}
@@ -144,6 +123,27 @@ const ScoreCard = (p: Props) => {
                         <div className="h6" style={{ color: '#cccccc' }}>{stats.pp !== undefined ? `(${stats.pp}pp if FC)` : `FC`}</div>
                     </div>
                 </div>
+            </div>
+            <div className="card_controls flex-col items-center justify-between rounded-lg p-1">
+                <div>
+                    #{p.index + 1}
+                </div>
+                <button className="btn btn-circle btn-ghost btn-sm"
+                    onClick={() => play(b.id, b.title, b.artist)}>
+                    <FaHeadphonesAlt />
+                </button>
+                <a href={`https://catboy.best/d/${b.id}`}
+                    className="tooltip" data-tip="download">
+                    <button className="btn btn-circle btn-ghost btn-sm">
+                        <FaDownload />
+                    </button>
+                </a>
+                <a href={`osu://b/${p.score.beatmap.id}`}
+                    className="tooltip" data-tip="osu!direct">
+                    <button className="btn btn-circle btn-ghost btn-sm">
+                        <FaFileDownload />
+                    </button>
+                </a>
             </div>
         </div>
     );
