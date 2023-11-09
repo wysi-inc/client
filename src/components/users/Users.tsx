@@ -77,7 +77,6 @@ const Users = () => {
                             <th className="hidden text-left lg:table-cell">{t('user.play_time')}</th>
                             <th className="hidden text-left lg:table-cell">{t('user.play_count')}</th>
                             <th className="hidden text-left md:table-cell">{t('score.ranked_score')}</th>
-                            <th className="hidden text-left xl:table-cell">{t('score.grades')}</th>
                             <th className="table-cell text-right">{t('user.online')}</th>
                         </tr>
                     </thead>

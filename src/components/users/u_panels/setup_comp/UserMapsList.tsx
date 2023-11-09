@@ -35,7 +35,7 @@ const UserMapsList = (p: Props) => {
     if (data?.pages[0].length < 1) return <Loading/>;
 
     return (
-        <div className="flex flex-col gap-4 p-3">
+        <div className="flex flex-col gap-3 p-3">
             {data?.pages?.map((page, i) =>
                 p.section === "scores" ?
                     page?.map((score: Score, j: number) =>
@@ -46,13 +46,12 @@ const UserMapsList = (p: Props) => {
                     ))
             }
             {hasNextPage &&
-                <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
+                <button onClick={() => fetchNextPage()} className="flex flex-row gap-2 mx-auto btn btn-success btn-sm">
                     <MdExpandMore/>
                     {isFetchingNextPage ? <Loading /> : 'Load More' }
                     <MdExpandMore/>
                 </button>
             }
-            
         </div>
     );
 

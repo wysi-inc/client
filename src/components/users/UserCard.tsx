@@ -28,13 +28,6 @@ const UserCard = (props: Props) => {
             <td className="hidden lg:table-cell">{Math.round((props.user.play_time / 60 / 60))}h</td>
             <td className="hidden lg:table-cell">{props.user.play_count.toLocaleString()}</td>
             <td className="hidden md:table-cell">{props.user.ranked_score.toLocaleString()}</td>
-            <td className="hidden xl:table-cell"><div className="grid grid-cols-5 gap-4">
-                <div>{props.user.grade_counts.ssh.toLocaleString()}</div>
-                <div>{props.user.grade_counts.ss.toLocaleString()}</div>
-                <div>{props.user.grade_counts.sh.toLocaleString()}</div>
-                <div>{props.user.grade_counts.s.toLocaleString()}</div>
-                <div>{props.user.grade_counts.a.toLocaleString()}</div>
-            </div></td>
             <td className="table-cell">
                 <div className='flex justify-end pe-2'>
                     <OnlineDot isOnline={props.user.user.is_online} size={24} />

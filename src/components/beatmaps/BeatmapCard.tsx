@@ -1,37 +1,35 @@
-import { forwardRef, Ref } from "react";
-
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaHeart, FaItunesNote, FaRegClock } from "react-icons/fa";
+import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaHeart, FaItunesNote, FaRegClock, FaUndo } from "react-icons/fa";
 
 import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
-import { Beatmap, Beatmapset } from "../../resources/types/beatmapset";
+import { Beatmap, BeatmapPlays } from "../../resources/types/beatmapset";
 import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { playerStore, PlayerStoreInterface } from "../../resources/global/tools";
 
 interface Props {
     index: number,
-    beatmapset: Beatmapset
+    beatmap: BeatmapPlays
 }
 
-const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
+const BeatmapCard = (p: Props) => {
 
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
-    const id = p.beatmapset.id;
-    const listImg = `https://assets.ppy.sh/beatmaps/${id}/covers/list.jpg?${id}`;
-    const coverImg = `https://assets.ppy.sh/beatmaps/${id}/covers/cover.jpg?${id}`;
+    const beatmap = p.beatmap.beatmap;
+    const beatmapset = p.beatmap.beatmapset;
 
-    const submitted_date = typeof p.beatmapset.submitted_date === "number" ? p.beatmapset.submitted_date * 1000 : p.beatmapset.submitted_date;
+    const listImg = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/list.jpg?${beatmapset.id}`;
+    const coverImg = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/cover.jpg?${beatmapset.id}`;
 
-    const b = p.beatmapset;
+    const submitted_date = typeof beatmapset.submitted_date === "number" ? beatmapset.submitted_date * 1000 : beatmapset.submitted_date;
 
     return (
         <div className="flex flex-row rounded-lg card bg-custom-600">
             <div className="flex flex-col gap-3 p-3 rounded-lg shadow-xl grow bg-custom-900">
-                <div className="flex flex-row items-center justify-between gap-3">
+                <div className="flex flex-row justify-between gap-3">
                     <div className="flex flex-row gap-3 grow">
                         <img src={listImg}
                             onError={addDefaultSrc}
@@ -39,14 +37,14 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                             style={{ width: 120, height: 84, objectFit: 'cover' }} />
                         <div className="flex flex-col gap-2 grow">
                             <div className="flex flex-row items-center justify-between gap-2">
-                                <Link to={`/beatmaps/${b.id}`}
+                                <Link to={`/beatmaps/${beatmapset.id}/${beatmap.id}`}
                                     className="text-xl text-decoration-none">
-                                    {b.title} <br /> <small>by {b.artist}</small>
+                                    {beatmapset.title} <br /> <small>by {beatmapset.artist}</small>
                                 </Link>
                             </div>
                             <div className="flex flex-row items-center gap-2 text-sm">
-                                <Link to={`/users/${b.user_id}`} className="inline-block">
-                                    Mapper: {b.creator}
+                                <Link to={`/users/${beatmapset.user_id}`} className="inline-block">
+                                    Mapper: {beatmapset.creator}
                                 </Link>
                                 <div>|</div>
                                 <div className="tooltip" data-tip={moment(submitted_date).format('DD MMM YYYY')}>
@@ -55,19 +53,17 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                             </div>
                         </div>
                     </div>
-
+                    <div>
+                        <div className="flex flex-row items-center gap-2 text-xl">
+                            <FaUndo /><div>{p.beatmap.count}</div>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-                    <StatusBadge status={b.status} />
-                    {p.beatmapset?.beatmaps?.sort((a, b) => a.mode === b.mode ?
-                        a.difficulty_rating - b.difficulty_rating :
-                        a.mode_int - b.mode_int)
-                        .map((beatmap: Beatmap, index: number) =>
-                            <DiffIcon setId={id} diffId={beatmap.id}
-                                key={index}
-                                diff={beatmap.difficulty_rating} size={24}
-                                mode={beatmap.mode} name={beatmap.version} />
-                        )}
+                    <StatusBadge status={beatmapset.status} />
+                    <DiffIcon setId={beatmapset.id} diffId={beatmap.id}
+                        diff={beatmap.difficulty_rating} size={24}
+                        mode={beatmap.mode} name={beatmap.version} />
                 </div>
             </div>
             <div className="flex flex-col items-center justify-between p-1 rounded-lg">
@@ -76,17 +72,17 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
                 </div>
                 <div className="tooltip" data-tip="listen">
                     <button className="btn btn-circle btn-ghost btn-sm"
-                        onClick={() => play(b.id, b.title, b.artist)}>
+                        onClick={() => play(beatmapset.id, beatmapset.title, beatmapset.artist)}>
                         <FaHeadphonesAlt />
                     </button>
                 </div>
-                <a href={`https://catboy.best/d/${b.id}`}
+                <a href={`https://catboy.best/d/${beatmapset.id}`}
                     className="tooltip" data-tip="download">
                     <button className="btn btn-circle btn-ghost btn-sm">
                         <FaDownload />
                     </button>
                 </a>
-                <a href={`osu://b/${b.beatmaps[0].id}`}
+                <a href={`osu://b/${beatmap.id}`}
                     className="tooltip" data-tip="osu!direct">
                     <button className="btn btn-circle btn-ghost btn-sm">
                         <FaFileDownload />
@@ -95,6 +91,6 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
             </div>
         </div>
     )
-})
+}
 
-export default BeatmapsetCard;
+export default BeatmapCard;

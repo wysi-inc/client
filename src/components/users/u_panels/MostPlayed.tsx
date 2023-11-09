@@ -4,7 +4,9 @@ import TitleBar from "./TitleBar";
 import { useTranslation } from "react-i18next";
 import { FaFireAlt } from "react-icons/fa";
 import Loading from "../../../web/w_comp/Loading";
+import BeatmapCard from "../../beatmaps/BeatmapCard";
 import { BeatmapPlays } from "../../../resources/types/beatmapset";
+import { MdExpandMore } from "react-icons/md";
 
 interface Props {
     userId: number,
@@ -32,16 +34,21 @@ const MostPlayed = (p: Props) => {
     if (!data?.pages) return <Loading />;
 
     return (
-        <div className={p.className} style={{ height: p.heigth }}>
+        <div className={p.className}>
             <TitleBar title={t('user.sections.mostplayed')} icon={<FaFireAlt />} />
-            <div className="flex flex-col overflow-y-scroll">
-                {data.pages.map((page) =>
+            <div className="flex flex-col gap-3 p-3">
+                {data.pages.map((page : BeatmapPlays[], i: number) =>
                     page.map((beatmap: BeatmapPlays, j: number) =>
-                        <div key={j}>{beatmap.beatmapset.title}</div>
+                        <BeatmapCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmap={beatmap}/>
                     ))
                 }
-                {isFetchingNextPage && <Loading />}
-                {hasNextPage && <button className="btn btn-secondary" onClick={() => fetchNextPage()}>More</button>}
+                {hasNextPage &&
+                <button onClick={() => fetchNextPage()} className="flex flex-row gap-2 mx-auto btn btn-success btn-sm">
+                    <MdExpandMore/>
+                    {isFetchingNextPage ? <Loading /> : 'Load More' }
+                    <MdExpandMore/>
+                </button>
+            }
             </div>
         </div>)
 
