@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaItunesNote, FaRegClock, FaStar } from "react-icons/fa";
+import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaRegClock, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
 import { PlayerStoreInterface, colors, playerStore } from "../../resources/global/tools";
@@ -22,7 +22,6 @@ const ScoreCard = (p: Props) => {
     const b = p.score.beatmapset;
 
     const listImg = `https://assets.ppy.sh/beatmaps/${b.id}/covers/list.jpg?${b.id}`;
-    const coverImg = `https://assets.ppy.sh/beatmaps/${b.id}/covers/cover.jpg?${b.id}`;
 
     const submitted_date = typeof b.submitted_date === "number" ? b.submitted_date * 1000 : b.submitted_date;
 
@@ -63,63 +62,35 @@ const ScoreCard = (p: Props) => {
                     </div>
                 </div>
                 <div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-row flex-wrap items-center gap-4"
-                        style={{ fontSize: 14 }}>
-                        <div className="flex flex-row items-center gap-1">
-                            <FaStar />
-                            {stats.sr}
-                        </div>
-                        <div className="flex flex-row items-center gap-1">
-                            <FaRegClock />
-                            {secondsToTime(stats.len)}
-                        </div>
-                        <div>{stats.bpm}bpm</div>
-                        <div>CS: {stats.cs}</div>
-                        <div>AR: {stats.ar}</div>
-                        <div>OD: {stats.od}</div>
-                        <div>HP: {stats.hp}</div>
-                    </div>
-                    <div data-tip={moment(p.score.created_at).format('DD MMM YYYY')}>
-                        {moment(p.score.created_at).fromNow()}
-                    </div>
-                </div>
-                <div className="flex flex-row items-center justify-between"
-                    style={{ fontSize: 16 }}>
-                    <div className="flex flex-row gap-2">
-                        <StatusBadge status={b.status} />
-                        <DiffIcon setId={b.id} diffId={p.score.beatmap.id}
-                            diff={p.score.beatmap.difficulty_rating} size={24}
-                            mode={p.score.beatmap.mode} name={p.score.beatmap.version} />
-                        <div className="flex flex-row gap-4">
-                            <div>{(p.score.accuracy * 100).toFixed(2)}%</div>
-                            <div>{p.score.max_combo}x</div>
-                            <div>{p.score.score.toLocaleString()}</div>
-                            <div>|</div>
-                            {p.score.mode !== 'osu' && p.score.statistics.count_geki !== 0 &&
-                                <div style={{ color: colors.judgements.x320 }}>
-                                    {p.score.statistics.count_geki}
-                                </div>}
-                            {p.score.statistics.count_300 &&
-                                <div style={{ color: colors.judgements.x300 }}>
-                                    {p.score.statistics.count_300}
-                                </div>}
-                            {p.score.mode !== 'osu' && p.score.statistics.count_katu !== 0 &&
-                                <div style={{ color: colors.judgements.x200 }}>
-                                    {p.score.statistics.count_katu}
-                                </div>}
-                            {p.score.statistics.count_100 !== 0 &&
-                                <div style={{ color: colors.judgements.x100 }}>
-                                    {p.score.statistics.count_100}
-                                </div>}
-                            {p.score.statistics.count_50 !== 0 &&
-                                <div style={{ color: colors.judgements.x50 }}>
-                                    {p.score.statistics.count_50}
-                                </div>}
-                            {p.score.statistics.count_miss !== 0 &&
-                                <div style={{ color: colors.judgements.xMiss }}>
-                                    {p.score.statistics.count_miss}
-                                </div>}
-                        </div>
+                    <div className="flex flex-row gap-4">
+                        <div>{(p.score.accuracy * 100).toFixed(2)}%</div>
+                        <div>{p.score.max_combo}x</div>
+                        <div>{p.score.score.toLocaleString()}</div>
+                        <div>|</div>
+                        {p.score.mode !== 'osu' && p.score.statistics.count_geki !== 0 &&
+                            <div style={{ color: colors.judgements.x320 }}>
+                                {p.score.statistics.count_geki}
+                            </div>}
+                        {p.score.statistics.count_300 &&
+                            <div style={{ color: colors.judgements.x300 }}>
+                                {p.score.statistics.count_300}
+                            </div>}
+                        {p.score.mode !== 'osu' && p.score.statistics.count_katu !== 0 &&
+                            <div style={{ color: colors.judgements.x200 }}>
+                                {p.score.statistics.count_katu}
+                            </div>}
+                        {p.score.statistics.count_100 !== 0 &&
+                            <div style={{ color: colors.judgements.x100 }}>
+                                {p.score.statistics.count_100}
+                            </div>}
+                        {p.score.statistics.count_50 !== 0 &&
+                            <div style={{ color: colors.judgements.x50 }}>
+                                {p.score.statistics.count_50}
+                            </div>}
+                        {p.score.statistics.count_miss !== 0 &&
+                            <div style={{ color: colors.judgements.xMiss }}>
+                                {p.score.statistics.count_miss}
+                            </div>}
                     </div>
                     <div className="flex flex-row gap-2 align-items-end">
                         <div className="flex flex-row gap-2 me-2">
@@ -130,6 +101,35 @@ const ScoreCard = (p: Props) => {
                         <div>{p.score.pp ? Math.round(parseInt(p.score.pp)) : 0}pp</div>
                         <div style={{ color: '#cccccc' }}>{stats.pp !== undefined ? `(${stats.pp}pp if FC)` : `FC`}</div>
                     </div>
+                </div>
+                <div className="flex flex-row items-center justify-between"
+                    style={{ fontSize: 16 }}>
+                    <div className="flex flex-row gap-2">
+                        <StatusBadge status={b.status} />
+                        <DiffIcon setId={b.id} diffId={p.score.beatmap.id}
+                            diff={p.score.beatmap.difficulty_rating} size={24}
+                            mode={p.score.beatmap.mode} name={p.score.beatmap.version} />
+                        <div className="flex flex-row flex-wrap items-center gap-4"
+                            style={{ fontSize: 14 }}>
+                            <div className="flex flex-row items-center gap-1">
+                                <FaStar />
+                                {stats.sr}
+                            </div>
+                            <div className="flex flex-row items-center gap-1">
+                                <FaRegClock />
+                                {secondsToTime(stats.len)}
+                            </div>
+                            <div>{stats.bpm}bpm</div>
+                            <div>CS: {stats.cs}</div>
+                            <div>AR: {stats.ar}</div>
+                            <div>OD: {stats.od}</div>
+                            <div>HP: {stats.hp}</div>
+                        </div>
+                    </div>
+                    <div data-tip={moment(p.score.created_at).format('DD MMM YYYY')}>
+                        {moment(p.score.created_at).fromNow()}
+                    </div>
+
                 </div>
             </div>
             <div className="flex flex-col items-center justify-between p-1 rounded-lg">

@@ -1,9 +1,5 @@
-import { useState } from "react";
-
 import moment from "moment";
-import { Radar } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
-import { ChartData, ChartOptions } from "chart.js";
 
 import { FaAngleDoubleUp, FaCalculator, FaEye, FaFireAlt, FaGlobeAfrica, FaRegClock, FaUndo } from "react-icons/fa";
 
@@ -27,37 +23,6 @@ interface Props {
 
 const TopPanel = (p: Props) => {
     const { t } = useTranslation();
-
-    const RADAR_CHART_INITIAL: ChartData<'radar'> = {
-        labels: [],
-        datasets: [
-            {
-                label: 'Skills',
-                data: [],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-            }
-        ],
-    };
-    const radarOptions: ChartOptions<'radar'> = {
-        scales: {
-            r: {
-                angleLines: {
-                    display: false
-                },
-                min: 0,
-                max: 100,
-                animate: true,
-                beginAtZero: true,
-                ticks: {
-                    display: false
-                }
-            }
-        }
-    }
-
-    const [skillsData, setSkillsData] = useState<ChartData<'radar'>>(RADAR_CHART_INITIAL);
 
     const scoresRanksLabels: BarPieChartData[] = [
         { label: 'XH', color: colors.ranks.xh, value: p.user.statistics.grade_counts.ssh },
@@ -131,7 +96,7 @@ const TopPanel = (p: Props) => {
                                         <div>{Math.round(p.user.statistics.pp).toLocaleString()}pp</div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-1">
+                                <div     className="flex flex-col gap-1">
                                     <div className="text-lg">{t('score.accuracy')}:</div>
                                     <div className="flex flex-row items-center gap-2 text-xl">
                                         <div>{p.user.statistics.hit_accuracy.toFixed(2).toLocaleString()}%</div>
@@ -139,11 +104,6 @@ const TopPanel = (p: Props) => {
                                 </div>
                                 <div><BarPieChart data={scoresRanksLabels} width={250} /></div>
                             </div>
-                            {/*
-                            <div className="flex flex-col items-center justify-between col-span-7 gap-3 md:col-span-2">
-                                <div><Radar data={skillsData} options={radarOptions} /></div>
-                            </div> 
-                            */}
                             <div className="flex flex-col items-end justify-between">
                                 <div className="flex flex-col justify-end gap-1 text-end">
                                     <div className="text-lg">{t('score.ranked_score')}:</div>

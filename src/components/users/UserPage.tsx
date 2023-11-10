@@ -6,13 +6,11 @@ import MedalsPanel from "./u_panels/MedalsPanel";
 import ScoresPanel from "./u_panels/ScoresPanel";
 import HistoryPanel from "./u_panels/HistoryPanel";
 import BeatmapsPanel from "./u_panels/BeatmapsPanel";
-import { useDivSize } from "../../resources/hooks/globalHooks";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import fina from "../../helpers/fina";
 import { alertManager, alertManagerInterface } from "../../resources/global/tools";
 import { User } from "../../resources/types/user";
-import { Score } from "../../resources/types/score";
 import { GameMode } from "../../resources/types/general";
 import Loading from "../../web/w_comp/Loading";
 import MostPlayed from "./u_panels/MostPlayed";
@@ -29,8 +27,6 @@ const UserPage = () => {
     function getUser() {
         return fina.post('/user', { id: urlUser, mode: urlMode });
     }
-
-    const { divPx, divRef } = useDivSize('h', 700);
 
     if (userStatus === 'loading') return <Loading/>
     
@@ -50,14 +46,14 @@ const UserPage = () => {
         <TopPanel user={user} mode={mode} />
         <BarPanel user={user} />
         <div className="flex flex-col gap-4 p-4">
-            <HistoryPanel className={CSS} ref={divRef} user={user} mode={mode} />
+            <HistoryPanel className={CSS} user={user} mode={mode} />
             <ScoresSumary className={CSS} userId={user.id} mode={mode} />
-            <ScoresPanel className={CSS} heigth={divPx} user={user} mode={mode} />
             <SkinPanel className={CSS} />
             <SetupPanel className={CSS} userId={user.id} setup={user.db_info.setup} playstyle={user.playstyle} />
-            <MedalsPanel className={CSS} heigth={divPx} user={user} />
-            <BeatmapsPanel className={CSS} height={divPx} user={user} />
-            <MostPlayed className={CSS} heigth={divPx} userId={user.id} />
+            <ScoresPanel className={CSS} user={user} mode={mode} />
+            <BeatmapsPanel className={CSS} user={user} />
+            <MostPlayed className={CSS} userId={user.id} />
+            <MedalsPanel className={CSS} user={user} />
         </div>
     </>
 }

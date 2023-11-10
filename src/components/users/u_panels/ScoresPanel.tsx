@@ -11,7 +11,6 @@ import UserMapsList from "./setup_comp/UserMapsList";
 interface ScoresPanelProps {
     user: User,
     mode: GameMode,
-    heigth: number,
     className: string,
 }
 

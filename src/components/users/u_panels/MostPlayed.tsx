@@ -10,7 +10,6 @@ import { MdExpandMore } from "react-icons/md";
 
 interface Props {
     userId: number,
-    heigth: number,
     className: string,
 }
 

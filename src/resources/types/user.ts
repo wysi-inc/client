@@ -252,15 +252,17 @@ export type Setup = {
 }
 
 export type Peripherals = {
-    monitor?: string;
-    headphones?: string;
-    microphone?: string;
-    tablet?: string;
-    mouse?: string;
-    keyboard?: string;
-    keypad?: string;
-    mousepad?: string;
-    chair?: string;
+    monitor: string;
+    headphones: string;
+    microphone: string;
+    tablet: string;
+    mouse: string;
+    keyboard: string;
+    keypad: string;
+    mousepad: string;
+    chair: string;
+    camera: string;
+    audio: string;
 }
 
 export type MapTab = {

@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 interface Props {
     user: User,
-    heigth: number,
     className: string,
 }
 

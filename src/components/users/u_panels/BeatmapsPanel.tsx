@@ -11,7 +11,6 @@ import TitleBar from "./TitleBar";
 
 interface Props {
     user: User,
-    height: number
     className: string,
 }
 
