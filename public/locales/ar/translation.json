@@ -1,8 +1,8 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
+        "home": "الصفحة الرئيسية",
+        "users": "المستخدمون",
+        "beatmaps": "خرائط الموسيقية",
         "search": "Search someone",
         "help": "Help translate the site!",
         "log": {
