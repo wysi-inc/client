@@ -21,77 +21,36 @@ const ConfigComputer = (p: Props) => {
         p.setComputer((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
+    const items = [
+        { name: "cpu", title: t('user.sections.setup.components.cpu'), icon: <BsCpu /> },
+        { name: "gpu", title: t('user.sections.setup.components.gpu'), icon: <BsGpuCard /> },
+        { name: "ram", title: t('user.sections.setup.components.ram'), icon: <BsMemory /> },
+        { name: "storage", title: t('user.sections.setup.components.storage'), icon: <BsDeviceHdd /> },
+        { name: "motherboard", title: t('user.sections.setup.components.motherboard'), icon: <BsFillMotherboardFill /> },
+        { name: "psu", title: t('user.sections.setup.components.psu'), icon: <BsFillLightningChargeFill /> },
+        { name: "case", title: t('user.sections.setup.components.case'), icon: <BsPc /> },
+    ]
+
     return (
-        <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-3">
-                <div className="col-span-1">{t('user.sections.setup.components.component')}</div>
-                <div className="col-span-2">{t('user.sections.setup.components.details')}</div>
-            </div>
-            <div className="col-span-4 p-0 m-0 divider"></div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsCpu />
-                    <div>{t('user.sections.setup.components.cpu')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.cpu} onChange={handleChange} name="cpu" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsGpuCard />
-                    <div>{t('user.sections.setup.components.gpu')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.gpu} onChange={handleChange} name="gpu" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsMemory />
-                    <div>{t('user.sections.setup.components.ram')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.ram} onChange={handleChange} name="ram" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsDeviceHdd />
-                    <div>{t('user.sections.setup.components.storage')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.storage} onChange={handleChange} name="storage" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsFillMotherboardFill />
-                    <div>{t('user.sections.setup.components.motherboard')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.motherboard} onChange={handleChange} name="motherboard" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsFillLightningChargeFill />
-                    <div>{t('user.sections.setup.components.psu')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.psu} onChange={handleChange} name="psu" edit={p.edit} />
-                </div>
-            </div>
-            <div className="grid grid-cols-3">
-                <div className="flex flex-row items-center col-span-1 gap-3">
-                    <BsPc />
-                    <div>{t('user.sections.setup.components.case')}</div>
-                </div>
-                <div className="flex col-span-2">
-                    <EditInput value={p.computer.case} onChange={handleChange} name="case" edit={p.edit} />
-                </div>
-            </div>
-        </div>
+        <table className="table">
+            <thead>
+                <tr>
+                    <th className="p-1">{t('user.sections.setup.components.component')}</th>
+                    <th className="p-1">{t('user.sections.setup.components.details')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {items.map((item, i: number) =>
+                    (p.computer as any)[item.name] !== "" || p.edit ?
+                        <tr key={i}>
+                            <th className="flex flex-row items-center gap-3 p-1">{item.icon}<div>{item.title}</div></th>
+                            <th className="p-1">
+                                <EditInput value={(p.computer as any)[item.name]} onChange={handleChange} name={item.name} edit={p.edit} />
+                            </th>
+                        </tr> : ''
+                )}
+            </tbody>
+        </table>
     )
 }
 

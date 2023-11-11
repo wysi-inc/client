@@ -11,7 +11,6 @@ import ConfigTablet from "./setup_comp/ConfigTablet";
 import ConfigComputer from "./setup_comp/ConfigComputer";
 import ConfigKeyboard from "./setup_comp/ConfigKeyboard";
 import { Peripherals, Setup } from "../../../resources/types/user";
-import { useDivSize } from "../../../resources/hooks/globalHooks";
 import { UserStore, UserStoreInt } from "../../../resources/global/user";
 import { Computer, Keyboard, Mouse, Tablet } from "../../../resources/types/setup";
 import TitleBar from "./TitleBar";
@@ -85,7 +84,6 @@ const SetupPanel = (p: Props) => {
     const [PERIPHERALS_INITIAL, setPERIPHERALS_INITIAL] = useState<Peripherals>(p.setup?.peripherals || PERIPHERALS_EX);
     const [COMPUTER_INITIAL, setCOMPUTER_INITIAL] = useState<Computer>(p.setup?.computer || COMPUTER_EX);
 
-    const [tabsIndex, setTabsIndex] = useState<number>(1);
     const [edit, setEdit] = useState<boolean>(false);
 
     const [keyboard, setKeyboard] = useState<Keyboard>(KEYBOARD_INITIAL);
@@ -124,54 +122,77 @@ const SetupPanel = (p: Props) => {
         setEdit(false);
     }
 
-    const { divPx, divRef } = useDivSize('w', 300);
+    const editButton = (
+        <div className="flex flex-row gap-2">
+            <div hidden={edit || !me}>
+                <button onClick={handleEdit} className="btn btn-warning btn-sm">
+                    <FaEdit />
+                </button>
+            </div>
+            <div hidden={!edit}>
+                <button onClick={handleSubmit} className="btn btn-success btn-sm">
+                    <FaCheck />
+                </button>
+            </div>
+            <div hidden={!edit}>
+                <button onClick={handleCancel} className="btn btn-error btn-sm">
+                    <FaTimes />
+                </button>
+            </div>
+        </div>
+    )
 
     return (
         <div className={p.className}>
-            <div className="shadow">
-                <TitleBar title={t('user.sections.setup.title')} icon={<FaComputer />} />
-                <div className="grid items-center grid-cols-6 bg-custom-900">
-                    <div className="content-center justify-center col-span-4 col-start-2 rounded-none bg-custom-900 tabs tabs-boxed">
-                        <button onClick={() => setTabsIndex(1)}
-                            className={`tab flex flex-row gap-2 ${tabsIndex === 1 && 'tab-active text-base-100'}`}>
-                            <FaKeyboard />
-                            <div>{t('user.sections.setup.tabs.peripherals')}</div>
-                        </button>
-                        <button onClick={() => setTabsIndex(2)}
-                            className={`tab flex flex-row gap-2 ${tabsIndex === 2 && 'tab-active text-base-100'}`}>
-                            <BsGpuCard />
-                            <div>{t('user.sections.setup.tabs.computer')}</div>
-                        </button>
+            <TitleBar
+                title={t('user.sections.setup.title')}
+                icon={<FaComputer />} left={editButton}
+                info="to configure the keyboard, mouse and tablet first enable them on the official osu!settings" />
+            <div className="flex flex-col gap-3 p-3">
+                <div className="flex flex-row flex-wrap items-start justify-around p-3">
+                    {p.playstyle?.includes('keyboard') &&
+                        <ConfigKeyboard
+                            width={300} height={228}
+                            keyboard={keyboard}
+                            setKeyboard={setKeyboard}
+                            edit={edit} />}
+                    {p.playstyle?.includes('tablet') &&
+                        <ConfigTablet
+                            width={300} height={228}
+                            tablet={tablet}
+                            setTablet={setTablet}
+                            edit={edit} />}
+                    {p.playstyle?.includes('mouse') &&
+                        <ConfigMouse
+                            width={300} height={228}
+                            mouse={mouse}
+                            setMouse={setMouse}
+                            edit={edit} />}
+                </div>
+                <div className="rounded-lg collapse collapse-arrow bg-custom-800">
+                    <input type="checkbox" />
+                    <div className="flex flex-row items-center gap-3 collapse-title">
+                        <FaKeyboard />
+                        <div>{t("user.sections.setup.tabs.peripherals")}</div>
                     </div>
-                    <div className="flex flex-row justify-end gap-2 pr-2">
-                        <div hidden={edit || !me}>
-                            <button onClick={handleEdit} className="btn btn-warning btn-sm">
-                                <FaEdit />
-                            </button>
-                        </div>
-                        <div hidden={!edit}>
-                            <button onClick={handleSubmit} className="btn btn-success btn-sm">
-                                <FaCheck />
-                            </button>
-                        </div>
-                        <div hidden={!edit}>
-                            <button onClick={handleCancel} className="btn btn-error btn-sm">
-                                <FaTimes />
-                            </button>
-                        </div>
+                    <div className="collapse-content">
+                        <ConfigPeripherals
+                            peripherals={peripherals}
+                            setPeripherals={setPeripherals}
+                            edit={edit} />
                     </div>
                 </div>
-                <div className={`flex items-center ${tabsIndex === 1 && p.playstyle && p.playstyle.length > 2 && 'overflow-x-scroll'}`} ref={divRef}>
-                    <div className={`grow p-4 ${edit === false && 'c-normal'}`} hidden={tabsIndex !== 1}>
-                        <div className="flex flex-row gap-6">
-                            {p.playstyle?.includes('keyboard') && <ConfigKeyboard width={divPx / 2 - 30} height={228} keyboard={keyboard} setKeyboard={setKeyboard} edit={edit} />}
-                            {p.playstyle?.includes('tablet') && <ConfigTablet width={divPx / 2 - 30} height={228} tablet={tablet} setTablet={setTablet} edit={edit} />}
-                            {p.playstyle?.includes('mouse') && <ConfigMouse width={divPx / 2 - 30} height={228} mouse={mouse} setMouse={setMouse} edit={edit} />}
-                        </div>
-                        <ConfigPeripherals peripherals={peripherals} setPeripherals={setPeripherals} edit={edit} />
+                <div className="rounded-lg collapse collapse-arrow bg-custom-800">
+                    <input type="checkbox" />
+                    <div className="flex flex-row items-center gap-3 collapse-title">
+                        <BsGpuCard />
+                        <div>{t("user.sections.setup.tabs.computer")}</div>
                     </div>
-                    <div className="p-4 grow" hidden={tabsIndex !== 2}>
-                        <ConfigComputer computer={computer} setComputer={setComputer} edit={edit} />
+                    <div className="collapse-content">
+                        <ConfigComputer
+                            computer={computer}
+                            setComputer={setComputer}
+                            edit={edit} />
                     </div>
                 </div>
             </div>

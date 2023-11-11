@@ -27,8 +27,6 @@ const MostPlayed = (p: Props) => {
             },
         });
 
-    console.log("mostPlayed", data);
-
     if (!isSuccess) return <Loading />;
     if (!data?.pages) return <Loading />;
 
@@ -36,18 +34,18 @@ const MostPlayed = (p: Props) => {
         <div className={p.className}>
             <TitleBar title={t('user.sections.mostplayed')} icon={<FaFireAlt />} />
             <div className="flex flex-col gap-3 p-3">
-                {data.pages.map((page : BeatmapPlays[], i: number) =>
+                {data.pages.map((page: BeatmapPlays[], i: number) =>
                     page.map((beatmap: BeatmapPlays, j: number) =>
-                        <BeatmapCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmap={beatmap}/>
+                        <BeatmapCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmap={beatmap} />
                     ))
                 }
                 {hasNextPage &&
-                <button onClick={() => fetchNextPage()} className="flex flex-row gap-2 mx-auto btn btn-success btn-sm">
-                    <MdExpandMore/>
-                    {isFetchingNextPage ? <Loading /> : 'Load More' }
-                    <MdExpandMore/>
-                </button>
-            }
+                    <button onClick={() => fetchNextPage()} className="flex flex-row gap-2 mx-auto btn btn-success btn-sm">
+                        <MdExpandMore />
+                        {isFetchingNextPage ? <Loading /> : 'Load More'}
+                        <MdExpandMore />
+                    </button>
+                }
             </div>
         </div>)
 

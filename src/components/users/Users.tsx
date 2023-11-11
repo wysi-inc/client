@@ -80,15 +80,17 @@ const Users = () => {
                             <th className="table-cell text-right">{t('user.online')}</th>
                         </tr>
                     </thead>
-                    <tbody className="mt-3">
-                        {usersStatus === 'loading' || !users ? <Loading /> :
-                            users.map((user, index) =>
+                    {users &&
+                        <tbody className="mt-3">
+                            {users.map((user, index) =>
                                 <UserCard mode={mode} user={user} section={section} index={index + (50 * (actualPage - 1) + 1)} key={index} />
                             )}
-                    </tbody>
+                        </tbody>
+                    }
                 </table>
+                {!users &&<Loading />}
             </div>
-            {usersStatus === 'success' || users ? <PageTabs setNewPage={setPage} current={page} min={1} max={200} /> : ''}
+            {users ? <PageTabs setNewPage={setPage} current={page} min={1} max={200} /> : ''}
         </div>
     );
 

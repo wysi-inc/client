@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Line } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
@@ -9,9 +9,7 @@ import { FaChartLine, FaEye, FaGlobeAfrica, FaRegClock } from "react-icons/fa";
 import TitleBar from "./TitleBar";
 import CountryShape from "../u_comp/CountryShape";
 import { colors } from "../../../resources/global/tools";
-import TopScoresPanel from "./ScoresSumary";
 import { MonthlyData, User } from "../../../resources/types/user";
-import Loading from "../../../web/w_comp/Loading";
 import { GameMode } from "../../../resources/types/general";
 
 const LINE_CHART_INITIAL: ChartData<'line'> = {
@@ -71,7 +69,7 @@ interface Props {
     className: string,
 }
 
-const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
+const HistoryPanel = (p: Props) => {
     const { t } = useTranslation();
     const [tabIndex, setTabIndex] = useState<number>(1);
 
@@ -88,7 +86,7 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
     }, [p.user])
 
     return (
-        <div className={p.className} ref={ref}>
+        <div className={p.className}>
             <TitleBar title={t('user.sections.history.title')} icon={<FaChartLine />} />
             <div className="content-center justify-center rounded-none tabs tabs-boxed bg-custom-900">
                 <button
@@ -189,6 +187,6 @@ const HistoryPanel = forwardRef((p: Props, ref: Ref<HTMLDivElement>) => {
         })
     }
 
-})
+}
 
 export default HistoryPanel;

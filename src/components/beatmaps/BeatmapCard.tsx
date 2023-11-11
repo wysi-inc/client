@@ -1,12 +1,12 @@
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaHeart, FaItunesNote, FaRegClock, FaUndo } from "react-icons/fa";
+import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaUndo } from "react-icons/fa";
 
 import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
-import { Beatmap, BeatmapPlays } from "../../resources/types/beatmapset";
-import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
+import { BeatmapPlays } from "../../resources/types/beatmapset";
+import { addDefaultSrc } from "../../resources/global/functions";
 import { playerStore, PlayerStoreInterface } from "../../resources/global/tools";
 
 interface Props {
@@ -22,7 +22,6 @@ const BeatmapCard = (p: Props) => {
     const beatmapset = p.beatmap.beatmapset;
 
     const listImg = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/list.jpg?${beatmapset.id}`;
-    const coverImg = `https://assets.ppy.sh/beatmaps/${beatmapset.id}/covers/cover.jpg?${beatmapset.id}`;
 
     const submitted_date = typeof beatmapset.submitted_date === "number" ? beatmapset.submitted_date * 1000 : beatmapset.submitted_date;
 

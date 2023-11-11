@@ -1,14 +1,12 @@
-import { forwardRef, Ref } from "react";
-
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaHeart, FaItunesNote, FaRegClock } from "react-icons/fa";
+import { FaDownload, FaFileDownload, FaHeadphonesAlt} from "react-icons/fa";
 
 import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
 import { Beatmap, Beatmapset } from "../../resources/types/beatmapset";
-import { addDefaultSrc, secondsToTime } from "../../resources/global/functions";
+import { addDefaultSrc } from "../../resources/global/functions";
 import { playerStore, PlayerStoreInterface } from "../../resources/global/tools";
 
 interface Props {
@@ -16,13 +14,12 @@ interface Props {
     beatmapset: Beatmapset
 }
 
-const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
+const BeatmapsetCard = (p: Props) => {
 
     const play = playerStore((state: PlayerStoreInterface) => state.play);
 
     const id = p.beatmapset.id;
     const listImg = `https://assets.ppy.sh/beatmaps/${id}/covers/list.jpg?${id}`;
-    const coverImg = `https://assets.ppy.sh/beatmaps/${id}/covers/cover.jpg?${id}`;
 
     const submitted_date = typeof p.beatmapset.submitted_date === "number" ? p.beatmapset.submitted_date * 1000 : p.beatmapset.submitted_date;
 
@@ -95,6 +92,6 @@ const BeatmapsetCard = forwardRef((p: Props, ref?: Ref<HTMLDivElement>) => {
             </div>
         </div>
     )
-})
+}
 
 export default BeatmapsetCard;

@@ -8,10 +8,9 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 import MultiSlider from "./b_comp/MultiSlider";
 import fina from "../../helpers/fina";
-import BeatmapsetCard from "./BeatmapsetCard";
 import { colors } from "../../resources/global/tools";
 import { GameMode, GameModes } from "../../resources/types/general";
-import { Beatmapset, BeatmapsetStatus, BeatmapsetStatuses } from "../../resources/types/beatmapset";
+import { BeatmapsetStatus, BeatmapsetStatuses } from "../../resources/types/beatmapset";
 
 import './b_comp/Beatmaps.css';
 import { MdExpandMore } from "react-icons/md";
@@ -67,9 +66,6 @@ const Beatmapsets = () => {
 
     const [query, setQuery] = useState(INITIAL_QUERY);
 
-    const [results, setResults] = useState<Beatmapset[]>([])
-    const [resultsNum, setResultsNum] = useState<number>(0)
-
     const [copied, setCopied] = useState<boolean>(false);
     const [cleared, setCleared] = useState<boolean>(false);
 
@@ -85,18 +81,17 @@ const Beatmapsets = () => {
 
     return (
         <div className="p-4">
-            <div className="bg-custom-950 rounded-lg">
+            <div className="rounded-lg bg-custom-950">
                 <div className="flex flex-col gap-4 p-4 rounded-lg drop-shadow-lg bg-custom-900">
                     <div className="flex flex-row items-center justify-between p-4 text-xl rounded-lg bg-custom-950">
                         <div>Beatmap Search:</div>
                         <div className="flex flex-row items-center gap-2">
-                            <div className="h5">{resultsNum.toLocaleString()} results</div>
                             <div className="tooltip" data-tip="Clear">
                                 <button className="text-lg btn btn-error"
                                     onClick={() => {
                                         setCleared(true);
                                         clearSearch();
-                                        setTimeout(() => setCleared(false), 400)
+                                        setTimeout(() => setCleared(false), 400);
                                     }}>
                                     {!cleared ? <BiSolidEraser /> : <BsCheckLg />}
                                 </button>
@@ -126,7 +121,7 @@ const Beatmapsets = () => {
                                 value={query.mapper} onChange={handleChange} />
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 rounded-lg bg-custom-950 p-4 pb-6">
+                    <div className="grid grid-cols-1 gap-2 p-4 pb-6 rounded-lg md:grid-cols-2 bg-custom-950">
                         <div className="flex flex-col gap-2">
                             <MultiSlider
                                 min={0}
@@ -265,13 +260,15 @@ const Beatmapsets = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 bg-custom-950 rounded-lg">
-                    <BeatmapsList data={data} isSuccess limit={LIMIT} status={status} />
-                    <button onClick={() => fetchNextPage()} className="btn btn-success mx-auto btn-sm flex flex-row gap-2">
-                        <MdExpandMore />
-                        {isFetchingNextPage ? <Loading /> : 'Load More'}
-                        <MdExpandMore />
-                    </button>
+                <div className="grid grid-cols-1 gap-4 p-4 rounded-lg lg:grid-cols-2 bg-custom-950">
+                    <BeatmapsList data={data} isSuccess={isSuccess} limit={LIMIT} status={status} />
+                    {hasNextPage &&
+                        <button onClick={() => fetchNextPage()} className="flex flex-row gap-2 mx-auto btn btn-success btn-sm">
+                            <MdExpandMore />
+                            {isFetchingNextPage ? <Loading /> : 'Load More'}
+                            <MdExpandMore />
+                        </button>
+                    }
                 </div>
             </div>
         </div>

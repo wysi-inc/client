@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { useTranslation } from "react-i18next";
 
 import PpLine from "../u_comp/PpLine";
@@ -14,11 +12,6 @@ import { FaChartPie } from "react-icons/fa";
 import { GameMode } from "../../../resources/types/general";
 import fina from "../../../helpers/fina";
 import { useQuery } from "react-query";
-
-// interface Props {
-//     data: User;
-//     best: Score[];
-// }
 
 interface Props {
     userId: number,
@@ -213,7 +206,6 @@ const ScoresSumary = (p: Props) => {
 
     function getCommonMods(scores: Score[]) {
         if (!scores) return [];
-        console.log("SCORESSSSS",scores);
         let modsCounter: any = {};
         scores.forEach((score) => {
             const mods = score.mods.length > 0 ? score.mods.map((mod) => mod) : ['NM'];

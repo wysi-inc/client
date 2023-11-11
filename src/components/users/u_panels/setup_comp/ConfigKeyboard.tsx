@@ -12,8 +12,7 @@ interface Props {
 }
 
 const ConfigKeyboard = (p: Props) => {
-    const {t} = useTranslation();
-    const KeyboardDisplay = useMemo(() => getK(p.keyboard.layout), [p.keyboard]);
+    const { t } = useTranslation();
 
     function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         if (!p.edit) return;
@@ -25,7 +24,26 @@ const ConfigKeyboard = (p: Props) => {
         <div className="flex flex-col items-center gap-3">
             <div className="text-center">{p.keyboard.name || 'Keyboard'}</div>
             <div style={{ height: p.height, width: p.width }} className="flex items-center justify-center">
-                {KeyboardDisplay}
+                {(() => {
+                    switch (p.keyboard.layout) {
+                        case 'k2':
+                            return <K2 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'k3':
+                            return <K3 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'k4':
+                            return <K4 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'k60':
+                            return <K60 width={p.width} scale={.7} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'k75':
+                            return <K75 width={p.width} scale={.68} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'ktkl':
+                            return <KTKL width={p.width} scale={.6} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        case 'kfull':
+                            return <KFULL width={p.width} scale={.5} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
+                        default:
+                            return null;
+                    }
+                })()}
             </div>
             <div className={`${p.edit ? 'flex' : 'hidden'} flex-col gap-2`}>
                 <div>{t('user.sections.setup.model')}:</div>
@@ -47,27 +65,6 @@ const ConfigKeyboard = (p: Props) => {
             </div>
         </div>
     )
-
-    function getK(layout: KeyboardLayout) {
-        switch (layout) {
-            case 'k2':
-                return <K2 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'k3':
-                return <K3 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'k4':
-                return <K4 width={p.width} scale={1} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'k60':
-                return <K60 width={p.width} scale={.7} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'k75':
-                return <K75 width={p.width} scale={.68} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'ktkl':
-                return <KTKL width={p.width} scale={.6} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            case 'kfull':
-                return <KFULL width={p.width} scale={.5} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-            default:
-                return <K60 width={p.width} scale={.7} keys={p.keyboard.keys} toggle={toggle} edit={p.edit} />;
-        }
-    }
 
     function toggle(key: string) {
         p.setKeyboard((prev) => ({ ...prev, keys: prev.keys.includes(key) ? prev.keys.filter(o => o !== key) : [...prev.keys, key] }));
@@ -104,7 +101,6 @@ function K3(p: kProps) {
     }
 
     return (
-
         <div style={{ transform: `scale(${p.scale})` }}
             className="flex flex-row items-center justify-center gap-1 p-3 pb-12 border rounded-lg w-fit">
             <Key char={'z'} code={'z'} keys={p.keys} toggle={toggle} width={1} />
