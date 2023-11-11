@@ -1,21 +1,21 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
+        "home": "Page d'accueil",
+        "users": "Utilisateur",
         "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "search": "rechercher quelqu'un",
+        "help": "Contribuez à la traduction du site!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "Connectez-vous avec osu!",
+            "logout": "Se déconnecter",
+            "osu": "Profil osu!",
+            "wysi": "Profil wysi!"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Configurer",
                 "tabs": {
                     "inputs": "Inputs",
                     "peripherals": "Peripherals",
