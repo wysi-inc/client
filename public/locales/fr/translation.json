@@ -1,121 +1,123 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
+        "home": "Page d'accueil",
+        "users": "Utilisateur",
         "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "search": "rechercher quelqu'un",
+        "help": "Contribuez à la traduction du site!",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
-            "wysi": "wysi!profile"
+            "login": "Connectez-vous avec osu!",
+            "logout": "Se déconnecter",
+            "osu": "Profil osu!",
+            "wysi": "Profil wysi!"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "Configurer",
                 "tabs": {
-                    "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "inputs": "Entrées",
+                    "peripherals": "Périphériques",
+                    "computer": "Ordinateur"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
-                    "cpu": "CPU",
-                    "gpu": "GPU",
+                    "component": "Composant",
+                    "details": "Détails",
+                    "cpu": "Processeur",
+                    "gpu": "Carte graphique",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "Stockage",
+                    "motherboard": "carte mère",
+                    "psu": "Source d'alimentation",
+                    "case": "boîtier pc"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
+                "model": "Modèle",
+                "size": "Taille",
+                "area": "Zone",
                 "position": "Position",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2 touches",
+                    "k3": "3 touches",
+                    "k4": "4 touches",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
-                    "kfull": "FULL"
+                    "kfull": "COMPLET"
                 }
             },
             "history": {
-                "title": "History"
+                "title": "Historique"
             },
             "scores": "Scores",
             "beatmaps": {
                 "title": "Beatmaps"
             },
             "medals": {
-                "title": "Medals"
+                "title": "Médailles"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "Résumé des scores",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
-                    "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "hit_ratios": "Ratios de frappe",
+                    "grade_ratios": "Ratios de note",
+                    "average_play": "Jeu moyen"
                 }
-            }
+            },
+            "mostplayed": "Le plus joué"
         },
         "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
+        "total_score": "Score total",
+        "global_rank": "Rank global",
+        "country_rank": "Rank national",
+        "play_time": "Durée du jeu",
+        "play_count": "Nombre de sessions",
+        "replays_watched": "Replays regardés",
         "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "followers": "Abonnés",
+        "online": "En ligne"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
-            "best": "Best",
-            "firsts": "Firsts",
-            "recent": "Recent"
+            "pinned": "Épinglé",
+            "best": "Meilleure",
+            "firsts": "Premier",
+            "recent": "Récent"
         },
         "mods": "Mods",
-        "max_combo": "Max Combo",
+        "max_combo": "Max combo",
         "combo": "Combo",
-        "grade": "Grade",
-        "grades": "Grades",
+        "grade": "note",
+        "grades": "Notes",
         "acc": "Acc",
-        "accuracy": "Accuracy",
+        "accuracy": "Précision",
         "score": "Score",
-        "ranked_score": "Ranked Score"
+        "ranked_score": "Score du classement"
     },
     "beatmapset": {
         "status": {
-            "favourite": "Favourite",
-            "ranked": "Ranked",
-            "guest": "Guest",
-            "loved": "Loved",
-            "nominated": "Nominated",
-            "pending": "Pending",
-            "graveyard": "Graveyard",
-            "wip": "In Progress"
+            "favourite": "Favoris",
+            "ranked": "Classé",
+            "guest": "Invité",
+            "loved": "Aimé",
+            "nominated": "Nominer",
+            "pending": "en attendant",
+            "graveyard": "Cimetière",
+            "wip": "En cours",
+            "approved": "Approuvé"
         },
-        "length": "Length",
+        "length": "longueur",
         "bpm": "BPM"
     },
     "footer": {
-        "rights": "All rights reserved to this silly monkey"
+        "rights": "Tous droits réservés à ce singe stupide"
     },
     "alerts": {
         "user": {
-            "user_doesnt_exist": "This user doesn't exist",
-            "user_is_bot": "This user is a bot, bots are not supported yet :(",
-            "users_fail": "Failed to fetch users"
+            "user_doesnt_exist": "Cet utilisateur n'existe pas",
+            "user_is_bot": "Cet utilisateur est un bot, les bots ne sont pas encore pris en charge :(",
+            "users_fail": "Impossible de récupérer les infos d'utilisateur"
         }
     }
 }

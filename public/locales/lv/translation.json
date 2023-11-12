@@ -64,7 +64,8 @@
                     "grade_ratios": "Grade attiecība",
                     "average_play": "Vidēja Play"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Veiktspēja",
         "total_score": "Kopējie Punkti",
@@ -103,7 +104,8 @@
             "nominated": "Nominēts",
             "pending": "Neizšķirts",
             "graveyard": "Pamesta",
-            "wip": "Notiek process"
+            "wip": "Notiek process",
+            "approved": "Approved"
         },
         "length": "Garums",
         "bpm": "BPM"

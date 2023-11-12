@@ -64,7 +64,8 @@
                     "grade_ratios": "Proporción de Notas",
                     "average_play": "Partida Promedia"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Rendimiento",
         "total_score": "Puntuación total",
@@ -103,7 +104,8 @@
             "nominated": "Nominados",
             "pending": "Pendientes",
             "graveyard": "Abandonados",
-            "wip": "In Progress"
+            "wip": "In Progress",
+            "approved": "Approved"
         },
         "length": "Duración",
         "bpm": "BPM"

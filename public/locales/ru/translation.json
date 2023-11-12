@@ -64,7 +64,8 @@
                     "grade_ratios": "Коэффициенты оценки",
                     "average_play": "Среднее время игры"
                 }
-            }
+            },
+            "mostplayed": "Most Played"
         },
         "performance": "Показатели",
         "total_score": "Итого",
@@ -103,7 +104,8 @@
             "nominated": "Номинированный",
             "pending": "Ожидание",
             "graveyard": "Кладбище",
-            "wip": "In Progress"
+            "wip": "In Progress",
+            "approved": "Approved"
         },
         "length": "Длительность",
         "bpm": "УД/МИН"
