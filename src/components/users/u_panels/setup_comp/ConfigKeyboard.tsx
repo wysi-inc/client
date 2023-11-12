@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { Keyboard, KeyboardLayout } from "../../../../resources/types/setup";
 import Key from "./Key";
 import { useTranslation } from "react-i18next";
@@ -51,8 +51,7 @@ const ConfigKeyboard = (p: Props) => {
                     <input onChange={handleChange} name="name" value={p.keyboard.name}
                         type='text' className="input input-sm input-bordered join-item input-mm" placeholder="keyboard" />
                     <select className="select select-bordered join-item select-sm" value={p.keyboard.layout}
-                        onChange={handleChange} name="layout"
-                    >
+                        onChange={handleChange} name="layout">
                         <option value={"k2" as KeyboardLayout}>{t('user.sections.setup.layout.k2')}</option>
                         <option value={"k3" as KeyboardLayout}>{t('user.sections.setup.layout.k3')}</option>
                         <option value={"k4" as KeyboardLayout}>{t('user.sections.setup.layout.k4')}</option>

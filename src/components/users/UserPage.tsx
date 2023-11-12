@@ -28,20 +28,19 @@ const UserPage = () => {
         return fina.post('/user', { id: urlUser, mode: urlMode });
     }
 
-    if (userStatus === 'loading') return <Loading/>
-    
+    if (userStatus === 'loading') return <Loading />
+
     if (userStatus === 'error') {
         addAlert('warning', "This user doesn't exist");
         return <></>
     }
 
     const user: User = userData as any;
-    const mode : GameMode = (urlMode as GameMode) ? urlMode as GameMode :  user.playmode;
+    const mode: GameMode = (urlMode as GameMode) ? urlMode as GameMode : user.playmode;
 
     window.history.replaceState({}, '', `/users/${user.id}/${mode}`);
-    
-    const CSS = "bg-custom-950 rounded-lg drop-shadow-lg flex flex-col";
 
+    const CSS = "bg-custom-950 rounded-lg drop-shadow-lg flex flex-col";
     return <>
         <TopPanel user={user} mode={mode} />
         <BarPanel user={user} />

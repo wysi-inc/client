@@ -149,7 +149,7 @@ const SetupPanel = (p: Props) => {
                 icon={<FaComputer />} left={editButton}
                 info="to configure the keyboard, mouse and tablet first enable them on the official osu!settings" />
             <div className="flex flex-col gap-3 p-3">
-                <div className="flex flex-row flex-wrap items-start justify-around p-3">
+                <div className="flex flex-row flex-wrap items-start justify-around gap-3 p-3">
                     {p.playstyle?.includes('keyboard') &&
                         <ConfigKeyboard
                             width={300} height={228}
