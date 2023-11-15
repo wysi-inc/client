@@ -37,7 +37,7 @@ const UserPage = () => {
 
     const user: User = userData as any;
     const mode: GameMode = (urlMode as GameMode) ? urlMode as GameMode : user.playmode;
-
+    console.log(user);
     window.history.replaceState({}, '', `/users/${user.id}/${mode}`);
 
     const CSS = "bg-custom-950 rounded-lg drop-shadow-lg flex flex-col";

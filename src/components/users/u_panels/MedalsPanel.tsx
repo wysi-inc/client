@@ -53,7 +53,7 @@ const MedalsPanel = (p: Props) => {
                         <div className="p-3 pt-2">
                             <div className="px-2 pb-1 text-center"
                                 style={{ fontSize: 14, top: -8 }}>
-                                Rarity: {parseFloat(rarestMedal?.Rarity ? rarestMedal.Rarity : '0').toFixed(2)}%
+                                Rarity: {rarestMedal?.rarity.toFixed(2)}%
                             </div>
                             <div className="grid justify-center">
                                 {rarestMedal &&
@@ -98,7 +98,6 @@ const MedalsPanel = (p: Props) => {
         async function getM() {
             try {
                 const d: Medal[]  = await fina.get('/medals');
-                d.sort((a: any, b: any) => parseInt(a.MedalID) - parseInt(b.MedalID));
                 setM(d);
             } catch (err) {
                 console.error(err)
@@ -107,18 +106,18 @@ const MedalsPanel = (p: Props) => {
     }
 
     function getMedalsByCategory(data: Medal[]) {
-        data.sort((a: any, b: any) => {
-            if (a.Grouping === b.Grouping) {
-                return parseInt(a.value, 10) - parseInt(b.value, 10);
+        data.sort((a: Medal, b: Medal) => {
+            if (a.grouping === b.grouping) {
+                return a.medal_id - b.medal_id;
             }
-            return a.Grouping.localeCompare(b.Grouping);
+            return a.grouping.localeCompare(b.grouping);
         });
         const categoryArrays: SortedMedals = {};
         for (const obj of data) {
-            if (categoryArrays[obj.Grouping]) {
-                categoryArrays[obj.Grouping].push(obj);
+            if (categoryArrays[obj.grouping]) {
+                categoryArrays[obj.grouping].push(obj);
             } else {
-                categoryArrays[obj.Grouping] = [obj];
+                categoryArrays[obj.grouping] = [obj];
             }
         }
         return categoryArrays;
@@ -133,7 +132,7 @@ const MedalsPanel = (p: Props) => {
                 return dateA.getTime() - dateB.getTime();
             }).reverse().slice(0, num)
             .map((obj: UserAchievement) => obj.achievement_id)
-            .map((id: number) => medals.find((medal: any): boolean => parseInt(medal.MedalID) === id))
+            .map((id: number) => medals.find((medal: Medal): boolean => medal.medal_id === id))
             .filter((medal: Medal | undefined): medal is Medal => medal !== undefined);
         return sortedArray;
     }
@@ -145,7 +144,7 @@ const MedalsPanel = (p: Props) => {
             .forEach(([category, medals]: [string, Medal[]]) => {
                 achievedMedalsCount[category] = 0;
                 userMedals.forEach((achievedMedal: UserAchievement): void => {
-                    if (medals.find((medal: Medal): boolean => parseInt(medal.MedalID) === achievedMedal.achievement_id)) {
+                    if (medals.find((medal: Medal): boolean => medal.medal_id === achievedMedal.achievement_id)) {
                         achievedMedalsCount[category]++;
                     }
                 });
@@ -156,9 +155,9 @@ const MedalsPanel = (p: Props) => {
     function getRarestMedal(userMedals: UserAchievement[] | undefined, medals: Medal[]) {
         if (!userMedals) return null;
         const data = userMedals.map((obj: UserAchievement) => obj.achievement_id)
-            .map((id: number) => medals.find((medal: Medal): boolean => String(medal.MedalID) === String(id)))
+            .map((id: number) => medals.find((medal: Medal): boolean => String(medal.medal_id) === String(id)))
             .reduce((rarest: Medal | null, medal: Medal | undefined): Medal => {
-                if (!rarest || (medal && medal.Rarity < rarest.Rarity)) {
+                if (!rarest || (medal && medal.rarity < rarest.rarity)) {
                     return medal as Medal;
                 }
                 return rarest;

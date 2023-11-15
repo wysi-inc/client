@@ -23,7 +23,7 @@ const Flag = (p: Props) => {
     )
 
     function getFlag(code: string) {
-        const special = ['cat', 'gal', 'eo', 'min'];
+        const special = ['cat', 'gal', 'eo', 'min', 'arab'];
         if (special.includes(code.toLocaleLowerCase())) return getExtraFlag(code);
         else return (
             <Twemoji options={{ className: 'emoji-flag m-0 p-0', noWrapper: true }}>

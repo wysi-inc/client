@@ -244,6 +244,8 @@ function getLangFlag(code: string): string {
             return 'es';
         case 'el':
             return 'gr';
+        case 'ar':
+            return 'arab';
         default:
             return code;
     }

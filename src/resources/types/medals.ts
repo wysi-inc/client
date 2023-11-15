@@ -1,12 +1,12 @@
 export type Medal = {
-  MedalID: string;
-  Name: string;
-  Link: string;
-  Description: string;
-  Grouping: string;
-  Date: string;
-  PackID?: string | null;
-  Rarity: string;
+  medal_id: number;
+  name: string;
+  link: string;
+  description: string;
+  grouping: string;
+  date: Date;
+  pack_id: string | null;
+  rarity: number;
 }
 
 export type MedalCategories = {
