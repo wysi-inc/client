@@ -13,7 +13,7 @@ interface Props {
 }
 
 const ConfigTablet = (p: Props) => {
-    
+
     const { t } = useTranslation();
 
     const inputWidth = 64;
@@ -93,14 +93,14 @@ function TabletDisplay(p: tabletDisplayProps) {
     return (
         <div className="relative overflow-hidden border rounded-lg"
             style={{ width: w, height: h, transform: 'scale(.8)' }}>
-            <div className="absolute flex flex-col items-center justify-center gap-1 bg-opacity-50 border border-secondary bg-secondary"
+            <div className="absolute bg-opacity-50 border border-secondary bg-secondary"
                 style={{
                     width: p.tablet.area.w * sx,
                     height: p.tablet.area.h * sy,
                     transform: `rotate(${p.tablet.position.r}deg) translate(${translate_x}px, ${translate_y}px)`
                 }}>
-                <div>{p.tablet.area.w} x {p.tablet.area.h} mm</div>
             </div>
+            <div className='absolute bottom-2 inset-x-0 text-center'>{p.tablet.area.w || '??'} x {p.tablet.area.h || '??'} mm</div>
         </div>
     )
 

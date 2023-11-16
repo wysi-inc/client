@@ -1,6 +1,6 @@
 import { FaExternalLinkAlt, FaImage, FaPaintBrush } from "react-icons/fa";
 import TitleBar from "./TitleBar";
-import { GameModes, GameMode } from "../../../resources/types/general";
+import { GameModes } from "../../../resources/types/general";
 import ModeIcon from "../../scores/s_comp/ModeIcon";
 import { colors } from "../../../resources/global/tools";
 import { Tooltip } from "react-tooltip";
@@ -27,7 +27,7 @@ const SkinPanel = (p: Props) => {
             <div className="flex flex-col gap-3 p-3">
                 <Tooltip id="skin-tooltip" />
                 {[1, 2, 3].map(() =>
-                    <a href={`https://skins.osuck.net/skins/${id}`} target="_blank" referrerPolicy="no-referrer" className="flex flex-row justify-between px-4 py-2 rounded-lg simpleDarkenOnHover bg-custom-800">
+                    <a href={`https://skins.osuck.net/skins/${id}`} target="_blank" rel="noreferrer" className="flex flex-row justify-between px-4 py-2 rounded-lg simpleDarkenOnHover bg-custom-800">
                         <div className="flex flex-row items-center gap-3">
                             <FaExternalLinkAlt />
                             <div className="flex flex-row items-center gap-1">{GameModes.map((m) => <ModeIcon size={24} mode={m} color={(colors.modes as any)[m]} />)}</div>

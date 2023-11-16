@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
-
 import { FaMedal } from "react-icons/fa";
 
 import fina from "../../../helpers/fina";
@@ -25,9 +23,9 @@ const MedalsPanel = (p: Props) => {
     if (medalsStatus !== 'success') return <Loading />;
     if (!medalsData) return <Loading />;
 
-    const medals_grouping: { grouping: string, medals: Medal[] }[] = medalsData;
+    const medals_category: { category: string, medals: Medal[] }[] = medalsData;
 
-    const all_medals: Medal[] = medals_grouping.flatMap(grouping => grouping.medals);
+    const all_medals: Medal[] = medals_category.flatMap(category => category.medals);
     
     const all_medals_map = new Map();
     for (const medal of all_medals) {
@@ -85,11 +83,11 @@ const MedalsPanel = (p: Props) => {
                         </div>
                     </div>
                 </div>
-                {medals_grouping.map((obj, i) => (
+                {medals_category.map((obj, i) => (
                     <div key={i} className="grow">
                         <div className="flex flex-row items-center justify-center p-2 text-center bg-custom-900">
                             <div className="text-center">
-                                {obj.grouping}:
+                                {obj.category}:
                             </div>
                         </div>
                         <div className="flex flex-col p-3 pt-2 grow">

@@ -1,8 +1,8 @@
 import moment from "moment";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { addDefaultSrc, isNumeric, secondsToTime } from "../../resources/global/functions";
-import { PlayerStoreInterface, playerStore } from "../../resources/global/tools";
+import { PlayerStoreInterface, colors, playerStore } from "../../resources/global/tools";
 import { Beatmap, Beatmapset } from "../../resources/types/beatmapset";
 
 import { FaDownload, FaFileDownload, FaHeadphonesAlt, FaItunesNote, FaMicrophoneAlt, FaRegClock, FaStar } from "react-icons/fa";
@@ -39,9 +39,16 @@ const BeatmapsetPage = () => {
 
   const diffId = getDiffId(beatmapset, urlDiffId);
 
-  const totalNotes: number = 0;
+  const [acc, setAcc] = useState<number>(100);
 
-  const ACC_INITIAL: accInt = useMemo(() => ({
+  const [mods, setMods] = useState<string[]>([]);
+
+  const diff = getDiff(beatmapset, diffId);
+  const stats = useStats(diff, acc, mods);
+
+  const totalNotes: number = (diff?.count_circles || 0) + (diff?.count_sliders || 0) + (diff?.count_spinners || 0);
+
+  const [hits, setHist] = useState({
     acc: 100,
     geki: 0,
     x300: totalNotes,
@@ -49,14 +56,19 @@ const BeatmapsetPage = () => {
     x100: 0,
     x50: 0,
     xMiss: 0
-  }), [urlDiffId]);
+  });
 
-  const [acc, setAcc] = useState<number>(100);
-
-  const [mods, setMods] = useState<string[]>([]);
-
-  const diff = getDiff(beatmapset, diffId);
-  const stats = useStats(diff, acc, mods);
+  useEffect(() => {
+    setHist({
+      acc: 100,
+      geki: 0,
+      x300: totalNotes,
+      katu: 0,
+      x100: 0,
+      x50: 0,
+      xMiss: 0
+    })
+  }, [diffId])
 
   if (beatmapsetStatus === 'loading') return <Loading />;
   if (beatmapsetStatus === 'error') return <div>There was an error</div>;
@@ -182,15 +194,39 @@ const BeatmapsetPage = () => {
                 </div>
                 <div className="flex flex-row items-center justify-between gap-3">
                   <div className="text-end">OD:</div>
-                  <progress className="progress progress-custom"
-                    value={stats.od} max="11"></progress>
+                  <progress className="progress progress-custom" value={stats.od} max="11"></progress>
                   <div className="text-start">{stats.od}</div>
                 </div>
                 <div className="flex flex-row items-center justify-between gap-3">
                   <div className="text-end">HP:</div>
-                  <progress className="progress progress-custom"
-                    value={stats.hp} max="11"></progress>
+                  <progress className="progress progress-custom" value={stats.hp} max="11"></progress>
                   <div className="text-start">{stats.hp}</div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 p-4 rounded-lg drop-shadow-md bg-custom-950">
+                <div className="flex flex-row gap-2 justify-between">
+                  <div style={{color: colors.judgements.x300}}>300</div>
+                  <input type="number" className="input input-bordered input-sm" 
+                    value={hits.x300}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 justify-between">
+                  <div style={{color: colors.judgements.x100}}>100</div>
+                  <input type="number" className="input input-bordered input-sm" 
+                    value={hits.x100}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 justify-between">
+                  <div style={{color: colors.judgements.x50}}>50</div>
+                  <input type="number" className="input input-bordered input-sm" 
+                    value={hits.x50}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 justify-between">
+                  <div style={{color: colors.judgements.xMiss}}>0</div>
+                  <input type="number" className="input input-bordered input-sm" 
+                    value={hits.xMiss}
+                  />
                 </div>
               </div>
               <div className="flex flex-row flex-wrap items-center justify-center gap-2 p-4 rounded-lg drop-shadow-md bg-custom-950">
