@@ -18,7 +18,7 @@ interface Props {
 }
 
 const UserMapsList = (p: Props) => {
-    const LIMIT = 15;
+    const LIMIT = 5;
 
     const { data, isSuccess, status, hasNextPage, fetchNextPage, isFetchingNextPage } =
         useInfiniteQuery([`${p.category}Data`, p.userId, p.mode], ({ pageParam = 0 }) => getMaps(pageParam), {

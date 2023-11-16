@@ -15,7 +15,7 @@ interface Props {
 
 const MostPlayed = (p: Props) => {
 
-    const LIMIT = 15;
+    const LIMIT = 5;
 
     const { t } = useTranslation();
 
@@ -34,8 +34,8 @@ const MostPlayed = (p: Props) => {
         <div className={p.className}>
             <TitleBar title={t('user.sections.mostplayed')} icon={<FaFireAlt />} />
             <div className="flex flex-col gap-3 p-3">
-                {data.pages.map((page: BeatmapPlays[], i: number) =>
-                    page.map((beatmap: BeatmapPlays, j: number) =>
+                {data.pages.map((page: BeatmapPlays[], i) =>
+                    page.map((beatmap, j) =>
                         <BeatmapCard key={(i * LIMIT) + j} index={(i * LIMIT) + j} beatmap={beatmap} />
                     ))
                 }
