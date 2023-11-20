@@ -20,18 +20,17 @@ const BeatmapLeaderboards = (p: Props) => {
     if (leaderboardsStatus === 'loading') return <Loading />;
     if (leaderboardsStatus === 'error') return <div>There was an error</div>;
     if (!leaderboards) return <></>;
+    if (leaderboards.length < 1) return <></>;
 
-    return (<>
-        {
-            leaderboards.map((s: Score, i: number) =>
-                <BeatmapsetScoreCard key={s.id} score={s} index={i + 1} />
-            )
-        }
-    </>)
+    return (<>{
+        leaderboards?.map((s: Score, i: number) =>
+            <BeatmapsetScoreCard key={s.id} score={s} index={i + 1} />
+        )
+    }</>)
 
     async function getLeaderboards(id: number) {
         const mode = 'osu';
-        return fina.post('/beatmapscores', { id, mode, });
+        return fina.post('/beatmap/scores', { id, mode, });
     }
 }
 

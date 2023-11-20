@@ -91,16 +91,18 @@ function TabletDisplay(p: tabletDisplayProps) {
     const translate_y = (-p.tablet.area.h * sy / 2) + (p.tablet.position.y * sy);
 
     return (
-        <div className="relative overflow-hidden border rounded-lg"
-            style={{ width: w, height: h, transform: 'scale(.8)' }}>
-            <div className="absolute bg-opacity-50 border border-secondary bg-secondary"
-                style={{
-                    width: p.tablet.area.w * sx,
-                    height: p.tablet.area.h * sy,
-                    transform: `rotate(${p.tablet.position.r}deg) translate(${translate_x}px, ${translate_y}px)`
-                }}>
+        <div>
+            <div className="relative overflow-hidden border rounded-lg"
+                style={{ width: w, height: h, transform: 'scale(.8)' }}>
+                <div className="absolute bg-opacity-50 border border-secondary bg-secondary"
+                    style={{
+                        width: p.tablet.area.w * sx,
+                        height: p.tablet.area.h * sy,
+                        transform: `rotate(${p.tablet.position.r}deg) translate(${translate_x}px, ${translate_y}px)`
+                    }}>
+                </div>
             </div>
-            <div className='absolute bottom-2 inset-x-0 text-center'>{p.tablet.area.w || '??'} x {p.tablet.area.h || '??'} mm</div>
+            <div className='text-center'>{p.tablet.area.w || '??'} x {p.tablet.area.h || '??'} mm</div>
         </div>
     )
 

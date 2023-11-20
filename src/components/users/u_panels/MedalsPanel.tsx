@@ -22,6 +22,7 @@ const MedalsPanel = (p: Props) => {
 
     if (medalsStatus !== 'success') return <Loading />;
     if (!medalsData) return <Loading />;
+    if (medalsData.error) return <Loading/>;
 
     const medals_category: { category: string, medals: Medal[] }[] = medalsData;
 
