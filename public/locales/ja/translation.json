@@ -1,14 +1,14 @@
 {
     "nav": {
-        "home": "Home",
-        "users": "Users",
-        "beatmaps": "Beatmaps",
-        "search": "Search someone",
-        "help": "Help translate the site!",
+        "home": "ホーム",
+        "users": "ユーザー",
+        "beatmaps": "ビートマップ",
+        "search": "ユーザーを検索",
+        "help": "このサイトの翻訳に協力してください！",
         "log": {
-            "login": "Login with osu!",
-            "logout": "Logout",
-            "osu": "osu!profile",
+            "login": "Osu! でログイン",
+            "logout": "退出",
+            "osu": "osu!のプロファイル",
             "wysi": "wysi!profile"
         }
     },
