@@ -18,29 +18,29 @@
                 "title": "Setup",
                 "tabs": {
                     "inputs": "Inputs",
-                    "peripherals": "Peripherals",
-                    "computer": "Computer"
+                    "peripherals": "周辺機器",
+                    "computer": "パソコン"
                 },
                 "components": {
-                    "component": "Component",
-                    "details": "Details",
+                    "component": "パソコンの構成部品",
+                    "details": "詳細",
                     "cpu": "CPU",
                     "gpu": "GPU",
                     "ram": "RAM",
-                    "storage": "Storage",
-                    "motherboard": "Motherboard",
-                    "psu": "Power Supply",
-                    "case": "Case"
+                    "storage": "ストレージ",
+                    "motherboard": "マザーボード",
+                    "psu": "電源",
+                    "case": "ケース"
                 },
-                "model": "Model",
-                "size": "Size",
-                "area": "Area",
-                "position": "Position",
+                "model": "機種",
+                "size": "サイズ",
+                "area": "エリア",
+                "position": "ポジション",
                 "dpi": "DPI",
                 "layout": {
-                    "k2": "2 Keys",
-                    "k3": "3 Keys",
-                    "k4": "4 Keys",
+                    "k2": "2つのキー",
+                    "k3": "3つのキー",
+                    "k4": "4つのキー",
                     "k60": "60%",
                     "k75": "75%",
                     "ktkl": "TKL",
@@ -48,32 +48,32 @@
                 }
             },
             "history": {
-                "title": "History"
+                "title": "履歴"
             },
-            "scores": "Scores",
+            "scores": "スコア",
             "beatmaps": {
-                "title": "Beatmaps"
+                "title": "ビートマップ"
             },
             "medals": {
-                "title": "Medals"
+                "title": "メダル"
             },
             "scores_summary": {
-                "title": "Scores Summary",
+                "title": "スコアの概要",
                 "tabs": {
-                    "hit_ratios": "Hit Ratios",
+                    "hit_ratios": "Hit ratio",
                     "grade_ratios": "Grade Ratios",
-                    "average_play": "Average Play"
+                    "average_play": "平均プレイ"
                 }
             },
-            "mostplayed": "Most Played"
+            "mostplayed": "最もプレイした"
         },
-        "performance": "Performance",
-        "total_score": "Total Score",
-        "global_rank": "Global Rank",
-        "country_rank": "Country Rank",
-        "play_time": "Play Time",
-        "play_count": "Play Count",
-        "replays_watched": "Replays Watched",
+        "performance": "パフォーマンス",
+        "total_score": "合計スコア",
+        "global_rank": "世界ランキング",
+        "country_rank": "国別ランキング",
+        "play_time": "プレイ時間",
+        "play_count": "プレイ回数",
+        "replays_watched": "リプレイ再生回数",
         "hits_x_play": "Hits x Play",
         "followers": "Followers",
         "online": "Online"
