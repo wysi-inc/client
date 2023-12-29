@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { FaPen } from 'react-icons/fa';
-
 interface PageTabsProps {
     current: number;
     min: number;
@@ -27,12 +25,9 @@ const PageTabs = (props: PageTabsProps) => {
                 <form onSubmit={(e) => {
                     e.preventDefault();
                     page && props.setNewPage(page);
-                }} className="z-10 flex flex-row items-center join-item bg-primary">
-                    <button onClick={() => input && input.current && input.current.focus()}>
-                        <FaPen style={{ marginRight: -16, transform: 'translateX(12px)' }} />
-                    </button>
+                }} className="z-10 item join-item bg-primary btn-primary">
                     <input ref={input} style={{ backgroundColor: '#ffffff44' }}
-                        className="h-full p-0 text-center input input-bordered ps-4"
+                        className="h-full p-0 text-center input input-bordered w-14"
                         placeholder="..." type="number"
                         min={props.min} max={props.max} value={page}
                         onChange={(e) => setPage(e.target.valueAsNumber)} />

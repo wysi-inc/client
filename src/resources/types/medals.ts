@@ -1,18 +1,10 @@
 export type Medal = {
-  MedalID: string;
-  Name: string;
-  Link: string;
-  Description: string;
-  Grouping: string;
-  Date: string;
-  PackID?: string | null;
-  Rarity: string;
+  medal_id: number;
+  name: string;
+  link: string;
+  description: string;
+  date: Date;
+  rarity: number;
 }
 
-export type MedalCategories = {
-  [category: string]: number;
-}
-
-export type SortedMedals = {
-  [key: string]: Medal[];
-}
+export type MedalCategories = {category: String, medals: Medal[]}; 
