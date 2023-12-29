@@ -43,11 +43,11 @@ const Navbar = () => {
             <div className="navbar-end flex flex-row items-center gap-4">
                 <LanguagesSelect />
                 <a target='_blank' rel="noreferrer"
-                    href='https://google.com' className="btn btn-circle btn-ghost btn-sm">
+                    href='https://discord.gg/QYVxgS2934' className="btn btn-circle btn-ghost btn-sm">
                     <FaDiscord />
                 </a>
                 <a target='_blank' rel="noreferrer" className="btn btn-circle btn-ghost btn-sm"
-                    href='https://github.com/orgs/wysi-inc/repositories'>
+                    href='https://github.com/orgs/wysi-inc'>
                     <FaGithub />
                 </a>
                 <Login />
