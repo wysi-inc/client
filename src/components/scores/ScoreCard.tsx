@@ -23,8 +23,6 @@ const ScoreCard = (p: Props) => {
 
     const listImg = `https://assets.ppy.sh/beatmaps/${b.id}/covers/list.jpg?${b.id}`;
 
-    const submitted_date = typeof b.submitted_date === "number" ? b.submitted_date * 1000 : b.submitted_date;
-
     return (
         <div className="flex flex-row rounded-lg card bg-custom-600">
             <div className="flex flex-col gap-3 p-3 rounded-lg shadow-xl grow bg-custom-900">
@@ -45,10 +43,6 @@ const ScoreCard = (p: Props) => {
                                 <Link to={`/users/${b.user_id}`} className="inline-block">
                                     Mapper: {b.creator}
                                 </Link>
-                                <div>|</div>
-                                <div className="tooltip" data-tip={moment(submitted_date).format('DD MMM YYYY')}>
-                                    {moment(submitted_date).fromNow()}
-                                </div>
                             </div>
                         </div>
                     </div>
