@@ -3,7 +3,7 @@ import EditInput from "./EditInput";
 
 import { CgKeyboard } from "react-icons/cg";
 import { BsKeyboard } from "react-icons/bs";
-import { FaChair, FaHeadphonesAlt, FaMicrophoneAlt, FaMouse, FaRegEdit, FaSquare, FaTv, FaVideo } from "react-icons/fa";
+import { FaHeadphonesAlt, FaMicrophoneAlt, FaMouse, FaRegEdit, FaSquare, FaTv, FaVideo } from "react-icons/fa";
 import { TbDeviceAudioTape } from "react-icons/tb";
 import { Peripherals } from "../../../../resources/types/user";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";

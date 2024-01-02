@@ -56,7 +56,7 @@ function App() {
                             <main style={{ maxWidth: 1000 }} className="mx-auto bg-custom-600">
                                 <Routes>
                                     <Route path="/" element={<Home />} />
-                                    <Route path="/oauth-redirect" element={<OAuth />} />
+                                    <Route path="/oauth" element={<OAuth />} />
                                     <Route path="/users" element={<Users />} />
                                     <Route path="/users/:urlUser/:urlMode?" element={<UserPage />} />
                                     <Route path="/beatmaps/" element={<Beatmaps />} />

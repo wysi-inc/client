@@ -1,10 +1,11 @@
-import { settings } from "../env";
-
 class Fina {
+
+  constructor() {
+    console.log(this.defaults.baseUrl)
+  }
+
   defaults = {
-    baseUrl: settings.api_url,
-    token: "",
-  };
+    baseUrl: process.env.REACT_APP_API_URL, token: "", };
 
   configs = {
     nconfig: {

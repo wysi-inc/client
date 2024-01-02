@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { settings } from "../../env";
 import fina from "../../helpers/fina";
 import { UserStore, UserStoreInt } from "../../resources/global/user";
 import { alertManager, alertManagerInterface } from "../../resources/global/tools";
@@ -15,7 +14,7 @@ const Login = () => {
     const login = UserStore((state: UserStoreInt) => state.login);
     const addAlert = alertManager((state: alertManagerInterface) => state.addAlert);
 
-    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${settings.client_id}&redirect_uri=${settings.client_redirect}&response_type=code&scope=identify`
+    const url = `https://osu.ppy.sh/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_CLIENT_REDIRECT}&response_type=code&scope=identify`
 
     useEffect(() => {
         if (user.id === 0) {

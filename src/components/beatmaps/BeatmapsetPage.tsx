@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { addDefaultSrc, isNumeric, secondsToTime } from "../../resources/global/functions";
 import { PlayerStoreInterface, playerStore } from "../../resources/global/tools";
@@ -15,15 +15,15 @@ import BeatmapLeaderboards from "./b_comp/BeatmapLeaderboards";
 import DiffIcon from "./b_comp/DiffIcon";
 import StatusBadge from "./b_comp/StatusBadge";
 
-interface accInt {
-  acc: number,
-  geki: number,
-  x300: number,
-  katu: number,
-  x100: number,
-  x50: number,
-  xMiss: number,
-}
+//interface accInt {
+//  acc: number,
+//  geki: number,
+//  x300: number,
+//  katu: number,
+//  x100: number,
+//  x50: number,
+//  xMiss: number,
+//}
 
 const BeatmapsetPage = () => {
 
@@ -39,24 +39,24 @@ const BeatmapsetPage = () => {
 
   const diffId = getDiffId(beatmapset, urlDiffId);
 
-  const totalNotes: number = 0;
+//  const totalNotes: number = 0;
 
-  const ACC_INITIAL: accInt = useMemo(() => ({
-    acc: 100,
-    geki: 0,
-    x300: totalNotes,
-    katu: 0,
-    x100: 0,
-    x50: 0,
-    xMiss: 0
-  }), [urlDiffId]);
-
-  const [acc, setAcc] = useState<number>(100);
+//  const ACC_INITIAL: accInt = useMemo(() => ({
+//    acc: 100,
+//    geki: 0,
+//    x300: totalNotes,
+//    katu: 0,
+//    x100: 0,
+//    x50: 0,
+//    xMiss: 0
+//  }), [urlDiffId]);
+//
+//  const [acc, setAcc] = useState<number>(100);
 
   const [mods, setMods] = useState<string[]>([]);
 
   const diff = getDiff(beatmapset, diffId);
-  const stats = useStats(diff, acc, mods);
+  const stats = useStats(diff, 100, mods);
 
   if (beatmapsetStatus === 'loading') return <Loading />;
   if (beatmapsetStatus === 'error') return <div>There was an error</div>;
