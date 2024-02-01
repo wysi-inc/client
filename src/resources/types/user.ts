@@ -236,10 +236,8 @@ export type UserAchievement = {
 }
 
 export type DbInfo = {
-    ranks: {
-        global_rank: DBRankHistory[];
-        country_rank: DBRankHistory[];
-    },
+    global_ranks: DBRankHistory[];
+    country_ranks: DBRankHistory[];
     setup: Setup | null;
 }
 

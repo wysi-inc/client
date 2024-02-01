@@ -132,12 +132,12 @@ const HistoryPanel = (p: Props) => {
     )
 
     function getGlobalData(user: User) {
-        if (!user?.db_info.ranks.global_rank) return;
+        if (!user?.db_info.global_ranks) return;
         setGlobalHistoryData({
-            labels: user.db_info.ranks.global_rank.map(obj => obj.date),
+            labels: user.db_info.global_ranks.map(obj => obj.date),
             datasets: [{
                 label: 'Global Rank',
-                data: user.db_info.ranks.global_rank.map(obj => obj.rank),
+                data: user.db_info.global_ranks.map(obj => obj.rank),
                 fill: false,
                 borderColor: colors.ui.accent,
                 tension: 0.1,
@@ -146,12 +146,12 @@ const HistoryPanel = (p: Props) => {
     }
 
     function getCountryData(user: User) {
-        if (!user?.db_info.ranks.country_rank) return;
+        if (!user?.db_info.country_ranks) return;
         setCountryHistoryData({
-            labels: user.db_info.ranks.country_rank.map(obj => obj.date),
+            labels: user.db_info.country_ranks.map(obj => obj.date),
             datasets: [{
                 label: 'Country Rank',
-                data: user.db_info.ranks.country_rank.map(obj => obj.rank),
+                data: user.db_info.country_ranks.map(obj => obj.rank),
                 fill: false,
                 borderColor: colors.ui.accent,
                 tension: 0.1,

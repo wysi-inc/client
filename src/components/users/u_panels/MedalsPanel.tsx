@@ -5,7 +5,7 @@ import { FaMedal } from "react-icons/fa";
 import fina from "../../../helpers/fina";
 import MedalBadge from "../u_comp/MedalBadge";
 import { User } from "../../../resources/types/user";
-import { Medal, MedalCategories} from "../../../resources/types/medals";
+import { Medal, MedalCategories } from "../../../resources/types/medals";
 import TitleBar from "./TitleBar";
 import { useTranslation } from "react-i18next";
 
@@ -15,7 +15,7 @@ interface Props {
 }
 const MedalsPanel = (p: Props) => {
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const medals: MedalCategories[] = useMedals();
 
@@ -23,7 +23,7 @@ const MedalsPanel = (p: Props) => {
         <div className={p.className}>
             <TitleBar title={t('user.sections.medals.title')} icon={<FaMedal />} />
             <div className="flex flex-col grow">
-                {medals.map((group, index) => 
+                {medals.map((group, index) =>
                     <div key={index} className="grow">
                         <div className="flex flex-row items-center justify-center p-2 text-center bg-custom-900">
                             <div className="text-center">
@@ -46,16 +46,16 @@ const MedalsPanel = (p: Props) => {
             </div>
         </div>
     )
-    
+
     function useMedals() {
         const [m, setM] = useState<MedalCategories[]>([]);
         useEffect(() => {
             getM();
         }, [])
-        
+
         async function getM() {
             try {
-                const d: MedalCategories[]  = await fina.get('/medals');
+                const d: MedalCategories[] = await fina.get('/medals');
                 setM(d);
             } catch (err) {
                 console.error(err)
@@ -64,7 +64,7 @@ const MedalsPanel = (p: Props) => {
         console.log(m)
         return m;
     }
-   
+
 }
 
 export default MedalsPanel;

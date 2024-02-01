@@ -25,8 +25,10 @@ const UserPage = () => {
     const { data: userData, status: userStatus } = useQuery(['user', urlUser, urlMode], getUser);
 
     function getUser() {
-        return fina.post('/user', { id: urlUser, mode: urlMode });
+        return fina.get(`/users/${urlUser}/${urlMode}`);
     }
+
+    console.log(userData);
 
     if (userStatus === 'loading') return <Loading />
 

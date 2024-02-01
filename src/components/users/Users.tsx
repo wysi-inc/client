@@ -34,6 +34,10 @@ const Users = () => {
     const { data: usersData, status: usersStatus } = useQuery(['rankings', actualPage, section, mode], getUsers);
     const users: UserRanks[] = (usersData as any)?.ranking;
 
+    function getUsers() {
+        return fina.get(`/rankings/list/${mode}/${section}/${page}`);
+    }
+
     if (usersStatus === 'error') {
         addAlert('error', t('alerts.users_fail'));
         return <div></div>;
@@ -88,18 +92,11 @@ const Users = () => {
                         </tbody>
                     }
                 </table>
-                {!users &&<Loading />}
+                {!users && <Loading />}
             </div>
             {users ? <PageTabs setNewPage={setPage} current={page} min={1} max={200} /> : ''}
         </div>
     );
 
-    function getUsers() {
-        return fina.post('/user/list', {
-            mode: mode,
-            type: section,
-            page: page,
-        });
-    }
 }
 export default Users;

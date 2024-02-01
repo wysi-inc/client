@@ -20,7 +20,7 @@ const Footer = () => {
             <aside className="flex flex-row gap-6">
                 <p>Copyright © 2023 - {t('footer.rights')}</p>
                 <a href='https://ko-fi.com/m4rti21' className="flex flex-row gap-4 items-center tooltip" data-tip="All donations will be strictly used to cover the costs of running this website" rel="noreferrer" target='_blank'>
-                    <button className="btn btn-primary"><FaHeart/> Support this project!</button>
+                    <button className="btn btn-primary"><FaHeart /> Support this project!</button>
                 </a>
             </aside>
         </footer>
