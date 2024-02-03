@@ -22,11 +22,10 @@ const UserPage = () => {
     const { urlUser } = useParams();
     const { urlMode } = useParams();
 
-    const { data: userData, status: userStatus } = useQuery(['user', urlUser, urlMode], getUser);
-
-    function getUser() {
-        return fina.get(`/users/${urlUser}/${urlMode}`);
-    }
+    const { data: userData, status: userStatus } = useQuery(
+        ['user', urlUser, urlMode],
+        () => fina.get(`/users/${urlUser}/${urlMode}`)
+    );
 
     console.log(userData);
 

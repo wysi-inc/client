@@ -28,7 +28,10 @@ export interface BarPieChartData {
 const ScoresSumary = (p: Props) => {
     const { t } = useTranslation();
 
-    const { data: bestData, status: bestStatus } = useQuery(['bestDataaa', p.userId, p.mode], getBest);
+    const { data: bestData, status: bestStatus } = useQuery(
+        ['bestDataaa', p.userId, p.mode],
+        () => fina.get(`/users/${p.userId}/scores/best/100/0/${p.mode}`)
+    );
 
     if (bestStatus === 'loading') return (<Loading />);
     if (bestStatus === 'error') return (<div></div>);
@@ -231,17 +234,6 @@ const ScoresSumary = (p: Props) => {
         const commonMods = largestKey ? largestKey.split('-').map(String) : [];
         return commonMods;
     };
-
-    function getBest() {
-        return fina.post('/user/scores', {
-            id: p.userId,
-            mode: p.mode,
-            limit: 100,
-            offset: 0,
-            type: 'best'
-        });
-    }
-
 
 }
 
