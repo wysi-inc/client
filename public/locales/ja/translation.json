@@ -9,15 +9,15 @@
             "login": "Osu! でログイン",
             "logout": "退出",
             "osu": "osu!のプロファイル",
-            "wysi": "wysi!profile"
+            "wysi": "osu!のプロフィ―ル"
         }
     },
     "user": {
         "sections": {
             "setup": {
-                "title": "Setup",
+                "title": "スペック",
                 "tabs": {
-                    "inputs": "Inputs",
+                    "inputs": "バインド",
                     "peripherals": "周辺機器",
                     "computer": "パソコン"
                 },
@@ -61,7 +61,7 @@
                 "title": "スコアの概要",
                 "tabs": {
                     "hit_ratios": "Hit ratio",
-                    "grade_ratios": "Grade Ratios",
+                    "grade_ratios": "ランク",
                     "average_play": "平均プレイ"
                 }
             },
@@ -74,13 +74,13 @@
         "play_time": "プレイ時間",
         "play_count": "プレイ回数",
         "replays_watched": "リプレイ再生回数",
-        "hits_x_play": "Hits x Play",
-        "followers": "Followers",
-        "online": "Online"
+        "hits_x_play": "平均ヒット数",
+        "followers": "フォロワー",
+        "online": "ステータス"
     },
     "score": {
         "status": {
-            "pinned": "Pinned",
+            "pinned": "ピン",
             "best": "Best",
             "firsts": "Firsts",
             "recent": "Recent"
